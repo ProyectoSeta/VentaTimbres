@@ -51,12 +51,5 @@ class User extends Authenticatable
     //     return public_path('assets/user2.png');
     // }
     
-    public function adminlte_desc(){
-        $user = auth()->id();
-        $desc = DB::table('users')->join('tipos', 'users.type', '=', 'tipos.id_tipo')
-                            ->select('tipos.nombre_tipo')
-                            ->where('users.id','=',$user)->first();
-        $type = $desc->nombre_tipo;
-        return $type;
-    }
+    
 }

@@ -19,7 +19,7 @@ class UserSeeder extends Seeder
             'email' => 'administrador@gmail.com',
             'password' => Hash::make($pass),
             'type' => 2,
-            'key_funcionario' => 1,
+            'key_sujeto' => 1,
         ]);
     }
 }

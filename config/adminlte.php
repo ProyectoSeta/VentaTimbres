@@ -14,9 +14,9 @@ return [
     |
     */
 
-    'title' => 'Control de circulación',
+    'title' => 'Venta de Timbres Fiscales',
     'title_prefix' => '',
-    'title_postfix' => ' | SETA MNM',
+    'title_postfix' => ' | SETA Timbres',
 
     /*
     |--------------------------------------------------------------------------
@@ -130,11 +130,11 @@ return [
     |
     */
 
-    'usermenu_enabled' => true,
-    'usermenu_header' => true,
+    'usermenu_enabled' => false,
+    'usermenu_header' => false,
     'usermenu_header_class' => 'fw-bold bg-gradient-navy',
     'usermenu_image' => false,
-    'usermenu_desc' => true,
+    'usermenu_desc' => false,
     'usermenu_profile_url' => false,
 
     /*
@@ -219,13 +219,13 @@ return [
     */
 
     'sidebar_mini' => false,
-    'sidebar_collapse' => true,
+    'sidebar_collapse' => false,
     'sidebar_collapse_auto_size' => false,
     'sidebar_collapse_remember' => false,
     'sidebar_collapse_remember_no_transition' => true,
     'sidebar_scrollbar_theme' => 'os-theme-light',
     'sidebar_scrollbar_auto_hide' => 'l',
-    'sidebar_nav_accordion' => true,
+    'sidebar_nav_accordion' => false,
     'sidebar_nav_animation_speed' => 300,
 
     /*
@@ -302,26 +302,26 @@ return [
         [
             'type'         => 'navbar-search',
             'text'         => 'search',
-            'topnav_right' => true,
+            'topnav_right' => false,
         ],
         // [
         //     'type'         => 'fullscreen-widget',
         //     'topnav_right' => true,
         // ],
-        [
-            'text' => 'Mis datos',
-            'url'  => '/actualizar_datos',
-            // 'icon'       => 'fas fa-user pe-2 ps-2 text-muted',
-            'topnav_user' => true,
-            'classes'      => 'text-secondary py-2 fw-semibold pb-1',
-        ],
-        [
-            'text' => 'Cambiar contraseña',
-            'url'  => '/new_pass',
-            // 'icon'       => 'fas fa-sliders pe-2 ps-2 text-muted',
-            'topnav_user' => true,
-            'classes'      => 'text-secondary py-2 fw-semibold pt-1',
-        ],
+        // [
+        //     'text' => 'Mis datos',
+        //     'url'  => '/actualizar_datos',
+        //     // 'icon'       => 'fas fa-user pe-2 ps-2 text-muted',
+        //     'topnav_user' => true,
+        //     'classes'      => 'text-secondary py-2 fw-semibold pb-1',
+        // ],
+        // [
+        //     'text' => 'Cambiar contraseña',
+        //     'url'  => '/new_pass',
+        //     // 'icon'       => 'fas fa-sliders pe-2 ps-2 text-muted',
+        //     'topnav_user' => true,
+        //     'classes'      => 'text-secondary py-2 fw-semibold pt-1',
+        // ],
         
         // [
         //     'text'        => 'Principal',

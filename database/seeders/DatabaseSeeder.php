@@ -14,9 +14,10 @@ class DatabaseSeeder extends Seeder
     {
         
         $this->call(TiposSeeder::class);
+        $this->call(FuncionarioSeeder::class);
         $this->call(UserSeeder::class);
         
-        $this->call(FuncionarioSeeder::class);
+        
         // \App\Models\User::factory(10)->create();
 
         // \App\Models\User::factory()->create([

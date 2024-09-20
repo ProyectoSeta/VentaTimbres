@@ -43,25 +43,27 @@
                                     <span>Datos del Contribuyente</span>
                                 </div>
                                 <!-- R.I.F input -->
-                                <label class="form-label" for="rif">R.I.F./C.I.</label><span class="text-danger"> *</span>
+                                <label class="form-label" for="identidad_condicion">C.I. / R.I.F.</label><span class="text-danger"> *</span>
                                 <div class="row mb-2">
                                     <div class="col-3">
-                                        <select class="form-select form-select-sm" id="rif_condicion" aria-label="Default select example" name="rif_condicion" required>
+                                        <select class="form-select form-select-sm" id="identidad_condicion" aria-label="Default select example" name="identidad_condicion" required>
+                                            <option value="V" id="rif_juridico">V</option>    
+                                            <option value="E" id="rif_gubernamental">E</option>    
                                             <option value="J" id="rif_juridico">J</option>    
                                             <option value="G" id="rif_gubernamental">G</option>
                                         </select>
                                     </div>
                                     <div class="col-1">-</div>
                                     <div class="col-8">
-                                        <input type="number" id="rif" class="form-control form-control-sm" name="rif_nro" placeholder="Ejemplo: 30563223" autofocus value="{{ old('rif_nro') }}" required/>
+                                        <input type="number" id="identidad_nro" class="form-control form-control-sm" name="identidad_nro" placeholder="Ejemplo: 30563223" autofocus value="{{ old('identidad_nro') }}" required/>
                                         <p class="text-end text-muted mb-0" style="font-size:12px;">Ejemplo: 30563223</p>
                                     </div>
                                 </div>
 
                                 <!-- razon social input -->
                                 <div class="form-outline mb-2">
-                                    <label class="form-label" for="razon_social">Razon Social</label><span class="text-danger"> *</span>
-                                    <input type="text" id="razon_social" class="form-control form-control-sm" name="razon_social" value="{{ old('razon_social') }}" required/>
+                                    <label class="form-label" for="nombre_razon">Nombre / Razon Social</label><span class="text-danger"> *</span>
+                                    <input type="text" id="nombre_razon" class="form-control form-control-sm" name="nombre_razon" value="{{ old('nombre_razon') }}" required/>
                                 </div>
 
                                 
@@ -69,17 +71,6 @@
                                 {{-- DATOS : USUARIO --}}
                                 <div class="text-muted fw-semibold text-center title_resgister_form mt-3 mb-2">
                                     <span>Datos del Usuario</span>
-                                </div>
-
-                                <!-- correo input -->
-                                <div class="form-outline mb-2">
-                                    <label class="form-label" for="name">Nombre</label><span class="text-danger"> *</span>
-                                    <input type="text" id="name" class="form-control form-control-sm @error('name') is-invalid @enderror" name="name" value="{{ old('name') }}" required autocomplete="name" >
-                                    @error('name')
-                                        <span class="invalid-feedback" role="alert">
-                                            <strong>{{ $message }}</strong>
-                                        </span>
-                                    @enderror
                                 </div>
 
                                 <!-- correo input -->
@@ -107,7 +98,7 @@
                                 <!-- pass input -->
                                 <div class="form-outline mb-2">
                                 <label for="password-confirm" class="col-md-4 col-form-label text-md-end">{{ __('Confirmar contraseña') }}</label>
-                                    <input id="password-confirm" type="password" class="form-control" name="password_confirmation" required autocomplete="new-password">
+                                    <input id="password-confirm" type="password" class="form-control form-control-sm"  name="password_confirmation" required autocomplete="new-password">
                                 </div>
                                 <p class="text-muted text-end"><span style="color:red">*</span> Campos requeridos.</p>
                                 
