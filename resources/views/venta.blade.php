@@ -1,0 +1,481 @@
+@extends('adminlte::page')
+
+@section('title', 'Venta')
+
+
+@section('content')
+    <div class="mx-5">
+        <div class="d-flex justify-content-center mt-3 pb-3" style="font-size:14px">
+            <ul class="nav nav-tabs titulo px-3 w-100 d-flex justify-content-center" id="pills-tab" role="tablist">
+                <li class="nav-item" role="presentation">
+                    <a class="nav-link active" id="pills-f14-tab" data-bs-toggle="pill" data-bs-target="#pills-f14" type="button" role="tab" aria-controls="pills-f14" aria-selected="true">
+                        <div class="d-flex gap-1 py-1 pe-3">
+                            <div class="d-flex align-items-end flex-between-center">
+                                <i class='bx bx-receipt fs-2'></i>
+                            </div>
+                            <div class="ms-2">
+                                <h6 class="mb-1 text-700 text-nowrap text-secondary" style="font-size:13px">Timbre</h6>
+                                <h6 class="mb-0 lh-1 fw-bold text-secondary-emphasis">Forma 14</h6>
+                            </div>
+                        </div>
+                    </a>
+                </li>
+                <li class="nav-item" role="presentation">
+                    <a class="nav-link" id="pills-tmovil-tab" data-bs-toggle="pill" data-bs-target="#pills-tmovil" type="button" role="tab" aria-controls="pills-tmovil" aria-selected="false">
+                        <div class="d-flex gap-1 py-1 pe-3">
+                            <div class="d-flex align-items-end flex-between-center">
+                                <i class='bx bx-sticker fs-2'></i>
+                            </div>
+                            <div class="ms-2">
+                                <h6 class="mb-1 text-700 text-nowrap text-secondary" style="font-size:13px">Timbre</h6>
+                                <h6 class="mb-0 lh-1 fw-bold text-secondary-emphasis">Movil</h6>
+                            </div>
+                        </div>
+                    </a>
+                </li>
+            </ul>
+        </div>
+        <div class="tab-content" id="pills-tabContent">
+            <!-- FORMA 14 -->
+            <div class="tab-pane fade show active " id="pills-f14" role="tabpanel" aria-labelledby="pills-f14-tab" tabindex="0">
+                <div class="row">
+                    <div class="col-sm-7" id="form_venta_f14">
+                        <!-- DATOS CONTRIBUYENTE -->
+                        <div class="" style="font-size:13px">
+                            <div class="d-flex justify-content-center">
+                                <div class="row w-100">
+                                    <h5 class="titulo fw-bold text-navy my-3">Contribuyente | <span class="text-secondary fs-6">Datos</span></h5>
+                                    <div class="col-sm-6">
+                                        <label class="form-label" for="">C.I / R.I.F</label><span class="text-danger">*</span>
+                                        <div class="row">
+                                            <div class="col-4">
+                                                <select class="form-select form-select-sm" aria-label="Small select example" >
+                                                    <option value="1">V</option>
+                                                    <option value="2">E</option>
+                                                    <option value="3">J</option>
+                                                    <option value="3">G</option>
+                                                </select>
+                                            </div>
+                                            <div class="col-1">-</div>
+                                            <div class="col-7">
+                                                <input type="" id="" class="form-control form-control-sm"  name="" required >
+                                                <p class="text-end text-muted mb-0" style="font-size:12px;">Ejemplo: 7521004</p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-sm-6">
+                                        <label class="form-label" for="">Nombre / Razon Social</label><span class="text-danger">*</span>
+                                        <input type="" id="" class="form-control form-control-sm" name="" disabled required>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="d-flex justify-content-center mt-3 mb-3 d-none">
+                                <button type="button" class="btn btn-secondary btn-sm me-3" id="">Cancelar</button>
+                                <button type="submit" class="btn btn-success btn-sm" id="">Registrar</button>
+                            </div>
+                        </div>
+
+                        <!-- DATOS TRAMITE -->
+                        <div class="" style="font-size:13px">
+                            <div class="d-flex justify-content-center">
+                                <div class="row w-100">
+                                    <h5 class="titulo fw-bold text-navy my-3">Tramite | <span class="text-secondary fs-6">Datos</span></h5>
+                                    <div class="col-sm-6">
+                                        <label class="form-label" for="">Ente</label><span class="text-danger">*</span>
+                                        <select class="form-select form-select-sm" aria-label="Small select example" disabled>
+                                            <option value="">Registro</option>
+                                            <option value="">Alcaldía</option>
+                                            <option value="">Bomberos</option>
+                                        </select>
+                                    </div>
+                                    <div class="col-sm-6">
+                                        <label class="form-label" for="">Tramite</label><span class="text-danger">*</span>
+                                        <select class="form-select form-select-sm" aria-label="Small select example" disabled>
+                                            <option value="">Registro de Título Universitario</option>
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- TOTAL UCD Y BS -->
+                        <div class="" style="font-size:13px">
+                            <div class="d-flex justify-content-center">
+                                <div class="row w-100">
+                                    <h5 class="titulo fw-bold text-navy my-3">Valor | <span class="text-secondary fs-6">Timbre Fiscal</span></h5>
+                                    <div class="col-sm-6">
+                                        <label class="form-label" for="">UCD</label><span class="text-danger">*</span>
+                                        <input type="" id="" class="form-control form-control-sm" name=""  disabled required>
+                                    </div>
+                                    <div class="col-sm-6">
+                                        <label class="form-label" for="">Monto Bs.</label><span class="text-danger">*</span>
+                                        <input type="" id="" class="form-control form-control-sm" name=""  disabled required>
+                                        <p class="text-end text-muted fw-bold mb-0" style="font-size:12px;"><span class="text-success">Valor del UCD hoy:</span> 40.35 Bs</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- PAGO -->
+                        <div class="" style="font-size:13px">
+                            <div class="d-flex justify-content-center">
+                                <div class="row w-100">
+                                    <h5 class="titulo fw-bold text-navy my-3">Pago | <span class="text-secondary fs-6">Timbre Fiscal</span></h5>
+                                    <div class="col-sm-6">
+                                        <label class="form-label" for="">Metodo de Pago</label><span class="text-danger">*</span>
+                                        <select class="form-select form-select-sm" aria-label="Small select example" disabled>
+                                            <option value="">Punto</option>
+                                            <option value="">Efectivo Bs.</option>
+                                        </select>
+                                    </div>
+                                    <div class="col-sm-6">
+                                        <label class="form-label" for="">No. Comprobante</label><span class="text-danger">*</span>
+                                        <input type="" id="" class="form-control form-control-sm" name="" disabled required>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <p class="text-muted text-end fw-bold" style="font-size:13px"><span style="color:red">*</span> Campos requeridos.</p>
+
+                        <div class="d-flex justify-content-center mt-3 mb-3">
+                            <button type="button" class="btn btn-secondary btn-sm me-3" id="" disabled>Cancelar</button>
+                            <button type="submit" class="btn btn-success btn-sm" id="" disabled>Realizar Venta</button>
+                        </div>    
+                    </div>
+                    <!-- ******************************* -->
+                    <div class="col-sm-5 pb-3 px-3">
+                        <div class="">
+                        
+                            <!-- logo seta - no. control(correlativo) -->
+                            <div class="d-flex justify-content-between align-items-center my-3">
+                                <div>
+                                    <img src="{{asset('assets/logo_seta.png')}}" class="img-fluid" alt="" width="120px">
+                                </div>
+                                <div>
+                                    <span class="text-danger fw-bold fs-4 text-end" id="">A-8001002</span>
+                                </div>
+                            </div>
+
+                            <div class="text-center mb-3 fw-bold titulo">
+                                <div class="my-0 py-0 TEXT">Venta Timbre Fiscal</div>
+                                <div class="my-0 py-0 text-navy fs-5">FORMA 14-TFE</div>
+                            </div>
+
+                            <div class="d-flex justify-content-center">
+                                <img src="{{asset('assets/timbre.png')}}" class="img-fluid mt-3" alt="" width="180px">
+                            </div>
+                                
+                            <!-- datos de la venta -->
+                            <!-- <div style="font-size:14px">
+                                <div class="row">
+                                    <div class="col-6">
+                                        <p class="fw-bold my-0 py-0">
+                                            <span class="text-navy">Contribuyente:</span>
+                                            <span class="text-muted">Marina Rodríguez</span>
+                                        </p>
+                                        <p class="fw-bold my-0 py-0">
+                                            <span class="text-navy">C.I/R.I.F:</span>
+                                            <span class="text-muted">V8456201</span>
+                                        </p>
+                                    </div>
+                                    <div class="col-6 text-end">
+                                        <p class="fw-bold my-0 py-0">
+                                            <span class="text-navy">Emisión:</span>
+                                            <span class="text-muted">2024-05-10</span>
+                                        </p>
+                                        <p class="fw-bold my-0 py-0">
+                                            <span class="text-navy">No. Planilla:</span>
+                                            <span class="text-muted">999904520</span>
+                                        </p>
+                                    </div>
+                                </div>
+            
+                                <div class="my-3 fs-5">
+                                    <p class="text-muted fw-bold">
+                                        Monto Bs.: 80.7
+                                    </p>
+                                </div>
+            
+                                <div class="">
+                                    <div class="row">
+                                        <div class="col-6 d-flex justify-content-center align-items-center text-center">
+                                            <p class="fs-1 titulo">2 UCD</p>
+                                        </div>
+                                        <div class="col-6 d-flex justify-content-center flex-column text-center">
+                                            <div>
+                                                <img src="{{asset('assets/qrcode_G1.png')}}" class="img-fluid" alt="" width="120px">
+                                                <p class="text-secondary fw-bold mt-2">Serial: 8001cd3a8f41</p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+            
+                                <div class="fs-6 text-secondary text-center titulo ">
+                                    <p class="">GOBIERNO BOLIVARIANO DEL ESTADO ARAGUA</p>
+                                </div>
+                            
+                                <div class="text-end">
+                                    <a href="#" data-bs-toggle="modal" data-bs-target="#modal_papel_dañado">¿Papel dañado?</a>
+                                </div>
+                            </div> -->
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- TIMBRE MOVIL -->
+            <div class="tab-pane fade" id="pills-tmovil" role="tabpanel" aria-labelledby="pills-tmovil-tab" tabindex="0">
+                <div class="row">
+                    <div class="col-sm-7">
+                        <!-- DATOS CONTRIBUYENTE -->
+                        <div class="" style="font-size:13px">
+                            <div class="d-flex justify-content-center">
+                                <div class="row w-100">
+                                    <h5 class="titulo fw-bold text-navy my-3">Contribuyente | <span class="text-secondary fs-6">Datos</span></h5>
+                                    <div class="col-sm-6">
+                                        <label class="form-label" for="">C.I / R.I.F</label><span class="text-danger">*</span>
+                                        <div class="row">
+                                            <div class="col-4">
+                                                <select class="form-select form-select-sm" aria-label="Small select example">
+                                                    <option value="1">V</option>
+                                                    <option value="2">E</option>
+                                                    <option value="3">J</option>
+                                                    <option value="3">G</option>
+                                                </select>
+                                            </div>
+                                            <div class="col-1">-</div>
+                                            <div class="col-7">
+                                                <input type="" id="" class="form-control form-control-sm" name="" required>
+                                                <p class="text-end text-muted mb-0" style="font-size:12px;">Ejemplo: 7521004</p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-sm-6">
+                                        <label class="form-label" for="">Nombre / Razon Social</label><span class="text-danger">*</span>
+                                        <input type="" id="" class="form-control form-control-sm" name="" disabled required>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="d-flex justify-content-center mt-3 mb-3 d-none">
+                                <button type="button" class="btn btn-secondary btn-sm me-3" id="">Cancelar</button>
+                                <button type="submit" class="btn btn-success btn-sm" id="">Registrar</button>
+                            </div>
+                        </div>
+
+                        <!-- DATOS TRAMITE -->
+                        <div class="" style="font-size:13px">
+                            <div class="d-flex justify-content-center">
+                                <div class="row w-100">
+                                    <h5 class="titulo fw-bold text-navy my-3">Tramite | <span class="text-secondary fs-6">Datos</span></h5>
+                                    <div class="col-sm-6">
+                                        <label class="form-label" for="">Ente</label><span class="text-danger">*</span>
+                                        <select class="form-select form-select-sm" aria-label="Small select example" disabled>
+                                            <option value="">Registro</option>
+                                            <option value="">Alcaldía</option>
+                                            <option value="">Bomberos</option>
+                                        </select>
+                                    </div>
+                                    <div class="col-sm-6">
+                                        <label class="form-label" for="">Tramite</label><span class="text-danger">*</span>
+                                        <select class="form-select form-select-sm" aria-label="Small select example" disabled>
+                                            <option value="">Título Universitario</option>
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- TOTAL UCD Y BS -->
+                        <div class="" style="font-size:13px">
+                            <div class="d-flex justify-content-center">
+                                <div class="row w-100">
+                                    <h5 class="titulo fw-bold text-navy my-3">Valor | <span class="text-secondary fs-6">Timbre Fiscal</span></h5>
+                                    <div class="col-sm-6">
+                                        <label class="form-label" for="">UCD</label><span class="text-danger">*</span>
+                                        <input type="" id="" class="form-control form-control-sm" name="" disabled required>
+                                    </div>
+                                    <div class="col-sm-6">
+                                        <label class="form-label" for="">Monto Bs.</label><span class="text-danger">*</span>
+                                        <input type="" id="" class="form-control form-control-sm" name="" disabled required>
+                                        <p class="text-end text-muted fw-bold mb-0" style="font-size:12px;"><span class="text-success">Valor del UCD hoy:</span> 40.35 Bs</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- PAGO -->
+                        <div class="" style="font-size:13px">
+                            <div class="d-flex justify-content-center">
+                                <div class="row w-100">
+                                    <h5 class="titulo fw-bold text-navy my-3">Cancelación | <span class="text-secondary fs-6">Timbre Fiscal</span></h5>
+                                    <div class="col-sm-6">
+                                        <label class="form-label" for="">Metodo de Pago</label><span class="text-danger">*</span>
+                                        <select class="form-select form-select-sm" aria-label="Small select example" disabled>
+                                            <option value="">Punto</option>
+                                            <option value="">Efectivo Bs.</option>
+                                            <option value="">Pago móvil</option>
+                                        </select>
+                                    </div>
+                                    <div class="col-sm-6">
+                                        <label class="form-label" for="">No. Comprobante</label><span class="text-danger">*</span>
+                                        <input type="" id="" class="form-control form-control-sm" name="" disabled required>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+
+                        <div class="d-flex justify-content-center mt-3 mb-3">
+                            <button type="button" class="btn btn-secondary btn-sm me-3" id="">Cancelar</button>
+                            <button type="submit" class="btn btn-success btn-sm" id="">Realizar Venta</button>
+                        </div>    
+                    </div>
+                    <!-- ******************************* -->
+                    <div class="col-sm-5 pb-3 px-3">
+                        <div class="">
+                            <!-- logo seta - no. control(correlativo) -->
+                            <div class="d-flex justify-content-between align-items-center my-3">
+                                <div>
+                                    <img src="{{asset('assets/logo_seta.png')}}" class="img-fluid" alt="" width="120px">
+                                </div>
+                                <div>
+                                    <span class="text-danger fw-bold fs-4 text-end" id="">B-3004051X</span>
+                                </div>
+                            </div>
+
+                            <!-- titulo venta -->
+                            <div class="text-center mb-3 fw-bold titulo">
+                                <div class="my-0 py-0 TEXT">Venta Timbre Fiscal</div>
+                                <div class="my-0 py-0 text-navy fs-5">TIMBRE MOVIL - ESTAMPILLA</div>
+                            </div>
+            
+                            <!-- datos de la venta -->
+                            <div style="font-size:14px">
+                                <div class="row">
+                                    <div class="col-6">
+                                        <p class="fw-bold my-0 py-0">
+                                            <span class="text-navy">Contribuyente:</span>
+                                            <span class="text-muted">Sujeto Prueba</span>
+                                        </p>
+                                        <p class="fw-bold my-0 py-0">
+                                            <span class="text-navy">C.I/R.I.F:</span>
+                                            <span class="text-muted">V00000001</span>
+                                        </p>
+                                    </div>
+                                    <div class="col-6 text-end">
+                                        <p class="fw-bold my-0 py-0">
+                                            <span class="text-navy">Emisión:</span>
+                                            <span class="text-muted">2024-05-10</span>
+                                        </p>
+                                        <p class="fw-bold my-0 py-0">
+                                            <span class="text-navy">No. Planilla:</span>
+                                            <span class="text-muted">12224103</span>
+                                        </p>
+                                    </div>
+                                </div>
+            
+                                <div class="my-3 fs-5">
+                                    <p class="text-muted fw-bold">
+                                        Monto Bs.: 4.035,00
+                                    </p>
+                                </div>
+            
+                                <div class="">
+                                    <div class="row">
+                                        <div class="col-6 d-flex justify-content-center align-items-center text-center">
+                                            <p class="fs-1 titulo">100 UCD</p>
+                                        </div>
+                                        <div class="col-6 d-flex justify-content-center flex-column text-center">
+                                            <div>
+                                                <img src="{{asset('assets/qrcode_G1.png')}}" class="img-fluid" alt="" width="120px">
+                                                <p class="text-secondary fw-bold mt-2">Serial: 5GF11S00Ch441</p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+            
+                                <div class="fs-6 text-secondary text-center titulo ">
+                                    <p class="">GOBIERNO BOLIVARIANO DEL ESTADO ARAGUA</p>
+                                </div>
+                            
+                                <div class="text-end">
+                                    <a href="#">¿Papel Trabado?</a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>        
+    </div>
+    
+    
+<!-- *********************************************************************************************************************** -->
+    <div class="modal fade" id="modal_papel_dañado" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content" id="content_ver_solicitud">
+                <div class="modal-header p-2 pt-3 d-flex justify-content-center">
+                    <div class="text-center">
+                    <i class='bx bx-error-circle fs-2 text-danger me-2'></i>
+                        <h1 class="modal-title fs-5 fw-bold text-navy">Papel Dañado</h1>
+                    </div>
+                </div>
+                <div class="modal-body px-4" style="font-size:13px">
+                    <div class="my-2">
+                        <label class="form-label" for="">Motivo: </label><span class="text-danger">*</span>
+                        <input type="" id="" class="form-control form-control-sm" name=""  required>
+                    </div>
+                    <p class="text-muted text-end"><span style="color:red">*</span> Campos requeridos.</p>
+                    
+                    <table class="table my-4">
+                        <tr>
+                            <th>Correlativo Dañado:</th>
+                            <td><span class="text-danger fw-bold">A-8001002</span></td>
+                        </tr>
+                        <tr>
+                            <th>Correlativo Nuevo:</th>
+                            <td><span class="text-danger fw-bold">A-8001003</span></td>
+                        </tr>
+                    </table>
+
+                    
+                    <div class="d-flex justify-content-center mt-3 mb-3">
+                        <button type="button" class="btn btn-secondary btn-sm me-3" id="" >Cancelar</button>
+                        <button type="submit" class="btn btn-success btn-sm" id="" >Aceptar</button>
+                    </div> 
+                </div>
+            </div>  <!-- cierra modal-content -->
+        </div>  <!-- cierra modal-dialog -->
+    </div>
+<!-- *********************************************************************************************************************** -->
+
+@stop
+
+
+
+
+
+@section('css')
+    
+    <link rel="stylesheet" href="{{asset('assets/style.css')}}">
+    <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
+@stop
+
+@section('js')
+    <script src="{{ asset('jss/jquery-3.5.1.js') }}" ></script>
+    <script src="{{ asset('jss/toastr.js') }}" integrity="sha512-VEd+nq25CkR676O+pLBnDW09R7VQX9Mdiij052gVCp5yVH3jGtH70Ho/UUv4mJDsEdTvqRCFZg0NKGiojGnUCw==" ></script>
+
+
+    <script type="text/javascript">
+        $(document).ready(function () {
+           
+            
+
+        });
+    </script>
+  
+@stop
