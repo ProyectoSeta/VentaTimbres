@@ -39,38 +39,38 @@
             <!-- FORMA 14 -->
             <div class="tab-pane fade show active " id="pills-f14" role="tabpanel" aria-labelledby="pills-f14-tab" tabindex="0">
                 <div class="row">
-                    <div class="col-sm-7" id="form_venta_f14">
+                    <div class="col-xl-7" id="form_venta_f14">
                         <!-- DATOS CONTRIBUYENTE -->
                         <div class="" style="font-size:13px">
                             <div class="d-flex justify-content-center">
                                 <div class="row w-100">
                                     <h5 class="titulo fw-bold text-navy my-3">Contribuyente | <span class="text-secondary fs-6">Datos</span></h5>
                                     <div class="col-sm-6">
-                                        <label class="form-label" for="">C.I / R.I.F</label><span class="text-danger">*</span>
+                                        <label class="form-label" for="identidad_condicion">C.I / R.I.F</label><span class="text-danger">*</span>
                                         <div class="row">
                                             <div class="col-4">
-                                                <select class="form-select form-select-sm" aria-label="Small select example" >
-                                                    <option value="1">V</option>
-                                                    <option value="2">E</option>
-                                                    <option value="3">J</option>
-                                                    <option value="3">G</option>
+                                                <select class="form-select form-select-sm" id="identidad_condicion" aria-label="Small select example" name="identidad_condicion">
+                                                    <option value="V">V</option>
+                                                    <option value="E">E</option>
+                                                    <option value="J">J</option>
+                                                    <option value="G">G</option>
                                                 </select>
                                             </div>
                                             <div class="col-1">-</div>
                                             <div class="col-7">
-                                                <input type="" id="" class="form-control form-control-sm"  name="" required >
+                                                <input type="number" id="identidad_nro" class="form-control form-control-sm" name="identidad_nro" required >
                                                 <p class="text-end text-muted mb-0" style="font-size:12px;">Ejemplo: 7521004</p>
                                             </div>
                                         </div>
                                     </div>
                                     <div class="col-sm-6">
-                                        <label class="form-label" for="">Nombre / Razon Social</label><span class="text-danger">*</span>
-                                        <input type="" id="" class="form-control form-control-sm" name="" disabled required>
+                                        <label class="form-label" for="nombre">Nombre / Razon Social</label><span class="text-danger">*</span>
+                                        <input type="text" id="nombre" class="form-control form-control-sm" name="nombre" disabled required>
                                     </div>
                                 </div>
                             </div>
 
-                            <div class="d-flex justify-content-center mt-3 mb-3 d-none">
+                            <div class="d-flex justify-content-center mt-3 mb-3 d-none" id="btns_add_contribuyente">
                                 <button type="button" class="btn btn-secondary btn-sm me-3" id="">Cancelar</button>
                                 <button type="submit" class="btn btn-success btn-sm" id="">Registrar</button>
                             </div>
@@ -78,25 +78,41 @@
 
                         <!-- DATOS TRAMITE -->
                         <div class="" style="font-size:13px">
-                            <div class="d-flex justify-content-center">
-                                <div class="row w-100">
-                                    <h5 class="titulo fw-bold text-navy my-3">Tramite | <span class="text-secondary fs-6">Datos</span></h5>
-                                    <div class="col-sm-6">
-                                        <label class="form-label" for="">Ente</label><span class="text-danger">*</span>
-                                        <select class="form-select form-select-sm" aria-label="Small select example" disabled>
-                                            <option value="">Registro</option>
-                                            <option value="">Alcaldía</option>
-                                            <option value="">Bomberos</option>
-                                        </select>
-                                    </div>
-                                    <div class="col-sm-6">
-                                        <label class="form-label" for="">Tramite</label><span class="text-danger">*</span>
-                                        <select class="form-select form-select-sm" aria-label="Small select example" disabled>
-                                            <option value="">Registro de Título Universitario</option>
-                                        </select>
+                            <div class="d-flex flex-column tramites">
+                                <div class="d-flex justify-content-center">
+                                    <div class="row w-100">
+                                        <h5 class="titulo fw-bold text-navy my-3">Tramite | <span class="text-secondary fs-6">Datos</span></h5>
+                                        <div class="col-sm-4">
+                                            <label class="form-label" for="ente">Ente</label><span class="text-danger">*</span>
+                                            <select class="form-select form-select-sm" aria-label="Small select example" id="ente" name="ente" disabled>
+                                                @foreach ($entes as $ente)
+                                                    <option value="{{$ente->id_ente}}">{{$ente->ente}}</option>
+                                                @endforeach
+                                                
+                                            </select>
+                                        </div>
+                                        <div class="col-sm-4">
+                                            <label class="form-label" for="tramite">Tramite</label><span class="text-danger">*</span>
+                                            <select class="form-select form-select-sm" aria-label="Small select example" id="tramite" name="tramite" disabled>
+                                                <option value="">--------- Seleccione el tramite ---------</option>
+                                                @foreach ($tramites as $tramite)
+                                                    <option value="{{$tramite->id_tramite}}">{{$tramite->tramite}}</option>
+                                                @endforeach
+                                            </select>
+                                        </div>
+                                        <div class="col-sm-2">
+                                            <label class="form-label" for="">UCD</label><span class="text-danger">*</span>
+                                            <input type="text" id="" class="form-control form-control-sm" name="" disabled required>
+                                        </div>
+                                        <div class="col-sm-2">
+                                            <a  href="javascript:void(0);" class="btn add_button">
+                                                <i class="bx bx-plus fs-4" style="color:#038ae4"></i>
+                                            </a>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
+                            
                         </div>
 
                         <!-- TOTAL UCD Y BS -->
@@ -105,13 +121,13 @@
                                 <div class="row w-100">
                                     <h5 class="titulo fw-bold text-navy my-3">Valor | <span class="text-secondary fs-6">Timbre Fiscal</span></h5>
                                     <div class="col-sm-6">
-                                        <label class="form-label" for="">UCD</label><span class="text-danger">*</span>
-                                        <input type="" id="" class="form-control form-control-sm" name=""  disabled required>
+                                        <label class="form-label" for="ucd">UCD</label><span class="text-danger">*</span>
+                                        <input type="" id="ucd" class="form-control form-control-sm" name="ucd"  disabled required>
                                     </div>
                                     <div class="col-sm-6">
-                                        <label class="form-label" for="">Monto Bs.</label><span class="text-danger">*</span>
-                                        <input type="" id="" class="form-control form-control-sm" name=""  disabled required>
-                                        <p class="text-end text-muted fw-bold mb-0" style="font-size:12px;"><span class="text-success">Valor del UCD hoy:</span> 40.35 Bs</p>
+                                        <label class="form-label" for="bolivares">Monto Bs.</label><span class="text-danger">*</span>
+                                        <input type="" id="bolivares" class="form-control form-control-sm" name="bolivares"  disabled required>
+                                        <p class="text-end text-muted fw-bold mb-0" style="font-size:12px;"><span class="text-success">Valor del UCD hoy:</span> <span id="hoy_ucd">40.35</span> Bs</p>
                                     </div>
                                 </div>
                             </div>
@@ -119,25 +135,37 @@
 
                         <!-- PAGO -->
                         <div class="" style="font-size:13px">
-                            <div class="d-flex justify-content-center">
-                                <div class="row w-100">
-                                    <h5 class="titulo fw-bold text-navy my-3">Pago | <span class="text-secondary fs-6">Timbre Fiscal</span></h5>
-                                    <div class="col-sm-6">
-                                        <label class="form-label" for="">Metodo de Pago</label><span class="text-danger">*</span>
-                                        <select class="form-select form-select-sm" aria-label="Small select example" disabled>
-                                            <option value="">Punto</option>
-                                            <option value="">Efectivo Bs.</option>
-                                        </select>
-                                    </div>
-                                    <div class="col-sm-6">
-                                        <label class="form-label" for="">No. Comprobante</label><span class="text-danger">*</span>
-                                        <input type="" id="" class="form-control form-control-sm" name="" disabled required>
+                            <div class="d-flex flex-column pago_timbre">
+                                <div class="d-flex justify-content-center" >
+                                    <div class="row w-100">
+                                        <h5 class="titulo fw-bold text-navy my-3">Pago | <span class="text-secondary fs-6">Timbre Fiscal</span></h5>
+                                        <div class="col-sm-4">
+                                            <label class="form-label" for="metodo">Metodo de Pago</label><span class="text-danger">*</span>
+                                            <select class="form-select form-select-sm metodo" aria-label="Small select example" name="metodo[]" disabled>
+                                                <option value="">Punto</option>
+                                                <option value="">Efectivo Bs.</option>
+                                            </select>
+                                        </div>
+                                        <div class="col-sm-3">
+                                            <label class="form-label" for="comprobante">No. Comprobante</label><span class="text-danger">*</span>
+                                            <input type="" id="" class="form-control form-control-sm comprobante" name="comprobante[]" disabled required>
+                                        </div>
+                                        <div class="col-sm-3">
+                                            <label class="form-label" for="debitado">Monto Debitado </label><span class="text-danger">*</span>
+                                            <input type="" id="" class="form-control form-control-sm debitado" name="debitado[]" disabled required>
+                                        </div>
+                                        <div class="col-sm-2 pt-4">
+                                            <a  href="javascript:void(0);" class="btn add_button">
+                                                <i class="bx bx-plus fs-4" style="color:#038ae4"></i>
+                                            </a>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
+                            
                         </div>
 
-                        <p class="text-muted text-end fw-bold" style="font-size:13px"><span style="color:red">*</span> Campos requeridos.</p>
+                        <p class="text-muted text-end fw-bold mt-3" style="font-size:13px"><span style="color:red">*</span> Campos requeridos.</p>
 
                         <div class="d-flex justify-content-center mt-3 mb-3">
                             <button type="button" class="btn btn-secondary btn-sm me-3" id="" disabled>Cancelar</button>
@@ -145,7 +173,7 @@
                         </div>    
                     </div>
                     <!-- ******************************* -->
-                    <div class="col-sm-5 pb-3 px-3">
+                    <div class="col-xl-5 pb-3 px-3">
                         <div class="">
                         
                             <!-- logo seta - no. control(correlativo) -->
@@ -467,12 +495,119 @@
 
 @section('js')
     <script src="{{ asset('jss/jquery-3.5.1.js') }}" ></script>
+    <script src="{{ asset('jss/datatable.min.js') }}" defer ></script>
+    <script src="{{ asset('jss/datatable.bootstrap.js') }}" ></script>
     <script src="{{ asset('jss/toastr.js') }}" integrity="sha512-VEd+nq25CkR676O+pLBnDW09R7VQX9Mdiij052gVCp5yVH3jGtH70Ho/UUv4mJDsEdTvqRCFZg0NKGiojGnUCw==" ></script>
-
+   
 
     <script type="text/javascript">
         $(document).ready(function () {
-           
+            ////////AGREGAR CAMPOS A OTRO(S) MINERAL
+            var maxField = 2; //Input fields increment limitation
+            var addButton = $('.add_button'); //Add button selector
+            var wrapper = $('.pago_timbre'); //Input field wrapper
+            var fieldHTML = '<div class="d-flex justify-content-center mt-2" >'+
+                                '<div class="row w-100">'+
+                                    '<div class="col-sm-4">'+
+                                        '<label class="form-label" for="">Metodo de Pago</label><span class="text-danger">*</span>'+
+                                        '<select class="form-select form-select-sm metodo" aria-label="Small select example" name="metodo[]" >'+
+                                            '<option value="">Punto</option>'+
+                                            '<option value="">Efectivo Bs.</option>'+
+                                        '</select>'+
+                                    '</div>'+
+                                    '<div class="col-sm-3">'+
+                                        '<label class="form-label" for="">No. Comprobante</label><span class="text-danger">*</span>'+
+                                        '<input type="" id="" class="form-control form-control-sm comprobante" name="comprobante[]"  required>'+
+                                    '</div>'+
+                                    '<div class="col-sm-3">'+
+                                        '<label class="form-label" for="">Monto Debitado </label><span class="text-danger">*</span>'+
+                                        '<input type="" id="" class="form-control form-control-sm debitado" name="debitado[]"  required>'+
+                                    '</div>'+
+                                    '<div class="col-sm-2  pt-4">'+
+                                        '<a  href="javascript:void(0);" class="btn remove_button" >'+
+                                            '<i class="bx bx-x fs-4"></i>'+
+                                        '</a>'+
+                                    '</div>'+
+                                '</div>'+
+                            '</div>';
+                                //New input field html 
+            var x = 1; //Initial field counter is 1
+            $(document).on('click', '.add_button', function(e){ //Once add button is clicked
+                if(x < maxField){ //Check maximum number of input fields
+                    x++; //Increment field counter
+                    $('.pago_timbre').append(fieldHTML); // Add field html
+                }
+            });
+            $(document).on('click', '.remove_button', function(e){ //Once remove button is clicked
+                e.preventDefault();
+                $(this).parent('div').parent('div').remove(); //Remove field html
+                x--; //Decrement field counter
+            });
+
+
+            //////////////////////////// BUSCAR CONTRIBUYENTE
+            $(document).on('keyup','#identidad_nro', function(e) {
+                e.preventDefault(); 
+                var value = $(this).val();
+                var condicion = $('#identidad_condicion').val();
+                $.ajax({
+                    headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') },
+                    type: 'POST',
+                    url: '{{route("venta.search") }}',
+                    data: {value:value,condicion:condicion},
+                    success: function(response) {
+                        // console.log(response);               
+                        if (response.success) {
+                            $('#btns_add_contribuyente').addClass('d-none');
+                            $('#nombre').val(response.nombre);
+
+                            $('#ente').attr('disabled', false);
+                            $('#tramite').attr('disabled', false);
+
+                            $('.metodo').attr('disabled', false);
+                            $('.comprobante').attr('disabled', false);
+                            $('.debitado').attr('disabled', false);
+
+                        }else{
+                            $('#btns_add_contribuyente').removeClass('d-none');
+                            $('#nombre').val('');
+                            
+                            $('#ente').attr('disabled', true);
+                            $('#tramite').attr('disabled', true);
+
+                            $('.metodo').attr('disabled', true);
+                            $('.comprobante').attr('disabled', true);
+                            $('.debito').attr('disabled', true);
+                        }
+                    },
+                    error: function() {
+                    }
+                });
+                // console.log(value);
+               
+            });
+
+            //////////////////////////// BUSCAR CONTRIBUYENTE
+            $(document).on('change','#tramite', function(e) {
+                e.preventDefault(); 
+                var value = $(this).val();
+
+                $.ajax({
+                    headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') },
+                    type: 'POST',
+                    url: '{{route("venta.tramite") }}',
+                    data: {value:value},
+                    success: function(response) {
+                        console.log(response);               
+                        $('#ucd').val(response.ucd);
+                        $('#bolivares').val(response.bolivares);
+                    },
+                    error: function() {
+                    }
+                });
+                console.log(value);
+               
+            });
             
 
         });

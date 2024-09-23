@@ -51,47 +51,30 @@
     padding-top: 0;
 }
 
-
-.custom-shape-divider-top-1724784650 {
-    /* position: absolute; */
-    top: 0;
-    left: 0;
-    width: 100%;
-    overflow: hidden;
-    line-height: 0;
+/* ****efecto maquina de escribir LOGIN***** */
+#container-efect {
+	margin: auto;
+	display: table;
 }
 
-.custom-shape-divider-top-1724784650 svg {
-    position: relative;
-    display: block;
-    width: calc(118% + 1.3px);
-    height: 200px;
+#container-efect { 
+	position: relative; 
+	float: left;
+	/* background: tomato; */
+	/* color: #fff; */
+	/* font-size: 2.5em; */
 }
 
-.custom-shape-divider-top-1724784650 .shape-fill {
-    fill: #ffffff17;
+#container-efect span {
+    position:absolute;
+    right:0;
+    width:0;
+    background: #f8fafc;
+    border-left: 1px solid #000;
+    animation: escribir 5s steps(30)  alternate;
 }
 
-
-
-
-
-.custom-shape-divider-bottom-1724955098 {
-    position: absolute;
-    bottom: 0;
-    left: 0;
-    width: 100%;
-    overflow: hidden;
-    line-height: 0;
-}
-
-.custom-shape-divider-bottom-1724955098 svg {
-    position: relative;
-    display: block;
-    width: calc(100% + 1.3px);
-    height: 154px;
-}
-
-.custom-shape-divider-bottom-1724955098 .shape-fill {
-    fill: #FFFFFF;
+@keyframes escribir {
+    from { width: 100% }
+    to { width:0 }
 }

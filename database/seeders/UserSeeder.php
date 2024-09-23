@@ -21,5 +21,21 @@ class UserSeeder extends Seeder
             'type' => 2,
             'key_sujeto' => 1,
         ]);
+
+        DB::table('contribuyentes')->insert([
+            'identidad_condicion' => 'V',
+            'identidad_nro' =>'123456',
+            'nombre_razon' => 'Prueba Uno'
+        ]);
+
+        $pass = 'Hola45.';
+        DB::table('users')->insert([
+            'email' => 'prueba@gmail.com',
+            'password' => Hash::make($pass),
+            'type' => 1,
+            'key_sujeto' => 2,
+        ]);
+
+       
     }
 }
