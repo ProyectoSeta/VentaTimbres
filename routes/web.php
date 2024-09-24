@@ -29,6 +29,8 @@ Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name
 
 Route::get('/venta', [App\Http\Controllers\VentaController::class, 'index'])->name('venta');
 Route::post('/search', [App\Http\Controllers\VentaController::class, 'search'])->name('venta.search');
-Route::post('/tramite', [App\Http\Controllers\VentaController::class, 'tramite'])->name('venta.tramite');
+Route::post('/ucd_tramite', [App\Http\Controllers\VentaController::class, 'ucd_tramite'])->name('venta.ucd_tramite');
+Route::post('/tramites', [App\Http\Controllers\VentaController::class, 'tramites'])->name('venta.tramites');
+Route::post('/total', [App\Http\Controllers\VentaController::class, 'total'])->name('venta.total');
 
 

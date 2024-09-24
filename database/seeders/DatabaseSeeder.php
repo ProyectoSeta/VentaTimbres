@@ -18,7 +18,7 @@ class DatabaseSeeder extends Seeder
         $this->call(UserSeeder::class);
         $this->call(EntesSeeder::class);
         $this->call(TramitesSeeder::class);
-        
+        $this->call(UcdSeeder::class);
         
         // \App\Models\User::factory(10)->create();
 
