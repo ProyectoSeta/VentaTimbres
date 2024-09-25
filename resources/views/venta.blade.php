@@ -4,36 +4,42 @@
 
 
 @section('content')
-    <div class="mx-5">
-        <div class="d-flex justify-content-center mt-3 pb-3" style="font-size:14px">
-            <ul class="nav nav-tabs titulo px-3 w-100 d-flex justify-content-center" id="pills-tab" role="tablist">
-                <li class="nav-item" role="presentation">
+    <div class="mx-3">
+        <div class="d-flex justify-content-center align-items-center mt-3 pb-3" style="font-size:14px">
+            <ul class="nav nav-pills titulo px-3 w-100 d-flex" id="pills-tab" role="tablist">                 
+                <li class="nav-item me-3" role="presentation">
                     <a class="nav-link active" id="pills-f14-tab" data-bs-toggle="pill" data-bs-target="#pills-f14" type="button" role="tab" aria-controls="pills-f14" aria-selected="true">
-                        <div class="d-flex gap-1 py-1 pe-3">
-                            <div class="d-flex align-items-end flex-between-center">
-                                <i class='bx bx-receipt fs-2'></i>
-                            </div>
+                        <div class="d-flex gap-1 pe-2">
                             <div class="ms-2">
-                                <h6 class="mb-1 text-700 text-nowrap text-secondary" style="font-size:13px">Timbre</h6>
-                                <h6 class="mb-0 lh-1 fw-bold text-secondary-emphasis">Forma 14</h6>
+                                <h6 class="mb-1 text-700 text-nowrap" style="font-size:13px">Timbre</h6>
+                                <h6 class="mb-0 lh-1 fw-bold">Forma 14</h6>
                             </div>
                         </div>
                     </a>
                 </li>
                 <li class="nav-item" role="presentation">
                     <a class="nav-link" id="pills-tmovil-tab" data-bs-toggle="pill" data-bs-target="#pills-tmovil" type="button" role="tab" aria-controls="pills-tmovil" aria-selected="false">
-                        <div class="d-flex gap-1 py-1 pe-3">
-                            <div class="d-flex align-items-end flex-between-center">
-                                <i class='bx bx-sticker fs-2'></i>
-                            </div>
+                        <div class="d-flex gap-1 pe-2">
                             <div class="ms-2">
-                                <h6 class="mb-1 text-700 text-nowrap text-secondary" style="font-size:13px">Timbre</h6>
-                                <h6 class="mb-0 lh-1 fw-bold text-secondary-emphasis">Movil</h6>
+                                <h6 class="mb-1 text-700 text-nowrap " style="font-size:13px">Timbre</h6>
+                                <h6 class="mb-0 lh-1 fw-bold ">Movil</h6>
                             </div>
                         </div>
                     </a>
                 </li>
             </ul>
+
+            <!-- UCD HOY -->
+            <div class="w-50">
+                <div class="d-flex bg-navy rounded-4">
+                    <div class="bg-primary rounded-start-4 py-2 px-3 fs-6 fw-bold">
+                        <span>UCD Hoy   </span>
+                    </div>
+                    <div class="py-2 px-3 fs-6 fw-bold text-end">
+                        <span>40.93 bs. (EUR)</span>
+                    </div> 
+                </div>
+            </div>
         </div>
 
 
@@ -44,7 +50,7 @@
             <!-- FORMA 14 -->
             <div class="tab-pane fade show active " id="pills-f14" role="tabpanel" aria-labelledby="pills-f14-tab" tabindex="0">
                 <div class="row">
-                    <div class="col-xl-7" id="form_venta_f14">
+                    <div class="col-xl-8 pe-5" id="form_venta_f14">
                         <form action="">
                             <!-- *************** DATOS CONTRIBUYENTE ******************-->
                             <div class="mb-2" style="font-size:13px">
@@ -77,8 +83,8 @@
                                 </div>
 
                                 <div class="d-flex justify-content-center mt-3 mb-3 d-none" id="btns_add_contribuyente">
-                                    <button type="button" class="btn btn-secondary btn-sm me-3" id="">Cancelar</button>
-                                    <button type="submit" class="btn btn-success btn-sm" id="">Registrar</button>
+                                    <button type="button" class="btn btn-secondary btn-sm me-3" id="btn_cancel_add_c">Cancelar</button>
+                                    <button type="button" class="btn btn-success btn-sm" id="btn_add_contribuyente">Registrar</button>
                                 </div>
                             </div>
 
@@ -90,16 +96,16 @@
                                             <h5 class="titulo fw-bold text-navy my-3">Tramite | <span class="text-secondary fs-6">Datos</span></h5>
                                             <div class="col-sm-4">
                                                 <label class="form-label" for="ente">Ente</label><span class="text-danger">*</span>
-                                                <select class="form-select form-select-sm ente" unidad="1" name="ente[]" disabled>
+                                                <select class="form-select form-select-sm ente" name="ente" disabled>
                                                     @foreach ($entes as $ente)
                                                         <option value="{{$ente->id_ente}}">{{$ente->ente}}</option>
                                                     @endforeach
                                                     
                                                 </select>
                                             </div>
-                                            <div class="col-sm-5">
+                                            <div class="col-sm-6">
                                                 <label class="form-label" for="tramite">Tramite</label><span class="text-danger">*</span>
-                                                <select class="form-select form-select-sm tramite" name="tramite[]" id="tramites_1" unidad="1" disabled>
+                                                <select class="form-select form-select-sm tramite" name="tramite" id="tramite" disabled>
                                                     <option value="">Seleccione el tramite </option>
                                                         @foreach ($tramites as $tramite)
                                                             <option value="{{$tramite->id_tramite}}">{{$tramite->tramite}}</option>
@@ -108,12 +114,7 @@
                                             </div>
                                             <div class="col-sm-2">
                                                 <label class="form-label" for="ucd_tramite">UCD</label><span class="text-danger">*</span>
-                                                <input type="text" class="form-control form-control-sm ucd_tramite" id="ucd_tramite_1" name="ucd_tramite[]" disabled required>
-                                            </div>
-                                            <div class="col-sm-1 mt-4">
-                                                <a  href="javascript:void(0);" class="btn add_button_tramite disabled border-0" role="button">
-                                                    <i class="bx bx-plus fs-4" style="color:#038ae4"></i>
-                                                </a>
+                                                <input type="text" class="form-control form-control-sm ucd_tramite" id="ucd_tramite" name="ucd_tramite" disabled required>
                                             </div>
                                         </div>
                                     </div>
@@ -121,23 +122,6 @@
                                 
                             </div>
 
-                            <!-- ***************** TOTAL A PAGAR: UCD Y BS ******************** -->
-                            <div class="mb-2" style="font-size:13px">
-                                <div class="d-flex justify-content-center">
-                                    <div class="row w-100">
-                                        <h5 class="titulo fw-bold text-navy my-3">Total | <span class="text-secondary fs-6">UCD - Bs.</span></h5>
-                                        <div class="col-sm-6">
-                                            <label class="form-label" for="ucd">UCD</label><span class="text-danger">*</span>
-                                            <input type="" id="ucd" class="form-control form-control-sm" name="ucd"  disabled required>
-                                        </div>
-                                        <div class="col-sm-6">
-                                            <label class="form-label" for="bolivares">Monto Bs.</label><span class="text-danger">*</span>
-                                            <input type="" id="bolivares" class="form-control form-control-sm" name="bolivares"  disabled required>
-                                            <p class="text-end text-muted fw-bold mb-0" style="font-size:14px;"><span class="text-success">Valor del UCD hoy:</span> <span id="hoy_ucd">{{$ucd->valor}}</span> Bs</p>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
 
                             <!-- ************************ PAGO *****************************-->
                             <div class="mb-2" style="font-size:13px">
@@ -170,6 +154,7 @@
                                 </div>
                                 
                             </div>
+                            
 
                             <p class="text-muted text-end fw-bold mt-3" style="font-size:13px"><span style="color:red">*</span> Campos requeridos.</p>
 
@@ -180,81 +165,58 @@
                         </form>
                     </div>
                     <!-- ******************************* -->
-                    <div class="col-xl-5 pb-3 px-3">
+                    <div class="col-xl-4 pb-3 px-3">
                         <div class="">
-                        
-                            <!-- logo seta - no. control(correlativo) -->
-                            <div class="d-flex justify-content-between align-items-center my-3">
-                                <div>
-                                    <img src="{{asset('assets/logo_seta.png')}}" class="img-fluid" alt="" width="120px">
-                                </div>
-                                <div>
-                                    <span class="text-danger fw-bold fs-4 text-end" id="">A-8001002</span>
-                                </div>
-                            </div>
-
-                            <div class="text-center mb-3 fw-bold titulo">
-                                <div class="my-0 py-0 TEXT">Venta Timbre Fiscal</div>
-                                <div class="my-0 py-0 text-navy fs-5">FORMA 14-TFE</div>
-                            </div>
-
-                            <div class="d-flex justify-content-center">
-                                <img src="{{asset('assets/timbre.png')}}" class="img-fluid mt-3" alt="" width="180px">
-                            </div>
-                                
-                            <!-- datos de la venta -->
-                            <!-- <div style="font-size:14px">
-                                <div class="row">
-                                    <div class="col-6">
-                                        <p class="fw-bold my-0 py-0">
-                                            <span class="text-navy">Contribuyente:</span>
-                                            <span class="text-muted">Marina Rodríguez</span>
+                            <h5 class="titulo fw-bold text-success fs-4 mt-4 mb-3">Total a Pagar</h5>
+                            <div class="d-flex flex-column">
+                                <div class="bg-light rounded-3 px-3 py-2 mb-2">
+                                    <div class="d-flex justify-content-between align-items-center">
+                                        <p class="d-flex flex-column titulo mb-0">
+                                            <span class="fs-3 fw-bold text-navy">UCD</span>
+                                            <span class="fw-bold text-muted" style="font-size:13px">Unidad de cuenta dinamica</span>
                                         </p>
-                                        <p class="fw-bold my-0 py-0">
-                                            <span class="text-navy">C.I/R.I.F:</span>
-                                            <span class="text-muted">V8456201</span>
-                                        </p>
-                                    </div>
-                                    <div class="col-6 text-end">
-                                        <p class="fw-bold my-0 py-0">
-                                            <span class="text-navy">Emisión:</span>
-                                            <span class="text-muted">2024-05-10</span>
-                                        </p>
-                                        <p class="fw-bold my-0 py-0">
-                                            <span class="text-navy">No. Planilla:</span>
-                                            <span class="text-muted">999904520</span>
-                                        </p>
+                                        <span class="fs-1 text-navy fw-bold" id="ucd">0 </span>
                                     </div>
                                 </div>
-            
-                                <div class="my-3 fs-5">
-                                    <p class="text-muted fw-bold">
-                                        Monto Bs.: 80.7
-                                    </p>
-                                </div>
-            
-                                <div class="">
-                                    <div class="row">
-                                        <div class="col-6 d-flex justify-content-center align-items-center text-center">
-                                            <p class="fs-1 titulo">2 UCD</p>
-                                        </div>
-                                        <div class="col-6 d-flex justify-content-center flex-column text-center">
-                                            <div>
-                                                <img src="{{asset('assets/qrcode_G1.png')}}" class="img-fluid" alt="" width="120px">
-                                                <p class="text-secondary fw-bold mt-2">Serial: 8001cd3a8f41</p>
-                                            </div>
-                                        </div>
+                                <div class="bg-light rounded-3 px-3 py-2">
+                                    <div class="d-flex justify-content-between align-items-center">
+                                        <p class="d-flex flex-column titulo mb-0">
+                                            <span class="fs-3 fw-bold text-navy">Bolivares</span>
+                                        </p>
+                                        <span class="fs-1 text-navy fw-bold" id="bolivares">0.00</span>
                                     </div>
                                 </div>
-            
-                                <div class="fs-6 text-secondary text-center titulo ">
-                                    <p class="">GOBIERNO BOLIVARIANO DEL ESTADO ARAGUA</p>
+                            </div>
+                        </div>
+                        <!--  -->
+                        <div class="">
+                            <h5 class="titulo fw-bold text-success fs-4 mt-4 mb-3">Cancelado</h5>
+                            <div class="d-flex flex-column">
+                                <div class="bg-body-secondary rounded-3 px-3 py-1 mb-2">
+                                    <div class="d-flex justify-content-between align-items-center">
+                                        <p class="d-flex flex-column titulo mb-0">
+                                            <span class="fs-5 fw-bold text-navy">Debitado</span>
+                                        </p>
+                                        <span class="fs-4 text-navy fw-bold" id="debitado">0.00</span>
+                                    </div>
                                 </div>
-                            
-                                <div class="text-end">
-                                    <a href="#" data-bs-toggle="modal" data-bs-target="#modal_papel_dañado">¿Papel dañado?</a>
+                                <div class="bg-body-secondary rounded-3 px-3 py-1 mb-2">
+                                    <div class="d-flex justify-content-between align-items-center">
+                                        <p class="d-flex flex-column titulo mb-0">
+                                            <span class="fs-5 fw-bold text-navy">Diferencia</span>
+                                        </p>
+                                        <span class="fs-4 text-navy fw-bold" id="diferencia">0.00</span>
+                                    </div>
                                 </div>
-                            </div> -->
+                                <div class="bg-body-secondary rounded-3 px-3 py-1">
+                                    <div class="d-flex justify-content-between align-items-center">
+                                        <p class="d-flex flex-column titulo mb-0">
+                                            <span class="fs-5 fw-bold text-navy">Vuelto</span>
+                                        </p>
+                                        <span class="fs-4 text-navy fw-bold" id="vuelto">0.00</span>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -262,186 +224,7 @@
 
             <!-- TIMBRE MOVIL -->
             <div class="tab-pane fade" id="pills-tmovil" role="tabpanel" aria-labelledby="pills-tmovil-tab" tabindex="0">
-                <div class="row">
-                    <div class="col-sm-7">
-                        <!-- DATOS CONTRIBUYENTE -->
-                        <div class="" style="font-size:13px">
-                            <div class="d-flex justify-content-center">
-                                <div class="row w-100">
-                                    <h5 class="titulo fw-bold text-navy my-3">Contribuyente | <span class="text-secondary fs-6">Datos</span></h5>
-                                    <div class="col-sm-6">
-                                        <label class="form-label" for="">C.I / R.I.F</label><span class="text-danger">*</span>
-                                        <div class="row">
-                                            <div class="col-4">
-                                                <select class="form-select form-select-sm" aria-label="Small select example">
-                                                    <option value="1">V</option>
-                                                    <option value="2">E</option>
-                                                    <option value="3">J</option>
-                                                    <option value="3">G</option>
-                                                </select>
-                                            </div>
-                                            <div class="col-1">-</div>
-                                            <div class="col-7">
-                                                <input type="" id="" class="form-control form-control-sm" name="" required>
-                                                <p class="text-end text-muted mb-0" style="font-size:12px;">Ejemplo: 7521004</p>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="col-sm-6">
-                                        <label class="form-label" for="">Nombre / Razon Social</label><span class="text-danger">*</span>
-                                        <input type="" id="" class="form-control form-control-sm" name="" disabled required>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="d-flex justify-content-center mt-3 mb-3 d-none">
-                                <button type="button" class="btn btn-secondary btn-sm me-3" id="">Cancelar</button>
-                                <button type="submit" class="btn btn-success btn-sm" id="">Registrar</button>
-                            </div>
-                        </div>
-
-                        <!-- DATOS TRAMITE -->
-                        <div class="" style="font-size:13px">
-                            <div class="d-flex justify-content-center">
-                                <div class="row w-100">
-                                    <h5 class="titulo fw-bold text-navy my-3">Tramite | <span class="text-secondary fs-6">Datos</span></h5>
-                                    <div class="col-sm-6">
-                                        <label class="form-label" for="">Ente</label><span class="text-danger">*</span>
-                                        <select class="form-select form-select-sm" aria-label="Small select example" disabled>
-                                            <option value="">Registro</option>
-                                            <option value="">Alcaldía</option>
-                                            <option value="">Bomberos</option>
-                                        </select>
-                                    </div>
-                                    <div class="col-sm-6">
-                                        <label class="form-label" for="">Tramite</label><span class="text-danger">*</span>
-                                        <select class="form-select form-select-sm" aria-label="Small select example" disabled>
-                                            <option value="">Título Universitario</option>
-                                        </select>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-
-                        <!-- TOTAL UCD Y BS -->
-                        <div class="" style="font-size:13px">
-                            <div class="d-flex justify-content-center">
-                                <div class="row w-100">
-                                    <h5 class="titulo fw-bold text-navy my-3">Valor | <span class="text-secondary fs-6">Timbre Fiscal</span></h5>
-                                    <div class="col-sm-6">
-                                        <label class="form-label" for="">UCD</label><span class="text-danger">*</span>
-                                        <input type="" id="" class="form-control form-control-sm" name="" disabled required>
-                                    </div>
-                                    <div class="col-sm-6">
-                                        <label class="form-label" for="">Monto Bs.</label><span class="text-danger">*</span>
-                                        <input type="" id="" class="form-control form-control-sm" name="" disabled required>
-                                        <p class="text-end text-muted fw-bold mb-0" style="font-size:12px;"><span class="text-success">Valor del UCD hoy:</span> 40.35 Bs</p>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-
-                        <!-- PAGO -->
-                        <div class="" style="font-size:13px">
-                            <div class="d-flex justify-content-center">
-                                <div class="row w-100">
-                                    <h5 class="titulo fw-bold text-navy my-3">Cancelación | <span class="text-secondary fs-6">Timbre Fiscal</span></h5>
-                                    <div class="col-sm-6">
-                                        <label class="form-label" for="">Metodo de Pago</label><span class="text-danger">*</span>
-                                        <select class="form-select form-select-sm" aria-label="Small select example" disabled>
-                                            <option value="">Punto</option>
-                                            <option value="">Efectivo Bs.</option>
-                                            <option value="">Pago móvil</option>
-                                        </select>
-                                    </div>
-                                    <div class="col-sm-6">
-                                        <label class="form-label" for="">No. Comprobante</label><span class="text-danger">*</span>
-                                        <input type="" id="" class="form-control form-control-sm" name="" disabled required>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-
-
-                        <div class="d-flex justify-content-center mt-3 mb-3">
-                            <button type="button" class="btn btn-secondary btn-sm me-3" id="">Cancelar</button>
-                            <button type="submit" class="btn btn-success btn-sm" id="">Realizar Venta</button>
-                        </div>    
-                    </div>
-                    <!-- ******************************* -->
-                    <div class="col-sm-5 pb-3 px-3">
-                        <div class="">
-                            <!-- logo seta - no. control(correlativo) -->
-                            <div class="d-flex justify-content-between align-items-center my-3">
-                                <div>
-                                    <img src="{{asset('assets/logo_seta.png')}}" class="img-fluid" alt="" width="120px">
-                                </div>
-                                <div>
-                                    <span class="text-danger fw-bold fs-4 text-end" id="">B-3004051X</span>
-                                </div>
-                            </div>
-
-                            <!-- titulo venta -->
-                            <div class="text-center mb-3 fw-bold titulo">
-                                <div class="my-0 py-0 TEXT">Venta Timbre Fiscal</div>
-                                <div class="my-0 py-0 text-navy fs-5">TIMBRE MOVIL - ESTAMPILLA</div>
-                            </div>
-            
-                            <!-- datos de la venta -->
-                            <div style="font-size:14px">
-                                <div class="row">
-                                    <div class="col-6">
-                                        <p class="fw-bold my-0 py-0">
-                                            <span class="text-navy">Contribuyente:</span>
-                                            <span class="text-muted">Sujeto Prueba</span>
-                                        </p>
-                                        <p class="fw-bold my-0 py-0">
-                                            <span class="text-navy">C.I/R.I.F:</span>
-                                            <span class="text-muted">V00000001</span>
-                                        </p>
-                                    </div>
-                                    <div class="col-6 text-end">
-                                        <p class="fw-bold my-0 py-0">
-                                            <span class="text-navy">Emisión:</span>
-                                            <span class="text-muted">2024-05-10</span>
-                                        </p>
-                                        <p class="fw-bold my-0 py-0">
-                                            <span class="text-navy">No. Planilla:</span>
-                                            <span class="text-muted">12224103</span>
-                                        </p>
-                                    </div>
-                                </div>
-            
-                                <div class="my-3 fs-5">
-                                    <p class="text-muted fw-bold">
-                                        Monto Bs.: 4.035,00
-                                    </p>
-                                </div>
-            
-                                <div class="">
-                                    <div class="row">
-                                        <div class="col-6 d-flex justify-content-center align-items-center text-center">
-                                            <p class="fs-1 titulo">100 UCD</p>
-                                        </div>
-                                        <div class="col-6 d-flex justify-content-center flex-column text-center">
-                                            <div>
-                                                <img src="{{asset('assets/qrcode_G1.png')}}" class="img-fluid" alt="" width="120px">
-                                                <p class="text-secondary fw-bold mt-2">Serial: 5GF11S00Ch441</p>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-            
-                                <div class="fs-6 text-secondary text-center titulo ">
-                                    <p class="">GOBIERNO BOLIVARIANO DEL ESTADO ARAGUA</p>
-                                </div>
-                            
-                                <div class="text-end">
-                                    <a href="#">¿Papel Trabado?</a>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
+                
             </div>
         </div>        
     </div>
@@ -549,58 +332,12 @@
                 });
             ///////////////////////////////////////////////////////////////////
 
-            ///////////////////////////////////////AGREGAR CAMPOS A OTRO(S) TRAMITES
-                var maxFieldTramite = 5; //Input fields increment limitation
-                var c = 1; //Initial field counter is 1
-
-                $(document).on('click', '.add_button_tramite', function(e){ //Once add button is clicked
-                    if(c < maxFieldTramite){ //Check maximum number of input fields
-                        c++; //Increment field counter
-                        $('.tramites').append('<div class="d-flex justify-content-center mt-2">'+
-                                    '<div class="row w-100">'+
-                                        '<div class="col-sm-4">'+
-                                            '<label class="form-label" for="ente">Ente</label><span class="text-danger">*</span>'+
-                                            '<select class="form-select form-select-sm ente" unidad="'+c+'" name="ente[]" required>'+
-                                                '@foreach ($entes as $ente)'+
-                                                    '<option value="{{$ente->id_ente}}">{{$ente->ente}}</option>'+
-                                                '@endforeach'+
-                                            '</select>'+
-                                        '</div>'+
-                                        '<div class="col-sm-5">'+
-                                            '<label class="form-label" for="tramite">Tramite</label><span class="text-danger">*</span>'+
-                                            '<select class="form-select form-select-sm tramite" unidad="'+c+'" id="tramites_'+c+'" name="tramite[]" required>'+
-                                                '<option value="">Seleccione el tramite </option>'+
-                                                    '@foreach ($tramites as $tramite)'+
-                                                        '<option value="{{$tramite->id_tramite}}">{{$tramite->tramite}}</option>'+
-                                                    '@endforeach'+
-                                            '</select>'+
-                                        '</div>'+
-                                        '<div class="col-sm-2">'+
-                                            '<label class="form-label" for="">UCD</label><span class="text-danger">*</span>'+
-                                            '<input type="text" class="form-control form-control-sm" id="ucd_tramite_'+c+'" name="ucd_tramite[]" disabled required>'+
-                                        '</div>'+
-                                    ' <div class="col-sm-1 mt-4">'+
-                                            '<a  href="javascript:void(0);" class="btn remove_button_tramite" >'+
-                                                '<i class="bx bx-x fs-4"></i>'+
-                                            '</a>'+
-                                        '</div>'+
-                                    '</div>'+
-                                '</div>'); // Add field html
-                    }
-                });
-                $(document).on('click', '.remove_button_tramite', function(e){ //Once remove button is clicked
-                    e.preventDefault();
-                    $(this).parent('div').parent('div').remove(); //Remove field html
-                    c--; //Decrement field counter
-                    calcular();
-                });
-            ////////////////////////////////////////////////////////////////////////
-
             //////////////////////////// BUSCAR CONTRIBUYENTE
             $(document).on('keyup','#identidad_nro', function(e) {
                 e.preventDefault(); 
                 var value = $(this).val();
                 var condicion = $('#identidad_condicion').val();
+
                 $.ajax({
                     headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') },
                     type: 'POST',
@@ -624,6 +361,7 @@
 
                         }else{
                             $('#btns_add_contribuyente').removeClass('d-none');
+                            $('#nombre').attr('disabled', false);
                             $('#nombre').val('');
                             
                             $('.ente').attr('disabled', true);
@@ -640,25 +378,35 @@
                     error: function() {
                     }
                 });
-                // console.log(value);
+                
                
             });
 
-            //////////////////////////// VALOR DEL TRAMITE SELECCIONADO
-            $(document).on('change','.tramite', function(e) {
-                e.preventDefault(); 
-                var value = $(this).val();
-                var unidad = $(this).attr('unidad');
+
+            /////////////////////////// BTN CANCELAR REGISTRO CONTRIBUYENTE
+            $(document).on('click','#btn_add_contribuyente', function(e) {
+                e.preventDefault();
+                var condicion = $('#identidad_condicion').val();
+                var nro = $('#identidad_nro').val();
+                var nombre = $('#nombre').val();
 
                 $.ajax({
                     headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') },
                     type: 'POST',
-                    url: '{{route("venta.ucd_tramite") }}',
-                    data: {value:value},
+                    url: '{{route("venta.add_contribuyente") }}',
+                    data: {condicion:condicion,nro:nro,nombre:nombre},
                     success: function(response) {
+                        console.log(response);
                         if (response.success) {
-                            $('#ucd_tramite_'+unidad).val(response.valor);
+                            $('#nombre').attr('disabled', true);
+                            $('#btns_add_contribuyente').addClass('d-none');
+                            alert('REGISTRO DE CONTRIBUYENTE EXITOSO.');
                         }else{
+                            if (response.nota) {
+                                alert(response.nota);
+                            }else{
+                                alert('Disculpe, ha ocurrido un error al registar a el contribuyente.');
+                            }
                             ////alert
                         }   
                     },
@@ -667,18 +415,56 @@
                 });
             });
 
+
+            /////////////////////////// BTN CANCELAR REGISTRO CONTRIBUYENTE
+            $(document).on('click','#btn_cancel_add_c', function(e) {
+                e.preventDefault();
+                $('#btns_add_contribuyente').addClass('d-none');
+                $('#nombre').attr('disabled', true);
+
+                $('#nombre').val('');
+                $('#identidad_nro').val('');
+            });
+
+
+            //////////////////////////// VALOR DEL TRAMITE SELECCIONADO
+            $(document).on('change','#tramite', function(e) {
+                e.preventDefault(); 
+                var value = $(this).val();
+                if (value == '') {
+                    $('#ucd_tramite').val('0');
+                }else{
+                    $.ajax({
+                        headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') },
+                        type: 'POST',
+                        url: '{{route("venta.ucd_tramite") }}',
+                        data: {value:value},
+                        success: function(response) {
+                            if (response.success) {
+                                $('#ucd_tramite').val(response.valor);
+                            }else{
+                                ////alert
+                            }   
+                        },
+                        error: function() {
+                        }
+                    });
+                }
+            });
+
+
             //////////////////////////// TRAMITES SEGUN EL ENTE
             $(document).on('change','.ente', function(e) {
                 e.preventDefault(); 
                 var value = $(this).val();
-                var unidad = $(this).attr('unidad');
+                // var unidad = $(this).attr('unidad');
                 $.ajax({
                     headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') },
                     type: 'POST',
                     url: '{{route("venta.tramites") }}',
                     data: {value:value},
                     success: function(response) {
-                        $('#tramites_'+unidad).html(response);
+                        $('#tramite').html(response);
                     },
                     error: function() {
                     }
@@ -687,8 +473,41 @@
 
 
             //////////////////////////// VALOR DEL TRAMITE SELECCIONADO
-            $(document).on('change','.tramite', function(e) {
+            $(document).on('change','#tramite', function(e) {
                 calcular();
+            });
+
+
+            //////////////////////////// CALCULAR DEBITO
+            $(document).on('keyup','.debitado', function(e) {
+                var debitado = [];
+                var value = $(this).val();
+                debitado.push(value);
+                
+                var tramite = $("#tramite").val();
+                
+            
+
+                if (value != '') {
+                    $.ajax({
+                        headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') },
+                        type: 'POST',
+                        url: '{{route("venta.debitado") }}',
+                        data: {debitado:debitado,tramite:tramite},
+                        success: function(response) {
+                            console.log(response);
+                            $('#debitado').html(response.debito);
+                            $('#diferencia').html(response.diferencia);
+                            $('#vuelto').html(response.vuelto);
+                        },
+                        error: function() {
+                        }
+                    });
+                }else{
+                    $('#debitado').html('0.00');
+                    $('#vuelto').html('0.00');
+                }
+                
             });
             
 
@@ -700,6 +519,7 @@
                 console.log(value+'/'+i);
                 if (value == 'efectivo') {
                     $('#comprobante_'+i).attr('disabled', true);
+                    $('#comprobante_'+i).val('');
                 }else{
                     $('#comprobante_'+i).attr('disabled', false);
                 }
@@ -709,21 +529,18 @@
         });
 
         function calcular(){
-            var tramites = [];
-            $(".tramite").each(function(){
-                var value = $(this).val();
-                tramites.push(value);
-       		});
+            var value = $("#tramite").val();
 
             $.ajax({
                 headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') },
                 type: 'POST',
                 url: '{{route("venta.total") }}',
-                data: {tramites:tramites},
+                data: {value:value},
                 success: function(response) {
                     console.log(response);
-                    $('#ucd').val(response.ucd);
-                    $('#bolivares').val(response.bolivares);
+                    $('#ucd').html(response.ucd);
+                    $('#bolivares').html(response.bolivares);
+                    $('#diferencia').html(response.bolivares);
                 },
                 error: function() {
                 }
@@ -731,6 +548,7 @@
 
             // console.log(tramites);
         }
+
     </script>
   
 @stop

@@ -78,3 +78,8 @@
     from { width: 100% }
     to { width:0 }
 }
+/* ************************** */
+.nav-pills .nav-link.active,
+.show>.nav-pills .nav-link{
+    background: #022040 !important
+}

@@ -32,5 +32,7 @@ Route::post('/search', [App\Http\Controllers\VentaController::class, 'search'])-
 Route::post('/ucd_tramite', [App\Http\Controllers\VentaController::class, 'ucd_tramite'])->name('venta.ucd_tramite');
 Route::post('/tramites', [App\Http\Controllers\VentaController::class, 'tramites'])->name('venta.tramites');
 Route::post('/total', [App\Http\Controllers\VentaController::class, 'total'])->name('venta.total');
+Route::post('/debitado', [App\Http\Controllers\VentaController::class, 'debitado'])->name('venta.debitado');
+Route::post('/add_contribuyente', [App\Http\Controllers\VentaController::class, 'add_contribuyente'])->name('venta.add_contribuyente');
 
 

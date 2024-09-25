@@ -10,7 +10,7 @@
     <main>
         <div class="position-relative overflow-hidden p-3 p-md-5 m-md-3 text-center bg-white">
             <div class="p-lg-5 mx-auto my-5">
-                <h1 class="display-5 fw-bold">FORMA 14 | Estampillas</h1>
+                <h1 class="display-5 text-navy fw-bold">FORMA 14 | Estampillas</h1>
                 <h3 class="fw-normal text-muted mb-3">Venta de Timbres Fiscales</h3>
                 <div class="d-flex gap-3 justify-content-center fw-normal titulo" style="font-size:12.7px">
                     <button type="button" class="btn btn-s btn-primary py-1">Aperturar Taquilla</button>
