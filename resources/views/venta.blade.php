@@ -138,11 +138,11 @@
                                             </div>
                                             <div class="col-sm-3">
                                                 <label class="form-label" for="comprobante">No. Comprobante</label><span class="text-danger">*</span>
-                                                <input type="" class="form-control form-control-sm comprobante" name="comprobante[]" id="comprobante_1" disabled required>
+                                                <input type="number" class="form-control form-control-sm comprobante" name="comprobante[]" id="comprobante_1" disabled required>
                                             </div>
                                             <div class="col-sm-4">
                                                 <label class="form-label" for="debitado">Monto Debitado </label><span class="text-danger">*</span>
-                                                <input type="" id="" class="form-control form-control-sm debitado" name="debitado[]" disabled required>
+                                                <input type="number" id="debitado_1" class="form-control form-control-sm debitado" name="debitado[]" disabled required>
                                             </div>
                                             <div class="col-sm-1 pt-4">
                                                 <a  href="javascript:void(0);" class="btn add_button disabled border-0">
@@ -159,8 +159,8 @@
                             <p class="text-muted text-end fw-bold mt-3" style="font-size:13px"><span style="color:red">*</span> Campos requeridos.</p>
 
                             <div class="d-flex justify-content-center mt-3 mb-3">
-                                <button type="button" class="btn btn-secondary btn-sm me-3" id="" disabled>Cancelar</button>
-                                <button type="submit" class="btn btn-success btn-sm" id="" disabled>Realizar Venta</button>
+                                <a class="btn btn-secondary btn-sm me-3" data-bs-toggle="modal" data-bs-target="#modal_timbre_impreso" >Cancelar</a>
+                                <button type="submit" class="btn btn-success btn-sm" id="btn_submit_venta" >Realizar Venta</button>
                             </div>
                         </form>
                     </div>
@@ -230,7 +230,7 @@
     </div>
     
     
-<!-- *********************************************************************************************************************** -->
+<!-- ***************************************************   MODALES   ***************************************************** -->
     <div class="modal fade" id="modal_papel_dañado" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
         <div class="modal-dialog">
             <div class="modal-content" id="content_ver_solicitud">
@@ -263,6 +263,108 @@
                         <button type="button" class="btn btn-secondary btn-sm me-3" id="" >Cancelar</button>
                         <button type="submit" class="btn btn-success btn-sm" id="" >Aceptar</button>
                     </div> 
+                </div>
+            </div>  <!-- cierra modal-content -->
+        </div>  <!-- cierra modal-dialog -->
+    </div>
+
+    <div class="modal fade" id="modal_timbre_impreso" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content" id="content_timbre_impreso">
+                <div class="modal-header">
+                    <!-- <i class='bx bx-error-circle fs-2  me-2'></i> -->
+                    <h1 class="modal-title fs-5 fw-bold text-navy">Timbre Fiscal</h1>
+                </div>
+                <div class="modal-body px-5 py-3" style="font-size:13px">
+                    <div class="">
+                        <div class="row d-flex align-items-center">
+                            <div class="col-lg-8">
+                                <div class="d-flex justify-content-between align-items-center my-3">
+                                    <div>
+                                        <img src="{{asset('assets/logo_seta.png')}}" class="img-fluid" alt="" width="120px">
+                                    </div>
+                                    <div>
+                                        <span class="text-danger fw-bold fs-4 text-end" id="">A-8001002</span>
+                                    </div>
+                                </div>
+
+                                <div class="text-center mb-3 fw-bold titulo">
+                                    <div class="my-0 py-0 TEXT">Venta Timbre Fiscal</div>
+                                    <div class="my-0 py-0 text-navy fs-5">FORMA 14-TFE</div>
+                                </div>
+
+                                <!-- datos de la venta -->
+                                <div style="font-size:14px">
+                                    <div class="row">
+                                        <div class="col-6">
+                                            <p class="fw-bold my-0 py-0">
+                                                <span class="text-navy">Contribuyente:</span>
+                                                <span class="text-muted">Marina Rodríguez</span>
+                                            </p>
+                                            <p class="fw-bold my-0 py-0">
+                                                <span class="text-navy">C.I/R.I.F:</span>
+                                                <span class="text-muted">V8456201</span>
+                                            </p>
+                                        </div>
+                                        <div class="col-6 text-end">
+                                            <p class="fw-bold my-0 py-0">
+                                                <span class="text-navy">Emisión:</span>
+                                                <span class="text-muted">2024-05-10</span>
+                                            </p>
+                                            <p class="fw-bold my-0 py-0">
+                                                <span class="text-navy">No. Planilla:</span>
+                                                <span class="text-muted">999904520</span>
+                                            </p>
+                                        </div>
+                                    </div>
+                
+                                    <div class="my-3 fs-5">
+                                        <p class="text-muted fw-bold">
+                                            Monto Bs.: 80.7
+                                        </p>
+                                    </div>
+                
+                                    <div class="">
+                                        <div class="row">
+                                            <div class="col-6 d-flex justify-content-center align-items-center text-center">
+                                                <p class="fs-1 titulo">2 UCD</p>
+                                            </div>
+                                            <div class="col-6 d-flex justify-content-center flex-column text-center">
+                                                <div>
+                                                    <img src="{{asset('assets/qrcode_G1.png')}}" class="img-fluid" alt="" width="120px">
+                                                    <p class="text-secondary fw-bold mt-2">Serial: 8001cd3a8f41</p>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                
+                                    <div class="fs-6 text-secondary text-center titulo ">
+                                        <p class="">GOBIERNO BOLIVARIANO DEL ESTADO ARAGUA</p>
+                                    </div>
+                                
+                                    
+                                </div>
+                            </div>
+
+                            <!--  -->
+
+                            <div class="col-lg-4">
+                                <div class="d-flex justify-content-center">
+                                    <img src="{{asset('assets/timbre.png')}}" class="img-fluid mt-3" alt="" width="180px">
+                                </div>
+
+                                <div class="text-end mt-3">
+                                    <a href="#" data-bs-toggle="modal" data-bs-target="#modal_papel_dañado">¿Papel dañado?</a>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- cerrar modal -->
+                        <div class="d-flex justify-content-center my-3">
+                            <button type="button" class="btn btn-secondary btn-sm" data-bs-dismiss="modal">Listo</button>
+                        </div>
+                    </div>
+                    
                 </div>
             </div>  <!-- cierra modal-content -->
         </div>  <!-- cierra modal-dialog -->
@@ -309,11 +411,11 @@
                                 '</div>'+
                                 '<div class="col-sm-3">'+
                                     '<label class="form-label" for="">No. Comprobante</label><span class="text-danger">*</span>'+
-                                    '<input type="" class="form-control form-control-sm comprobante" name="comprobante[]" required>'+
+                                    '<input type="number" class="form-control form-control-sm comprobante" name="comprobante[]" required>'+
                                 '</div>'+
                                 '<div class="col-sm-4">'+
                                     '<label class="form-label" for="">Monto Debitado </label><span class="text-danger">*</span>'+
-                                    '<input type="" class="form-control form-control-sm debitado" name="debitado[]"  required>'+
+                                    '<input type="number" id="debitado_2" class="form-control form-control-sm debitado" name="debitado[]"  required>'+
                                 '</div>'+
                                 '<div class="col-sm-1  pt-4">'+
                                     '<a  href="javascript:void(0);" class="btn remove_button" >'+
@@ -359,6 +461,8 @@
                             $('.add_button_tramite').removeClass('disabled');
                             $('.add_button').removeClass('disabled');
 
+                            $('#btn_submit_venta').attr('disabled', false);
+
                         }else{
                             $('#btns_add_contribuyente').removeClass('d-none');
                             $('#nombre').attr('disabled', false);
@@ -373,6 +477,8 @@
 
                             $('.add_button_tramite').addClass('disabled');
                             $('.add_button').addClass('disabled');
+
+                            $('#btn_submit_venta').attr('disabled', true);
                         }
                     },
                     error: function() {
@@ -480,20 +586,24 @@
 
             //////////////////////////// CALCULAR DEBITO
             $(document).on('keyup','.debitado', function(e) {
-                var debitado = [];
+                var id = $(this).attr('id');
                 var value = $(this).val();
-                debitado.push(value);
-                
                 var tramite = $("#tramite").val();
-                
-            
+                var otro_debito = 0;
+
+                if (id == 'debitado_1') {
+                    otro_debito = $("#debitado_2").val();
+                }else{
+                    otro_debito = $("#debitado_1").val();
+                }
+                console.log(id+'/'+otro_debito);
 
                 if (value != '') {
                     $.ajax({
                         headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') },
                         type: 'POST',
                         url: '{{route("venta.debitado") }}',
-                        data: {debitado:debitado,tramite:tramite},
+                        data: {value:value,tramite:tramite,otro_debito:otro_debito},
                         success: function(response) {
                             console.log(response);
                             $('#debitado').html(response.debito);

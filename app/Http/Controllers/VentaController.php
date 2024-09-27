@@ -6,6 +6,10 @@ use Illuminate\Http\Request;
 use DB;
 class VentaController extends Controller
 {
+    public function __construct()
+    {
+        $this->middleware('auth');
+    }
     /**
      * Display a listing of the resource.
      */
@@ -106,8 +110,16 @@ class VentaController extends Controller
      */
     public function debitado(Request $request)
     {
-        $debito = $request->post('debitado');
-        return reponse($debito);
+        $value = $request->post('value');
+        $otro_debito = $request->post('otro_debito');
+        $debito = 0;
+
+        if ($otro_debito != '') {
+            $debito = $value + $otro_debito;
+        }else{
+            $debito = $value;
+        }
+        
         $tramite = $request->post('tramite');
         $vuelto = 0;
         $diferencia = 0;

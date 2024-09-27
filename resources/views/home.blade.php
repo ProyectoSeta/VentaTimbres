@@ -15,7 +15,7 @@
                 <div class="d-flex gap-3 justify-content-center fw-normal titulo" style="font-size:12.7px">
                     <button type="button" class="btn btn-s btn-primary py-1">Aperturar Taquilla</button>
                     <a href="{{ route('venta') }}" class="btn btn-s btn-success py-1">Vender</a>
-                    <button type="button" class="btn btn-s btn-secondary  py-1">Cierre de Taquilla</button>
+                    <button type="button" class="btn btn-s btn-secondary  py-1">Cierre</button>
                 </div>
             </div>
         </div>
@@ -23,10 +23,10 @@
 
         <div class="position-relative overflow-hidden p-3 p-md-5 m-md-3 text-center bg-white">
             <div class="p-lg-5 mx-auto my-5">
-                <h1 class="display-5 fw-bold">FORMA 01 | Venta Online</h1>
+                <h1 class="display-5 fw-bold text-navy">FORMA 01 | Venta Online</h1>
                 <h3 class="fw-normal text-muted mb-3">Venta de Timbres Fiscales</h3>
                 <div class="d-flex gap-3 justify-content-center fw-normal titulo" style="font-size:12.7px">
-                    <button type="button btn-sm" class="btn btn-primary  py-1">Historial</button>
+                    <button type="button btn-sm" class="btn btn-primary  py-1">Ver</button>
                 </div>
             </div>
         </div>

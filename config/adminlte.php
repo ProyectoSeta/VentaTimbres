@@ -16,7 +16,7 @@ return [
 
     'title' => 'Venta de Timbres Fiscales',
     'title_prefix' => '',
-    'title_postfix' => ' | SETA Timbres',
+    'title_postfix' => ' | SETA',
 
     /*
     |--------------------------------------------------------------------------
@@ -330,14 +330,15 @@ return [
         //     'label'       => 4,
         //     'label_color' => 'success',
         // ],
-        ['header' => 'Usuario'],
+        ['header' => 'Rollos'],
         [
-            'text'        => 'Registro',
-            'route'         => '',
+            'text'        => 'Emisión',
+            'route'         => 'emision_rollos',
             'icon'       => 'fas fa-angle-right pe-2',   
             // 'label'       => 4,
             // 'label_color' => 'success',
         ],
+        
         // ['header' => 'Solicitud de Guías'],
         // [
         //     'text' => ' Nueva Solicitud',
