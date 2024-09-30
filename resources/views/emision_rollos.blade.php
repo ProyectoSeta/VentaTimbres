@@ -54,7 +54,7 @@
     
     
 <!--****************** MODALES **************************-->
-<div class="modal fade" id="modal_emitir_rollos" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal fade" id="modal_emitir_rollos" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
         <div class="modal-dialog">
             <div class="modal-content" id="content_timbre_impreso">
                 <div class="modal-header p-2 pt-3 d-flex justify-content-center">
@@ -68,7 +68,7 @@
                     <form id="form_emitir_rollos" method="post" onsubmit="event.preventDefault(); emitirRollos()">
                         <div class="px-4">
                             <label for="cantidad" class="form-label">Cantidad de rollos <span class="text-danger">*</span></label>
-                            <input type="number" class="form-control" id="cantidad" placeholder="" required>
+                            <input type="number" class="form-control" id="cantidad" placeholder="" name="cantidad" required>
                         </div>
 
                         <p class="text-muted text-end fw-bold mt-3" style="font-size:13px"><span style="color:red">*</span> Campos requeridos.</p>
@@ -84,6 +84,15 @@
         </div>  <!-- cierra modal-dialog -->
     </div>
 
+
+    <!-- ************  CORRELATIVO ROLLOS  ************** -->
+    <div class="modal fade" id="modal_correlativo_rollos" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content" id="content_correlativo_rollos">
+                
+            </div>  <!-- cierra modal-content -->
+        </div>  <!-- cierra modal-dialog -->
+    </div>
     
 
 <!--************************************************-->
@@ -158,12 +167,14 @@
                 async: true,
                 data: formData,
                 success: function(response){
-                    // console.log(response);
+                    console.log(response);
                     if (response.success) {
-                        alert('');
+                        $('#modal_emitir_rollos').modal('hide');
+                        $('#modal_correlativo_rollos').modal('show');
+                        $('#content_correlativo_rollos').html(response.html);
                        
-                    } else {
-                        alert('Ha ocurrido un error al denegar la solicitud.');
+                    }else{
+                        alert('Disculpe, ha ocurrido un error en la Emisión de Rollos.');
                     }  
 
                 },

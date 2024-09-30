@@ -50,8 +50,8 @@
             <!-- FORMA 14 -->
             <div class="tab-pane fade show active " id="pills-f14" role="tabpanel" aria-labelledby="pills-f14-tab" tabindex="0">
                 <div class="row">
-                    <div class="col-xl-8 pe-5" id="form_venta_f14">
-                        <form action="">
+                    <div class="col-xl-8 pe-5" id="">
+                        <form id="form_venta_f14" method="post" onsubmit="event.preventDefault(); ventaF14()">
                             <!-- *************** DATOS CONTRIBUYENTE ******************-->
                             <div class="mb-2" style="font-size:13px">
                                 <div class="d-flex justify-content-center">
@@ -94,9 +94,9 @@
                                     <div class="d-flex justify-content-center">
                                         <div class="row w-100">
                                             <h5 class="titulo fw-bold text-navy my-3">Tramite | <span class="text-secondary fs-6">Datos</span></h5>
-                                            <div class="col-sm-4">
+                                            <div class="col-sm-3">
                                                 <label class="form-label" for="ente">Ente</label><span class="text-danger">*</span>
-                                                <select class="form-select form-select-sm ente" name="ente" disabled>
+                                                <select class="form-select form-select-sm ente" nro="1" disabled>
                                                     @foreach ($entes as $ente)
                                                         <option value="{{$ente->id_ente}}">{{$ente->ente}}</option>
                                                     @endforeach
@@ -105,7 +105,7 @@
                                             </div>
                                             <div class="col-sm-6">
                                                 <label class="form-label" for="tramite">Tramite</label><span class="text-danger">*</span>
-                                                <select class="form-select form-select-sm tramite" name="tramite" id="tramite" disabled>
+                                                <select class="form-select form-select-sm tramite" name="tramite[]" nro="1" id="tramite_1" disabled>
                                                     <option value="">Seleccione el tramite </option>
                                                         @foreach ($tramites as $tramite)
                                                             <option value="{{$tramite->id_tramite}}">{{$tramite->tramite}}</option>
@@ -114,7 +114,12 @@
                                             </div>
                                             <div class="col-sm-2">
                                                 <label class="form-label" for="ucd_tramite">UCD</label><span class="text-danger">*</span>
-                                                <input type="text" class="form-control form-control-sm ucd_tramite" id="ucd_tramite" name="ucd_tramite" disabled required>
+                                                <input type="text" class="form-control form-control-sm ucd_tramite" id="ucd_tramite_1" disabled required>
+                                            </div>
+                                            <div class="col-sm-1 pt-4">
+                                                <a  href="javascript:void(0);" class="btn add_button_tramite disabled border-0">
+                                                    <i class="bx bx-plus fs-4" style="color:#038ae4"></i>
+                                                </a>
                                             </div>
                                         </div>
                                     </div>
@@ -131,18 +136,18 @@
                                             <h5 class="titulo fw-bold text-navy my-3">Pago | <span class="text-secondary fs-6">Timbre Fiscal</span></h5>
                                             <div class="col-sm-4">
                                                 <label class="form-label" for="metodo">Metodo de Pago</label><span class="text-danger">*</span>
-                                                <select class="form-select form-select-sm metodo" aria-label="Small select example" i="1" name="metodo[]" disabled>
+                                                <select class="form-select form-select-sm metodo" aria-label="Small select example" i="1" name="metodo_one" disabled>
                                                     <option value="punto">Punto</option>
                                                     <option value="efectivo">Efectivo Bs.</option>
                                                 </select>
                                             </div>
                                             <div class="col-sm-3">
                                                 <label class="form-label" for="comprobante">No. Comprobante</label><span class="text-danger">*</span>
-                                                <input type="number" class="form-control form-control-sm comprobante" name="comprobante[]" id="comprobante_1" disabled required>
+                                                <input type="number" class="form-control form-control-sm comprobante" name="comprobante_one" id="comprobante_1" disabled required>
                                             </div>
                                             <div class="col-sm-4">
                                                 <label class="form-label" for="debitado">Monto Debitado </label><span class="text-danger">*</span>
-                                                <input type="number" id="debitado_1" class="form-control form-control-sm debitado" name="debitado[]" disabled required>
+                                                <input type="number" step="0.01" id="debitado_1" class="form-control form-control-sm debitado" name="debitado_one" disabled required>
                                             </div>
                                             <div class="col-sm-1 pt-4">
                                                 <a  href="javascript:void(0);" class="btn add_button disabled border-0">
@@ -395,6 +400,55 @@
     <script type="text/javascript">
         $(document).ready(function () {
             ///////////////////////////////////////AGREGAR CAMPOS A OTRO(S) PAGO
+            var maxFieldTramite = 4; //Input fields increment limitation
+            var c = 1; //Initial field counter is 1
+
+            $(document).on('click', '.add_button_tramite', function(e){ //Once add button is clicked
+                if(c < maxFieldTramite){ //Check maximum number of input fields
+                    c++; //Increment field counter
+                    $('.tramites').append('<div class="d-flex justify-content-center ">'+
+                                        '<div class="row w-100 mt-2">'+
+                                            '<div class="col-sm-3">'+
+                                                '<label class="form-label" for="ente">Ente</label><span class="text-danger">*</span>'+
+                                                '<select class="form-select form-select-sm ente" nro="'+c+'">'+
+                                                    '@foreach ($entes as $ente)'+
+                                                        '<option value="{{$ente->id_ente}}">{{$ente->ente}}</option>'+
+                                                    '@endforeach'+
+                                                    
+                                                '</select>'+
+                                            '</div>'+
+                                            '<div class="col-sm-6">'+
+                                                '<label class="form-label" for="tramite">Tramite</label><span class="text-danger">*</span>'+
+                                                '<select class="form-select form-select-sm tramite" name="tramite[]" nro="'+c+'" id="tramite_'+c+'" required>'+
+                                                    '<option value="">Seleccione el tramite </option>'+
+                                                        '@foreach ($tramites as $tramite)'+
+                                                            '<option value="{{$tramite->id_tramite}}">{{$tramite->tramite}}</option>'+
+                                                        '@endforeach'+
+                                                '</select>'+
+                                            '</div>'+
+                                            '<div class="col-sm-2">'+
+                                                '<label class="form-label" for="ucd_tramite">UCD</label><span class="text-danger">*</span>'+
+                                                '<input type="text" class="form-control form-control-sm ucd_tramite" id="ucd_tramite_'+c+'" disabled>'+
+                                            '</div>'+
+                                            '<div class="col-sm-1 pt-4">'+
+                                                '<a  href="javascript:void(0);" class="btn remove_button_tramite" >'+
+                                                    '<i class="bx bx-x fs-4"></i>'+
+                                                '</a>'+
+                                            '</div>'+
+                                        '</div>'+
+                                    '</div>'); // Add field html
+                }
+            });
+
+            $(document).on('click', '.remove_button_tramite', function(e){ //Once remove button is clicked
+                e.preventDefault();
+                $(this).parent('div').parent('div').remove(); //Remove field html
+                c--; //Decrement field counter
+            });
+            ///////////////////////////////////////////////////////////////////
+
+
+            ///////////////////////////////////////AGREGAR CAMPOS A OTRO(S) PAGO
                 var maxFieldPago = 2; //Input fields increment limitation
                 var x = 1; //Initial field counter is 1
 
@@ -405,17 +459,17 @@
                             '<div class="row w-100">'+
                                 '<div class="col-sm-4">'+
                                     '<label class="form-label" for="">Metodo de Pago</label><span class="text-danger">*</span>'+
-                                    '<select class="form-select form-select-sm metodo" name="metodo[]" >'+
+                                    '<select class="form-select form-select-sm metodo" name="metodo_two" >'+
                                         '<option value="">Punto</option>'+
                                     '</select>'+
                                 '</div>'+
                                 '<div class="col-sm-3">'+
                                     '<label class="form-label" for="">No. Comprobante</label><span class="text-danger">*</span>'+
-                                    '<input type="number" class="form-control form-control-sm comprobante" name="comprobante[]" required>'+
+                                    '<input type="number" class="form-control form-control-sm comprobante" name="comprobante_two" required>'+
                                 '</div>'+
                                 '<div class="col-sm-4">'+
                                     '<label class="form-label" for="">Monto Debitado </label><span class="text-danger">*</span>'+
-                                    '<input type="number" id="debitado_2" class="form-control form-control-sm debitado" name="debitado[]"  required>'+
+                                    '<input type="number" step="0.01" id="debitado_2" class="form-control form-control-sm debitado" name="debitado_two"  required>'+
                                 '</div>'+
                                 '<div class="col-sm-1  pt-4">'+
                                     '<a  href="javascript:void(0);" class="btn remove_button" >'+
@@ -450,6 +504,7 @@
                         if (response.success) {
                             $('#btns_add_contribuyente').addClass('d-none');
                             $('#nombre').val(response.nombre);
+                            $('#nombre').attr('disabled', true);
 
                             $('.ente').attr('disabled', false);
                             $('.tramite').attr('disabled', false);
@@ -534,11 +589,13 @@
 
 
             //////////////////////////// VALOR DEL TRAMITE SELECCIONADO
-            $(document).on('change','#tramite', function(e) {
+            $(document).on('change','.tramite', function(e) {
                 e.preventDefault(); 
+                var nro =  $(this).attr('nro');
                 var value = $(this).val();
+
                 if (value == '') {
-                    $('#ucd_tramite').val('0');
+                    $('#ucd_tramite_'+nro).val('0');
                 }else{
                     $.ajax({
                         headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') },
@@ -547,7 +604,7 @@
                         data: {value:value},
                         success: function(response) {
                             if (response.success) {
-                                $('#ucd_tramite').val(response.valor);
+                                $('#ucd_tramite_'+nro).val(response.valor);
                             }else{
                                 ////alert
                             }   
@@ -562,6 +619,7 @@
             //////////////////////////// TRAMITES SEGUN EL ENTE
             $(document).on('change','.ente', function(e) {
                 e.preventDefault(); 
+                var nro =  $(this).attr('nro');
                 var value = $(this).val();
                 // var unidad = $(this).attr('unidad');
                 $.ajax({
@@ -570,7 +628,7 @@
                     url: '{{route("venta.tramites") }}',
                     data: {value:value},
                     success: function(response) {
-                        $('#tramite').html(response);
+                        $('#tramite_'+nro).html(response);
                     },
                     error: function() {
                     }
@@ -579,7 +637,7 @@
 
 
             //////////////////////////// VALOR DEL TRAMITE SELECCIONADO
-            $(document).on('change','#tramite', function(e) {
+            $(document).on('change','.tramite', function(e) {
                 calcular();
             });
 
@@ -588,7 +646,6 @@
             $(document).on('keyup','.debitado', function(e) {
                 var id = $(this).attr('id');
                 var value = $(this).val();
-                var tramite = $("#tramite").val();
                 var otro_debito = 0;
 
                 if (id == 'debitado_1') {
@@ -596,27 +653,34 @@
                 }else{
                     otro_debito = $("#debitado_1").val();
                 }
-                console.log(id+'/'+otro_debito);
 
-                if (value != '') {
-                    $.ajax({
-                        headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') },
-                        type: 'POST',
-                        url: '{{route("venta.debitado") }}',
-                        data: {value:value,tramite:tramite,otro_debito:otro_debito},
-                        success: function(response) {
-                            console.log(response);
-                            $('#debitado').html(response.debito);
-                            $('#diferencia').html(response.diferencia);
-                            $('#vuelto').html(response.vuelto);
-                        },
-                        error: function() {
+                var tramites = [];
+                $('.tramite').each(function(){
+                    var t = $(this).val();
+                    tramites.push(t);
+                });
+                
+                $.ajax({
+                    headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') },
+                    type: 'POST',
+                    url: '{{route("venta.debitado") }}',
+                    data: {value:value,tramites:tramites,otro_debito:otro_debito},
+                    success: function(response) {
+                        console.log(response);
+                        $('#debitado').html(response.debito);
+                        $('#diferencia').html(response.diferencia);
+                        $('#vuelto').html(response.vuelto);
+
+                        if (response.submit) {
+                            $('#btn_submit_venta').attr('disabled', false);
+                        }else{
+                            $('#btn_submit_venta').attr('disabled', true);
                         }
-                    });
-                }else{
-                    $('#debitado').html('0.00');
-                    $('#vuelto').html('0.00');
-                }
+                    },
+                    error: function() {
+                    }
+                });
+               
                 
             });
             
@@ -639,24 +703,61 @@
         });
 
         function calcular(){
-            var value = $("#tramite").val();
+            var tramites = [];
+            $('.tramite').each(function(){
+                var t = $(this).val();
+                tramites.push(t);
+            });
 
             $.ajax({
                 headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') },
                 type: 'POST',
                 url: '{{route("venta.total") }}',
-                data: {value:value},
+                data: {tramites:tramites},
                 success: function(response) {
-                    console.log(response);
+                    // console.log(response);
                     $('#ucd').html(response.ucd);
                     $('#bolivares').html(response.bolivares);
                     $('#diferencia').html(response.bolivares);
+
+                    $('.debitado').val('');
+                    $('.comprobante').val('');
+
+                    $('#debitado').html('0.00');
+                    $('#vuelto').html('0.00');
+                    
                 },
                 error: function() {
                 }
             });
 
             // console.log(tramites);
+        }
+
+        function ventaF14(){
+            var formData = new FormData(document.getElementById("form_venta_f14"));
+            // console.log("alo");
+            $.ajax({
+                headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') },
+                url:'{{route("venta.venta_f14") }}',
+                type:'POST',
+                contentType:false,
+                cache:false,
+                processData:false,
+                async: true,
+                data: formData,
+                success: function(response){
+                    console.log(response);
+                    if (response.success) {
+                       
+                    }else{
+                        alert(response.nota);
+                    }
+                },
+                error: function(error){
+                    
+                }
+            });
         }
 
     </script>

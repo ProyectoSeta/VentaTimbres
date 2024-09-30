@@ -13,11 +13,28 @@ class TiposSeeder extends Seeder
      */
     public function run(): void
     {
+        ///////////TIPOS DE USUARIOS
         DB::table('tipos')->insert([
             'nombre_tipo' => 'Contribuyente',
         ]);
         DB::table('tipos')->insert([
             'nombre_tipo' => 'Funcionario',
+        ]);
+
+        /////////////TIPO DE VENTA TIMBRES
+        DB::table('tipos')->insert([
+            'nombre_tipo' => 'Forma14',
+        ]); 
+        DB::table('tipos')->insert([
+            'nombre_tipo' => 'Estampilla',
+        ]);
+
+        //////////METODOS DE PAGO
+        DB::table('tipos')->insert([
+            'nombre_tipo' => 'Punto',
+        ]); 
+        DB::table('tipos')->insert([
+            'nombre_tipo' => 'Efectivo',
         ]);
     }
 }

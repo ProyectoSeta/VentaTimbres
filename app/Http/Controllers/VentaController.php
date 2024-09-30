@@ -25,10 +25,7 @@ class VentaController extends Controller
     /**
      * Show the form for creating a new resource.
      */
-    public function create()
-    {
-        //
-    }
+   
 
     /**
      * Store a newly created resource in storage.
@@ -87,16 +84,18 @@ class VentaController extends Controller
 
     public function total(Request $request)
     {
-        $tramite = $request->post('value');
+        $tramites = $request->post('tramites');
         $ucd =  DB::table('ucds')->select('valor')->orderBy('id', 'desc')->first();
         $valor_ucd = $ucd->valor;
         $total_ucd = 0; 
 
-        if ($tramite != '') {
-            $consulta = DB::table('tramites')->select('ucd')->where('id_tramite','=', $tramite)->first();
-            $ucd_tramite = $consulta->ucd;
+        foreach ($tramites as $tramite) {
+            if ($tramite != '') {
+                $consulta = DB::table('tramites')->select('ucd')->where('id_tramite','=', $tramite)->first();
+                $ucd_tramite = $consulta->ucd;
 
-            $total_ucd = $total_ucd + $ucd_tramite;
+                $total_ucd = $total_ucd + $ucd_tramite;
+            }
         }
 
         $total_bolivares = $total_ucd * $valor_ucd;
@@ -113,23 +112,29 @@ class VentaController extends Controller
         $value = $request->post('value');
         $otro_debito = $request->post('otro_debito');
         $debito = 0;
+        $total_ucd = 0; 
+        $vuelto = 0;
+        $diferencia = 0;
 
         if ($otro_debito != '') {
             $debito = $value + $otro_debito;
         }else{
             $debito = $value;
         }
-        
-        $tramite = $request->post('tramite');
-        $vuelto = 0;
-        $diferencia = 0;
 
         $ucd =  DB::table('ucds')->select('valor')->orderBy('id', 'desc')->first();
         $valor_ucd = $ucd->valor;
-
-        $consulta = DB::table('tramites')->select('ucd')->where('id_tramite','=', $tramite)->first();
-        $total_ucd = $consulta->ucd;
-
+        
+        $tramites = $request->post('tramites');
+        foreach ($tramites as $tramite) {
+            if ($tramite != '') {
+                $consulta = DB::table('tramites')->select('ucd')->where('id_tramite','=', $tramite)->first();
+                $ucd_tramite = $consulta->ucd;
+    
+                $total_ucd = $total_ucd + $ucd_tramite;
+            }
+        }
+        
         $total_bolivares = $total_ucd * $valor_ucd;
 
         
@@ -139,11 +144,20 @@ class VentaController extends Controller
         }else{
             $diferencia = $total_bolivares - $debito;
         }
+
+
         $deb = number_format($debito, 2, '.', ' ');
         $dif = number_format($diferencia, 2, '.', ' ');
         $v = number_format($vuelto, 2, '.', ' ');
 
-        return response()->json(['success' => true, 'debito' => $deb, 'diferencia' => $dif, 'vuelto' => $v]);
+        $submit = '';
+        if ($debito >= $total_bolivares) {
+            $submit = true;
+        }else{
+            $submit = false;
+        }
+
+        return response()->json(['success' => true, 'debito' => $deb, 'diferencia' => $dif, 'vuelto' => $v, 'submit' => $submit]);
          
     }
 
@@ -176,7 +190,73 @@ class VentaController extends Controller
     }
 
 
+    public function venta_f14(Request $request)
+    {
+        $user = auth()->id();
+        $query =  DB::table('taquillas')->select('id_taquilla')->where('id_user','=', $user)->first();
+        if ($query) {
+            $id_taquilla = $query->id_taquilla;
 
+            $condicion = $request->post('identidad_condicion');
+            $nro = $request->post('identidad_nro');
+            $tramites = $request->post('tramites');
+            
+            $metodo = $request->post('metodo_one');
+            $comprobante = $request->post('comprobante_one');
+            $debitado = $request->post('debitado_one');
+
+            if ($condicion == '' || $nro == '' || $debitado == 0) {
+                return response()->json(['success' => false, 'nota' => 'Por favor, Ingrese todos los datos requeridos.']);
+            }else{
+                if ($metodo == 'punto' && strlen($comprobante) < 4) {
+                    return response()->json(['success' => false, 'nota' => 'El No. de Comprobante debe tener mínimo 4 caracteres.']);
+                }else{
+                    ///////////////////////////////// VERIFICACION DE LOS TRAMITES
+                    $contador = 0;
+                    foreach ($tramites as $tramite) {
+                        $contador = $contador++;
+                        if ($contador == 1 && $tramite == '') {
+                            return response()->json(['success' => false, 'nota' => 'Disculpe, debe seleccionar el tramite para la venta del timbre.']);
+                            break;
+                        }
+                    }
+                    /////////////////////////////////////////////////////////////
+
+                    $consulta = DB::table('contribuyentes')->select('id_contribuyente')->where('identidad_condicion','=', $condicion)->where('identidad_nro','=', $nro)->first();
+                    if($consulta){
+                        $id_contribuyente = $consulta->id_contribuyente;
+
+                        $ucd =  DB::table('ucds')->select('id','valor')->orderBy('id', 'desc')->first();
+                        $valor_ucd = $ucd->valor;
+                        $id_ucd = $ucd->id;
+
+                        $insert_venta = DB::table('ventas')->insert(['type' =>  3,
+                                                                    'key_user' => $user,
+                                                                    'key_taquilla' => $id_taquilla,
+                                                                    'key_contribuyente' => $id_contribuyente,
+                                                                    'key_ucd' => $id_ucd]);
+                        if ($insert_venta) {
+                            $id_venta = DB::table('ventas')->max('id_venta');
+                            
+                            foreach ($tramites as $tramite) {
+                                ////*************************** */
+                            }
+
+                        }else{
+                            return response()->json(['success' => false]);
+                        }
+
+                    }else{
+                        return response()->json(['success' => false, 'nota' => 'Disculpe, el Contribuyente no se encuentra registrado.']);
+                    }//////
+                }//////
+            }////////
+        }else{
+
+            return response()->json(['success' => false, 'nota' => 'Disculpe, su usuario debe estar asociado a una Taquilla para que la venta se puede realizar.']);
+        }
+
+    }
 
     /**
      * Update the specified resource in storage.
