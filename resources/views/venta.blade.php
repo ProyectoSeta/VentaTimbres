@@ -195,7 +195,7 @@
                         </div>
                         <!--  -->
                         <div class="">
-                            <h5 class="titulo fw-bold text-success fs-4 mt-4 mb-3">Cancelado</h5>
+                            <h5 class="titulo fw-bold text-success fs-4 mt-4 mb-3">Pagado</h5>
                             <div class="d-flex flex-column">
                                 <div class="bg-body-secondary rounded-3 px-3 py-1 mb-2">
                                     <div class="d-flex justify-content-between align-items-center">
@@ -274,16 +274,130 @@
     </div>
 
     <div class="modal fade" id="modal_timbre_impreso" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-        <div class="modal-dialog modal-lg">
+        <div class="modal-dialog ">
             <div class="modal-content" id="content_timbre_impreso">
                 <div class="modal-header">
                     <!-- <i class='bx bx-error-circle fs-2  me-2'></i> -->
+                    <h1 class="modal-title fs-5 fw-bold text-navy">Timbre Fiscal | <span class="text-muted">Emitido</span></h1>
+                </div>
+                <div class="modal-body px-4 py-3" style="font-size:13px">
+                    <div class="">
+                        <div class="row d-flex align-items-center">
+                            <div class="col-lg-12">
+                                <div class="d-flex justify-content-between align-items-center my-3">
+                                    <div class="w-25 d-flex justify-content-center">
+                                        <img src="{{asset('assets/aragua.png')}}" class="img-fluid" alt="" width="90px">
+                                    </div>
+                                    <div class="text-center w-50 px-3">
+                                        <span class="fw-bold">TIMBRE FISCAL ELECTRÓNICO</span><br>
+                                        <span class="fw-bold">FORMA 14-TFE</span><br>
+                                        <span>PARA ABONAR A LAS CUENTAS DEL GOBIERNO BOLIVARIANO DE VENEZUELA</span>
+                                    </div>
+                                    <div class="w-25">
+                                        <img src="{{asset('assets/logo_seta.png')}}" class="img-fluid" alt="" width="120px">
+                                    </div>
+                                </div>
+                                
+                                <div class="text-danger fw-bold fs-4 text-end" id="">A-8001002</div>
+                                
+                                <!-- <div class="text-center mb-3 fw-bold titulo">
+                                    <div class="my-0 py-0 TEXT">Venta Timbre Fiscal</div>
+                                    <div class="my-0 py-0 text-navy fs-5">FORMA 14-TFE</div>
+                                </div> -->
+
+                                <div class="fw-bold px-3">
+                                    <p class="mb-0">
+                                        <span>FECHA DE EMISIÓN: </span>
+                                        <span class="text-muted">13/03/2024</span>
+                                    </p>
+                                    <p class="mb-0">
+                                        <span>CÉDULA DE IDENTIDAD: </span>
+                                        <span class="text-muted">V123456</span>
+                                    </p>
+                                    <p class="mb-0">
+                                        <span>NOMBRE O RAZÓN SOCIAL: </span>
+                                        <span class="text-muted">PRUEBA UNO</span>
+                                    </p>
+                                    <p class="mb-0">
+                                        <span>TAQUILLA: </span>
+                                        <span class="text-muted">004</span>
+                                    </p>
+                                    <p class="mb-0">
+                                        <span>ENTE: </span>
+                                        <span class="text-muted">Registro</span>
+                                    </p>
+                                    <p class="mb-0">
+                                        <span>TRÁMITE: </span>
+                                        <span class="text-muted">Registro de Título Universitario</span>
+                                    </p>
+                                    <p class="mb-0">
+                                        <span>CANTIDAD DE UCD: </span>
+                                        <span class="text-muted">2</span>
+                                    </p>
+                                    <p class="mb-0">
+                                        <span>MONTO A PAGAR: </span>
+                                        <span class="text-muted">Bs. 81,92</span>
+                                    </p>
+                                </div>
+
+                
+                                
+                                <div class="d-flex justify-content-end flex-column text-center mb-2 mt-4">
+                                    <div>
+                                        <img src="{{asset('assets/qrcode_G1.png')}}" class="img-fluid" alt="" width="120px">
+                                        <div class="d-flex justify-content-end flex-column text-center">
+                                            <p class="text-secondary fw-bold mt-2 mb-0 ">VALIDO HASTA</p>
+                                            <p class="text-secondary">23/03/2024</p>
+                                        </div>
+                                       
+                                    </div>
+                                </div>
+                                
+            
+                                <div class="fs-6 text-secondary text-center titulo ">
+                                    <p class="">GOBIERNO BOLIVARIANO DEL ESTADO ARAGUA</p>
+                                </div>
+                                
+                                    
+                                </div>
+                            </div>
+
+                            <!--  -->
+
+                            <!-- <div class="col-lg-4">
+                                <div class="d-flex justify-content-center">
+                                    <img src="{{asset('assets/timbre.png')}}" class="img-fluid mt-3" alt="" width="180px">
+                                </div>
+
+                                <div class="text-end mt-3">
+                                    <a href="#" data-bs-toggle="modal" data-bs-target="#modal_papel_dañado">¿Papel dañado?</a>
+                                </div>
+                            </div> -->
+                        </div>
+
+                        <!-- cerrar modal -->
+                        <!-- <div class="d-flex justify-content-center my-3">
+                            <button type="button" class="btn btn-secondary btn-sm" data-bs-dismiss="modal">Listo</button>
+                        </div> -->
+                    </div>
+                    
+                </div>
+            </div>  <!-- cierra modal-content -->
+        </div>  <!-- cierra modal-dialog -->
+    </div>
+
+
+    <!-- <div class="modal fade" id="modal_timbre_impreso" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog ">
+            <div class="modal-content" id="content_timbre_impreso">
+                <div class="modal-header">
+                    
                     <h1 class="modal-title fs-5 fw-bold text-navy">Timbre Fiscal</h1>
                 </div>
                 <div class="modal-body px-5 py-3" style="font-size:13px">
                     <div class="">
                         <div class="row d-flex align-items-center">
-                            <div class="col-lg-8">
+                            <div class="col-lg-12">
                                 <div class="d-flex justify-content-between align-items-center my-3">
                                     <div>
                                         <img src="{{asset('assets/logo_seta.png')}}" class="img-fluid" alt="" width="120px">
@@ -298,7 +412,7 @@
                                     <div class="my-0 py-0 text-navy fs-5">FORMA 14-TFE</div>
                                 </div>
 
-                                <!-- datos de la venta -->
+                                
                                 <div style="font-size:14px">
                                     <div class="row">
                                         <div class="col-6">
@@ -351,7 +465,7 @@
                                 </div>
                             </div>
 
-                            <!--  -->
+                            
 
                             <div class="col-lg-4">
                                 <div class="d-flex justify-content-center">
@@ -361,19 +475,19 @@
                                 <div class="text-end mt-3">
                                     <a href="#" data-bs-toggle="modal" data-bs-target="#modal_papel_dañado">¿Papel dañado?</a>
                                 </div>
-                            </div>
+                            </div> 
                         </div>
 
-                        <!-- cerrar modal -->
+                        
                         <div class="d-flex justify-content-center my-3">
                             <button type="button" class="btn btn-secondary btn-sm" data-bs-dismiss="modal">Listo</button>
                         </div>
                     </div>
                     
                 </div>
-            </div>  <!-- cierra modal-content -->
-        </div>  <!-- cierra modal-dialog -->
-    </div>
+            </div>  
+        </div>  
+    </div> -->
 <!-- *********************************************************************************************************************** -->
 
 @stop

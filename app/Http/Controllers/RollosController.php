@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers;
 use DB;
+// use PDF;
+use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Http\Request;
 
 class RollosController extends Controller
@@ -14,16 +16,89 @@ class RollosController extends Controller
      * Display a listing of the resource.
      */
     public function index()
-    {
-        return view('emision_rollos');
+    {   
+        $query = [];
+        $total = DB::table('emision_rollos')->selectRaw("count(*) as total")->where('ingreso_inventario','=',null)->first();
+        $contador = 0;
+        $consulta =  DB::table('emision_rollos')->where('ingreso_inventario','=',null)->get();
+
+        foreach ($consulta as $c) {
+            $contador++;
+            $ultimo = false;
+
+            if ($contador == $total->total) {
+                $ultimo = true;
+            }
+
+            $array = array(
+                'id_emision' => $c->id_emision,
+                'fecha_emision' => $c->fecha_emision,
+                'cantidad' => $c->cantidad,
+                'ultimo' => $ultimo
+            );
+
+            $a = (object) $array;
+            array_push($query,$a);
+            
+        }
+
+        return view('emision_rollos', compact('query'));
     }
 
     /**
      * Show the form for creating a new resource.
      */
-    public function create()
+    public function modal_enviar(Request $request)
     {
-        //
+        $emision = $request->post('emision'); 
+        $tr = '';
+        $query =  DB::table('detalle_emision_rollos')->where('key_emision', '=', $emision)->get();
+        $i = 0;
+        foreach ($query as $detalle) {
+            $i++;
+            $desde = $detalle->desde;
+            $hasta = $detalle->hasta;
+
+            $length = 6;
+            $formato_desde = substr(str_repeat(0, $length).$desde, - $length);
+            $formato_hasta = substr(str_repeat(0, $length).$hasta, - $length);
+
+            $tr .= '<tr>
+                        <td>'.$i.'</td>
+                        <td>A-'.$formato_desde.'</td>
+                        <td>A-'.$formato_hasta.'</td>
+                    </tr>';
+        }
+
+        $html = '<div class="modal-header p-2 pt-3 d-flex justify-content-center">
+                    <div class="text-center">
+                        
+                        <i class="bx bxs-layer-plus fs-2 text-muted me-2"></i>
+                        <h1 class="modal-title fs-5 fw-bold text-navy">Enviar a Inventario</h1>
+                        <span class="text-muted fw-bold">Rollos | Forma 14 </span>
+                    </div>
+                </div>
+                <div class="modal-body px-5 py-3" style="font-size:13px">
+                    <form id="form_enviar_inventario" method="post" onsubmit="event.preventDefault(); enviarRollosInventario()">
+                        <table class="table text-center">
+                                <tr>
+                                    <th>#</th>
+                                    <th>Desde</th>
+                                    <th>Hasta</th>
+                                </tr>
+                                '.$tr.'
+                            </table>
+
+                        <input type="hidden" name="emision" value="'.$emision.'">
+
+                        <div class="d-flex justify-content-center mt-3 mb-3">
+                            <button type="button" class="btn btn-secondary btn-sm me-2" data-bs-dismiss="modal">Cancelar</button>
+                            <button type="submit" class="btn btn-success btn-sm" id="btn_enviar_inventario">Aceptar</button>
+                        </div>
+                    </form>
+                </div>';
+
+        return response($html);
     }
 
     /**
@@ -40,21 +115,25 @@ class RollosController extends Controller
         $consulta = DB::table('emision_rollos')->selectRaw("count(*) as total")->first();
         if ($consulta->total != 0) {
             //////ya se han emitido rollos
-            $query =  DB::table('emision_rollos')->select('id_emision')->orderBy('id', 'desc')->first();
-            $consulta_2 =  DB::table('detalle_emision_rollos')->select('hasta')->where('key_emision','=',$query->id_emision)->first();
+            $query =  DB::table('emision_rollos')->select('id_emision')->orderBy('id_emision', 'desc')->first();
+
+            $consulta_2 =  DB::table('detalle_emision_rollos')->select('hasta')->where('key_emision','=',$query->id_emision)->orderBy('correlativo', 'desc')->first();
 
             $desde = $consulta_2->hasta + 1;
         }else{
             /////primer lote a emitir
             $desde = 1;
         }
-        
+    
         $insert_emision = DB::table('emision_rollos')->insert(['key_user' => $user,'cantidad' => $cantidad]);   
         if ($insert_emision) {
             $id_emision = DB::table('emision_rollos')->max('id_emision');
-
-            for ($i=1; $i >= $cantidad; $i++) { 
-                $hasta = ($desde + 160) - 1;
+            
+            
+            for($i=1; $i <= $cantidad; $i++) { 
+                $hasta = ($desde + 160) - 1; 
+                
+                
                 $insert_detalle = DB::table('detalle_emision_rollos')->insert([
                             'key_emision' => $id_emision,
                             'desde' => $desde,
@@ -98,8 +177,8 @@ class RollosController extends Controller
                         </div>
 
                         <div class="d-flex justify-content-center mb-3">
-                            <button type="button" class="btn btn-secondary btn-sm me-2" data-bs-dismiss="modal">Cancelar</button>
-                            <a href="" class="btn btn-dark btn-sm"  style="font-size:12.7px">Imprimir</a>
+                            <a href="'.route("emision_rollos").'" class="btn btn-secondary btn-sm me-2">Cancelar</a>
+                            <a href="'.route("rollos.pdf", ["emision" => $id_emision]).'" class="btn btn-dark btn-sm"  style="font-size:12.7px">Imprimir</a>
                         </div>
                     </div>';
             return response()->json(['success' => true, 'html' => $html]);
@@ -107,25 +186,75 @@ class RollosController extends Controller
             return response()->json(['success' => false]);
         }
         
-        
-       
 
     }
 
     /**
      * Display the specified resource.
      */
-    public function show(string $id)
+    public function pdf(Request $request)
     {
-        //
+        $emision = $request->emision;
+        $dia = date('d');
+        $mes = date('m');
+        $year = date('Y');
+        $tr = '';
+        $length = 6;
+        $correlativo = [];
+        $query =  DB::table('detalle_emision_rollos')->where('key_emision', '=', $emision)->get();
+        $c = 0;
+        foreach ($query as $detalle) {
+            $c++;
+            $desde = $detalle->desde;
+            $hasta = $detalle->hasta;
+
+            
+            $formato_desde = substr(str_repeat(0, $length).$desde, - $length);
+            $formato_hasta = substr(str_repeat(0, $length).$hasta, - $length);
+
+            $array = array(
+                        'id' => $c,
+                        'desde' => $formato_desde,
+                        'hasta' => $formato_hasta
+                    );
+            $a = (object) $array;
+            array_push($correlativo,$a);
+
+        }
+
+        $pdf = PDF::loadView('pdfRollosEmitidos', compact('correlativo'));
+
+        return $pdf->download('Rollos_'.$year.''.$mes.''.$dia.'.pdf');
+
     }
 
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit(string $id)
+    public function enviar_inventario(Request $request)
     {
-        //
+        $emision = $request->post('emision'); 
+        $query =  DB::table('detalle_emision_rollos')->where('key_emision', '=', $emision)->get();
+
+        foreach ($query as $detalle) {
+            $insert_inv = DB::table('inventario_rollos')->insert([
+                        'key_emision' => $emision,
+                        'desde' => $detalle->desde,
+                        'hasta' => $detalle->hasta,
+                        'estado' => 1,]); 
+            if ($insert_inv) {
+                # code...
+            }else{
+                return response()->json(['success' => false]);
+            }
+        }
+        $hoy = date('Y-m-d');
+        $update = DB::table('emision_rollos')->where('id_emision', '=', $emision)->update(['ingreso_inventario' => $hoy]);
+
+        ///////BITACORA
+
+        return response()->json(['success' => true]);
+
     }
 
     /**

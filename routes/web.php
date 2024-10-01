@@ -40,4 +40,7 @@ Route::post('/venta_f14', [App\Http\Controllers\VentaController::class, 'venta_f
 ///////////////////// ROLLOS FORMA 14
 Route::get('/emision_rollos', [App\Http\Controllers\RollosController::class, 'index'])->name('emision_rollos');
 Route::post('/emitir', [App\Http\Controllers\RollosController::class, 'emitir'])->name('rollos.emitir');
-
+Route::post('/modal_enviar', [App\Http\Controllers\RollosController::class, 'modal_enviar'])->name('rollos.modal_enviar');
+Route::post('/enviar_inventario', [App\Http\Controllers\RollosController::class, 'enviar_inventario'])->name('rollos.enviar_inventario');
+/////////PDF: ROLLOS A EMITIR
+Route::get('/pdf', [App\Http\Controllers\RollosController::class, 'pdf'])->name('rollos.pdf');

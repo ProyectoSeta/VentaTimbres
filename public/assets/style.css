@@ -72,6 +72,8 @@
     background: #f8fafc;
     border-left: 1px solid #000;
     animation: escribir 5s steps(30)  alternate;
+
+   
 }
 
 @keyframes escribir {
@@ -83,3 +85,4 @@
 .show>.nav-pills .nav-link{
     background: #022040 !important
 }
+
