@@ -1,12 +1,12 @@
 @extends('adminlte::page')
 
-@section('title', 'Emisión Rollos')
+@section('title', 'Asignación Timbres')
 
 @section('content_header')
     
     <script src="{{ asset('jss/bundle.js') }}" defer></script>
     <link href="{{asset('css/datatable.min.css') }}" rel="stylesheet">
-    <script src="{{asset('vendor/sweetalert.js') }}"></script>
+    <!-- <script src="{{asset('vendor/sweetalert.js') }}"></script> -->
     <script src="{{ asset('jss/jquery-3.5.1.js') }}" ></script>
 
     <!-- <img src="{{asset('assets/bf-1.svg')}}" class="w-100" alt="..."> -->
@@ -14,18 +14,16 @@
 
 @section('content')
     
-    <div class="container rounded-4 p-3" style="background-color:#ffff;">
-        <div class="d-flex justify-content-between align-items-center mb-2">
-            <h3 class="mb-3 text-navy titulo fw-bold">Emitiendo <span class="text-secondary fs-4">| Rollos TFE 14</span></h3>
+    <div class="container rounded-4 p-3 px-0" style="background-color:#ffff;">
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <h3 class="mb-3 text-navy titulo fw-bold">Asignación de Timbres <span class="text-secondary fs-4">| Taquillas</span></h3>
             <div class="mb-3">
-                <button type="button" class="btn bg-navy rounded-pill px-3 btn-sm fw-bold d-flex align-items-center" id="" data-bs-toggle="modal" data-bs-target="#modal_emitir_rollos">
+                <button type="button" class="btn bg-navy rounded-pill px-3 btn-sm fw-bold d-flex align-items-center" id="" data-bs-toggle="modal" data-bs-target="#">
                     <i class='bx bx-plus fw-bold fs-6 pe-2'></i>
-                    <span>Emitir</span>
+                    <span>Asignar</span>
                 </button>
             </div>
         </div>
-
-        
 
         <div class="table-responsive" style="font-size:12.7px">
             <table id="example" class="table text-center border-light-subtle" style="font-size:12.7px">
@@ -38,39 +36,93 @@
                     <th>Opciones</th> 
                 </thead>
                 <tbody id="" class="border-light-subtle"> 
-                    @foreach ($query as $emision)
-                        <tr>
-                            <td>{{$emision->id_emision}}</td>
-                            <td class="text-secondary">{{$emision->fecha_emision}}</td>
-                            <td class="text-navy fw-bold">{{$emision->cantidad}} Rollos</td>
-                            <td>
-                                <a href="#">Ver</a>
-                            </td>
-                            <td>
-                                <span class="badge bg-primary-subtle border border-primary-subtle text-primary-emphasis rounded-pill" style="font-size:12px">En Proceso</span>
-                            </td>
-                            <td class="d-flex align-items-center justify-content-center">
-                                
-                                @if ($emision->ultimo == true)
-                                    <span class="badge py-1 delete_solicitud" style="background-color: #ed0000;" role="button" >
-                                        <i class="bx bx-trash-alt fs-6"></i>
-                                    </span> 
-                                @else
-                                    <span class="badge py-1" style="background-color: #ed00008c;">
-                                        <i class="bx bx-trash-alt fs-6"></i>
-                                    </span> 
-                                @endif
-
-                                <button class="btn btn-sm btn-primary enviar_inventario d-inline-flex align-items-center ms-2" emision="{{$emision->id_emision}}" title="Enviar a Inventario" type="button" data-bs-toggle="modal" data-bs-target="#modal_enviar_inventario">
-                                    <i class='bx bxs-chevron-right'></i>
-                                </button>
-                            </td>
-                        </tr>
-                    @endforeach
+                    
                   
                 </tbody> 
             </table>
         </div>
+
+        
+
+        <div class="">
+            <h2 class="text-navy fw-bold titulo mb-3 text-center"><span class="text-secondary">Sede | </span>Principal </h2>
+            <div class="row align-items-md-stretch">
+                <div class="col-lg-6">
+                    <div class="border h-100 rounded-4 d-flex justify-content-between px-3 py-3">
+                        <!-- titulo -->
+                        <div class="">
+                            <div class="text-navy d-flex justify-content-betwee flex-column">
+                                <h2 class="fw-bold titulo">Taquilla</h2>
+                                <h2 class="fw-bold text-primary titulo">ID 001</h2>
+                            </div>
+
+                            <div class="d-flex justify-content-between ">
+                                <span class="fs-6">Funcionario</span>
+                                <span class="fs-6">Victor Acosta</span>
+                            </div>
+                        </div>
+                        <!-- inventario -->
+                        <div class="d-flex">
+                            <div class="row d-flex justify-content-center  mb-0">
+                                <div class="col-sm-6 text-center">
+                                    <h5 class="fw-bold">TFE 14</h5>
+                                    <div class="border rounded-4 p-3" role="button">
+                                        <h3 class="text-navy fw-bold">1222</h3>
+                                        <span style="font-size:13px">Unidades</span>
+                                    </div>
+                                </div>
+                                <div class="col-sm-6 text-center">
+                                <h5 class="fw-bold">Estampillas</h5>
+                                    <div class="border rounded-4 p-3" role="button">
+                                        <h3 class="text-navy fw-bold">114</h3>
+                                        <span style="font-size:13px">Unidades</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div><!-- cierra inventario -->
+                    </div><!-- cierra border -->
+                </div>
+                <div class="col-lg-6">
+                    <div class="border h-100 rounded-4 d-flex justify-content-between px-3 py-3">
+                        <!-- titulo -->
+                        <div class="">
+                            <div class="text-navy d-flex justify-content-betwee flex-column">
+                                <h2 class="fw-bold titulo">Taquilla</h2>
+                                <h2 class="fw-bold text-primary titulo">ID 002</h2>
+                            </div>
+
+                            <div class="d-flex justify-content-between ">
+                                <span class="fs-6">Funcionario</span>
+                                <span class="fs-6">Victor Acosta</span>
+                            </div>
+                        </div>
+                        <!-- inventario -->
+                        <div class="d-flex">
+                            <div class="row d-flex justify-content-center  mb-0">
+                                <div class="col-sm-6 text-center">
+                                    <h5 class="fw-bold">TFE 14</h5>
+                                    <div class="border rounded-4 p-3" role="button">
+                                        <h3 class="text-navy fw-bold">1222</h3>
+                                        <span style="font-size:13px">Unidades</span>
+                                    </div>
+                                </div>
+                                <div class="col-sm-6 text-center">
+                                <h5 class="fw-bold">Estampillas</h5>
+                                    <div class="border rounded-4 p-3" role="button">
+                                        <h3 class="text-navy fw-bold">114</h3>
+                                        <span style="font-size:13px">Unidades</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div><!-- cierra inventario -->
+                    </div><!-- cierra border -->
+                </div>
+            </div>
+        </div>
+
+        
+
+       
     </div>
     
     
@@ -197,86 +249,11 @@
 
 <script type="text/javascript">
     $(document).ready(function () {
-          /////////////////////////// MODAL ENVIAR A INVENTARIO
-          $(document).on('click','.enviar_inventario', function(e) {
-                e.preventDefault();
-                var emision = $(this).attr('emision');
-                $('#btn_enviar_inventario').attr('disabled', true);
-
-                $.ajax({
-                    headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') },
-                    type: 'POST',
-                    url: '{{route("rollos.modal_enviar") }}',
-                    data: {emision:emision},
-                    success: function(response) {
-                        console.log(response);
-                        $('#content_enviar_inventario').html(response);
-
-                    },
-                    error: function() {
-                    }
-                });
-            });
-
+      
+              
     });
 
-    function emitirRollos(){
-        var formData = new FormData(document.getElementById("form_emitir_rollos"));
-            $.ajax({
-                headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') },
-                url:'{{route("rollos.emitir") }}',
-                type:'POST',
-                contentType:false,
-                cache:false,
-                processData:false,
-                async: true,
-                data: formData,
-                success: function(response){
-                    console.log(response);
-                    if (response.success) {
-                        $('#modal_emitir_rollos').modal('hide');
-                        $('#modal_correlativo_rollos').modal('show');
-                        $('#content_correlativo_rollos').html(response.html);
-                       
-                    }else{
-                        alert('Disculpe, ha ocurrido un error en la Emisión de Rollos.');
-                    }  
-
-                },
-                error: function(error){
-                    
-                }
-            });
-    }
-
-
-    function enviarRollosInventario(){
-        var formData = new FormData(document.getElementById("form_enviar_inventario"));
-        $.ajax({
-            headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') },
-            url:'{{route("rollos.enviar_inventario") }}',
-            type:'POST',
-            contentType:false,
-            cache:false,
-            processData:false,
-            async: true,
-            data: formData,
-            success: function(response){
-                console.log(response);
-                if (response.success) {
-                    alert('LOS ROLLOS SE HAN ENVIADO AL INVENTARIO EXITOSAMENTE');
-                    window.location.href = "{{ route('emision_rollos')}}";
-                }else{
-                    alert('Disculpe, ha ocurrido un error.');
-                }  
-
-            },
-            error: function(error){
-                
-            }
-        });
-    }
-
+    
 
     </script>
 

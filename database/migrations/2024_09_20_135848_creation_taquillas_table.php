@@ -14,11 +14,11 @@ return new class extends Migration
         Schema::create('taquillas', function (Blueprint $table) {
             $table->increments('id_taquilla');
 
-            $table->integer('sede')->unsigned();
-            $table->foreign('sede')->references('id_tipo')->on('tipos')->onDelete('cascade');
+            $table->integer('key_sede')->unsigned();
+            $table->foreign('key_sede')->references('id_sede')->on('sedes')->onDelete('cascade');
 
             $table->integer('key_funcionario')->unsigned();
-            $table->foreign('key_funcionario')->references('id_tipo')->on('tipos')->onDelete('cascade');
+            $table->foreign('key_funcionario')->references('id_funcionario')->on('funcionarios')->onDelete('cascade');
 
             $table->timestamps();
         });

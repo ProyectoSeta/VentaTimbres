@@ -330,15 +330,42 @@ return [
         //     'label'       => 4,
         //     'label_color' => 'success',
         // ],
-        ['header' => 'Rollos'],
+        ['header' => 'Emisión'],
         [
-            'text'        => 'Emisión',
+            'text'        => 'Rollos TFE 14',
             'route'         => 'emision_rollos',
             'icon'       => 'fas fa-angle-right pe-2',   
             // 'label'       => 4,
             // 'label_color' => 'success',
         ],
-        
+        [
+            'text'        => 'Estampillas',
+            'route'         => '',
+            'icon'       => 'fas fa-angle-right pe-2',   
+            // 'label'       => 4,
+            // 'label_color' => 'success',
+        ],
+
+        ['header' => 'Asignaciones'],
+        [
+            'text'        => 'Asignar Timbres',
+            'route'         => 'asignar',
+            'icon'       => 'fas fa-angle-right pe-2',   
+            // 'label'       => 4,
+            // 'label_color' => 'success',
+        ],
+
+
+
+
+
+
+
+
+
+
+
+
         // ['header' => 'Solicitud de Guías'],
         // [
         //     'text' => ' Nueva Solicitud',

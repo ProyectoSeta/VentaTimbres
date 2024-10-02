@@ -20,6 +20,15 @@ class ClasificacionSeeder extends Seeder
             'nombre_clf' => 'Asignado',
         ]);
 
+
+        DB::table('clasificacions')->insert([
+            'nombre_clf' => 'En Uso',
+        ]);
+        DB::table('clasificacions')->insert([
+            'nombre_clf' => 'Reserva',
+        ]);
+        
+
         ////////MODULO
         DB::table('clasificacions')->insert([
             'nombre_clf' => 'Rollos',
