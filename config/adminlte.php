@@ -354,6 +354,13 @@ return [
             // 'label'       => 4,
             // 'label_color' => 'success',
         ],
+        [
+            'text'        => 'Asignados a Taquilla',
+            'route'         => 'timbres_asignados',
+            'icon'       => 'fas fa-angle-right pe-2',   
+            // 'label'       => 4,
+            // 'label_color' => 'success',
+        ],
 
 
 

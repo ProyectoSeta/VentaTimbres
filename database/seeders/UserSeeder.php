@@ -19,9 +19,13 @@ class UserSeeder extends Seeder
             'email' => 'administrador@gmail.com',
             'password' => Hash::make($pass),
             'type' => 2,
-            'key_sujeto' => 1,
+            'key_sujeto' => 1, /////funcionario id 1 admin
         ]);
 
+
+
+
+        ////////////SUJETO PRUEBA CONTRIBUYENTE
         DB::table('contribuyentes')->insert([
             'identidad_condicion' => 'V',
             'identidad_nro' =>'123456',
@@ -30,12 +34,29 @@ class UserSeeder extends Seeder
 
         $pass = 'Hola45.';
         DB::table('users')->insert([
-            'email' => 'prueba@gmail.com',
+            'email' => 'prueba_uno@gmail.com',
             'password' => Hash::make($pass),
             'type' => 1,
-            'key_sujeto' => 2,
+            'key_sujeto' => 1,
         ]);
 
+
+        /////////SUJETOS TAQUILLEROS PRUEBA 
+        $pass = '123456';
+        DB::table('users')->insert([
+            'email' => 'taquillero1@gmail.com',
+            'password' => Hash::make($pass),
+            'type' => 2,
+            'key_sujeto' => 2, //////funcionario id 2
+        ]);
+
+        $pass = '123456';
+        DB::table('users')->insert([
+            'email' => 'taquillero2@gmail.com',
+            'password' => Hash::make($pass),
+            'type' => 2,
+            'key_sujeto' => 3,/////funcionario id 3
+        ]);
        
     }
 }

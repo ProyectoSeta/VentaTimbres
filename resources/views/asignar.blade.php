@@ -18,7 +18,7 @@
         <div class="d-flex justify-content-between align-items-center mb-4">
             <h3 class="mb-3 text-navy titulo fw-bold">Asignación de Timbres <span class="text-secondary fs-4">| Taquillas</span></h3>
             <div class="mb-3">
-                <button type="button" class="btn bg-navy rounded-pill px-3 btn-sm fw-bold d-flex align-items-center" id="" data-bs-toggle="modal" data-bs-target="#">
+                <button type="button" class="btn bg-navy rounded-pill px-3 btn-sm fw-bold d-flex align-items-center" id="" data-bs-toggle="modal" data-bs-target="#modal_asignar_timbres">
                     <i class='bx bx-plus fw-bold fs-6 pe-2'></i>
                     <span>Asignar</span>
                 </button>
@@ -29,14 +29,14 @@
             <table id="example" class="table text-center border-light-subtle" style="font-size:12.7px">
                 <thead>
                     <th>#</th>
+                    <th>Asignado a</th>
                     <th>Fecha</th>
-                    <th>Cantidad</th>
-                    <th>Detalles</th>
-                    <th>Estado</th>
-                    <th>Opciones</th> 
+                    <th>Forma</th> 
+                    <th>Detalle</th>
+                    <th>¿Entregado?</th> 
                 </thead>
                 <tbody id="" class="border-light-subtle"> 
-                    
+                     
                   
                 </tbody> 
             </table>
@@ -132,31 +132,71 @@
     
     
 <!--****************** MODALES **************************-->
-    <div class="modal fade" id="modal_emitir_rollos" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-        <div class="modal-dialog">
-            <div class="modal-content" id="content_timbre_impreso">
-                <div class="modal-header p-2 pt-3 d-flex justify-content-center">
-                    <div class="text-center">
-                        <i class='bx bx-collection fs-2 text-muted me-2'></i>
-                        <h1 class="modal-title fs-5 fw-bold text-navy">Emisión de Rollos</h1>
-                        <h5 class="text-muted fw-bold">TFE - 14</h5>
-                    </div>
+    <div class="modal fade" id="modal_asignar_timbres" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog ">
+            <div class="modal-content" id="content_asignar_timbres">
+                <div class="modal-header p-2">
+                    <h1 class="modal-title fs-5 fw-bold text-navy ms-3">
+                        <!-- <i class='bx bx-collection fs-2 text-muted me-2'></i>  -->
+                        Asignar Timbres 
+                        <span class="text-secondary">| Taquillas</span>
+                    </h1>
                 </div>
                 <div class="modal-body px-5 py-3" style="font-size:13px">
-                    <p class="text-secondary">*NOTA: Cada rollo emitido trae un total de 160 Trimbres Fiscales.</p>
-                    <form id="form_emitir_rollos" method="post" onsubmit="event.preventDefault(); emitirRollos()">
-                        <div class="px-4">
-                            <label for="cantidad" class="form-label">Cantidad de rollos <span class="text-danger">*</span></label>
-                            <input type="number" class="form-control" id="cantidad" placeholder="" name="cantidad" required>
-                        </div>
+                    <div class="d-flex justify-content-center">
+                        <ul class="nav nav-pills mb-3" id="pills-tab" role="tablist">
+                            <li class="nav-item" role="presentation">
+                                <button class="nav-link active" id="pills-14-tab" data-bs-toggle="pill" data-bs-target="#pills-14" type="button" role="tab" aria-controls="pills-14" aria-selected="true">Forma 14</button>
+                            </li>
+                            <li class="nav-item" role="presentation">
+                                <button class="nav-link" id="pills-estampilla-tab" data-bs-toggle="pill" data-bs-target="#pills-estampilla" type="button" role="tab" aria-controls="pills-estampilla" aria-selected="false">Estampillas</button>
+                            </li>
+                        </ul>
+                    </div>
 
-                        <p class="text-muted text-end fw-bold mt-3" style="font-size:13px"><span style="color:red">*</span> Campos requeridos.</p>
 
-                        <div class="d-flex justify-content-center mt-3 mb-3">
-                            <button type="button" class="btn btn-secondary btn-sm me-2" data-bs-dismiss="modal">Cancelar</button>
-                            <button type="submit" class="btn btn-success btn-sm">Emitir</button>
-                        </div>
-                    </form>
+                    <!-- CONTENIDO -->
+                    <div class="tab-content" id="pills-tabContent">
+                        <!-- forma14 -->
+                        <div class="tab-pane fade show active" id="pills-14" role="tabpanel" aria-labelledby="pills-14-tab" tabindex="0">
+                            <form id="form_asignar_forma14" method="post" onsubmit="event.preventDefault(); asignarForma14()">
+                                <div class="row">
+                                    <div class="col-lg-6">
+                                        <label for="sede" class="form-label">Sede: <span style="color:red">*</span></label>
+                                        <select class="form-select form-select-sm"  id="select_sede_tfe" name="sede" required>
+                                            <option>Seleccionar</option>
+                                            @foreach ($sedes as $sede)
+                                                <option value="{{$sede->id_sede}}">{{$sede->sede}}</option>
+                                            @endforeach
+                                        </select>
+                                    </div>
+                                    <div class="col-lg-6">
+                                        <label for="taquilla" class="form-label">Taquilla: <span style="color:red">*</span></label>
+                                        <select class="form-select form-select-sm taquilla" forma="14" id="select_taquilla_tfe" name="taquilla" required>
+                                            <option>Seleccionar</option>
+                                        </select>
+                                    </div>
+                                </div>
+
+                                <p class="text-muted my-2 text-end">Funcionario designado: <span class="text-navy fw-bold" id="funcionario_forma14"> </span></p>
+
+                                <label for="cantidad" class="form-label">Cantidad de Rollos: <span style="color:red">*</span></label>
+                                <input class="form-control form-control-sm" type="number" name="cantidad" required>
+
+                                <p class="text-secondary mt-3">*NOTA: Cada rollo emitido trae un total de 160 Trimbres Fiscales.</p>
+
+                                <div class="d-flex justify-content-center mt-3 mb-3">
+                                    <button type="button" class="btn btn-secondary btn-sm me-2" data-bs-dismiss="modal">Cancelar</button>
+                                    <button type="submit" class="btn btn-success btn-sm">Asignar</button>
+                                </div>
+                            </form>
+                        </div>  
+                        <!-- estampillas -->
+                        <div class="tab-pane fade" id="pills-estampilla" role="tabpanel" aria-labelledby="pills-estampilla-tab" tabindex="0">...</div>
+                    </div>
+                    
+
+                 
                     
                 </div>
             </div>  <!-- cierra modal-content -->
@@ -164,27 +204,11 @@
     </div>
 
 
-    <!-- ************  CORRELATIVO ROLLOS  ************** -->
-    <div class="modal fade" id="modal_correlativo_rollos" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <!-- ************  CORRELATIVO ROLLOS ASIGNADOS ************** -->
+    <div class="modal fade" id="modal_asignado_forma14" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
         <div class="modal-dialog">
-            <div class="modal-content" id="content_correlativo_rollos">
-                <div class="my-5 py-5 d-flex flex-column text-center">
-                    <i class='bx bx-loader-alt bx-spin fs-1 mb-3' style='color:#0077e2'  ></i>
-                    <span class="text-muted">Cargando, por favor espere un momento...</span>
-                </div>
-            </div>  <!-- cierra modal-content -->
-        </div>  <!-- cierra modal-dialog -->
-    </div>
-    
-
-    <!-- *****************  ENVIAR A INVENTARIO  *************** -->
-    <div class="modal fade" id="modal_enviar_inventario" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-        <div class="modal-dialog">
-            <div class="modal-content" id="content_enviar_inventario">
-                <div class="my-5 py-5 d-flex flex-column text-center">
-                    <i class='bx bx-loader-alt bx-spin fs-1 mb-3' style='color:#0077e2'  ></i>
-                    <span class="text-muted">Cargando, por favor espere un momento...</span>
-                </div>
+            <div class="modal-content" id="content_asignado_forma14">
+                
             </div>  <!-- cierra modal-content -->
         </div>  <!-- cierra modal-dialog -->
     </div>
@@ -249,10 +273,84 @@
 
 <script type="text/javascript">
     $(document).ready(function () {
-      
+        ////////////////////////////  TAQUILLAS SEGUN LA SEDA - ASIGNACION FORMA 14
+        $(document).on('change','#select_sede_tfe', function(e) {
+            e.preventDefault(); 
+            var value = $(this).val();
+            $.ajax({
+                headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') },
+                type: 'POST',
+                url: '{{route("asignar.taquillas") }}',
+                data: {value:value},
+                success: function(response) {
+                    $('#select_taquilla_tfe').html(response);
+                },
+                error: function() {
+                }
+            });
+        });
+
+        ////////////////////////////  TAQUILLERO ASIGNADO
+        $(document).on('change','.taquilla', function(e) {
+            e.preventDefault(); 
+            var value = $(this).val();
+            var forma = $(this).attr('forma');
+            
+            $.ajax({
+                headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') },
+                type: 'POST',
+                url: '{{route("asignar.funcionario") }}',
+                data: {value:value},
+                success: function(response) {
+                    if (forma == '14') {
+                        $('#funcionario_forma14').html(response);
+                    }else{
+
+                    }
+                    
+                },
+                error: function() {
+                }
+            });
+        });
+
               
     });
 
+
+    function asignarForma14(){
+        var formData = new FormData(document.getElementById("form_asignar_forma14"));
+        $.ajax({
+            headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') },
+            url:'{{route("asignar.asignar_forma_14") }}',
+            type:'POST',
+            contentType:false,
+            cache:false,
+            processData:false,
+            async: true,
+            data: formData,
+            success: function(response){
+                console.log(response);
+                if (response.success) {
+                    $('#modal_asignar_timbres').modal('hide');
+                    $('#modal_asignado_forma14').modal('show');
+                    $('#content_asignado_forma14').html(response.html);
+                    
+                }else{
+                    if (response.nota) {
+                        alert(response.nota);
+                    }else{
+                        alert('Disculpe, ha ocurrido un error en la asignación.');
+                    }
+                    
+                }  
+
+            },
+            error: function(error){
+                
+            }
+        });
+    }
     
 
     </script>

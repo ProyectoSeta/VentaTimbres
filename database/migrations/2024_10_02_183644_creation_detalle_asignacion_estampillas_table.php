@@ -11,18 +11,19 @@ return new class extends Migration
      */
     public function up(): void
     {
+
         Schema::create('detalle_asignacion_estampillas', function (Blueprint $table) {
             $table->increments('id_detalle');
 
-            $table->integer('key_asignacion')->unsigned();
-            $table->foreign('key_asignacion')->references('id_asignacion')->on('asignacion_estampillas')->onDelete('cascade');
+            $table->integer('key_asignacion_estampilla')->unsigned();
+            $table->foreign('key_asignacion_estampilla')->references('id_asignacion')->on('asignacion_estampillas')->onDelete('cascade');
 
-            
-            $table->integer('ucd_denominacion',4);
+            $table->integer('denominacion_ucd');
             $table->integer('cantidad');
 
 
         });
+
     }
 
     /**

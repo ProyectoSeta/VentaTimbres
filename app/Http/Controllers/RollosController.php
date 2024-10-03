@@ -72,7 +72,6 @@ class RollosController extends Controller
 
         $html = '<div class="modal-header p-2 pt-3 d-flex justify-content-center">
                     <div class="text-center">
-                        
                         <i class="bx bxs-layer-plus fs-2 text-muted me-2"></i>
                         <h1 class="modal-title fs-5 fw-bold text-navy">Enviar a Inventario</h1>
                         <span class="text-muted fw-bold">Rollos | Forma 14 </span>
@@ -81,13 +80,13 @@ class RollosController extends Controller
                 <div class="modal-body px-5 py-3" style="font-size:13px">
                     <form id="form_enviar_inventario" method="post" onsubmit="event.preventDefault(); enviarRollosInventario()">
                         <table class="table text-center">
-                                <tr>
-                                    <th>#</th>
-                                    <th>Desde</th>
-                                    <th>Hasta</th>
-                                </tr>
-                                '.$tr.'
-                            </table>
+                            <tr>
+                                <th>#</th>
+                                <th>Desde</th>
+                                <th>Hasta</th>
+                            </tr>
+                            '.$tr.'
+                        </table>
 
                         <input type="hidden" name="emision" value="'.$emision.'">
 

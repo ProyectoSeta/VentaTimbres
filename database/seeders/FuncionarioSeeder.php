@@ -19,5 +19,20 @@ class FuncionarioSeeder extends Seeder
             'ci_nro' => '0000000',
             'cargo' => 'administrador',
         ]);
+
+
+        DB::table('funcionarios')->insert([
+            'nombre' => 'Taquillero 1',
+            'ci_condicion' => 'V',
+            'ci_nro' => '0000001',
+            'cargo' => 'Taquillero',
+        ]);
+
+        DB::table('funcionarios')->insert([
+            'nombre' => 'Taquillero 2',
+            'ci_condicion' => 'V',
+            'ci_nro' => '0000002',
+            'cargo' => 'Taquillero',
+        ]);
     }
 }

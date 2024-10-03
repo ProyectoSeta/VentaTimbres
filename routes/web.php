@@ -49,3 +49,11 @@ Route::get('/pdf', [App\Http\Controllers\RollosController::class, 'pdf'])->name(
 
 ///////////////////// ASIGNACIÓN ROLLOS FORMA 14
 Route::get('/asignar', [App\Http\Controllers\AsignarController::class, 'index'])->name('asignar');
+Route::post('/taquillas', [App\Http\Controllers\AsignarController::class, 'taquillas'])->name('asignar.taquillas');
+Route::post('/funcionario', [App\Http\Controllers\AsignarController::class, 'funcionario'])->name('asignar.funcionario');
+Route::post('/asignar_forma_14', [App\Http\Controllers\AsignarController::class, 'asignar_forma_14'])->name('asignar.asignar_forma_14');
+/////////PDF: ROLLOS A EMITIR
+Route::get('/pdf_forma14', [App\Http\Controllers\AsignarController::class, 'pdf_forma14'])->name('asignar.pdf_forma14');
+
+///////////////////// ASIGNACIONES DE TAQUILLAS
+Route::get('/timbres_asignados', [App\Http\Controllers\AsignadoTaquillasController::class, 'index'])->name('timbres_asignados');
