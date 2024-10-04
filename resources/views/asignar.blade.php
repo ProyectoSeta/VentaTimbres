@@ -33,7 +33,7 @@
                     <th>Fecha</th>
                     <th>Forma</th> 
                     <th>Detalle</th>
-                    <th>¿Entregado?</th> 
+                    <th>¿Recibido?</th> 
                 </thead>
                 <tbody id="" class="border-light-subtle"> 
                      
