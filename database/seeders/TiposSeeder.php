@@ -36,5 +36,13 @@ class TiposSeeder extends Seeder
         DB::table('tipos')->insert([
             'nombre_tipo' => 'Efectivo',
         ]);
+
+        //////////ALICUOTAS
+        DB::table('tipos')->insert([
+            'nombre_tipo' => 'UCD',
+        ]); 
+        DB::table('tipos')->insert([
+            'nombre_tipo' => 'Porcentaje',
+        ]);
     }
 }

@@ -24,8 +24,10 @@ Auth::routes();
 Route::get('/user', [App\Http\Controllers\UserController::class, 'index'])->name('user');
 Route::post('/user', [App\Http\Controllers\UserController::class, 'store'])->name('user.store');
 
+
 /////////////////////  HOME
 Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
+
 
 //////////////////////  VENTA FORMA 14 - ESTAMPILLAS
 Route::get('/venta', [App\Http\Controllers\VentaController::class, 'index'])->name('venta');
@@ -37,6 +39,7 @@ Route::post('/debitado', [App\Http\Controllers\VentaController::class, 'debitado
 Route::post('/add_contribuyente', [App\Http\Controllers\VentaController::class, 'add_contribuyente'])->name('venta.add_contribuyente');
 Route::post('/venta_f14', [App\Http\Controllers\VentaController::class, 'venta_f14'])->name('venta.venta_f14');
 
+
 ///////////////////// EMISIÓN ROLLOS FORMA 14
 Route::get('/emision_rollos', [App\Http\Controllers\RollosController::class, 'index'])->name('emision_rollos');
 Route::post('/emitir', [App\Http\Controllers\RollosController::class, 'emitir'])->name('rollos.emitir');
@@ -44,6 +47,10 @@ Route::post('/modal_enviar', [App\Http\Controllers\RollosController::class, 'mod
 Route::post('/enviar_inventario', [App\Http\Controllers\RollosController::class, 'enviar_inventario'])->name('rollos.enviar_inventario');
 /////////PDF: ROLLOS A EMITIR
 Route::get('/pdf', [App\Http\Controllers\RollosController::class, 'pdf'])->name('rollos.pdf');
+
+
+//////////////////EMISIÓN ESTAMPILLAS
+Route::get('/emision_estampillas', [App\Http\Controllers\EstampillasController::class, 'index'])->name('emision_estampillas');
 
 
 

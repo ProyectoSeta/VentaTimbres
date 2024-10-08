@@ -11,7 +11,7 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('asignacion_forma_14_timbres', function (Blueprint $table) {
+        Schema::create('asignacion_rollos', function (Blueprint $table) {
             $table->increments('id_asignacion');
 
             $table->integer('key_user')->unsigned();

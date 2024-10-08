@@ -11,17 +11,15 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('asignacion_estampillas', function (Blueprint $table) {
-            $table->increments('id_asignacion');
+        Schema::create('emision_estampillas', function (Blueprint $table) {
+            $table->increments('id_emision');
+            $table->date('fecha_emision');
 
             $table->integer('key_user')->unsigned();
             $table->foreign('key_user')->references('id')->on('users')->onDelete('cascade');
-
-            $table->date('fecha');
-
-            $table->integer('key_taquilla')->unsigned();
-            $table->foreign('key_taquilla')->references('id_taquilla')->on('taquillas')->onDelete('cascade');
-
+            
+            $table->date('ingreso_inventario')->nullable();
+            
 
         });
     }

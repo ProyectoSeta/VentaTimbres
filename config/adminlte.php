@@ -340,7 +340,7 @@ return [
         ],
         [
             'text'        => 'Estampillas',
-            'route'         => '',
+            'route'         => 'emision_estampillas',
             'icon'       => 'fas fa-angle-right pe-2',   
             // 'label'       => 4,
             // 'label_color' => 'success',

@@ -24,7 +24,7 @@ return new class extends Migration
             $table->foreign('estado')->references('id_clasificacion')->on('clasificacions')->onDelete('cascade');
 
             $table->integer('key_asignacion')->unsigned()->nullable();
-            $table->foreign('key_asignacion')->references('id_asignacion')->on('asignacion_forma_14_timbres')->onDelete('cascade');
+            $table->foreign('key_asignacion')->references('id_asignacion')->on('asignacion_rollos')->onDelete('cascade');
 
             $table->integer('key_taquilla')->unsigned()->nullable();
             $table->foreign('key_taquilla')->references('id_taquilla')->on('taquillas')->onDelete('cascade');

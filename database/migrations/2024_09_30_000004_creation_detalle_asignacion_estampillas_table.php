@@ -13,12 +13,14 @@ return new class extends Migration
     {
 
         Schema::create('detalle_asignacion_estampillas', function (Blueprint $table) {
-            $table->increments('id_detalle');
+            $table->increments('correlativo');
 
-            $table->integer('key_asignacion_estampilla')->unsigned();
-            $table->foreign('key_asignacion_estampilla')->references('id_asignacion')->on('asignacion_estampillas')->onDelete('cascade');
+            $table->integer('key_asignacion')->unsigned();
+            $table->foreign('key_asignacion')->references('id_asignacion')->on('asignacion_estampillas')->onDelete('cascade');
 
-            $table->integer('denominacion_ucd');
+            $table->integer('key_denominacion')->unsigned();
+            $table->foreign('key_denominacion')->references('id')->on('ucd_denominacions')->onDelete('cascade');
+
             $table->integer('cantidad');
 
 

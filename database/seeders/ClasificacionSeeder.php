@@ -28,6 +28,9 @@ class ClasificacionSeeder extends Seeder
             'nombre_clf' => 'Reserva',
         ]);
         
+        DB::table('clasificacions')->insert([
+            'nombre_clf' => 'Emisión',
+        ]);
 
         ////////MODULO
         DB::table('clasificacions')->insert([

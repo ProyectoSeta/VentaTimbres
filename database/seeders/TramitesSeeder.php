@@ -16,47 +16,63 @@ class TramitesSeeder extends Seeder
         ////////////////REGISTRO
         DB::table('tramites')->insert([
             'tramite' => 'Legalización',
+            'alicuota' => 7,
+            'natural' => '3',
+            'juridico' => '3',
             'key_ente' => 1,
-            'ucd' => '3'
         ]);
         DB::table('tramites')->insert([
             'tramite' => 'Partida de Nacimiento',
-            'key_ente' => 1,
-            'ucd' => '3'
+            'alicuota' => 7,
+            'natural' => '3',
+            'juridico' => '3',
+            'key_ente' => 1
         ]);
         DB::table('tramites')->insert([
             'tramite' => 'Registro de Título Universitario',
-            'key_ente' => 1,
-            'ucd' => '2'
+            'alicuota' => 7,
+            'natural' => '2',
+            'juridico' => '2',
+            'key_ente' => 1
         ]);
         DB::table('tramites')->insert([
             'tramite' => 'Sellado de Libro',
-            'key_ente' => 1,
-            'ucd' => '10'
+            'alicuota' => 7,
+            'natural' => '3',
+            'juridico' => '10',
+            'key_ente' => 1
         ]);
 
         ///////////// ALCALDÍA
         DB::table('tramites')->insert([
             'tramite' => 'Licencia de Actividad Económica',
-            'key_ente' => 2,
-            'ucd' => '10'
+            'alicuota' => 7,
+            'natural' => '3',
+            'juridico' => '10',
+            'key_ente' => 2
         ]);
         DB::table('tramites')->insert([
             'tramite' => 'Uso conforme',
-            'key_ente' => 2,
-            'ucd' => '10'
+            'alicuota' => 7,
+            'natural' => '10',
+            'juridico' => '10',
+            'key_ente' => 2
         ]);
 
         ////////////NOTARÍA
         DB::table('tramites')->insert([
             'tramite' => 'Poder Natural',
-            'key_ente' => 3,
-            'ucd' => '3'
+            'alicuota' => 7,
+            'natural' => '5',
+            'juridico' => '5',
+            'key_ente' => 3
         ]);
         DB::table('tramites')->insert([
             'tramite' => 'Poder Especial',
-            'key_ente' => 3,
-            'ucd' => '5'
+            'alicuota' => 7,
+            'natural' => '10',
+            'juridico' => '10',
+            'key_ente' => 3
         ]);
     }
 }
