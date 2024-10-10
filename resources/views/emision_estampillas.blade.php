@@ -18,7 +18,7 @@
         <div class="d-flex justify-content-between align-items-center mb-2">
             <h3 class="mb-3 text-navy titulo fw-bold">Estampillas <span class="text-secondary fs-4">| Emitiendo</span></h3>
             <div class="mb-3">
-                <button type="button" class="btn bg-navy rounded-pill px-3 btn-sm fw-bold d-flex align-items-center" id="" data-bs-toggle="modal" data-bs-target="#modal_emitir_estampillas">
+                <button type="button" class="btn bg-navy rounded-pill px-3 btn-sm fw-bold d-flex align-items-center" id="btn_emitir_estampillas" data-bs-toggle="modal" data-bs-target="#modal_emitir_estampillas">
                     <i class='bx bx-plus fw-bold fs-6 pe-2'></i>
                     <span>Emitir</span>
                 </button>
@@ -54,49 +54,7 @@
     <div class="modal fade" id="modal_emitir_estampillas" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
         <div class="modal-dialog">
             <div class="modal-content" id="content_emitir_estampillas">
-                <div class="modal-header p-2 pt-3 d-flex justify-content-center">
-                    <div class="text-center">
-                        <i class='bx bx-collection fs-2 text-muted me-2'></i>
-                        <h1 class="modal-title fs-5 fw-bold text-navy">Emisión de Estampillas</h1>
-                        <h5 class="text-muted fw-bold">Timbre móvil</h5>
-                    </div>
-                </div>
-                <div class="modal-body px-5 py-3" style="font-size:13px">
-                    <p class="text-secondary">*NOTA: Cada tira emitida trae un total de 160 Estampillas.</p>
-                    <form id="form_emitir_estampillas" method="post" onsubmit="event.preventDefault(); emitirEstampillas()">
-                        <div class="d-flex flex-column" id="conten_detalle_emision_estampillas">
-                            <div class="row">
-                                <div class="col-lg-5">
-                                    <label for="cantidad" class="form-label">Denominación: <span class="text-danger">*</span></label>
-                                    <select class="form-select form-select-sm denominacion" aria-label="Small select example" i="1" name="denominacion[]" disabled>
-                                        <option value="">2 UCD</option>
-                                        <option value="">5 UCD</option>
-                                    </select>
-                                </div>
-                                <div class="col-lg-5">
-                                    <label for="cantidad" class="form-label">Cant. Tiras: <span class="text-danger">*</span></label>
-                                    <input type="number" class="form-control form-control-sm" id="cantidad" placeholder="" name="cantidad" required>
-                                </div>
-                                <div class="col-lg-2 pt-4">
-                                    <a  href="javascript:void(0);" class="btn add_button_denominacion disabled border-0">
-                                        <i class="bx bx-plus fs-4" style="color:#038ae4"></i>
-                                    </a>
-                                </div>
-                            </div>
-                        </div>
-
-
-
-
-                        <p class="text-muted text-end fw-bold mt-3" style="font-size:13px"><span style="color:red">*</span> Campos requeridos.</p>
-
-                        <div class="d-flex justify-content-center mt-3 mb-3">
-                            <button type="button" class="btn btn-secondary btn-sm me-2" data-bs-dismiss="modal">Cancelar</button>
-                            <button type="submit" class="btn btn-success btn-sm">Emitir</button>
-                        </div>
-                    </form>
-                    
-                </div>
+                
             </div>  <!-- cierra modal-content -->
         </div>  <!-- cierra modal-dialog -->
     </div>
@@ -187,15 +145,121 @@
 
 <script type="text/javascript">
     $(document).ready(function () {
-          
+        ///////////////////////////////////////AGREGAR CAMPOS A OTRO(S) PAGO
+            var maxFieldTramite = 9; //Input fields increment limitation
+            var c = 1; //Initial field counter is 1
+
+            $(document).on('click', '.add_button', function(e){ //Once add button is clicked
+                if(c < maxFieldTramite){ //Check maximum number of input fields
+                    c++; //Increment field counter
+
+                    var denominaciones = [];
+                    $('.denominacion').each(function(){
+                        var d = $(this).val();
+                        denominaciones.push(d);
+                    });
+
+                    $.ajax({
+                        headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') },
+                        type: 'POST',
+                        url: '{{route("emision_estampillas.denominacions") }}',
+                        data: {denominaciones:denominaciones},
+                        success: function(response) {
+                            console.log(response);
+                            $('#conten_detalle_emision_estampillas').append('<div class="row">'+
+                                    '<div class="col-md-4">'+
+                                        '<select class="form-select form-select-sm denominacion" aria-label="Small select example" i="'+c+'" name="emitir['+c+'][denominacion]">'+
+                                            response+
+                                        '</select>'+
+                                    '</div>'+
+                                    '<div class="col-md-3">'+
+                                        '<input type="number" class="form-control form-control-sm cantidad" id="cantidad_'+c+'" i="'+c+'"  name="emitir['+c+'][cantidad]" required>'+
+                                    '</div>'+
+                                    '<div class="col-md-4">'+
+                                        '<input type="number" class="form-control form-control-sm" id="timbres_'+c+'" disabled>'+
+                                    '</div>'+
+                                    '<div class="col-md-1">'+
+                                        '<a  href="javascript:void(0);" class="btn remove_button" >'+
+                                            '<i class="bx bx-x fs-4"></i>'+
+                                        '</a>'+
+                                    '</div>'+
+                                '</div>'); // Add field html
+                        },
+                        error: function() {
+                        }
+                    });
+
+                    
+                }
+            });
+
+            $(document).on('click', '.remove_button', function(e){ //Once remove button is clicked
+                e.preventDefault();
+                $(this).parent('div').parent('div').remove(); //Remove field html
+                c--; //Decrement field counter
+            });
+        ///////////////////////////////////////////////////////////////////
+
+
+        /////////////////////////// MODAL EMITIR ESTAMPILLAS
+        $(document).on('click','#btn_emitir_estampillas', function(e) {
+            e.preventDefault();
+            $.ajax({
+                headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') },
+                type: 'POST',
+                url: '{{route("emision_estampillas.modal_emitir") }}',
+                success: function(response) {
+                    console.log(response);
+                    $('#content_emitir_estampillas').html(response);
+                },
+                error: function() {
+                }
+            });
+        });
+
+
+        //////////////////////////// CALCULAR  TIMBRES A EMITIR
+        $(document).on('keyup','.cantidad', function(e) {
+            var value = $(this).val();
+            var i = $(this).attr('i');
+            var cantidad = value * 160;
+
+            $('#timbres_'+i).val(cantidad);
+            
+        });
+
+
     });
 
    
-
+    function emitirEstampillas(){
+        var formData = new FormData(document.getElementById("form_emitir_estampillas"));
+        $.ajax({
+            headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') },
+            url:'{{route("emision_estampillas.emitir") }}',
+            type:'POST',
+            contentType:false,
+            cache:false,
+            processData:false,
+            async: true,
+            data: formData,
+            success: function(response){
+                console.log(response);
+                if (response.success) {
+                       
+                }else{
+                    alert(response.nota);
+                }
+            },
+            error: function(error){
+                
+            }
+        });
+    }
 
     
 
-    </script>
+</script>
 
 
   
