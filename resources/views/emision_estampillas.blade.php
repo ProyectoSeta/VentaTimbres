@@ -6,7 +6,7 @@
     
     <script src="{{ asset('jss/bundle.js') }}" defer></script>
     <link href="{{asset('css/datatable.min.css') }}" rel="stylesheet">
-    <script src="{{asset('vendor/sweetalert.js') }}"></script>
+    <!-- <script src="{{asset('vendor/sweetalert.js') }}"></script>  -->
     <script src="{{ asset('jss/jquery-3.5.1.js') }}" ></script>
 
     <!-- <img src="{{asset('assets/bf-1.svg')}}" class="w-100" alt="..."> -->
@@ -108,12 +108,12 @@
     <script>
         const tooltipTriggerList = document.querySelectorAll('[data-bs-toggle="tooltip"]');
         const tooltipList = [...tooltipTriggerList].map(tooltipTriggerEl => new bootstrap.Tooltip(tooltipTriggerEl));
-        const myModal = document.getElementById('myModal');
-        const myInput = document.getElementById('myInput');
+        // const myModal = document.getElementById('myModal');
+        // const myInput = document.getElementById('myInput');
 
-        myModal.addEventListener('shown.bs.modal', () => {
-            myInput.focus();
-        });
+        // myModal.addEventListener('shown.bs.modal', () => {
+        //     myInput.focus();
+        // });
     </script>
     <script src="{{ asset('jss/jquery-3.5.1.js') }}" ></script>
     <script src="{{ asset('jss/datatable.min.js') }}" defer ></script>
@@ -153,22 +153,15 @@
                 if(c < maxFieldTramite){ //Check maximum number of input fields
                     c++; //Increment field counter
 
-                    var denominaciones = [];
-                    $('.denominacion').each(function(){
-                        var d = $(this).val();
-                        denominaciones.push(d);
-                    });
-
                     $.ajax({
                         headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') },
                         type: 'POST',
                         url: '{{route("emision_estampillas.denominacions") }}',
-                        data: {denominaciones:denominaciones},
                         success: function(response) {
-                            console.log(response);
+                            // console.log(response);
                             $('#conten_detalle_emision_estampillas').append('<div class="row">'+
                                     '<div class="col-md-4">'+
-                                        '<select class="form-select form-select-sm denominacion" aria-label="Small select example" i="'+c+'" name="emitir['+c+'][denominacion]">'+
+                                        '<select class="form-select form-select-sm denominacion" id="denominacion_'+c+'" i="'+c+'" name="emitir['+c+'][denominacion]">'+
                                             response+
                                         '</select>'+
                                     '</div>'+
@@ -209,7 +202,7 @@
                 type: 'POST',
                 url: '{{route("emision_estampillas.modal_emitir") }}',
                 success: function(response) {
-                    console.log(response);
+                    // console.log(response);
                     $('#content_emitir_estampillas').html(response);
                 },
                 error: function() {
@@ -217,6 +210,27 @@
             });
         });
 
+        ///////////////////////COLOCAR SELECCIONE SI EL VALOR (DENOMINACION) YA HA SIDO ESCOGIDO
+        $(document).on('change','.denominacion', function(e) {
+            var value = $(this).val();
+            var i = $(this).attr('i');
+            var x = false;
+
+            $('.denominacion').each(function(e){
+                var d = $(this).val();
+                var d_i = $(this).attr('i');
+                
+                if (d == value && d_i != i) {
+                    x = true;
+                }
+                
+            });
+
+            if (x == true) {
+                alert("Disculpe, no puede seleccionar dos (2) denominaciones del mismo valor para la misma emisión.");
+                $('#denominacion_'+i)[0].selectedIndex = 0;
+            }
+        });
 
         //////////////////////////// CALCULAR  TIMBRES A EMITIR
         $(document).on('keyup','.cantidad', function(e) {

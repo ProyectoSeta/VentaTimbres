@@ -17,8 +17,8 @@ class EstampillasController extends Controller
 
     public function modal_emitir(Request $request)
     {
-        $option = '';
-        $query = DB::table('ucd_denominacions')->get();
+        $option = '<option value="Seleccione">Seleccione</option>';
+        $query = DB::table('ucd_denominacions')->where('estampillas','=','true')->get();
 
         foreach ($query as $denomi) {
             $value = $denomi->denominacion;
@@ -39,7 +39,7 @@ class EstampillasController extends Controller
                             <div class="row pb-2">
                                 <div class="col-md-4">
                                     <label for="denominacion" class="form-label">Denominación: <span class="text-danger">*</span></label>
-                                    <select class="form-select form-select-sm denominacion" aria-label="Small select example" i="1" name="emitir[1][denominacion]">
+                                    <select class="form-select form-select-sm denominacion" id="denominacion_1" i="1" name="emitir[1][denominacion]">
                                         '.$option.'
                                     </select>
                                 </div>
@@ -80,23 +80,17 @@ class EstampillasController extends Controller
      */
     public function denominacions(Request $request)
     {
-        $denominaciones = $request->post('denominaciones');
-        $option = '<option>Seleccione</option>';
-
-        $query = DB::table('ucd_denominacions')->get();
+       
+        $option = '<option value="Seleccione">Seleccione</option>';
+        $query = DB::table('ucd_denominacions')->where('estampillas','=','true')->get();
         foreach ($query as $denomi) {
             $value = $denomi->denominacion;
-
-            if (in_array($value, $denominaciones)) {
-                /////existe, ya fue seleccionado
-
-            }else{
-                ////no existe, aun no fue seleccionado
-                $option .= '<option value="'.$value.'">'.$value.' UCD</option>';
-            }
+            $option .= '<option value="'.$value.'">'.$value.' UCD</option>';
+           
         }
         return response($option);
     }
+
 
     /**
      * Store a newly created resource in storage.
@@ -104,21 +98,35 @@ class EstampillasController extends Controller
     public function emitir(Request $request)
     {
         $emitir = $request->post('emitir');
-        // return response($emitir);
 
+        /////////VERIFICACIÓN DE CAMPOS
         foreach ($emitir as $e) {
             if ($e['denominacion'] === 'Seleccione') {
                 return response()->json(['success' => false, 'nota' => 'Disculpe, debe seleccionar la denominación ucd que desea emitir para la tira de estampillas.']);
             }else{
                 if ($e['cantidad'] == 0) {
                     return response()->json(['success' => false, 'nota' => 'Disculpe, debe colocar la cantidad de tiras que quiere emitir segun la denominación.']);
-                }else{
-                    ////////////empezar a emitir e ingresar
-
-
-
                 }
             }
+            
+        }
+
+
+        //////////EMISIÓN
+        $consulta = DB::table('emision_estampillas')->selectRaw("count(*) as total")->first();
+        if ($consulta->total != 0) {
+            //////ya se han emitido rollos
+            $query =  DB::table('emision_rollos')->select('id_emision')->orderBy('id_emision', 'desc')->first();
+
+            $consulta_2 =  DB::table('detalle_emision_rollos')->select('hasta')->where('key_emision','=',$query->id_emision)->orderBy('correlativo', 'desc')->first();
+
+            $desde = $consulta_2->hasta + 1;
+        }else{
+            /////primer lote a emitir
+            $desde = 1;
+        }
+
+        foreach ($emitir as $e) {
             
         }
         

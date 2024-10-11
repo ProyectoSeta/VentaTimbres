@@ -15,6 +15,9 @@ return new class extends Migration
             $table->increments('id');
 
             $table->integer('denominacion');
+            $table->enum('forma01',['false','true']);
+            $table->enum('forma14',['false','true']);
+            $table->enum('estampillas',['false','true']);
 
         });
     }
