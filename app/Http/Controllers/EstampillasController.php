@@ -95,9 +95,10 @@ class EstampillasController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function emitir(Request $request)
+    public function emitir_estampillas(Request $request)
     {
         $emitir = $request->post('emitir');
+        // return response($emitir);
 
         /////////VERIFICACIÓN DE CAMPOS
         foreach ($emitir as $e) {
@@ -111,25 +112,44 @@ class EstampillasController extends Controller
             
         }
 
+        //////////CONSULTA DE CUANTOS TIMBRES SE EMITEN POR TIRA
+        $c = DB::table('variables')->select('valor')->where('variable','=','cant_timbres_tira')->first();
+        $cant_timbres_tira = $c->valor;
+        
 
         //////////EMISIÓN
-        $consulta = DB::table('emision_estampillas')->selectRaw("count(*) as total")->first();
-        if ($consulta->total != 0) {
-            //////ya se han emitido rollos
-            $query =  DB::table('emision_rollos')->select('id_emision')->orderBy('id_emision', 'desc')->first();
+        $consulta = DB::table('estampillas')->selectRaw("count(*) as total")->first();
 
-            $consulta_2 =  DB::table('detalle_emision_rollos')->select('hasta')->where('key_emision','=',$query->id_emision)->orderBy('correlativo', 'desc')->first();
-
-            $desde = $consulta_2->hasta + 1;
+        if ($consulta->total == 0) {
+            //////////////PRIMERA EMISIÓN
+            // foreach ($emitir as $e) {
+            //     $deno = $e['denominacion'];
+            //     $cantidad_tiras = $e['cantidad'];
+            //     return response($deno.'/'.$cantidad_tiras);
+            // }
         }else{
-            /////primer lote a emitir
-            $desde = 1;
-        }
+            /////////////NO ES LA PRIMERA EMISIÓN
+            $desde = 0;
+            foreach ($emitir as $e) {
+                $deno = $e['denominacion'];
+                $cantidad_tiras = $e['cantidad'];
+                
+                $query = DB::table('estampillas')->select('hasta')->where('key_denominacion','=',$deno)->orderBy('id_tira', 'desc')->first();
+                return response($query->hasta);
+                
+                if ($query->hasta == '999999') {
+                    $desde = 1;
+                    $hasta = $cant_timbres_tira;
 
-        foreach ($emitir as $e) {
-            
+                }else{
+                    $desde = $query->hasta + 1;
+                    $hasta = ($desde + $cant_timbres_tira) - 1;
+                }
+
+                echo('/'.$desde.'-'.$hasta);
+
+            }
         }
-        
 
     }
 

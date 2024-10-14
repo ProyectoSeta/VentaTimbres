@@ -53,7 +53,7 @@ Route::get('/pdf', [App\Http\Controllers\RollosController::class, 'pdf'])->name(
 Route::get('/emision_estampillas', [App\Http\Controllers\EstampillasController::class, 'index'])->name('emision_estampillas');
 Route::post('/denominacions', [App\Http\Controllers\EstampillasController::class, 'denominacions'])->name('emision_estampillas.denominacions');
 Route::post('/modal_emitir', [App\Http\Controllers\EstampillasController::class, 'modal_emitir'])->name('emision_estampillas.modal_emitir');
-Route::post('/emitir', [App\Http\Controllers\EstampillasController::class, 'emitir'])->name('emision_estampillas.emitir');
+Route::post('/emitir_estampillas', [App\Http\Controllers\EstampillasController::class, 'emitir_estampillas'])->name('emision_estampillas.emitir_estampillas');
 
 
 ///////////////////// ASIGNACIÓN ROLLOS FORMA 14

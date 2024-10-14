@@ -21,9 +21,16 @@ return new class extends Migration
             $table->foreign('key_denominacion')->references('id')->on('ucd_denominacions')->onDelete('cascade');
 
             $table->integer('cantidad');
-            $table->integer('desde');
-            $table->integer('hasta');
+            $table->integer('secuencia');
+
+            $table->integer('desde_correlativo')->unique();
+            $table->integer('hasta_correlativo')->unique();
+
+            $table->integer('desde')->unique();
+            $table->integer('hasta')->unique();
             
+            $table->integer('estado')->unsigned(); ///////EMISIÓN - INVENTARIO
+            $table->foreign('estado')->references('id_clasificacion')->on('clasificacions')->onDelete('cascade');
 
         });
     }

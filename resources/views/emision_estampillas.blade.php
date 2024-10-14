@@ -250,7 +250,7 @@
         var formData = new FormData(document.getElementById("form_emitir_estampillas"));
         $.ajax({
             headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') },
-            url:'{{route("emision_estampillas.emitir") }}',
+            url:'{{route("emision_estampillas.emitir_estampillas") }}',
             type:'POST',
             contentType:false,
             cache:false,
