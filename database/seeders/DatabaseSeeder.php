@@ -24,6 +24,7 @@ class DatabaseSeeder extends Seeder
         $this->call(TaquillasSedeer::class);
         $this->call(DenominacionsSedeer::class);
         $this->call(VariablesSeeder::class);
+        $this->call(FormasSeeder::class);
         
         
         // \App\Models\User::factory(10)->create();

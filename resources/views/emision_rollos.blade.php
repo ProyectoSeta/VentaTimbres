@@ -50,7 +50,6 @@
                                 <span class="badge bg-primary-subtle border border-primary-subtle text-primary-emphasis rounded-pill" style="font-size:12px">En Proceso</span>
                             </td>
                             <td class="d-flex align-items-center justify-content-center">
-                                
                                 @if ($emision->ultimo == true)
                                     <span class="badge py-1 delete_solicitud" style="background-color: #ed0000;" role="button" >
                                         <i class="bx bx-trash-alt fs-6"></i>

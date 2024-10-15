@@ -37,8 +37,33 @@
                     <th>Opciones</th> 
                 </thead>
                 <tbody id="" class="border-light-subtle"> 
-                    
-                  
+                    @foreach ($query as $emision)
+                        <tr>
+                            <td>{{$emision->id_emision}}</td>
+                            <td class="text-secondary">{{$emision->fecha_emision}}</td>
+                            <td>
+                                <a href="#">Ver</a>
+                            </td>
+                            <td>
+                                <span class="badge bg-primary-subtle border border-primary-subtle text-primary-emphasis rounded-pill" style="font-size:12px">En Proceso</span>
+                            </td>
+                            <td class="d-flex align-items-center justify-content-center">
+                                @if ($emision->ultimo == true)
+                                    <span class="badge py-1 delete_solicitud" style="background-color: #ed0000;" role="button" >
+                                        <i class="bx bx-trash-alt fs-6"></i>
+                                    </span> 
+                                @else
+                                    <span class="badge py-1" style="background-color: #ed00008c;">
+                                        <i class="bx bx-trash-alt fs-6"></i>
+                                    </span> 
+                                @endif
+
+                                <button class="btn btn-sm btn-primary enviar_inventario d-inline-flex align-items-center ms-2" emision="{{$emision->id_emision}}" title="Enviar a Inventario" type="button" data-bs-toggle="modal" data-bs-target="#modal_enviar_inventario">
+                                    <i class='bx bxs-chevron-right'></i>
+                                </button>
+                            </td>
+                        </tr>
+                    @endforeach                  
                 </tbody> 
             </table>
         </div>
@@ -260,10 +285,45 @@
             success: function(response){
                 console.log(response);
                 if (response.success) {
-                       
+                    $('#modal_emitir_estampillas').modal('hide');
+                    $('#modal_correlativo_tiras').modal('show');
+                    $('#content_correlativo_tiras').html(response.html);
                 }else{
-                    alert(response.nota);
+                    if (response.nota != '') {
+                        alert(response.nota);
+                    }else{
+                        alert('Disculpe, ha ocurrido un error en la emisión. Vuelva a intentarlo.');
+                    }
+                    
                 }
+            },
+            error: function(error){
+                
+            }
+        });
+    }
+
+
+    function enviarEstampillasInventario(){
+        var formData = new FormData(document.getElementById("form_enviar_inventario_estampillas"));
+        $.ajax({
+            headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') },
+            url:'{{route("emision_estampillas.enviar_inventario") }}',
+            type:'POST',
+            contentType:false,
+            cache:false,
+            processData:false,
+            async: true,
+            data: formData,
+            success: function(response){
+                console.log(response);
+                // if (response.success) {
+                //     alert('LOS ROLLOS SE HAN ENVIADO AL INVENTARIO EXITOSAMENTE');
+                //     window.location.href = "{{ route('emision_rollos')}}";
+                // }else{
+                //     alert('Disculpe, ha ocurrido un error.');
+                // }  
+
             },
             error: function(error){
                 

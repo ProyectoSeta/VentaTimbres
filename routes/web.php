@@ -54,6 +54,11 @@ Route::get('/emision_estampillas', [App\Http\Controllers\EstampillasController::
 Route::post('/denominacions', [App\Http\Controllers\EstampillasController::class, 'denominacions'])->name('emision_estampillas.denominacions');
 Route::post('/modal_emitir', [App\Http\Controllers\EstampillasController::class, 'modal_emitir'])->name('emision_estampillas.modal_emitir');
 Route::post('/emitir_estampillas', [App\Http\Controllers\EstampillasController::class, 'emitir_estampillas'])->name('emision_estampillas.emitir_estampillas');
+/////////PDF: TIRAS A EMITIR
+Route::get('/pdf', [App\Http\Controllers\EstampillasController::class, 'pdf'])->name('emision_estampillas.pdf');
+
+Route::post('/modal_enviar', [App\Http\Controllers\EstampillasController::class, 'modal_enviar'])->name('emision_estampillas.modal_enviar');
+Route::post('/enviar_inventario', [App\Http\Controllers\EstampillasController::class, 'enviar_inventario'])->name('emision_estampillas.enviar_inventario');
 
 
 ///////////////////// ASIGNACIÓN ROLLOS FORMA 14

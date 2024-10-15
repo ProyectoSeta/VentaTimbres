@@ -19,6 +19,7 @@ return new class extends Migration
             $table->enum('forma14',['false','true']);
             $table->enum('estampillas',['false','true']);
 
+            $table->string('identificador',1)->unique();
         });
     }
 

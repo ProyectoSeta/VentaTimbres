@@ -11,8 +11,8 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('estampillas', function (Blueprint $table) {
-            $table->increments('id_tira');
+        Schema::create('detalle_emision_estampillas', function (Blueprint $table) {
+            $table->increments('correlativo');
 
             $table->integer('key_emision')->unsigned();
             $table->foreign('key_emision')->references('id_emision')->on('emision_estampillas')->onDelete('cascade');
@@ -20,17 +20,8 @@ return new class extends Migration
             $table->integer('key_denominacion')->unsigned();
             $table->foreign('key_denominacion')->references('id')->on('ucd_denominacions')->onDelete('cascade');
 
-            $table->integer('cantidad');
-            $table->integer('secuencia');
-
-            $table->integer('desde_correlativo');
-            $table->integer('hasta_correlativo');
-
-            $table->string('desde',9)->unique();
-            $table->string('hasta',9)->unique();
+            $table->integer('cantidad_tiras');
             
-            $table->integer('estado')->unsigned(); ///////EMISIÓN - INVENTARIO
-            $table->foreign('estado')->references('id_clasificacion')->on('clasificacions')->onDelete('cascade');
 
         });
     }
