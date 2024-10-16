@@ -267,8 +267,16 @@ class RollosController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(string $id)
+    public function delete(Request $request)
     {
-        //
+        $emision = $request->post('emision'); 
+
+        $delete = DB::table('emision_rollos')->where('id_emision', '=', $emision)->delete();
+        if ($delete) {
+            ///////////INCLUIR BITACORA
+            return response()->json(['success' => true]);
+        }else{
+            return response()->json(['success' => false]);
+        }
     }
 }

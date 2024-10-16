@@ -42,14 +42,14 @@
                             <td>{{$emision->id_emision}}</td>
                             <td class="text-secondary">{{$emision->fecha_emision}}</td>
                             <td>
-                                <a href="#">Ver</a>
+                                <a href="#" class="detalle_emision" emision="{{$emision->id_emision}}" data-bs-toggle="modal" data-bs-target="#modal_detalle_emision">Ver</a>
                             </td>
                             <td>
                                 <span class="badge bg-primary-subtle border border-primary-subtle text-primary-emphasis rounded-pill" style="font-size:12px">En Proceso</span>
                             </td>
                             <td class="d-flex align-items-center justify-content-center">
                                 @if ($emision->ultimo == true)
-                                    <span class="badge py-1 delete_solicitud" style="background-color: #ed0000;" role="button" >
+                                    <span class="badge py-1 delete_emision" emision="{{$emision->id_emision}}" style="background-color: #ed0000;" role="button" >
                                         <i class="bx bx-trash-alt fs-6"></i>
                                     </span> 
                                 @else
@@ -58,7 +58,7 @@
                                     </span> 
                                 @endif
 
-                                <button class="btn btn-sm btn-primary enviar_inventario d-inline-flex align-items-center ms-2" emision="{{$emision->id_emision}}" title="Enviar a Inventario" type="button" data-bs-toggle="modal" data-bs-target="#modal_enviar_inventario">
+                                <button class="btn btn-sm btn-primary enviar_inventario d-inline-flex align-items-center ms-2" emision="{{$emision->id_emision}}" title="Enviar a Inventario" type="button" data-bs-toggle="modal" data-bs-target="#modal_enviar_inventario_tiras">
                                     <i class='bx bxs-chevron-right'></i>
                                 </button>
                             </td>
@@ -76,17 +76,20 @@
     
     
 <!--****************** MODALES **************************-->
-    <div class="modal fade" id="modal_emitir_estampillas" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal fade" id="modal_emitir_estampillas" tabindex="-1" aria-hidden="true">
         <div class="modal-dialog">
             <div class="modal-content" id="content_emitir_estampillas">
-                
+                <div class="my-5 py-5 d-flex flex-column text-center">
+                    <i class='bx bx-loader-alt bx-spin fs-1 mb-3' style='color:#0077e2'  ></i>
+                    <span class="text-muted">Cargando, por favor espere un momento...</span>
+                </div>
             </div>  <!-- cierra modal-content -->
         </div>  <!-- cierra modal-dialog -->
     </div>
 
 
-    <!-- ************  CORRELATIVO ROLLOS  ************** -->
-    <div class="modal fade" id="modal_correlativo_tiras" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <!-- ************  CORRELATIVO TIRAS  ************** -->
+    <div class="modal fade" id="modal_correlativo_tiras" tabindex="-1" data-bs-backdrop="static" data-bs-keyboard="false" aria-hidden="true">
         <div class="modal-dialog">
             <div class="modal-content" id="content_correlativo_tiras">
                 <div class="my-5 py-5 d-flex flex-column text-center">
@@ -99,9 +102,9 @@
     
 
     <!-- *****************  ENVIAR A INVENTARIO  *************** -->
-    <div class="modal fade" id="modal_enviar_inventario" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal fade" id="modal_enviar_inventario_tiras" tabindex="-1"  aria-hidden="true">
         <div class="modal-dialog">
-            <div class="modal-content" id="content_enviar_inventario">
+            <div class="modal-content" id="content_enviar_inventario_tiras">
                 <div class="my-5 py-5 d-flex flex-column text-center">
                     <i class='bx bx-loader-alt bx-spin fs-1 mb-3' style='color:#0077e2'  ></i>
                     <span class="text-muted">Cargando, por favor espere un momento...</span>
@@ -111,6 +114,17 @@
     </div>
 
 
+    <!-- ************  DETALLE EMISIÓN ************** -->
+    <div class="modal fade" id="modal_detalle_emision" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content" id="content_detalle_emision">
+                <div class="my-5 py-5 d-flex flex-column text-center">
+                    <i class='bx bx-loader-alt bx-spin fs-1 mb-3' style='color:#0077e2'  ></i>
+                    <span class="text-muted">Cargando, por favor espere un momento...</span>
+                </div>
+            </div>  <!-- cierra modal-content -->
+        </div>  <!-- cierra modal-dialog -->
+    </div>
 
 
 <!--************************************************-->
@@ -267,6 +281,69 @@
             
         });
 
+        /////////////////////////// MODAL DETALLE EMISIÓN
+        $(document).on('click','.detalle_emision', function(e) {
+            e.preventDefault();
+            var emision = $(this).attr('emision');
+
+            $.ajax({
+                headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') },
+                type: 'POST',
+                url: '{{route("emision_estampillas.detalles") }}',
+                data: {emision:emision},
+                success: function(response) {
+                    // console.log(response);
+                    $('#content_detalle_emision').html(response);
+                },
+                error: function() {
+                }
+            });
+        });
+
+        /////////////////////////// MODAL ENVIAR A INVENTARIO
+        $(document).on('click','.enviar_inventario', function(e) {
+            e.preventDefault();
+            var emision = $(this).attr('emision');
+            // $('#btn_enviar_inventario').attr('disabled', true);
+
+            $.ajax({
+                headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') },
+                type: 'POST',
+                url: '{{route("emision_estampillas.modal_enviar") }}',
+                data: {emision:emision},
+                success: function(response) {
+                    // console.log(response);
+                    $('#content_enviar_inventario_tiras').html(response);
+                },
+                error: function() {
+                }
+            });
+        });
+
+        /////////////////////////// ELIMINAR EMISIÓN TIRAS
+        $(document).on('click','.delete_emision', function(e) {
+            e.preventDefault();
+            var emision = $(this).attr('emision');
+            if (confirm('¿Desea eliminar la ID Emision '+emision+'?')){
+                $.ajax({
+                    headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') },
+                    type: 'POST',
+                    url: '{{route("emision_estampillas.delete") }}',
+                    data: {emision:emision},
+                    success: function(response) {
+                        // console.log(response);
+                        if (response.success) {
+                            alert('LA EMISIÓN ID '+emision+' SE HA ELIMINADO CORRECTAMENTE.');
+                            window.location.href = "{{ route('emision_estampillas')}}";
+                        }else{
+                            alert('Disculpe, ha ocurrido un error.');
+                        }  
+                    },
+                    error: function() {
+                    }
+                });
+            }
+        });
 
     });
 
@@ -283,7 +360,7 @@
             async: true,
             data: formData,
             success: function(response){
-                console.log(response);
+                // console.log(response);
                 if (response.success) {
                     $('#modal_emitir_estampillas').modal('hide');
                     $('#modal_correlativo_tiras').modal('show');
@@ -304,8 +381,8 @@
     }
 
 
-    function enviarEstampillasInventario(){
-        var formData = new FormData(document.getElementById("form_enviar_inventario_estampillas"));
+    function enviarTirasInventario(){
+        var formData = new FormData(document.getElementById("form_enviar_inventario_tiras"));
         $.ajax({
             headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') },
             url:'{{route("emision_estampillas.enviar_inventario") }}',
@@ -316,13 +393,13 @@
             async: true,
             data: formData,
             success: function(response){
-                console.log(response);
-                // if (response.success) {
-                //     alert('LOS ROLLOS SE HAN ENVIADO AL INVENTARIO EXITOSAMENTE');
-                //     window.location.href = "{{ route('emision_rollos')}}";
-                // }else{
-                //     alert('Disculpe, ha ocurrido un error.');
-                // }  
+                // console.log(response);
+                if (response.success) {
+                    alert('LAS ESTAMPILLAS SE HAN ENVIADO AL INVENTARIO EXITOSAMENTE');
+                    window.location.href = "{{ route('emision_estampillas')}}";
+                }else{
+                    alert('Disculpe, ha ocurrido un error.');
+                }  
 
             },
             error: function(error){

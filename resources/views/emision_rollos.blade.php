@@ -51,7 +51,7 @@
                             </td>
                             <td class="d-flex align-items-center justify-content-center">
                                 @if ($emision->ultimo == true)
-                                    <span class="badge py-1 delete_solicitud" style="background-color: #ed0000;" role="button" >
+                                    <span class="badge py-1 delete_emision" emision="{{$emision->id_emision}}" style="background-color: #ed0000;" role="button" >
                                         <i class="bx bx-trash-alt fs-6"></i>
                                     </span> 
                                 @else
@@ -112,7 +112,7 @@
 
 
     <!-- ************  CORRELATIVO ROLLOS  ************** -->
-    <div class="modal fade" id="modal_correlativo_rollos" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal fade" id="modal_correlativo_rollos" tabindex="-1" data-bs-backdrop="static" data-bs-keyboard="false" aria-labelledby="exampleModalLabel" aria-hidden="true">
         <div class="modal-dialog">
             <div class="modal-content" id="content_correlativo_rollos">
                 <div class="my-5 py-5 d-flex flex-column text-center">
@@ -196,26 +196,51 @@
 
 <script type="text/javascript">
     $(document).ready(function () {
-          /////////////////////////// MODAL ENVIAR A INVENTARIO
-          $(document).on('click','.enviar_inventario', function(e) {
-                e.preventDefault();
-                var emision = $(this).attr('emision');
-                $('#btn_enviar_inventario').attr('disabled', true);
+        /////////////////////////// MODAL ENVIAR A INVENTARIO
+        $(document).on('click','.enviar_inventario', function(e) {
+            e.preventDefault();
+            var emision = $(this).attr('emision');
+            // $('#btn_enviar_inventario').attr('disabled', true);
 
+            $.ajax({
+                headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') },
+                type: 'POST',
+                url: '{{route("rollos.modal_enviar") }}',
+                data: {emision:emision},
+                success: function(response) {
+                    console.log(response);
+                    $('#content_enviar_inventario').html(response);
+
+                },
+                error: function() {
+                }
+            });
+        });
+
+         /////////////////////////// ELIMINAR EMISIÓN ROLOS
+         $(document).on('click','.delete_emision', function(e) {
+            e.preventDefault();
+            var emision = $(this).attr('emision');
+            if (confirm('¿Desea eliminar la ID Emision '+emision+'?')){
                 $.ajax({
                     headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') },
                     type: 'POST',
-                    url: '{{route("rollos.modal_enviar") }}',
+                    url: '{{route("rollos.delete") }}',
                     data: {emision:emision},
                     success: function(response) {
-                        console.log(response);
-                        $('#content_enviar_inventario').html(response);
-
+                        // console.log(response);
+                        if (response.success) {
+                            alert('LA EMISIÓN ID '+emision+' SE HA ELIMINADO CORRECTAMENTE.');
+                            window.location.href = "{{ route('emision_rollos')}}";
+                        }else{
+                            alert('Disculpe, ha ocurrido un error.');
+                        }  
                     },
                     error: function() {
                     }
                 });
-            });
+            }
+        });
 
     });
 

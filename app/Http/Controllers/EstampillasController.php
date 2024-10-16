@@ -396,30 +396,204 @@ class EstampillasController extends Controller
         $dia = date('d');
         $mes = date('m');
         $year = date('Y');
-        
+        $correlativo = [];
+
         $query =  DB::table('detalle_emision_estampillas')->where('key_emision', '=', $emision)->get();
         $tables = '';
 
+        $c = 0;
+
         foreach ($query as $detalle) {
+            $c++;
+            $salto = true;
+
             $consulta = DB::table('ucd_denominacions')->select('denominacion')->where('id','=', $detalle->key_denominacion)->first();
+            $ucd = $consulta->denominacion;
+
+            $array = array(
+                        'salto' => $salto,
+                        'ucd' => $ucd,
+                        'numero' => '',
+                        'desde' => '',
+                        'hasta' => '',
+                    );
+            $a = (object) $array;
+            array_push($correlativo,$a);
+
+            $consulta_2 = DB::table('estampillas')->select('desde','hasta')->where('key_emision','=',$emision)->where('key_denominacion','=',$detalle->key_denominacion)->get();
+            $i = 0;
+
+            foreach ($consulta_2 as $c2) {
+                $i++; 
+                $salto = false;
+                
+                $array = array(
+                            'salto' => $salto,
+                            'ucd' => $ucd,
+                            'numero' => $i,
+                            'desde' => $c2->desde,
+                            'hasta' => $c2->hasta,
+                        );
+                $a = (object) $array;
+                array_push($correlativo,$a);
+            }
+
+            
+
+        }
+
+        $pdf = PDF::loadView('pdfTirasEmitidas', compact('correlativo'));
+
+        return $pdf->download('Tiras_'.$year.''.$mes.''.$dia.'.pdf');
+
+    }
+
+
+
+    public function detalles(Request $request){
+        $emision = $request->post('emision');
+        $ingreso_inventario = '';
+        
+        ///////////////////////////////////////////////////////////////DETALLE EMISIÓN
+        $query = DB::table('emision_estampillas')->select('fecha_emision','ingreso_inventario')->where('id_emision','=', $emision)->first();
+        
+        if ($query->ingreso_inventario == NULL) {
+            $ingreso_inventario = '<span class="text-secondary">Sin ingreso</span>';
+        }else{
+            $ingreso_inventario = $query->ingreso_inventario;
+        }
+
+        $table_one = '<div class="d-flex justify-content-center mt-2">
+                        <table class="table w-75 ">
+                            <tr>
+                                <th>ID</th>
+                                <td class="text-secondary" colspan="2">'.$emision.'</td>
+                            </tr>
+                            <tr>
+                                <th>Emitido</th>
+                                <td colspan="2">'.$query->fecha_emision.'</td>
+                            </tr>
+                            <tr>
+                                <th>Ingreso a Inventario</th>
+                                <td colspan="2">
+                                    '.$ingreso_inventario.'
+                                </td>
+                            </tr>
+                            <tr>
+                                <th>PDF Correlativo</th>
+                                <td colspan="2">
+                                    <a href="'.route("emision_estampillas.pdf", ["emision" => $emision]).'">Descargar</a>
+                                </td>
+                            </tr>
+                        </table>
+                    </div>';
+
+        ///////////////////////////////////////////////////////////////DETALLE TIRAS
+        $query_2 = DB::table('detalle_emision_estampillas')->where('key_emision','=', $emision)->get();
+        $tr_t2 = '';
+
+        $c = DB::table('variables')->select('valor')->where('variable','=','cant_timbres_tira')->first();
+        $cant_timbres_tira = $c->valor;
+        
+        $table_three = '';
+
+        foreach ($query_2 as $q2) {
+            $consulta = DB::table('ucd_denominacions')->select('denominacion')->where('id','=', $q2->key_denominacion)->first();
+            $ucd = $consulta->denominacion;
+            $tr_t3 = ''; 
+
+            $cant_timbres = $q2->cantidad_tiras * $cant_timbres_tira;
+
+            $tr_t2 .=   '<tr>
+                            <td>'.$ucd.' UCD</td>
+                            <td>'.$q2->cantidad_tiras.' unidad(es)</td>
+                            <td class="text-muted">'.$cant_timbres.' Timbres Fiscales</td>
+                        </tr>';
+
+            $query_3 = DB::table('estampillas')->select('desde','hasta')->where('key_emision','=', $emision)->where('key_denominacion','=', $q2->key_denominacion)->get();
+            $i = 0;
+            foreach ($query_3 as $q3) {
+                $i++;
+                $tr_t3 .= '<tr>
+                                <td>'.$i.'</td>
+                                <td>'.$q3->desde.'</td>
+                                <td>'.$q3->hasta.'</td>
+                            </tr>';  
+            }
+            ///////////////////////////////////////////////////////////////DETALLE CORRELATIVO
+            $table_three .= '<p class="fw-bold text-navy fs-6 text-cente ms-5 ps-3 my-0">'.$ucd.' UCD</p>
+                            <div class="d-flex justify-content-center">
+                                <table class="table w-75 text-center">
+                                    <tr>
+                                        <th>#</th>
+                                        <th>Desde</th>
+                                        <th>Hasta</th>
+                                    </tr>
+                                    '.$tr_t3.'
+                                </table>
+                            </div>';
+        }
+
+        $table_two = '<div class="d-flex justify-content-center">
+                        <table class="table w-75">
+                            <tr>
+                                <th>Denominación</th>
+                                <th>Cant. Tiras</th>
+                                <th>Cant. Estampillas</th>
+                            </tr>
+                            '.$tr_t2.'
+                        </table>
+                    </div>';
+
+        $html = '<div class="modal-header p-2 pt-3 d-flex justify-content-center">
+                    <div class="text-center">
+                        <i class="bx bx-detail fs-1 text-secondary"></i>
+                        <h1 class="modal-title fs-5 fw-bold text-navy titulo" id="" >Detalles de la Emisión</h1>
+                    </div>
+                </div>
+                <div class="modal-body" style="font-size:13px;">
+                    '.$table_one.'
+                    <p class="fw-bold text-center text-navy fs-6 titulo">Cantidad de Tiras</p>
+                    '.$table_two.'
+                    <p class="fw-bold text-center text-navy fs-6 titulo">Correlativo</p>
+                    '.$table_three.'
+                    <div class="d-flex justify-content-center my-2">
+                        <button type="button" class="btn btn-secondary btn-sm" data-bs-dismiss="modal">Salir</button>
+                    </div>
+                </div>';
+        
+        return response($html);
+        
+    }
+
+
+    public function modal_enviar(Request $request){
+        $emision = $request->post('emision'); 
+
+        ///////////////////////////////////////////////////////////////DETALLE TIRAS
+        $query = DB::table('detalle_emision_estampillas')->where('key_emision','=', $emision)->get();
+        $tables = '';
+
+        foreach ($query as $q1) {
+            $query_2 = DB::table('estampillas')->select('desde','hasta')->where('key_emision','=', $emision)->where('key_denominacion','=', $q1->key_denominacion)->get();
+            $i = 0;
+
+            $consulta = DB::table('ucd_denominacions')->select('denominacion')->where('id','=', $q1->key_denominacion)->first();
             $ucd = $consulta->denominacion;
 
             $tr = '';
 
-            $consulta_2 = DB::table('estampillas')->select('desde','hasta')->where('key_emision','=',$emision)->where('key_denominacion','=',$detalle->key_denominacion)->get();
-            $i = 0;
-            foreach ($consulta_2 as $c) {
+            foreach ($query_2 as $q2) {
                 $i++;
                 $tr .= '<tr>
                             <td>'.$i.'</td>
-                            <td>'.$c->desde.'</td>
-                            <td>'.$c->hasta.'</td>
+                            <td>'.$q2->desde.'</td>
+                            <td>'.$q2->hasta.'</td>
                         </tr>';
             }
-
             $tables .= '<div class="">
-                            <p id="ucd_title">'.$ucd.' UCD</p>
-                            <table class="">
+                            <p class="fw-bold text-navy fs-5 titulo mb-2">'.$ucd.' UCD</p>
+                            <table class="table text-center">
                                 <tr>
                                     <th>#</th>
                                     <th>Desde</th>
@@ -428,17 +602,53 @@ class EstampillasController extends Controller
                                 '.$tr.'
                             </table>
                         </div>';
-
         }
 
-        $pdf = PDF::loadHTML(view('pdfTirasEmitidas', compact('tables')));
+        $html = '<div class="modal-header p-2 pt-3 d-flex justify-content-center">
+                    <div class="text-center">
+                        <i class="bx bxs-layer-plus fs-2 text-muted me-2"></i>
+                        <h1 class="modal-title fs-5 fw-bold text-navy">Enviar a Inventario</h1>
+                        <span class="text-muted fw-bold">Estampillas | Timbre movil </span>
+                    </div>
+                </div>
+                <div class="modal-body px-5 py-3" style="font-size:13px">
+                    <form id="form_enviar_inventario_tiras" method="post" onsubmit="event.preventDefault(); enviarTirasInventario()">
+                        '.$tables.'
+                        <input type="hidden" name="emision" value="'.$emision.'">
 
-        return $pdf->download('Tiras_'.$year.''.$mes.''.$dia.'.pdf');
+                        <div class="d-flex justify-content-center mt-3 mb-3">
+                            <button type="button" class="btn btn-secondary btn-sm me-2" data-bs-dismiss="modal">Cancelar</button>
+                            <button type="submit" class="btn btn-success btn-sm" id="btn_enviar_inventario">Aceptar</button>
+                        </div>
+                    </form>
+                </div>';
 
+        return response($html);
     }
 
 
 
+    public function enviar_inventario(Request $request)
+    {
+        $emision = $request->post('emision'); 
+        $hoy = date('Y-m-d');
+        $update = DB::table('estampillas')->where('key_emision', '=', $emision)->update(['estado' => 1]);
+
+        if ($update) {
+            $update_emision = DB::table('emision_estampillas')->where('id_emision', '=', $emision)->update(['ingreso_inventario' => $hoy]);
+            if ($update_emision) {
+
+                ///////////BITACORA
+
+                return response()->json(['success' => true]);
+            }else{
+                return response()->json(['success' => false]);
+            }
+        }else{
+            return response()->json(['success' => false]);
+        }
+
+    }
 
 
 
@@ -469,8 +679,16 @@ class EstampillasController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(string $id)
+    public function delete(Request $request)
     {
-        //
+        $emision = $request->post('emision'); 
+        $delete = DB::table('emision_estampillas')->where('id_emision', '=', $emision)->delete();
+        if ($delete) {
+            ///////////INCLUIR BITACORA
+            return response()->json(['success' => true]);
+        }else{
+            return response()->json(['success' => false]);
+        }
+
     }
 }

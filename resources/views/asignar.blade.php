@@ -178,7 +178,7 @@
                                     </div>
                                 </div>
 
-                                <p class="text-muted my-2 text-end">Funcionario designado: <span class="text-navy fw-bold" id="funcionario_forma14"> </span></p>
+                                <p class="text-muted my-2 text-end">Taquillero designado: <span class="text-navy fw-bold" id="funcionario_forma14"> </span></p>
 
                                 <label for="cantidad" class="form-label">Cantidad de Rollos: <span style="color:red">*</span></label>
                                 <input class="form-control form-control-sm" type="number" name="cantidad" required>
@@ -192,11 +192,57 @@
                             </form>
                         </div>  
                         <!-- estampillas -->
-                        <div class="tab-pane fade" id="pills-estampilla" role="tabpanel" aria-labelledby="pills-estampilla-tab" tabindex="0">...</div>
-                    </div>
-                    
+                        <div class="tab-pane fade" id="pills-estampilla" role="tabpanel" aria-labelledby="pills-estampilla-tab" tabindex="0">
+                            <form id="form_asignar_estampillas" method="post" onsubmit="event.preventDefault(); asignarEstampillas()">
+                                <div class="row">
+                                    <div class="col-lg-6">
+                                        <label for="select_sede_estampilla" class="form-label">Sede: <span style="color:red">*</span></label>
+                                        <select class="form-select form-select-sm"  id="select_sede_estampilla" name="sede" required>
+                                            <option>Seleccionar</option>
+                                            @foreach ($sedes as $sede)
+                                                <option value="{{$sede->id_sede}}">{{$sede->sede}}</option>
+                                            @endforeach
+                                        </select>
+                                    </div>
+                                    <div class="col-lg-6">
+                                        <label for="select_taquilla_estampilla" class="form-label">Taquilla: <span style="color:red">*</span></label>
+                                        <select class="form-select form-select-sm taquilla" forma="14" id="select_taquilla_estampilla" name="taquilla" required>
+                                            <option>Seleccionar</option>
+                                        </select>
+                                    </div>
+                                </div>
 
-                 
+                                <p class="text-muted my-2 text-end">Taquillero designado: <span class="text-navy fw-bold" id="funcionario_estampilla"> </span></p>
+                                <p class="text-center fw-bold text-muted fs-6 titulo">Asignación</p>
+
+                                <div class="">
+                                    <div class="d-flex justify-content-center flex-column">
+                                        <div class="row">
+                                            <div class="col-4">
+                                                <label for="denominacion" class="form-label">Denominación: <span class="text-danger">*</span></label>
+                                                <select class="form-select form-select-sm denominacion" id="denominacion_1" i="1" name="emitir[1][denominacion]">
+                                                    
+                                                </select>
+                                            </div>
+                                            <div class="col-3">
+                                                <label for="cantidad" class="form-label">Cant. Tiras: <span class="text-danger">*</span></label>
+                                                <input type="number" class="form-control form-control-sm cantidad" id="cantidad_1" i="1" name="emitir[1][cantidad]" required>
+                                            </div>
+                                            <div class="col-4">
+                                                <label for="cantidad" class="form-label">Cant. Estampillas:</label>
+                                                <input type="number" class="form-control form-control-sm" id="timbres_1" disabled>
+                                            </div>
+                                            <div class="col-1 pt-4">
+                                                <a  href="javascript:void(0);" class="btn add_button border-0">
+                                                    <i class="bx bx-plus fs-4" style="color:#038ae4"></i>
+                                                </a>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
                     
                 </div>
             </div>  <!-- cierra modal-content -->
@@ -236,12 +282,12 @@
     <script>
         const tooltipTriggerList = document.querySelectorAll('[data-bs-toggle="tooltip"]');
         const tooltipList = [...tooltipTriggerList].map(tooltipTriggerEl => new bootstrap.Tooltip(tooltipTriggerEl));
-        const myModal = document.getElementById('myModal');
-        const myInput = document.getElementById('myInput');
+        // const myModal = document.getElementById('myModal');
+        // const myInput = document.getElementById('myInput');
 
-        myModal.addEventListener('shown.bs.modal', () => {
-            myInput.focus();
-        });
+        // myModal.addEventListener('shown.bs.modal', () => {
+        //     myInput.focus();
+        // });
     </script>
     <script src="{{ asset('jss/jquery-3.5.1.js') }}" ></script>
     <script src="{{ asset('jss/datatable.min.js') }}" defer ></script>
@@ -273,6 +319,56 @@
 
 <script type="text/javascript">
     $(document).ready(function () {
+        ///////////////////////////////////////AGREGAR CAMPOS A OTRO(S) PAGO
+        var maxFieldTramite = 9; //Input fields increment limitation
+            var c = 1; //Initial field counter is 1
+
+            $(document).on('click', '.add_button', function(e){ //Once add button is clicked
+                if(c < maxFieldTramite){ //Check maximum number of input fields
+                    c++; //Increment field counter
+
+                    $.ajax({
+                        headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') },
+                        type: 'POST',
+                        url: '{{route("emision_estampillas.denominacions") }}',
+                        success: function(response) {
+                            // console.log(response);
+                            $('#conten_detalle_emision_estampillas').append('<div class="row">'+
+                                    '<div class="col-md-4">'+
+                                        '<select class="form-select form-select-sm denominacion" id="denominacion_'+c+'" i="'+c+'" name="emitir['+c+'][denominacion]">'+
+                                            response+
+                                        '</select>'+
+                                    '</div>'+
+                                    '<div class="col-md-3">'+
+                                        '<input type="number" class="form-control form-control-sm cantidad" id="cantidad_'+c+'" i="'+c+'"  name="emitir['+c+'][cantidad]" required>'+
+                                    '</div>'+
+                                    '<div class="col-md-4">'+
+                                        '<input type="number" class="form-control form-control-sm" id="timbres_'+c+'" disabled>'+
+                                    '</div>'+
+                                    '<div class="col-md-1">'+
+                                        '<a  href="javascript:void(0);" class="btn remove_button" >'+
+                                            '<i class="bx bx-x fs-4"></i>'+
+                                        '</a>'+
+                                    '</div>'+
+                                '</div>'); // Add field html
+                        },
+                        error: function() {
+                        }
+                    });
+
+                    
+                }
+            });
+
+            $(document).on('click', '.remove_button', function(e){ //Once remove button is clicked
+                e.preventDefault();
+                $(this).parent('div').parent('div').remove(); //Remove field html
+                c--; //Decrement field counter
+            });
+        ///////////////////////////////////////////////////////////////////
+
+
+        
         ////////////////////////////  TAQUILLAS SEGUN LA SEDA - ASIGNACION FORMA 14
         $(document).on('change','#select_sede_tfe', function(e) {
             e.preventDefault(); 
