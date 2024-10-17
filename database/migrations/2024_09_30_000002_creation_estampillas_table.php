@@ -29,8 +29,10 @@ return new class extends Migration
             $table->string('desde',9)->unique();
             $table->string('hasta',9)->unique();
             
-            $table->integer('estado')->unsigned(); ///////EMISIÓN - INVENTARIO
+            $table->integer('estado')->unsigned(); ///////EMISIÓN - INVENTARIO - ASIGNADA (TOTAL)
             $table->foreign('estado')->references('id_clasificacion')->on('clasificacions')->onDelete('cascade');
+
+            $table->integer('cantidad_asignada');
 
         });
     }

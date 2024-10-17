@@ -152,13 +152,6 @@ class AsignarController extends Controller
 
     }
 
-    /**
-     * Display the specified resource.
-     */
-    public function show(string $id)
-    {
-        //
-    }
 
     /**
      * Show the form for editing the specified resource.
@@ -197,19 +190,106 @@ class AsignarController extends Controller
         return $pdf->download('Asignación_TFE14_'.$year.''.$mes.''.$dia.'.pdf');
     }
 
+
+
+    ///////////////////////////////ASIGNACIÓN DE ESTAMPILLAS
+
+
+    public function denominacions(Request $request)
+    {
+        $option = '<option value="Seleccione">Seleccione</option>';
+        $query = DB::table('ucd_denominacions')->where('estampillas','=','true')->get();
+        foreach ($query as $denomi) {
+            $value = $denomi->denominacion;
+            $option .= '<option value="'.$value.'">'.$value.' UCD</option>';
+           
+        }
+        return response($option);
+    }
+
+
+
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, string $id)
+    public function content_estampillas()
     {
-        //
+        $sedes =  DB::table('sedes')->get();
+        $option_sedes = '<option value="Seleccione">Seleccione</option>';
+
+        foreach ($sedes as $sede) {
+            $option_sedes .= '<option value="'.$sede->id_sede.'">'.$sede->sede.'</option>';
+        }
+
+
+        $option_ucd = '<option value="Seleccione">Seleccione</option>';
+        $query = DB::table('ucd_denominacions')->where('estampillas','=','true')->get();
+        foreach ($query as $denomi) {
+            $value = $denomi->denominacion;
+            $option_ucd .= '<option value="'.$value.'">'.$value.' UCD</option>';
+           
+        }
+
+        $html = '<form id="form_asignar_estampillas" method="post" onsubmit="event.preventDefault(); asignarEstampillas()">
+                    <div class="row">
+                        <div class="col-lg-6">
+                            <label for="select_sede_estampilla" class="form-label">Sede: <span style="color:red">*</span></label>
+                            <select class="form-select form-select-sm sede" forma="estampillas" id="select_sede_estampilla" name="sede" required>
+                                '.$option_sedes.'
+                            </select>
+                        </div>
+                        <div class="col-lg-6">
+                            <label for="select_taquilla_estampilla" class="form-label">Taquilla: <span style="color:red">*</span></label>
+                            <select class="form-select form-select-sm taquilla" forma="estampillas" id="select_taquilla_estampilla" name="taquilla" required>
+                                <option>Seleccionar</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <p class="text-muted my-2 text-end">Taquillero designado: <span class="text-navy fw-bold" id="funcionario_estampillas"> </span></p>
+                    <p class="text-center fw-bold text-muted fs-6 titulo">Asignación</p>
+
+                    <p class="text-muted text-justify"><span class="fw-bold">IMPORTANTE:</span> La Asignación se hará según la cantidad individual de Estampillas que se quiera asignar, no por Tiras de Estampillas.</p>
+                    <div class="">
+                        <div class="d-flex flex-column" id="conten_detalle_asignar_estampillas">
+                            <div class="row">
+                                <div class="col-5">
+                                    <label for="denominacion_1" class="form-label">Denominación: <span class="text-danger">*</span></label>
+                                    <select class="form-select form-select-sm denominacion" id="denominacion_1" i="1" name="emitir[1][denominacion]">
+                                        '.$option_ucd.'
+                                    </select>
+                                </div>
+                                <div class="col-5">
+                                    <label for="cantidad_1" class="form-label">Cant. Estampillas:</label>
+                                    <input type="number" class="form-control form-control-sm" i="1" id="cantidad_1" name="emitir[1][cantidad]">
+                                </div>
+                                <div class="col-2 pt-4">
+                                    <a  href="javascript:void(0);" class="btn add_button border-0">
+                                        <i class="bx bx-plus fs-4" style="color:#038ae4"></i>
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="d-flex justify-content-center mt-3 mb-3">
+                        <button type="button" class="btn btn-secondary btn-sm me-2" data-bs-dismiss="modal">Cancelar</button>
+                        <button type="submit" class="btn btn-success btn-sm">Asignar</button>
+                    </div>
+                </form>';
+
+        return response($html);
+
     }
 
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(string $id)
+    public function asignar_estampillas(Request $request)
     {
-        //
+        $emitir = $request->post('emitir');
+        $user = auth()->id();
+
+        return response($emitir);
     }
 }

@@ -29,16 +29,6 @@ Route::post('/user', [App\Http\Controllers\UserController::class, 'store'])->nam
 Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
 
 
-//////////////////////  VENTA FORMA 14 - ESTAMPILLAS
-Route::get('/venta', [App\Http\Controllers\VentaController::class, 'index'])->name('venta');
-Route::post('/venta/search', [App\Http\Controllers\VentaController::class, 'search'])->name('venta.search');
-Route::post('/venta/ucd_tramite', [App\Http\Controllers\VentaController::class, 'ucd_tramite'])->name('venta.ucd_tramite');
-Route::post('/venta/tramites', [App\Http\Controllers\VentaController::class, 'tramites'])->name('venta.tramites');
-Route::post('/venta/total', [App\Http\Controllers\VentaController::class, 'total'])->name('venta.total');
-Route::post('/venta/debitado', [App\Http\Controllers\VentaController::class, 'debitado'])->name('venta.debitado');
-Route::post('/venta/add_contribuyente', [App\Http\Controllers\VentaController::class, 'add_contribuyente'])->name('venta.add_contribuyente');
-Route::post('/venta/venta_f14', [App\Http\Controllers\VentaController::class, 'venta_f14'])->name('venta.venta_f14');
-
 
 ///////////////////// EMISIÓN ROLLOS FORMA 14
 Route::get('/emision_rollos', [App\Http\Controllers\RollosController::class, 'index'])->name('emision_rollos');
@@ -48,6 +38,7 @@ Route::post('/rollos/enviar_inventario', [App\Http\Controllers\RollosController:
 Route::post('/rollos/delete', [App\Http\Controllers\RollosController::class, 'delete'])->name('rollos.delete');
 /////////PDF: ROLLOS A EMITIR
 Route::get('/rollos/pdf', [App\Http\Controllers\RollosController::class, 'pdf'])->name('rollos.pdf');
+
 
 
 //////////////////EMISIÓN ESTAMPILLAS
@@ -64,15 +55,30 @@ Route::get('/emision_estampillas/pdf', [App\Http\Controllers\EstampillasControll
 
 
 
-
 ///////////////////// ASIGNACIÓN ROLLOS FORMA 14
 Route::get('/asignar', [App\Http\Controllers\AsignarController::class, 'index'])->name('asignar');
 Route::post('/asignar/taquillas', [App\Http\Controllers\AsignarController::class, 'taquillas'])->name('asignar.taquillas');
 Route::post('/asignar/funcionario', [App\Http\Controllers\AsignarController::class, 'funcionario'])->name('asignar.funcionario');
 Route::post('/asignar/asignar_forma_14', [App\Http\Controllers\AsignarController::class, 'asignar_forma_14'])->name('asignar.asignar_forma_14');
+Route::post('/asignar/content_estampillas', [App\Http\Controllers\AsignarController::class, 'content_estampillas'])->name('asignar.content_estampillas');
+Route::post('/asignar/denominacions', [App\Http\Controllers\AsignarController::class, 'denominacions'])->name('asignar.denominacions');
+Route::post('/asignar/asignar_estampillas', [App\Http\Controllers\AsignarController::class, 'asignar_estampillas'])->name('asignar.asignar_estampillas');
 /////////PDF: ROLLOS A EMITIR
 Route::get('/asignar/pdf_forma14', [App\Http\Controllers\AsignarController::class, 'pdf_forma14'])->name('asignar.pdf_forma14');
 
 
+
 ///////////////////// ASIGNACIONES DE TAQUILLAS
 Route::get('/timbres_asignados', [App\Http\Controllers\AsignadoTaquillasController::class, 'index'])->name('timbres_asignados');
+
+
+
+//////////////////////  VENTA FORMA 14 - ESTAMPILLAS
+Route::get('/venta', [App\Http\Controllers\VentaController::class, 'index'])->name('venta');
+Route::post('/venta/search', [App\Http\Controllers\VentaController::class, 'search'])->name('venta.search');
+Route::post('/venta/ucd_tramite', [App\Http\Controllers\VentaController::class, 'ucd_tramite'])->name('venta.ucd_tramite');
+Route::post('/venta/tramites', [App\Http\Controllers\VentaController::class, 'tramites'])->name('venta.tramites');
+Route::post('/venta/total', [App\Http\Controllers\VentaController::class, 'total'])->name('venta.total');
+Route::post('/venta/debitado', [App\Http\Controllers\VentaController::class, 'debitado'])->name('venta.debitado');
+Route::post('/venta/add_contribuyente', [App\Http\Controllers\VentaController::class, 'add_contribuyente'])->name('venta.add_contribuyente');
+Route::post('/venta/venta_f14', [App\Http\Controllers\VentaController::class, 'venta_f14'])->name('venta.venta_f14');

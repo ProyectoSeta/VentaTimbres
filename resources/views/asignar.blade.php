@@ -163,7 +163,7 @@
                                 <div class="row">
                                     <div class="col-lg-6">
                                         <label for="sede" class="form-label">Sede: <span style="color:red">*</span></label>
-                                        <select class="form-select form-select-sm"  id="select_sede_tfe" name="sede" required>
+                                        <select class="form-select form-select-sm sede" forma="forma14" id="select_sede_tfe" name="sede" required>
                                             <option>Seleccionar</option>
                                             @foreach ($sedes as $sede)
                                                 <option value="{{$sede->id_sede}}">{{$sede->sede}}</option>
@@ -193,54 +193,10 @@
                         </div>  
                         <!-- estampillas -->
                         <div class="tab-pane fade" id="pills-estampilla" role="tabpanel" aria-labelledby="pills-estampilla-tab" tabindex="0">
-                            <form id="form_asignar_estampillas" method="post" onsubmit="event.preventDefault(); asignarEstampillas()">
-                                <div class="row">
-                                    <div class="col-lg-6">
-                                        <label for="select_sede_estampilla" class="form-label">Sede: <span style="color:red">*</span></label>
-                                        <select class="form-select form-select-sm"  id="select_sede_estampilla" name="sede" required>
-                                            <option>Seleccionar</option>
-                                            @foreach ($sedes as $sede)
-                                                <option value="{{$sede->id_sede}}">{{$sede->sede}}</option>
-                                            @endforeach
-                                        </select>
-                                    </div>
-                                    <div class="col-lg-6">
-                                        <label for="select_taquilla_estampilla" class="form-label">Taquilla: <span style="color:red">*</span></label>
-                                        <select class="form-select form-select-sm taquilla" forma="14" id="select_taquilla_estampilla" name="taquilla" required>
-                                            <option>Seleccionar</option>
-                                        </select>
-                                    </div>
-                                </div>
-
-                                <p class="text-muted my-2 text-end">Taquillero designado: <span class="text-navy fw-bold" id="funcionario_estampilla"> </span></p>
-                                <p class="text-center fw-bold text-muted fs-6 titulo">Asignación</p>
-
-                                <div class="">
-                                    <div class="d-flex justify-content-center flex-column">
-                                        <div class="row">
-                                            <div class="col-4">
-                                                <label for="denominacion" class="form-label">Denominación: <span class="text-danger">*</span></label>
-                                                <select class="form-select form-select-sm denominacion" id="denominacion_1" i="1" name="emitir[1][denominacion]">
-                                                    
-                                                </select>
-                                            </div>
-                                            <div class="col-3">
-                                                <label for="cantidad" class="form-label">Cant. Tiras: <span class="text-danger">*</span></label>
-                                                <input type="number" class="form-control form-control-sm cantidad" id="cantidad_1" i="1" name="emitir[1][cantidad]" required>
-                                            </div>
-                                            <div class="col-4">
-                                                <label for="cantidad" class="form-label">Cant. Estampillas:</label>
-                                                <input type="number" class="form-control form-control-sm" id="timbres_1" disabled>
-                                            </div>
-                                            <div class="col-1 pt-4">
-                                                <a  href="javascript:void(0);" class="btn add_button border-0">
-                                                    <i class="bx bx-plus fs-4" style="color:#038ae4"></i>
-                                                </a>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </form>
+                            <div class="my-5 py-5 d-flex flex-column text-center">
+                                <i class='bx bx-loader-alt bx-spin fs-1 mb-3' style='color:#0077e2'  ></i>
+                                <span class="text-muted">Cargando, por favor espere un momento...</span>
+                            </div>
                         </div>
                     </div>
                     
@@ -254,7 +210,10 @@
     <div class="modal fade" id="modal_asignado_forma14" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
         <div class="modal-dialog">
             <div class="modal-content" id="content_asignado_forma14">
-                
+                <div class="my-5 py-5 d-flex flex-column text-center">
+                    <i class='bx bx-loader-alt bx-spin fs-1 mb-3' style='color:#0077e2'  ></i>
+                    <span class="text-muted">Cargando, por favor espere un momento...</span>
+                </div>
             </div>  <!-- cierra modal-content -->
         </div>  <!-- cierra modal-dialog -->
     </div>
@@ -282,12 +241,6 @@
     <script>
         const tooltipTriggerList = document.querySelectorAll('[data-bs-toggle="tooltip"]');
         const tooltipList = [...tooltipTriggerList].map(tooltipTriggerEl => new bootstrap.Tooltip(tooltipTriggerEl));
-        // const myModal = document.getElementById('myModal');
-        // const myInput = document.getElementById('myInput');
-
-        // myModal.addEventListener('shown.bs.modal', () => {
-        //     myInput.focus();
-        // });
     </script>
     <script src="{{ asset('jss/jquery-3.5.1.js') }}" ></script>
     <script src="{{ asset('jss/datatable.min.js') }}" defer ></script>
@@ -330,27 +283,26 @@
                     $.ajax({
                         headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') },
                         type: 'POST',
-                        url: '{{route("emision_estampillas.denominacions") }}',
+                        url: '{{route("asignar.denominacions") }}',
                         success: function(response) {
                             // console.log(response);
-                            $('#conten_detalle_emision_estampillas').append('<div class="row">'+
-                                    '<div class="col-md-4">'+
-                                        '<select class="form-select form-select-sm denominacion" id="denominacion_'+c+'" i="'+c+'" name="emitir['+c+'][denominacion]">'+
-                                            response+
-                                        '</select>'+
-                                    '</div>'+
-                                    '<div class="col-md-3">'+
-                                        '<input type="number" class="form-control form-control-sm cantidad" id="cantidad_'+c+'" i="'+c+'"  name="emitir['+c+'][cantidad]" required>'+
-                                    '</div>'+
-                                    '<div class="col-md-4">'+
-                                        '<input type="number" class="form-control form-control-sm" id="timbres_'+c+'" disabled>'+
-                                    '</div>'+
-                                    '<div class="col-md-1">'+
-                                        '<a  href="javascript:void(0);" class="btn remove_button" >'+
-                                            '<i class="bx bx-x fs-4"></i>'+
-                                        '</a>'+
-                                    '</div>'+
-                                '</div>'); // Add field html
+                            $('#conten_detalle_asignar_estampillas').append('<div class="row">'+
+                                            '<div class="col-5">'+
+                                                '<label for="denominacion_'+c+'" class="form-label">Denominación: <span class="text-danger">*</span></label>'+
+                                                '<select class="form-select form-select-sm denominacion" id="denominacion_'+c+'" i="'+c+'" name="emitir['+c+'][denominacion]">'+
+                                                    response+
+                                                '</select>'+
+                                            '</div>'+
+                                            '<div class="col-5">'+
+                                                '<label for="cantidad_'+c+'" class="form-label">Cant. Estampillas:</label>'+
+                                                '<input type="number" class="form-control form-control-sm" i="'+c+'" id="cantidad_'+c+'" name="emitir['+c+'][cantidad]">'+
+                                            '</div>'+
+                                            '<div class="col-2 pt-4">'+
+                                                '<a  href="javascript:void(0);" class="btn remove_button" >'+
+                                                    '<i class="bx bx-x fs-4"></i>'+
+                                                '</a>'+
+                                            '</div>'+
+                                        '</div>'); // Add field html
                         },
                         error: function() {
                         }
@@ -366,20 +318,65 @@
                 c--; //Decrement field counter
             });
         ///////////////////////////////////////////////////////////////////
+        
+        /////////////////// CONTENT MODAL ASIGNAR ESTAMPILLAS
+        $(document).on('click','#pills-estampilla-tab', function(e) {
+            e.preventDefault();
 
+            $.ajax({
+                headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') },
+                type: 'POST',
+                url: '{{route("asignar.content_estampillas") }}',
+                success: function(response) {
+                    // console.log(response);
+                    $('#pills-estampilla').html(response);
+                },
+                error: function() {
+                }
+            });
+        });
+
+        ///////////////////////COLOCAR SELECCIONE SI EL VALOR (DENOMINACION) YA HA SIDO ESCOGIDO
+        $(document).on('change','.denominacion', function(e) {
+            var value = $(this).val();
+            var i = $(this).attr('i');
+            var x = false;
+
+            $('.denominacion').each(function(e){
+                var d = $(this).val();
+                var d_i = $(this).attr('i');
+                
+                if (d == value && d_i != i) {
+                    x = true;
+                }
+                
+            });
+
+            if (x == true) {
+                alert("Disculpe, no puede seleccionar dos (2) denominaciones del mismo valor para la misma emisión.");
+                $('#denominacion_'+i)[0].selectedIndex = 0;
+            }
+        });
 
         
         ////////////////////////////  TAQUILLAS SEGUN LA SEDA - ASIGNACION FORMA 14
-        $(document).on('change','#select_sede_tfe', function(e) {
+        $(document).on('change','.sede', function(e) {
             e.preventDefault(); 
             var value = $(this).val();
+            var forma = $(this).attr('forma');
+
             $.ajax({
                 headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') },
                 type: 'POST',
                 url: '{{route("asignar.taquillas") }}',
                 data: {value:value},
                 success: function(response) {
-                    $('#select_taquilla_tfe').html(response);
+                    if (forma == 'forma14') {
+                        $('#select_taquilla_tfe').html(response);
+                    }else{
+                        $('#select_taquilla_estampilla').html(response);
+                    }
+                    
                 },
                 error: function() {
                 }
@@ -401,7 +398,7 @@
                     if (forma == '14') {
                         $('#funcionario_forma14').html(response);
                     }else{
-
+                        $('#funcionario_estampillas').html(response);
                     }
                     
                 },
@@ -440,6 +437,41 @@
                     }
                     
                 }  
+
+            },
+            error: function(error){
+                
+            }
+        });
+    }
+
+
+    function asignarEstampillas(){
+        var formData = new FormData(document.getElementById("form_asignar_estampillas"));
+        $.ajax({
+            headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') },
+            url:'{{route("asignar.asignar_estampillas") }}',
+            type:'POST',
+            contentType:false,
+            cache:false,
+            processData:false,
+            async: true,
+            data: formData,
+            success: function(response){
+                console.log(response);
+                // if (response.success) {
+                //     $('#modal_asignar_timbres').modal('hide');
+                //     $('#modal_asignado_forma14').modal('show');
+                //     $('#content_asignado_forma14').html(response.html);
+                    
+                // }else{
+                //     if (response.nota) {
+                //         alert(response.nota);
+                //     }else{
+                //         alert('Disculpe, ha ocurrido un error en la asignación.');
+                //     }
+                    
+                // }  
 
             },
             error: function(error){
