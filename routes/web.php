@@ -34,6 +34,7 @@ Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name
 Route::get('/emision_rollos', [App\Http\Controllers\RollosController::class, 'index'])->name('emision_rollos');
 Route::post('/rollos/emitir', [App\Http\Controllers\RollosController::class, 'emitir'])->name('rollos.emitir');
 Route::post('/rollos/modal_enviar', [App\Http\Controllers\RollosController::class, 'modal_enviar'])->name('rollos.modal_enviar');
+Route::post('/rollos/detalles', [App\Http\Controllers\RollosController::class, 'detalles'])->name('rollos.detalles');
 Route::post('/rollos/enviar_inventario', [App\Http\Controllers\RollosController::class, 'enviar_inventario'])->name('rollos.enviar_inventario');
 Route::post('/rollos/delete', [App\Http\Controllers\RollosController::class, 'delete'])->name('rollos.delete');
 /////////PDF: ROLLOS A EMITIR

@@ -24,6 +24,7 @@
                 </button>
             </div>
         </div>
+         
 
         <div class="table-responsive" style="font-size:12.7px">
             <table id="example" class="table text-center border-light-subtle" style="font-size:12.7px">
@@ -207,7 +208,7 @@
 
 
     <!-- ************  CORRELATIVO ROLLOS ASIGNADOS ************** -->
-    <div class="modal fade" id="modal_asignado_forma14" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal fade" id="modal_asignado_forma14" tabindex="-1" data-bs-backdrop="static" data-bs-keyboard="false" aria-labelledby="exampleModalLabel" aria-hidden="true">
         <div class="modal-dialog">
             <div class="modal-content" id="content_asignado_forma14">
                 <div class="my-5 py-5 d-flex flex-column text-center">
@@ -459,19 +460,19 @@
             data: formData,
             success: function(response){
                 console.log(response);
-                // if (response.success) {
-                //     $('#modal_asignar_timbres').modal('hide');
-                //     $('#modal_asignado_forma14').modal('show');
-                //     $('#content_asignado_forma14').html(response.html);
+                if (response.success) {
+                    // $('#modal_asignar_timbres').modal('hide');
+                    // $('#modal_asignado_forma14').modal('show');
+                    // $('#content_asignado_forma14').html(response.html);
                     
-                // }else{
-                //     if (response.nota) {
-                //         alert(response.nota);
-                //     }else{
-                //         alert('Disculpe, ha ocurrido un error en la asignación.');
-                //     }
+                }else{
+                    if (response.nota) {
+                        alert(response.nota);
+                    }else{
+                        alert('Disculpe, ha ocurrido un error en la asignación.');
+                    }
                     
-                // }  
+                }  
 
             },
             error: function(error){

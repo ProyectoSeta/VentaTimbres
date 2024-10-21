@@ -233,7 +233,13 @@ class EstampillasController extends Controller
                                                                     'hasta_correlativo' => $hasta_correlativo,
                                                                     'desde' => $desde,
                                                                     'hasta' => $hasta,
-                                                                    'estado' => 5]);   
+                                                                    'estado' => 5,
+                                                                    'cantidad_asignada' => '0']);   
+
+                    $consulta_inv =  DB::table('inventario_estampillas')->select('cantidad')->where('key_denominacion','=', $key_deno)->first(); 
+                    $cantidad_actual = $consulta_inv->cantidad + $cant_timbres_tira;                                       
+                    $update_inventario = DB::table('inventario_estampillas')->where('key_denominacion','=',$key_deno)->update(['cantidad' => $cantidad_actual]);
+
                     $number = $i+1;
                     $tr .= '<tr>
                                 <td>'.$number.'</td>
@@ -342,7 +348,13 @@ class EstampillasController extends Controller
                                                                     'hasta_correlativo' => $hasta_correlativo,
                                                                     'desde' => $desde,
                                                                     'hasta' => $hasta,
-                                                                    'estado' => 5]);   
+                                                                    'estado' => 5,
+                                                                    'cantidad_asignada' => '0']); 
+                                                                    
+                    $consulta_inv = DB::table('inventario_estampillas')->select('cantidad')->where('key_denominacion','=', $key_deno)->first(); 
+                    $cantidad_actual = $consulta_inv->cantidad + $cant_timbres_tira;                                       
+                    $update_inventario = DB::table('inventario_estampillas')->where('key_denominacion','=',$key_deno)->update(['cantidad' => $cantidad_actual]);
+
                     $number = $i+1;
                     $tr .= '<tr>
                             <td>'.$number.'</td>
@@ -682,13 +694,35 @@ class EstampillasController extends Controller
     public function delete(Request $request)
     {
         $emision = $request->post('emision'); 
-        $delete = DB::table('emision_estampillas')->where('id_emision', '=', $emision)->delete();
-        if ($delete) {
-            ///////////INCLUIR BITACORA
-            return response()->json(['success' => true]);
+
+        $query =  DB::table('detalle_emision_estampillas')->where('key_emision','=', $emision)->get(); 
+        if ($query) {
+            foreach ($query as $value) {
+                $query_2 = DB::table('estampillas')->select('cantidad')->where('key_emision','=', $emision)->where('key_denominacion','=', $value->key_denominacion)->first();
+                $cantidad_estampillas = $query_2->cantidad * $value->cantidad_tiras;
+
+                $consulta_inv = DB::table('inventario_estampillas')->select('cantidad')->where('key_denominacion','=', $value->key_denominacion)->first(); 
+                $cantidad_actual = $consulta_inv->cantidad - $cantidad_estampillas;     
+
+                $update_inventario = DB::table('inventario_estampillas')->where('key_denominacion','=',$value->key_denominacion)->update(['cantidad' => $cantidad_actual]);
+                if ($update_inventario) {
+                    # code...
+                }else{
+                    return response()->json(['success' => false]);
+                }
+            }
+    
+            $delete = DB::table('emision_estampillas')->where('id_emision', '=', $emision)->delete();
+            if ($delete) {
+                ///////////INCLUIR BITACORA
+                return response()->json(['success' => true]);
+            }else{
+                return response()->json(['success' => false]);
+            }
         }else{
             return response()->json(['success' => false]);
         }
+        
 
     }
 }

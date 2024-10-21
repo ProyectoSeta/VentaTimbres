@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Http\Request;
+use SimpleSoftwareIO\QrCode\Facades\QrCode;
 use DB;
 class AsignarController extends Controller
 {
@@ -11,7 +12,10 @@ class AsignarController extends Controller
      */
     public function index()
     {
-        
+        // $url = 'https://mineralesnometalicos.tributosaragua.com.ve/qr/?id=2/'.'agrrrrrrrrrrrrrrrrrgw0r7688888777777777777777776555555555ggggggggggssssssssssssssssssssAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA';
+                                                            
+        // QrCode::format('png')->size(180)->eye('circle')->generate($url, public_path('assets/Pruebs.png'));
+
         $sedes =  DB::table('sedes')->get();
         return view('asignar', compact('sedes'));
     }
@@ -71,9 +75,9 @@ class AsignarController extends Controller
                     ///////////NO HAY SUFICIENTES ROLLOS PARA REALIZAR LA ASIGNACIÓN
                     return response()->json(['success' => false, 'nota' => 'Disculpe, no hay suficientes rollos en el inventario para realizar la asignación.']);
                 }else{
-                    $insert = DB::table('asignacion_forma_14_timbres')->insert(['key_user' => $user,'cantidad' => $cantidad,'key_taquilla' => $taquilla]);
+                    $insert = DB::table('asignacion_rollos')->insert(['key_user' => $user,'cantidad' => $cantidad,'key_taquilla' => $taquilla]);
                     if ($insert) {
-                        $id_asignacion = DB::table('asignacion_forma_14_timbres')->max('id_asignacion');
+                        $id_asignacion = DB::table('asignacion_rollos')->max('id_asignacion');
                         for ($i=0; $i < $cantidad; $i++) { 
                             $query =  DB::table('inventario_rollos')->select('id_rollo','desde','hasta')->where('estado','=',1)->first(); 
                             if ($query) {
@@ -115,9 +119,9 @@ class AsignarController extends Controller
                                     <div class="d-flex flex-column text-muted mb-3">
                                         <div class="d-flex justify-content-between">
                                             <p class="mb-1">Sede: <span class="text-navy fw-bold">'.$consulta->sede.'</span></p>
-                                            <p class="mb-1">ID Taquila: <span class="text-navy fw-bold">'.$taquilla.'</span></p>
+                                            <p class="mb-1">ID TAQUILLA: <span class="text-navy fw-bold">'.$taquilla.'</span></p>
                                         </div>
-                                        <p class="mb-1">Funcionario designado: <span class="text-navy fw-bold">'.$consulta_2->nombre.'</span></p>
+                                        <p class="mb-1">Taquillero designado: <span class="text-navy fw-bold">'.$consulta_2->nombre.'</span></p>
                                     </div>
                                     <p class="text-secondary">*NOTA: Cada rollo emitido trae un total de 160 Trimbres Fiscales.</p>
                                     <div class="">
@@ -192,7 +196,7 @@ class AsignarController extends Controller
 
 
 
-    ///////////////////////////////ASIGNACIÓN DE ESTAMPILLAS
+    ///////////////////////////////////ASIGNACIÓN DE ESTAMPILLAS ////////////////////////////////////////////////////////////
 
 
     public function denominacions(Request $request)
@@ -201,7 +205,7 @@ class AsignarController extends Controller
         $query = DB::table('ucd_denominacions')->where('estampillas','=','true')->get();
         foreach ($query as $denomi) {
             $value = $denomi->denominacion;
-            $option .= '<option value="'.$value.'">'.$value.' UCD</option>';
+            $option .= '<option value="'.$denomi->id.'">'.$value.' UCD</option>';
            
         }
         return response($option);
@@ -226,7 +230,7 @@ class AsignarController extends Controller
         $query = DB::table('ucd_denominacions')->where('estampillas','=','true')->get();
         foreach ($query as $denomi) {
             $value = $denomi->denominacion;
-            $option_ucd .= '<option value="'.$value.'">'.$value.' UCD</option>';
+            $option_ucd .= '<option value="'.$denomi->id.'">'.$value.' UCD</option>';
            
         }
 
@@ -288,8 +292,115 @@ class AsignarController extends Controller
     public function asignar_estampillas(Request $request)
     {
         $emitir = $request->post('emitir');
+        $taquilla = $request->post('taquilla');
+
         $user = auth()->id();
 
-        return response($emitir);
+        ///////////////////////////////////////////////////////////////VERIFICACIÓN DE CAMPOS
+        foreach ($emitir as $e) {
+            if ($e['denominacion'] === 'Seleccione') {
+                return response()->json(['success' => false, 'nota' => 'Disculpe, debe seleccionar la denominación ucd que desea emitir para la tira de estampillas.']);
+            }else{
+                if ($e['cantidad'] == 0) {
+                    return response()->json(['success' => false, 'nota' => 'Disculpe, debe colocar la cantidad de tiras que quiere emitir segun la denominación.']);
+                }
+            }
+
+
+            
+        }
+
+        /////////////////////////////////////////////////////////////VERIFICAR DISPONIBILIDAD
+        foreach ($emitir as $e) {
+            $denominacion = $e['denominacion'];
+            $cantidad_timbres = $e['cantidad'];
+
+            $consulta = DB::table('inventario_estampillas')->select('cantidad')->where('key_denominacion','=', $denominacion)->first();
+            if ($consulta->cantidad < $cantidad_timbres) {
+                $ucd = DB::table('ucd_denominacions')->select('denominacion')->where('id','=', $denominacion)->first();
+                return response()->json(['success' => false, 'nota' => 'Disculpe, no hay suficiente estampillas de '.$ucd->denominacion.' UCD en el Inventario para realizar la asignación.']);
+            }
+        }
+
+
+        //////////////////////////////////////////////////////////ASIGNACIÓN
+        $insert_asignacion = DB::table('asignacion_estampillas')->insert(['key_user' => $user, 'key_taquilla' => $taquilla]); 
+        if ($insert_asignacion) {
+            $id_asignacion = DB::table('asignacion_estampillas')->max('id_asignacion');
+            foreach ($emitir as $e) {
+                $insert_detalle = DB::table('detalle_asignacion_estampillas')->insert(['key_asignacion' => $id_asignacion, 'key_denominacion' => $e['denominacion'], 'cantidad' => $e['cantidad']]);
+
+                $asignado = 0;
+                do {
+                    $query = DB::table('estampillas')->select('id_tira','cantidad','cantidad_asignada')->where('key_denominacion','=', $e['denominacion'])->where('cantidad_asignada','<>','cantidad')->first();
+                    $timbres_disponibles = $query->cantidad - $query->cantidad_asignada;
+    
+                    if ($timbres_disponibles >= $e['cantidad']) {
+                        ///hay suficientes timbres en la tira para cubrir la asignación
+                        $insert_de = DB::table('detalle_estampillas')->insert(['key_tira' => $query->id_tira, 'key_asignacion' => $id_asignacion, 'key_taquilla' => $taquilla, 'cantidad' => $e['cantidad']]);
+                        if ($insert_de) {
+                            $new_cantidad_asignada = $query->cantidad_asignada + $e['cantidad'];
+
+                            $update = DB::table('estampillas')->where('id_tira','=',$query->id_tira)->update(['cantidad_asignada' => $new_cantidad_asignada]);
+                            if ($update) {
+                                $consulta_inv = DB::table('inventario_estampillas')->select('cantidad')->where('key_denominacion','=', $e['denominacion'])->first(); 
+                                $cantidad_actual = $consulta_inv->cantidad + $e['cantidad'];                                       
+                                $update_inventario = DB::table('inventario_estampillas')->where('key_denominacion','=', $e['denominacion'])->update(['cantidad' => $cantidad_actual]);
+                                if ($update_inventario) {
+                                    $asignado = $e['cantidad'];
+                                }else{
+                                    return response()->json(['success' => false]); 
+                                }
+                            }else{
+                                return response()->json(['success' => false]);
+                            }
+                        }else{
+                            return response()->json(['success' => false]);
+                        }
+                    }else{
+                        ///no hay suficientes timbres en la tira para cubrir la asignación
+
+
+
+
+                        $insert_de = DB::table('detalle_estampillas')->insert(['key_tira' => $query->id_tira, 'key_asignacion' => $id_asignacion, 'key_taquilla' => $taquilla, 'cantidad' => $timbres_disponibles]);
+                        if ($insert_de) {
+                            $new_cantidad_asignada = $query->cantidad_asignada + $timbres_disponibles;
+
+                            $update = DB::table('estampillas')->where('id_tira','=',$query->id_tira)->update(['cantidad_asignada' => $new_cantidad_asignada]);
+                            if ($update) {
+                                $consulta_inv = DB::table('inventario_estampillas')->select('cantidad')->where('key_denominacion','=', $e['denominacion'])->first(); 
+                                $cantidad_actual = $consulta_inv->cantidad + $timbres_disponibles;                                       
+                                $update_inventario = DB::table('inventario_estampillas')->where('key_denominacion','=', $e['denominacion'])->update(['cantidad' => $cantidad_actual]);
+                                if ($update_inventario) {
+                                    $asignado = $timbres_disponibles;
+                                }else{
+                                    return response()->json(['success' => false]); 
+                                }
+                            }else{
+                                return response()->json(['success' => false]);
+                            }
+                        }else{
+                            return response()->json(['success' => false]);
+                        }
+
+
+    
+                    }
+                    
+    
+                }while ($asignado == $e['cantidad']);
+    
+                
+            }
+        }else{
+            return response()->json(['success' => false]);
+        }
+        
+
+
+
+
+        // return response($emitir);
     }
 }

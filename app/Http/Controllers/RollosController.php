@@ -256,6 +256,104 @@ class RollosController extends Controller
 
     }
 
+
+    public function detalles(Request $request){
+        $emision = $request->post('emision');
+        $ingreso_inventario = '';
+        
+        ///////////////////////////////////////////////////////////////DETALLE EMISIÓN
+        $query = DB::table('emision_rollos')->select('fecha_emision','ingreso_inventario','cantidad')->where('id_emision','=', $emision)->first();
+        
+        if ($query->ingreso_inventario == NULL) {
+            $ingreso_inventario = '<span class="text-secondary">Sin ingreso</span>';
+        }else{
+            $ingreso_inventario = $query->ingreso_inventario;
+        }
+
+        $table_one = '<div class="d-flex justify-content-center mt-2">
+                        <table class="table w-75 ">
+                            <tr>
+                                <th>ID</th>
+                                <td class="text-secondary" colspan="2">'.$emision.'</td>
+                            </tr>
+                            <tr>
+                                <th>Emitido</th>
+                                <td colspan="2">'.$query->fecha_emision.'</td>
+                            </tr>
+                            <tr>
+                                <th>Ingreso a Inventario</th>
+                                <td colspan="2">
+                                    '.$ingreso_inventario.'
+                                </td>
+                            </tr>
+                            <tr>
+                                <th>PDF Correlativo</th>
+                                <td colspan="2">
+                                    <a href="'.route("rollos.pdf", ["emision" => $emision]).'">Descargar</a>
+                                </td>
+                            </tr>
+                            <tr>
+                                <th>Cantidad de Rollos</th>
+                                <td colspan="2">
+                                    '.$query->cantidad.' Unidad(es)
+                                </td>
+                            </tr>
+                        </table>
+                    </div>';
+
+        ///////////////////////////////////////////////////////////////DETALLE TIRAS
+        $query_2 = DB::table('detalle_emision_rollos')->where('key_emision','=', $emision)->get();
+        $c = 0;
+        $tr = '';
+        foreach ($query_2 as $q2) {
+            $c++;
+
+            $desde = $q2->desde;
+            $hasta = $q2->hasta;
+
+            $length = 6;
+            $formato_desde = substr(str_repeat(0, $length).$desde, - $length);
+            $formato_hasta = substr(str_repeat(0, $length).$hasta, - $length);
+
+            $tr .= ' <tr>
+                        <td>'.$c.'</td>
+                        <td>'.$desde.'</td>
+                        <td>'.$hasta.'</td>
+                    </tr>';
+        }
+
+        $table_two = '<div class="d-flex justify-content-center">
+                        <table class="table w-75 text-center">
+                            <tr>
+                                <th>#</th>
+                                <th>Desde</th>
+                                <th>Hasta</th>
+                            </tr>
+                            '.$tr.'
+                        </table>
+                    </div>';
+
+        $html = '<div class="modal-header p-2 pt-3 d-flex justify-content-center">
+                    <div class="text-center">
+                        <i class="bx bx-detail fs-1 text-secondary"></i>
+                        <h1 class="modal-title fs-5 fw-bold text-navy titulo" id="" >Detalles de la Emisión</h1>
+                    </div>
+                </div>
+                <div class="modal-body" style="font-size:13px;">
+                    '.$table_one.'
+                    <p class="fw-bold text-center text-navy fs-6 titulo">Correlativo</p>
+                    '.$table_two.'
+                    <div class="d-flex justify-content-center my-2">
+                        <button type="button" class="btn btn-secondary btn-sm" data-bs-dismiss="modal">Salir</button>
+                    </div>
+                </div>';
+        
+        return response($html);
+        
+    }
+
+
+
     /**
      * Update the specified resource in storage.
      */

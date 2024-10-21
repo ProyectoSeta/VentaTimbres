@@ -44,7 +44,7 @@
                             <td class="text-secondary">{{$emision->fecha_emision}}</td>
                             <td class="text-navy fw-bold">{{$emision->cantidad}} Rollos</td>
                             <td>
-                                <a href="#">Ver</a>
+                                <a href="#" class="detalle_emision_rollo" emision="{{$emision->id_emision}}" data-bs-toggle="modal" data-bs-target="#modal_detalle_emision_rollos">Ver</a>
                             </td>
                             <td>
                                 <span class="badge bg-primary-subtle border border-primary-subtle text-primary-emphasis rounded-pill" style="font-size:12px">En Proceso</span>
@@ -136,6 +136,18 @@
         </div>  <!-- cierra modal-dialog -->
     </div>
 
+    <!-- ************  DETALLE EMISIÓN ************** -->
+    <div class="modal fade" id="modal_detalle_emision_rollos" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content" id="content_detalle_emision_rollos">
+                <div class="my-5 py-5 d-flex flex-column text-center">
+                    <i class='bx bx-loader-alt bx-spin fs-1 mb-3' style='color:#0077e2'  ></i>
+                    <span class="text-muted">Cargando, por favor espere un momento...</span>
+                </div>
+            </div>  <!-- cierra modal-content -->
+        </div>  <!-- cierra modal-dialog -->
+    </div>
+
 
 
 
@@ -217,8 +229,8 @@
             });
         });
 
-         /////////////////////////// ELIMINAR EMISIÓN ROLOS
-         $(document).on('click','.delete_emision', function(e) {
+        /////////////////////////// ELIMINAR EMISIÓN ROLOS
+        $(document).on('click','.delete_emision', function(e) {
             e.preventDefault();
             var emision = $(this).attr('emision');
             if (confirm('¿Desea eliminar la ID Emision '+emision+'?')){
@@ -240,6 +252,26 @@
                     }
                 });
             }
+        });
+
+
+        /////////////////////////// MODAL DETALLE EMISIÓN
+        $(document).on('click','.detalle_emision_rollo', function(e) {
+            e.preventDefault();
+            var emision = $(this).attr('emision');
+
+            $.ajax({
+                headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') },
+                type: 'POST',
+                url: '{{route("rollos.detalles") }}',
+                data: {emision:emision},
+                success: function(response) {
+                    // console.log(response);
+                    $('#content_detalle_emision_rollos').html(response);
+                },
+                error: function() {
+                }
+            });
         });
 
     });
