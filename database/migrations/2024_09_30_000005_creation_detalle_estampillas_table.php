@@ -24,8 +24,12 @@ return new class extends Migration
             $table->foreign('key_taquilla')->references('id_taquilla')->on('taquillas')->onDelete('cascade');
 
             $table->integer('cantidad');
-            $table->integer('desde');
-            $table->integer('hasta');
+
+            $table->integer('desde_correlativo');
+            $table->integer('hasta_correlativo');
+
+            $table->string('desde',9)->unique();
+            $table->string('hasta',9)->unique();
 
 
         });

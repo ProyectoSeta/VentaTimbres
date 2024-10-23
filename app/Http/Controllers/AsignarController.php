@@ -323,31 +323,94 @@ class AsignarController extends Controller
         }
 
 
-        //////////////////////////////////////////////////////////ASIGNACIÓN
+        ////////////////////////////////////////////////////////////ASIGNACIÓN
+        $q2 = DB::table('formas')->select('identificador')->where('forma','=','estampillas')->first();
+        $identificador_forma = $q2->identificador;
+
         $insert_asignacion = DB::table('asignacion_estampillas')->insert(['key_user' => $user, 'key_taquilla' => $taquilla]); 
         if ($insert_asignacion) {
             $id_asignacion = DB::table('asignacion_estampillas')->max('id_asignacion');
-            foreach ($emitir as $e) {
-                $insert_detalle = DB::table('detalle_asignacion_estampillas')->insert(['key_asignacion' => $id_asignacion, 'key_denominacion' => $e['denominacion'], 'cantidad' => $e['cantidad']]);
 
-                $asignado = 0;
+            $tables = '';
+
+            foreach ($emitir as $e) {
+                $insert_detalle = DB::table('detalle_asignacion_estampillas')->insert(['key_asignacion' => $id_asignacion, 
+                                                                                        'key_denominacion' => $e['denominacion'], 
+                                                                                        'cantidad' => $e['cantidad']]);
+
+                $asignar = $e['cantidad'];
+                $desde = '';
+                $hasta = '';
+                $desde_correlativo = '';
+                $hasta_correlativo = '';
+
+                $q1 = DB::table('ucd_denominacions')->select('identificador','denominacion')->where('denominacion','=',$e['denominacion'])->first();
+                $identificador_ucd = $q1->identificador;
+                $denominacion_ucd = $q1->denominacion;
+
+                $tr = '';
+
                 do {
-                    $query = DB::table('estampillas')->select('id_tira','cantidad','cantidad_asignada')->where('key_denominacion','=', $e['denominacion'])->where('cantidad_asignada','<>','cantidad')->first();
+                    $id_tira = '';
+                    $desde_tira = '';
+                    $hasta_tira = '';
+                    $asignado = 0;
+
+                    $query = DB::table('estampillas')->select('estampillas.id_tira','estampillas.cantidad','estampillas.secuencia','estampillas.cantidad_asignada','estampillas.desde_correlativo')
+                                                    ->where('estampillas.key_denominacion','=', $e['denominacion'])
+                                                    ->whereColumn('estampillas.cantidad_asignada', '!=', 'estampillas.cantidad')
+                                                    ->where('estampillas.estado','=',1)
+                                                    ->first();
+                    $id_tira =  $query->id_tira;
                     $timbres_disponibles = $query->cantidad - $query->cantidad_asignada;
     
-                    if ($timbres_disponibles >= $e['cantidad']) {
+                    if ($timbres_disponibles >= $asignar) {
+                       
                         ///hay suficientes timbres en la tira para cubrir la asignación
-                        $insert_de = DB::table('detalle_estampillas')->insert(['key_tira' => $query->id_tira, 'key_asignacion' => $id_asignacion, 'key_taquilla' => $taquilla, 'cantidad' => $e['cantidad']]);
-                        if ($insert_de) {
-                            $new_cantidad_asignada = $query->cantidad_asignada + $e['cantidad'];
+                        //////////////////buscar desde
+                        if ($query->cantidad_asignada > 0) {
+                            //////hay estampillas asignadas de la tira, buscar
+                            $c2 = DB::table('detalle_estampillas')->select('hasta_correlativo')->where('key_tira','=',$id_tira)->orderBy('correlativo', 'desc')->first();
+                            $desde_correlativo = $c2->hasta_correlativo + 1;
+                            $hasta_correlativo = ($c2->hasta_correlativo + $asignar) - 1;
+                        }else{
+                            /////no se han echoasignaciones de la tira 
+                            $desde_correlativo = $query->desde_correlativo;
+                            $hasta_correlativo = ($query->desde_correlativo + $asignar) - 1;
+                        } 
+                        
 
-                            $update = DB::table('estampillas')->where('id_tira','=',$query->id_tira)->update(['cantidad_asignada' => $new_cantidad_asignada]);
+                        $length = 6;
+                        $formato_desde = substr(str_repeat(0, $length).$desde_correlativo, - $length);
+                        $formato_hasta = substr(str_repeat(0, $length).$hasta_correlativo, - $length);
+
+
+                        $desde = $identificador_ucd.''.$identificador_forma.''.$query->secuencia.''.$formato_desde;
+                        $hasta = $identificador_ucd.''.$identificador_forma.''.$query->secuencia.''.$formato_hasta;
+
+                        $desde_tira = $desde;
+                        $hasta_tira = $hasta;
+                        ////////////////////////////
+
+                        $insert_de = DB::table('detalle_estampillas')->insert(['key_tira' => $id_tira, 
+                                                                                'key_asignacion' => $id_asignacion, 
+                                                                                'key_taquilla' => $taquilla, 
+                                                                                'cantidad' => $asignar,
+                                                                                'desde_correlativo' => $desde_correlativo,
+                                                                                'hasta_correlativo' => $hasta_correlativo,
+                                                                                'desde' => $desde,
+                                                                                'hasta' => $hasta]);
+                        if ($insert_de) {
+                            $new_cantidad_asignada = $query->cantidad_asignada + $asignar;
+
+                            $update = DB::table('estampillas')->where('id_tira','=',$id_tira)->update(['cantidad_asignada' => $new_cantidad_asignada]);
                             if ($update) {
                                 $consulta_inv = DB::table('inventario_estampillas')->select('cantidad')->where('key_denominacion','=', $e['denominacion'])->first(); 
-                                $cantidad_actual = $consulta_inv->cantidad + $e['cantidad'];                                       
-                                $update_inventario = DB::table('inventario_estampillas')->where('key_denominacion','=', $e['denominacion'])->update(['cantidad' => $cantidad_actual]);
+                                $cantidad_actual = $consulta_inv->cantidad - $asignar;                                       
+                                $update_inventario = DB::table('inventario_estampillas')->where('key_denominacion','=', $e['denominacion'])
+                                                                                        ->update(['cantidad' => $cantidad_actual]);
                                 if ($update_inventario) {
-                                    $asignado = $e['cantidad'];
+                                    $asignar = 0;
                                 }else{
                                     return response()->json(['success' => false]); 
                                 }
@@ -359,21 +422,50 @@ class AsignarController extends Controller
                         }
                     }else{
                         ///no hay suficientes timbres en la tira para cubrir la asignación
+                        //////////////////buscar desde
+                        if ($query->cantidad_asignada > 0) {
+                            //////hay estampillas asignadas de la tira, buscar
+                            $c2 = DB::table('detalle_estampillas')->select('hasta_correlativo')->where('key_tira','=',$query->id_tira)->orderBy('correlativo', 'desc')->first();
+                            $desde_correlativo = $c2->hasta_correlativo + 1;
+                            $hasta_correlativo = ($c2->hasta_correlativo + $timbres_disponibles) - 1;
+                        }else{
+                            /////no se han echoasignaciones de la tira 
+                            $desde_correlativo = $query->desde_correlativo;
+                            $hasta_correlativo = ($query->desde_correlativo + $timbres_disponibles) - 1;
+                        }
+
+                        $length = 6;
+                        $formato_desde = substr(str_repeat(0, $length).$desde_correlativo, - $length);
+                        $formato_hasta = substr(str_repeat(0, $length).$hasta_correlativo, - $length);
 
 
+                        $desde = $identificador_ucd.''.$identificador_forma.''.$query->secuencia.''.$formato_desde;
+                        $hasta = $identificador_ucd.''.$identificador_forma.''.$query->secuencia.''.$formato_hasta;
 
+                        $desde_tira = $desde;
+                        $hasta_tira = $hasta;
+                        ////////////////////////////
 
-                        $insert_de = DB::table('detalle_estampillas')->insert(['key_tira' => $query->id_tira, 'key_asignacion' => $id_asignacion, 'key_taquilla' => $taquilla, 'cantidad' => $timbres_disponibles]);
+                        $insert_de = DB::table('detalle_estampillas')->insert(['key_tira' => $query->id_tira, 
+                                                                                'key_asignacion' => $id_asignacion, 
+                                                                                'key_taquilla' => $taquilla, 
+                                                                                'cantidad' => $timbres_disponibles,
+                                                                                'desde_correlativo' => $desde_correlativo,
+                                                                                'hasta_correlativo' => $hasta_correlativo,
+                                                                                'desde' => $desde,
+                                                                                'hasta' => $hasta]);
                         if ($insert_de) {
                             $new_cantidad_asignada = $query->cantidad_asignada + $timbres_disponibles;
 
                             $update = DB::table('estampillas')->where('id_tira','=',$query->id_tira)->update(['cantidad_asignada' => $new_cantidad_asignada]);
                             if ($update) {
                                 $consulta_inv = DB::table('inventario_estampillas')->select('cantidad')->where('key_denominacion','=', $e['denominacion'])->first(); 
-                                $cantidad_actual = $consulta_inv->cantidad + $timbres_disponibles;                                       
-                                $update_inventario = DB::table('inventario_estampillas')->where('key_denominacion','=', $e['denominacion'])->update(['cantidad' => $cantidad_actual]);
+                                $cantidad_actual = $consulta_inv->cantidad - $timbres_disponibles;                                       
+                                $update_inventario = DB::table('inventario_estampillas')->where('key_denominacion','=', $e['denominacion'])
+                                                                                        ->update(['cantidad' => $cantidad_actual]);
                                 if ($update_inventario) {
-                                    $asignado = $timbres_disponibles;
+                                    $asignar = $asignar - $timbres_disponibles;
+
                                 }else{
                                     return response()->json(['success' => false]); 
                                 }
@@ -383,24 +475,78 @@ class AsignarController extends Controller
                         }else{
                             return response()->json(['success' => false]);
                         }
-
-
-    
                     }
+
+                    $tr .= '<tr>
+                                <td>'.$id_tira.'</td>
+                                <td>'.$desde_tira.'</td>
+                                <td>'.$hasta_tira.'</td>
+                            </tr>';
                     
-    
-                }while ($asignado == $e['cantidad']);
-    
-                
+                }while($asignar > 0);
+ 
+                $tables .= '<div class="d-flex justify-content-between my-2">
+                                <p class="fw-bold text-navy fs-5 text-cente my-0">'.$denominacion_ucd.' UCD</p>
+                                <p class="fw-bold text-muted fs-6 text-cente my-0">Cant. Timbres: '.$e['cantidad'].' unidades</p>
+                            </div>
+
+                            <div class="">
+                                <table class="table text-center">
+                                    <tr>
+                                        <th>ID Tira</th>
+                                        <th>Desde</th>
+                                        <th>Hasta</th>
+                                    </tr>
+                                    '.$tr.'
+                                </table>
+                            </div>';
+
             }
+            
+            $id_sede = $request->post('sede');
+            $consulta_sede = DB::table('sedes')->select('sede')->where('id_sede','=', $id_sede)->first(); 
+            $consulta_taquillero = DB::table('taquillas')->join('funcionarios', 'taquillas.key_funcionario', '=', 'funcionarios.id_funcionario')
+                                                ->select('funcionarios.nombre')
+                                                ->where('taquillas.id_taquilla','=', $taquilla)->first();
+                                                
+            $html = '<div class="modal-header p-2 pt-3 d-flex justify-content-center">
+                        <div class="text-center">
+                            <i class="bx bxs-layer-plus fs-2 text-muted me-2"></i>
+                            <h1 class="modal-title fs-5 fw-bold text-navy">Estampillas Asignadas</h1>
+                            <span class="text-muted fw-bold">Timbre móvil</span>
+                        </div>
+                    </div>
+                    <div class="modal-body px-5 py-3" style="font-size:13px">
+                        <div class="d-flex flex-column text-muted mb-3">
+                            <div class="d-flex justify-content-between">
+                                <p class="mb-1">Sede: <span class="text-navy fw-bold">'.$consulta_sede->sede.'</span></p>
+                                <p class="mb-1">ID TAQUILLA: <span class="text-navy fw-bold">'.$taquilla.'</span></p>
+                            </div>
+                            <p class="mb-1">Taquillero designado: <span class="text-navy fw-bold">'.$consulta_taquillero->nombre.'</span></p>
+                        </div>
+                        '.$tables.'
+                        <div class="d-flex justify-content-center mb-3">
+                            <a href="'.route("asignar").'" class="btn btn-secondary btn-sm me-2">Cancelar</a>
+                            <a href="'.route("asignar.pdf_estampillas", ["asignacion" => $id_asignacion]).'" class="btn btn-dark btn-sm"  style="font-size:12.7px">Imprimir</a>
+                        </div>
+                    </div>';
+
+            return response()->json(['success' => true, 'html' => $html]);
+
         }else{
             return response()->json(['success' => false]);
         }
         
+    }
 
 
 
+    public function pdf_estampillas(Request $request){
+        $asignacion = $request->asignacion;
+        $dia = date('d');
+        $mes = date('m');
+        $year = date('Y');
 
-        // return response($emitir);
+
     }
 }

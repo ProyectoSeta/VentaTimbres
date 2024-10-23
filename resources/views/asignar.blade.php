@@ -219,6 +219,15 @@
         </div>  <!-- cierra modal-dialog -->
     </div>
 
+    <!-- ************  CORRELATIVO ESTAMPILLAS ASIGNADAS ************** -->
+    <div class="modal fade" id="modal_asignado_estampillas" tabindex="-1" data-bs-backdrop="static" data-bs-keyboard="false" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content" id="content_asignado_estampillas">
+                
+            </div>  <!-- cierra modal-content -->
+        </div>  <!-- cierra modal-dialog -->
+    </div>
+
 
 
 
@@ -459,11 +468,11 @@
             async: true,
             data: formData,
             success: function(response){
-                console.log(response);
+                // console.log(response);
                 if (response.success) {
-                    // $('#modal_asignar_timbres').modal('hide');
-                    // $('#modal_asignado_forma14').modal('show');
-                    // $('#content_asignado_forma14').html(response.html);
+                    $('#modal_asignar_timbres').modal('hide');
+                    $('#modal_asignado_estampillas').modal('show');
+                    $('#content_asignado_estampillas').html(response.html);
                     
                 }else{
                     if (response.nota) {
