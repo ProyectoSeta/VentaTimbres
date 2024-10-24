@@ -293,7 +293,7 @@ class AsignarController extends Controller
     {
         $emitir = $request->post('emitir');
         $taquilla = $request->post('taquilla');
-
+        // return response($emitir);
         $user = auth()->id();
 
         ///////////////////////////////////////////////////////////////VERIFICACIÓN DE CAMPOS
@@ -344,7 +344,7 @@ class AsignarController extends Controller
                 $desde_correlativo = '';
                 $hasta_correlativo = '';
 
-                $q1 = DB::table('ucd_denominacions')->select('identificador','denominacion')->where('denominacion','=',$e['denominacion'])->first();
+                $q1 = DB::table('ucd_denominacions')->select('identificador','denominacion')->where('id','=',$e['denominacion'])->first();
                 $identificador_ucd = $q1->identificador;
                 $denominacion_ucd = $q1->denominacion;
 
@@ -356,11 +356,12 @@ class AsignarController extends Controller
                     $hasta_tira = '';
                     $asignado = 0;
 
-                    $query = DB::table('estampillas')->select('estampillas.id_tira','estampillas.cantidad','estampillas.secuencia','estampillas.cantidad_asignada','estampillas.desde_correlativo')
-                                                    ->where('estampillas.key_denominacion','=', $e['denominacion'])
-                                                    ->whereColumn('estampillas.cantidad_asignada', '!=', 'estampillas.cantidad')
-                                                    ->where('estampillas.estado','=',1)
+                    $query = DB::table('estampillas')->select('id_tira','cantidad','secuencia','cantidad_asignada','desde_correlativo')
+                                                    ->where('key_denominacion','=', $e['denominacion'])
+                                                    ->where('estado','=',1)
+                                                    ->whereColumn('cantidad_asignada', '<','cantidad')
                                                     ->first();
+                    // return response($query->cantidad);
                     $id_tira =  $query->id_tira;
                     $timbres_disponibles = $query->cantidad - $query->cantidad_asignada;
     
@@ -391,7 +392,7 @@ class AsignarController extends Controller
                         $desde_tira = $desde;
                         $hasta_tira = $hasta;
                         ////////////////////////////
-
+                        
                         $insert_de = DB::table('detalle_estampillas')->insert(['key_tira' => $id_tira, 
                                                                                 'key_asignacion' => $id_asignacion, 
                                                                                 'key_taquilla' => $taquilla, 

@@ -44,5 +44,16 @@ class TiposSeeder extends Seeder
         DB::table('tipos')->insert([
             'nombre_tipo' => 'Porcentaje',
         ]);
+
+        ///////////TIPOS DE CONTRIBUYENTES
+        DB::table('tipos')->insert([
+            'nombre_tipo' => 'Natural',
+        ]);
+        DB::table('tipos')->insert([
+            'nombre_tipo' => 'Firma Personal',
+        ]);
+        DB::table('tipos')->insert([
+            'nombre_tipo' => 'Ente',
+        ]);
     }
 }
