@@ -25,101 +25,75 @@
             </div>
         </div>
          
-
-        <div class="table-responsive" style="font-size:12.7px">
-            <table id="example" class="table text-center border-light-subtle" style="font-size:12.7px">
+        <div class="text-navy fs-3 mb-3 titulo fw-bold">
+            Forma 14 <span class="text-muted">TFE-14</span>
+        </div>
+        <div class="table-responsive mb-5 pb-3" style="font-size:12.7px">
+            <table id="asignados_forma14" class="table text-center border-light-subtle" style="font-size:12.7px">
                 <thead>
                     <th>#</th>
                     <th>Asignado a</th>
                     <th>Fecha</th>
-                    <th>Forma</th> 
+                    <th>Cantidad</th>
                     <th>Detalle</th>
                     <th>¿Recibido?</th> 
                 </thead>
                 <tbody id="" class="border-light-subtle"> 
-                     
-                  
+                    @foreach ($asignado_tfe as $tfe)
+                        <tr>
+                            <td>{{$tfe->id_asignacion}}</td>
+                            <td>
+                                <a href="#" class="taquilla" taquilla="{{$tfe->key_taquilla}}" data-bs-toggle="modal" data-bs-target="#modal_info_taquilla">Taquilla ID {{$tfe->key_taquilla}} ({{$tfe->sede}})</a>
+                            </td>
+                            <td class="text-muted">{{$tfe->fecha}}</td>
+                            <td>{{$tfe->cantidad}} Rollos</td>
+                            <td>
+                                <a href="" class="">Ver</a>
+                            </td>
+                            <td>
+                                <span class="text-secondary fst-italic">Sin recibir</span>
+                            </td>
+                        </tr>
+                    @endforeach
+                </tbody> 
+            </table>
+        </div>
+
+        <div class="text-navy fs-3 mb-3 titulo fw-bold">
+            Estampillas <span class="text-muted">Timbre Móvil</span>
+        </div>
+        <div class="table-responsive" style="font-size:12.7px">
+            <table id="asignados_estampillas" class="table text-center border-light-subtle" style="font-size:12.7px">
+                <thead>
+                    <th>#</th>
+                    <th>Asignado a</th>
+                    <th>Fecha</th>
+                    <th>Detalle</th>
+                    <th>¿Recibido?</th> 
+                </thead>
+                <tbody id="" class="border-light-subtle"> 
+                    @foreach ($asignado_estampillas as $estampillas)
+                        <tr>
+                            <td>{{$estampillas->id_asignacion}}</td>
+                            <td>
+                            <a href="#" class="taquilla" taquilla="{{$estampillas->key_taquilla}}" data-bs-toggle="modal" data-bs-target="#modal_info_taquilla">Taquilla ID {{$estampillas->key_taquilla}} ({{$estampillas->sede}})</a>
+                            </td>
+                            <td class="text-muted">{{$estampillas->fecha}}</td>
+                            <td>
+                                <a href="" class="">Ver</a>
+                            </td>
+                            <td>
+                                <span class="text-secondary fst-italic">Sin recibir</span>
+                            </td>
+                        </tr>
+                    @endforeach
                 </tbody> 
             </table>
         </div>
 
         
 
-        <div class="">
-            <h2 class="text-navy fw-bold titulo mb-3 text-center"><span class="text-secondary">Sede | </span>Principal </h2>
-            <div class="row align-items-md-stretch">
-                <div class="col-lg-6">
-                    <div class="border h-100 rounded-4 d-flex justify-content-between px-3 py-3">
-                        <!-- titulo -->
-                        <div class="">
-                            <div class="text-navy d-flex justify-content-betwee flex-column">
-                                <h2 class="fw-bold titulo">Taquilla</h2>
-                                <h2 class="fw-bold text-primary titulo">ID 001</h2>
-                            </div>
-
-                            <div class="d-flex justify-content-between ">
-                                <span class="fs-6">Funcionario</span>
-                                <span class="fs-6">Victor Acosta</span>
-                            </div>
-                        </div>
-                        <!-- inventario -->
-                        <div class="d-flex">
-                            <div class="row d-flex justify-content-center  mb-0">
-                                <div class="col-sm-6 text-center">
-                                    <h5 class="fw-bold">TFE 14</h5>
-                                    <div class="border rounded-4 p-3" role="button">
-                                        <h3 class="text-navy fw-bold">1222</h3>
-                                        <span style="font-size:13px">Unidades</span>
-                                    </div>
-                                </div>
-                                <div class="col-sm-6 text-center">
-                                <h5 class="fw-bold">Estampillas</h5>
-                                    <div class="border rounded-4 p-3" role="button">
-                                        <h3 class="text-navy fw-bold">114</h3>
-                                        <span style="font-size:13px">Unidades</span>
-                                    </div>
-                                </div>
-                            </div>
-                        </div><!-- cierra inventario -->
-                    </div><!-- cierra border -->
-                </div>
-                <div class="col-lg-6">
-                    <div class="border h-100 rounded-4 d-flex justify-content-between px-3 py-3">
-                        <!-- titulo -->
-                        <div class="">
-                            <div class="text-navy d-flex justify-content-betwee flex-column">
-                                <h2 class="fw-bold titulo">Taquilla</h2>
-                                <h2 class="fw-bold text-primary titulo">ID 002</h2>
-                            </div>
-
-                            <div class="d-flex justify-content-between ">
-                                <span class="fs-6">Funcionario</span>
-                                <span class="fs-6">Victor Acosta</span>
-                            </div>
-                        </div>
-                        <!-- inventario -->
-                        <div class="d-flex">
-                            <div class="row d-flex justify-content-center  mb-0">
-                                <div class="col-sm-6 text-center">
-                                    <h5 class="fw-bold">TFE 14</h5>
-                                    <div class="border rounded-4 p-3" role="button">
-                                        <h3 class="text-navy fw-bold">1222</h3>
-                                        <span style="font-size:13px">Unidades</span>
-                                    </div>
-                                </div>
-                                <div class="col-sm-6 text-center">
-                                <h5 class="fw-bold">Estampillas</h5>
-                                    <div class="border rounded-4 p-3" role="button">
-                                        <h3 class="text-navy fw-bold">114</h3>
-                                        <span style="font-size:13px">Unidades</span>
-                                    </div>
-                                </div>
-                            </div>
-                        </div><!-- cierra inventario -->
-                    </div><!-- cierra border -->
-                </div>
-            </div>
-        </div>
+       
 
         
 
@@ -223,10 +197,23 @@
     <div class="modal fade" id="modal_asignado_estampillas" tabindex="-1" data-bs-backdrop="static" data-bs-keyboard="false" aria-labelledby="exampleModalLabel" aria-hidden="true">
         <div class="modal-dialog">
             <div class="modal-content" id="content_asignado_estampillas">
+                <div class="my-5 py-5 d-flex flex-column text-center">
+                    <i class='bx bx-loader-alt bx-spin fs-1 mb-3' style='color:#0077e2'  ></i>
+                    <span class="text-muted">Cargando, por favor espere un momento...</span>
+                </div>
+            </div>  <!-- cierra modal-content -->
+        </div>  <!-- cierra modal-dialog -->
+    </div>
+
+    <!-- ********* INFO SUJETO ******** -->
+    <div class="modal" id="modal_info_taquilla" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-sm">
+            <div class="modal-content" id="html_info_taquilla">
                 
             </div>  <!-- cierra modal-content -->
         </div>  <!-- cierra modal-dialog -->
     </div>
+
 
 
 
@@ -259,7 +246,7 @@
    
     <script type="text/javascript">
         $(document).ready(function () {
-            $('#example').DataTable(
+            $('#asignados_forma14').DataTable(
                 {
                     // "order": [[ 0, "desc" ]],
                     "language": {
@@ -277,6 +264,23 @@
                 }
             );
 
+            $('#asignados_estampillas').DataTable(
+                {
+                    // "order": [[ 0, "desc" ]],
+                    "language": {
+                        "lengthMenu": " Mostrar  _MENU_  Registros por página",
+                        "zeroRecords": "No se encontraron registros",
+                        "info": "Mostrando página _PAGE_ de _PAGES_",
+                        "infoEmpty": "No se encuentran Registros",
+                        "infoFiltered": "(filtered from _MAX_ total records)",
+                        'search':"Buscar",
+                        'paginate':{
+                            'next':'Siguiente',
+                            'previous':'Anterior'
+                        }
+                    }
+                }
+            );
         });
     </script>
 
@@ -411,6 +415,24 @@
                         $('#funcionario_estampillas').html(response);
                     }
                     
+                },
+                error: function() {
+                }
+            });
+        });
+
+        ///////////////////////////  INFO TAQUILLA
+        $(document).on('click','.taquilla', function(e) {
+            e.preventDefault(); 
+            var taquilla = $(this).attr('taquilla');
+
+            $.ajax({
+                headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') },
+                type: 'POST',
+                url: '{{route("asignar.info_taquilla") }}',
+                data: {taquilla:taquilla},
+                success: function(response) {
+                    $('#html_info_taquilla').html(response);                 
                 },
                 error: function() {
                 }

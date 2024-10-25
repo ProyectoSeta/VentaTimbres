@@ -335,31 +335,29 @@ return [
             'text'        => 'Rollos TFE 14',
             'route'         => 'emision_rollos',
             'icon'       => 'fas fa-angle-right pe-2',   
-            // 'label'       => 4,
-            // 'label_color' => 'success',
         ],
         [
             'text'        => 'Estampillas',
             'route'         => 'emision_estampillas',
             'icon'       => 'fas fa-angle-right pe-2',   
-            // 'label'       => 4,
-            // 'label_color' => 'success',
         ],
 
         ['header' => 'Asignaciones'],
         [
             'text'        => 'Asignar Timbres',
             'route'         => 'asignar',
-            'icon'       => 'fas fa-angle-right pe-2',   
-            // 'label'       => 4,
-            // 'label_color' => 'success',
+            'icon'       => 'fas fa-angle-right pe-2', 
         ],
         [
-            'text'        => 'Asignados a Taquilla',
+            'text'        => 'Timbres asignados',
             'route'         => 'timbres_asignados',
-            'icon'       => 'fas fa-angle-right pe-2',   
-            // 'label'       => 4,
-            // 'label_color' => 'success',
+            'icon'       => 'fas fa-angle-right pe-2',  
+        ],
+        ['header' => 'Taquillas'],
+        [
+            'text'        => 'Inventario',
+            'route'         => 'inventario_taquillas',
+            'icon'       => 'fas fa-angle-right pe-2',  
         ],
 
 

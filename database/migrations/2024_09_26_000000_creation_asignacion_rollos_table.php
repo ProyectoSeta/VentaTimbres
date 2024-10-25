@@ -23,7 +23,7 @@ return new class extends Migration
             $table->integer('key_taquilla')->unsigned();
             $table->foreign('key_taquilla')->references('id_taquilla')->on('taquillas')->onDelete('cascade');
 
-
+            $table->date('fecha_recibido')->nullable();
         });
     }
 

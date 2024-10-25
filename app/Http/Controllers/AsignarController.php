@@ -12,12 +12,46 @@ class AsignarController extends Controller
      */
     public function index()
     {
-        // $url = 'https://mineralesnometalicos.tributosaragua.com.ve/qr/?id=2/'.'agrrrrrrrrrrrrrrrrrgw0r7688888777777777777777776555555555ggggggggggssssssssssssssssssssAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA';
-                                                            
-        // QrCode::format('png')->size(180)->eye('circle')->generate($url, public_path('assets/Pruebs.png'));
+        $asignado_tfe = [];
+        $asignado_estampillas = [];
+
+        $query_1 =  DB::table('asignacion_rollos')->where('fecha_recibido','=', null)->get();
+        foreach ($query_1 as $q1) {
+            $consulta =  DB::table('taquillas')
+                            ->join('sedes', 'taquillas.key_sede', '=','sedes.id_sede')
+                            ->select('sedes.sede')
+                            ->where('taquillas.id_taquilla','=',$q1->key_taquilla)->first();
+            $array = array(
+                        'id_asignacion' => $q1->id_asignacion,
+                        'fecha' => $q1->fecha,
+                        'cantidad' => $q1->cantidad,
+                        'key_taquilla' => $q1->key_taquilla,
+                        'sede' => $consulta->sede,
+                    );
+            $a = (object) $array;
+            array_push($asignado_tfe,$a);
+        }
+
+
+
+        $query_2 =  DB::table('asignacion_estampillas')->where('fecha_recibido','=', null)->get();
+        foreach ($query_2 as $q2) {
+            $consulta =  DB::table('taquillas')
+                            ->join('sedes', 'taquillas.key_sede', '=','sedes.id_sede')
+                            ->select('sedes.sede')
+                            ->where('taquillas.id_taquilla','=',$q2->key_taquilla)->first();
+            $array = array(
+                        'id_asignacion' => $q2->id_asignacion,
+                        'fecha' => $q2->fecha,
+                        'key_taquilla' => $q2->key_taquilla,
+                        'sede' => $consulta->sede,
+                    );
+            $i = (object) $array;
+            array_push($asignado_estampillas,$i);
+        }
 
         $sedes =  DB::table('sedes')->get();
-        return view('asignar', compact('sedes'));
+        return view('asignar', compact('sedes','asignado_tfe','asignado_estampillas'));
     }
 
     /**
@@ -354,7 +388,7 @@ class AsignarController extends Controller
                     $id_tira = '';
                     $desde_tira = '';
                     $hasta_tira = '';
-                    $asignado = 0;
+                    // $asignado = 0;
 
                     $query = DB::table('estampillas')->select('id_tira','cantidad','secuencia','cantidad_asignada','desde_correlativo')
                                                     ->where('key_denominacion','=', $e['denominacion'])
@@ -373,7 +407,7 @@ class AsignarController extends Controller
                             //////hay estampillas asignadas de la tira, buscar
                             $c2 = DB::table('detalle_estampillas')->select('hasta_correlativo')->where('key_tira','=',$id_tira)->orderBy('correlativo', 'desc')->first();
                             $desde_correlativo = $c2->hasta_correlativo + 1;
-                            $hasta_correlativo = ($c2->hasta_correlativo + $asignar) - 1;
+                            $hasta_correlativo = ($desde_correlativo + $asignar) - 1;
                         }else{
                             /////no se han echoasignaciones de la tira 
                             $desde_correlativo = $query->desde_correlativo;
@@ -428,7 +462,7 @@ class AsignarController extends Controller
                             //////hay estampillas asignadas de la tira, buscar
                             $c2 = DB::table('detalle_estampillas')->select('hasta_correlativo')->where('key_tira','=',$query->id_tira)->orderBy('correlativo', 'desc')->first();
                             $desde_correlativo = $c2->hasta_correlativo + 1;
-                            $hasta_correlativo = ($c2->hasta_correlativo + $timbres_disponibles) - 1;
+                            $hasta_correlativo = ($desde_correlativo + $timbres_disponibles) - 1;
                         }else{
                             /////no se han echoasignaciones de la tira 
                             $desde_correlativo = $query->desde_correlativo;
@@ -488,7 +522,7 @@ class AsignarController extends Controller
  
                 $tables .= '<div class="d-flex justify-content-between my-2">
                                 <p class="fw-bold text-navy fs-5 text-cente my-0">'.$denominacion_ucd.' UCD</p>
-                                <p class="fw-bold text-muted fs-6 text-cente my-0">Cant. Timbres: '.$e['cantidad'].' unidades</p>
+                                <p class="fw-bold text-muted fs-6 text-cente my-0">Timbres: '.$e['cantidad'].' und.</p>
                             </div>
 
                             <div class="">
@@ -550,4 +584,44 @@ class AsignarController extends Controller
 
 
     }
+
+
+    public function info_taquilla(Request $request){
+        $taquilla = $request->post('taquilla'); 
+        $consulta =  DB::table('taquillas')
+                            ->join('sedes', 'taquillas.key_sede', '=','sedes.id_sede')
+                            ->join('funcionarios', 'taquillas.key_funcionario', '=','funcionarios.id_funcionario')
+                            ->select('sedes.sede','funcionarios.nombre')
+                            ->where('taquillas.id_taquilla','=',$taquilla)->first();
+        $html = '<div class="modal-header p-2 pt-3 d-flex justify-content-center">
+                    <div class="text-center">
+                        <i class="bx bx-user-circle fs-1 text-secondary" ></i>
+                        <h1 class="modal-title fs-5 text-navy fw-bold" id="" >Información de Taquilla</h1>
+                    </div>
+                </div>
+                <div class="modal-body" style="font-size:13px;">
+                    <div class="d-flex justify-content-centerpx-3">
+                        <table class="table text-cente">
+                            <tr>
+                                <th class="text-center">ID</th>
+                                <td class="text-muted">'.$taquilla.'</td>
+                            </tr>
+                            <tr>
+                                <th class="text-center">Sede</th>
+                                <td>'.$consulta->sede.'</td>
+                            </tr>
+                            <tr>
+                                <th class="text-center">Taquillero Designado</th>
+                                <td class="text-navy fw-bold">'.$consulta->nombre.'</td>
+                            </tr>
+                        </table>
+                    </div>
+                    <div class="d-flex justify-content-center my-2">
+                        <button type="button" class="btn btn-secondary btn-sm me-2" data-bs-dismiss="modal">Cancelar</button>
+                    </div>
+                </div>';
+
+        return response($html);
+    }
+
 }
