@@ -20,6 +20,9 @@ return new class extends Migration
             $table->integer('key_asignacion')->unsigned();
             $table->foreign('key_asignacion')->references('id_asignacion')->on('asignacion_estampillas')->onDelete('cascade');
 
+            $table->integer('key_denominacion')->unsigned();
+            $table->foreign('key_denominacion')->references('id')->on('ucd_denominacions')->onDelete('cascade');
+
             $table->integer('key_taquilla')->unsigned();
             $table->foreign('key_taquilla')->references('id_taquilla')->on('taquillas')->onDelete('cascade');
 

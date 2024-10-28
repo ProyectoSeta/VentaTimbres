@@ -320,6 +320,7 @@ class AsignarController extends Controller
 
     }
 
+
     /**
      * Remove the specified resource from storage.
      */
@@ -429,6 +430,7 @@ class AsignarController extends Controller
                         
                         $insert_de = DB::table('detalle_estampillas')->insert(['key_tira' => $id_tira, 
                                                                                 'key_asignacion' => $id_asignacion, 
+                                                                                'key_denominacion' => $e['denominacion'],
                                                                                 'key_taquilla' => $taquilla, 
                                                                                 'cantidad' => $asignar,
                                                                                 'desde_correlativo' => $desde_correlativo,
@@ -483,6 +485,7 @@ class AsignarController extends Controller
 
                         $insert_de = DB::table('detalle_estampillas')->insert(['key_tira' => $query->id_tira, 
                                                                                 'key_asignacion' => $id_asignacion, 
+                                                                                'key_denominacion' => $e['denominacion'],
                                                                                 'key_taquilla' => $taquilla, 
                                                                                 'cantidad' => $timbres_disponibles,
                                                                                 'desde_correlativo' => $desde_correlativo,
@@ -586,6 +589,7 @@ class AsignarController extends Controller
     }
 
 
+
     public function info_taquilla(Request $request){
         $taquilla = $request->post('taquilla'); 
         $consulta =  DB::table('taquillas')
@@ -623,5 +627,224 @@ class AsignarController extends Controller
 
         return response($html);
     }
+
+
+    public function detalle_estampillas(Request $request){
+        $asignacion = $request->post('asignacion'); 
+        $vista = $request->post('vista'); 
+        $tables = '';
+        $button = '';
+        $datos = '';
+        
+        $query = DB::table('detalle_asignacion_estampillas')->where('key_asignacion','=', $asignacion)->get(); 
+        foreach ($query as $q1) {
+            $tr = '';
+
+            $query_2 = DB::table('detalle_estampillas')->where('key_denominacion','=', $q1->key_denominacion)->where('key_asignacion','=', $asignacion)->get(); 
+            foreach ($query_2 as $q2) {
+                $tr .= '<tr>
+                            <td>'.$q2->key_tira.'</td>
+                            <td>'.$q2->desde.'</td>
+                            <td>'.$q2->hasta.'</td>
+                        </tr>';
+            }
+
+            $consulta = DB::table('ucd_denominacions')->select('denominacion')->where('id','=',$q1->key_denominacion)->first();
+            $tables .= '<div class="d-flex justify-content-between my-2">
+                            <p class="fw-bold text-navy fs-5 text-cente my-0">'.$consulta->denominacion.' UCD</p>
+                            <p class="fw-bold text-muted fs-6 text-cente my-0">Timbres: '.$q1->cantidad.' und.</p>
+                        </div>
+
+                        <div class="">
+                            <table class="table text-center">
+                                <tr>
+                                    <th>ID Tira</th>
+                                    <th>Desde</th>
+                                    <th>Hasta</th>
+                                </tr>
+                                '.$tr.'
+                            </table>
+                        </div>';
+        }
+
+        $q3 = DB::table('asignacion_estampillas')->where('id_asignacion','=', $asignacion)->first(); 
+        
+        $fecha_recibido = '';
+
+        if ($q3->fecha_recibido == NULL) {
+            $fecha_recibido = '<span class="text-secondary">Sin Recibir</span>';
+        }else{
+            $fecha_recibido = $q3->fecha_recibido;
+        }
+
+        $q4 = DB::table('taquillas')
+                            ->join('funcionarios', 'taquillas.key_funcionario', '=', 'funcionarios.id_funcionario')
+                            ->select('funcionarios.nombre','taquillas.key_sede')
+                            ->where('taquillas.id_taquilla','=', $q3->key_taquilla)->first();
+        
+        $q5 = DB::table('sedes')->select('sede')->where('id_sede','=', $q4->key_sede)->first(); 
+        $c2 = DB::table('users')->select('key_sujeto')->where('id','=', $q3->key_user)->first(); 
+        $c3 = DB::table('funcionarios')->select('nombre')->where('id_funcionario','=', $c2->key_sujeto)->first(); 
+
+        if ($vista == 'taquillero') {
+            $button = '<button type="button" class="btn btn-secondary btn-sm me-2" data-bs-dismiss="modal">Cancelar</button>';
+            $datos = '';
+        }else{
+            $button = '<a href="'.route("asignar").'" class="btn btn-secondary btn-sm me-2">Cancelar</a>
+                        <a href="'.route("asignar.pdf_estampillas", ["asignacion" => $asignacion]).'" class="btn btn-dark btn-sm"  style="font-size:12.7px">Imprimir</a>';
+            $datos = '<div class="d-flex justify-content-center">
+                        <table class="table">
+                            <tr>
+                                <th>ID Asignación:</th>
+                                <td class="text-navy fw-bold">'.$asignacion.'</td>
+                                <th>Sede:</th>
+                                <td class="text-navy fw-bold">'.$q5->sede.'</td>
+                            </tr>
+                            <tr>
+                                <th>ID Taquilla:</th>
+                                <td>'.$q3->key_taquilla.'</td>
+                                <th>Taquillero Designado:</th>
+                                <td class="text-navy fw-bold">'.$q4->nombre.'</td>
+                            </tr>
+                            <tr>
+                                <th colspan="2">Fecha asignación:</th>
+                                <td colspan="2">'.$q3->fecha.'</td>
+                            </tr>
+                            <tr>
+                                <th colspan="2">Fecha recepción:</th>
+                                <td colspan="2">'.$fecha_recibido.'</td>
+                            </tr>
+                            <tr>
+                                <th colspan="2">Asignado por:</th>
+                                <td colspan="2">'.$c3->nombre.'</td>
+                            </tr>
+                        </table>
+                    </div>';
+        }
+
+        $html = '<div class="modal-header p-2 pt-3 d-flex justify-content-center">
+                    <div class="text-center">
+                        <i class="bx bxs-collection  fs-2 text-muted me-2"></i>
+                        <h1 class="modal-title fs-5 fw-bold text-navy">Estampillas Asignadas</h1>
+                        <span class="text-muted fw-bold">Timbre móvil</span>
+                    </div>
+                </div>
+                <div class="modal-body px-5 py-3" style="font-size:13px">
+                    '.$datos.'
+                    <p class="text-center fw-bold text-muted fs-5 mb-2">Correlativo</p>
+                    <p class="text-muted text-justify"><span class="fw-bold">IMPORTANTE:</span> La Asignación se realizó según la cantidad individual de Estampillas, no por Tiras de Estampillas.</p>
+                    '.$tables.'
+                    <div class="d-flex justify-content-center mb-3">
+                       '.$button.'
+                    </div>
+                </div>';
+
+        return response($html);
+    }
+
+
+    public function detalle_rollos(Request $request){
+        $asignacion = $request->post('asignacion');
+        $vista = $request->post('vista'); 
+        $tr = '';
+        $button = '';
+        $datos = '';
+
+        $query = DB::table('asignacion_rollos')->where('id_asignacion','=',$asignacion)->first();
+
+        $query_2 = DB::table('inventario_rollos')->where('key_asignacion','=',$asignacion)->get();
+        foreach ($query_2 as $q2) {
+            $tr .= '<tr>
+                        <td>'.$q2->id_rollo.'</td>
+                        <td>'.$q2->desde.'</td>
+                        <td>'.$q2->hasta.'</td>
+                    </tr>';
+        }
+        $fecha_recibido = '';
+
+        if ($query->fecha_recibido == NULL) {
+            $fecha_recibido = '<span class="text-secondary">Sin Recibir</span>';
+        }else{
+            $fecha_recibido = $query->fecha_recibido;
+        }
+
+        $q3 = DB::table('taquillas')
+                            ->join('funcionarios', 'taquillas.key_funcionario', '=', 'funcionarios.id_funcionario')
+                            ->select('funcionarios.nombre','taquillas.key_sede')
+                            ->where('taquillas.id_taquilla','=', $query->key_taquilla)->first();
+        
+        $q4 = DB::table('sedes')->select('sede')->where('id_sede','=', $q3->key_sede)->first(); 
+        $c2 = DB::table('users')->select('key_sujeto')->where('id','=', $query->key_user)->first(); 
+        $c3 = DB::table('funcionarios')->select('nombre')->where('id_funcionario','=', $c2->key_sujeto)->first(); 
+
+        if ($vista == 'taquillero') {
+            $button = '<button type="button" class="btn btn-secondary btn-sm me-2" data-bs-dismiss="modal">Cancelar</button>';
+            $datos = '';
+        }else{
+            $button = '<a href="'.route("asignar").'" class="btn btn-secondary btn-sm me-2">Cancelar</a>
+                        <a href="'.route("asignar.pdf_forma14", ["asignacion" => $asignacion]).'" class="btn btn-dark btn-sm"  style="font-size:12.7px">Imprimir</a>';
+            $datos = '<div class="d-flex justify-content-center">
+                        <table class="table">
+                            <tr>
+                                <th>ID Asignación:</th>
+                                <td class="text-navy fw-bold">'.$asignacion.'</td>
+                                <th>Sede:</th>
+                                <td class="text-navy fw-bold">'.$q4->sede.'</td>
+                            </tr>
+                            <tr>
+                                <th>ID Taquilla:</th>
+                                <td>'.$query->key_taquilla.'</td>
+                                <th>Taquillero Designado:</th>
+                                <td class="text-navy fw-bold">'.$q3->nombre.'</td>
+                            </tr>
+                            <tr>
+                                <th colspan="2">Fecha asignación:</th>
+                                <td colspan="2">'.$query->fecha.'</td>
+                            </tr>
+                            <tr>
+                                <th colspan="2">Fecha recepción:</th>
+                                <td colspan="2">'.$fecha_recibido.'</td>
+                            </tr>
+                            <tr>
+                                <th colspan="2">Asignado por:</th>
+                                <td colspan="2">'.$c3->nombre.'</td>
+                            </tr>
+                            <tr>
+                                <th colspan="2">Cantidad de Rollos:</th>
+                                <td colspan="2" class="text-navy fw-bold">'.$query->cantidad.' Unidades</td>
+                            </tr>
+                        </table>
+                    </div>';
+        }
+
+        $html = '<div class="modal-header p-2 pt-3 d-flex justify-content-center">
+                    <div class="text-center">
+                        <i class="bx bxs-collection  fs-2 text-muted me-2"></i>
+                        <h1 class="modal-title fs-5 fw-bold text-navy">Rollos Asignados</h1>
+                        <span class="text-muted fw-bold">Forma 14 </span>
+                    </div>
+                </div>
+                <div class="modal-body px-5 py-3" style="font-size:13px">
+                    '.$datos.'
+                    <p class="text-center fw-bold text-muted fs-5  mb-2">Correlativo</p>
+                    <p class="text-secondary">*NOTA: Cada rollo emitido trae un total de 160 Trimbres Fiscales.</p>
+                    <div class="">
+                        <table class="table text-center">
+                            <tr>
+                                <th>ID Rollo</th>
+                                <th>Desde</th>
+                                <th>Hasta</th>
+                            </tr>
+                            '.$tr.'
+                        </table>
+                    </div>
+                    <div class="d-flex justify-content-center mb-3">
+                        '.$button.'
+                    </div>
+                </div>';
+
+        return response($html);
+    }
+
 
 }

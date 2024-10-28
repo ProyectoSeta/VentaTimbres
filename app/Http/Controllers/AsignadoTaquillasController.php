@@ -12,20 +12,11 @@ class AsignadoTaquillasController extends Controller
     public function index()
     {
         $user = auth()->id();
-        $consulta = DB::table('users')->select('key_sujeto')->where('id','=',$user)->first();
-        $c = DB::table('taquillas')->select('id_taquilla')->where('key_funcionario','=',$consulta->key_sujeto)->first();
-
-        $id_taquilla = $c->id_taquilla;
-
-        // $query_14 = DB::table('asignacion_forma_14_timbres')->selectRaw("count(*) as total")
-        //                                                     ->where('fecha_recibido','=',null)
-        //                                                     ->where('fecha_recibido','=',null)->first();
+        $estampillas = DB::table('asignacion_estampillas')->where('key_user','=',$user)->where('fecha_recibido','=',null)->get();
+        $rollos = DB::table('asignacion_rollos')->where('key_user','=',$user)->where('fecha_recibido','=',null)->get();
         
-
-
-        // $asignaciones = [];
         
-        return view('timbres_asignados');
+        return view('timbres_asignados',compact('estampillas','rollos'));
     }
 
     /**

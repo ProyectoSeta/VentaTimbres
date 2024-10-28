@@ -19,8 +19,8 @@ return new class extends Migration
 
             $table->string('nombre_razon');
 
-            $table->integer('type_contribuyente')->unsigned(); ///////natural - firma personal - ente
-            $table->foreign('type_contribuyente')->references('id_tipo')->on('tipos')->onDelete('cascade');
+            // $table->integer('type_contribuyente')->unsigned(); ///////natural - firma personal - ente
+            // $table->foreign('type_contribuyente')->references('id_tipo')->on('tipos')->onDelete('cascade');
 
             $table->timestamps();
         });

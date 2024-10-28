@@ -48,7 +48,7 @@
                             <td class="text-muted">{{$tfe->fecha}}</td>
                             <td>{{$tfe->cantidad}} Rollos</td>
                             <td>
-                                <a href="" class="">Ver</a>
+                                <a href="#" class="detalle_asignacion_rollos" vista="asignacion" asignacion="{{$tfe->id_asignacion}}" data-bs-toggle="modal" data-bs-target="#modal_asignado_forma14">Ver</a>
                             </td>
                             <td>
                                 <span class="text-secondary fst-italic">Sin recibir</span>
@@ -80,7 +80,7 @@
                             </td>
                             <td class="text-muted">{{$estampillas->fecha}}</td>
                             <td>
-                                <a href="" class="">Ver</a>
+                                <a href="" class="detalle_asignacion_estampillas" vista="asignacion" asignacion="{{$estampillas->id_asignacion}}" data-bs-toggle="modal" data-bs-target="#modal_asignado_estampillas">Ver</a>
                             </td>
                             <td>
                                 <span class="text-secondary fst-italic">Sin recibir</span>
@@ -397,6 +397,7 @@
             });
         });
 
+
         ////////////////////////////  TAQUILLERO ASIGNADO
         $(document).on('change','.taquilla', function(e) {
             e.preventDefault(); 
@@ -421,6 +422,7 @@
             });
         });
 
+
         ///////////////////////////  INFO TAQUILLA
         $(document).on('click','.taquilla', function(e) {
             e.preventDefault(); 
@@ -439,6 +441,47 @@
             });
         });
 
+
+        ///////////////////////////  DETALLES ASIGNACION ESTAMPILLAS
+        $(document).on('click','.detalle_asignacion_estampillas', function(e) {
+            e.preventDefault(); 
+            var asignacion = $(this).attr('asignacion');
+            var vista = $(this).attr('vista');
+
+            $.ajax({
+                headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') },
+                type: 'POST',
+                url: '{{route("asignar.detalle_estampillas") }}',
+                data: {asignacion:asignacion,vista:vista},
+                success: function(response) {
+                    // console.log(response);
+                    $('#content_asignado_estampillas').html(response);                 
+                },
+                error: function() {
+                }
+            });
+        });
+
+
+        ///////////////////////////  DETALLES ASIGNACION ROLLOS
+        $(document).on('click','.detalle_asignacion_rollos', function(e) {
+            e.preventDefault(); 
+            var asignacion = $(this).attr('asignacion');
+            var vista = $(this).attr('vista');
+
+            $.ajax({
+                headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') },
+                type: 'POST',
+                url: '{{route("asignar.detalle_rollos") }}',
+                data: {asignacion:asignacion,vista:vista},
+                success: function(response) {
+                    console.log(response);
+                    $('#content_asignado_forma14').html(response);                 
+                },
+                error: function() {
+                }
+            });
+        });
               
     });
 
