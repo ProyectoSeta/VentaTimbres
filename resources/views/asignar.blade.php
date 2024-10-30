@@ -36,14 +36,16 @@
                     <th>Fecha</th>
                     <th>Cantidad</th>
                     <th>Detalle</th>
-                    <th>¿Recibido?</th> 
+                    <th>Constancia</th>
+                    <!-- <th>¿Recibido?</th>  -->
                 </thead>
                 <tbody id="" class="border-light-subtle"> 
                     @foreach ($asignado_tfe as $tfe)
                         <tr>
                             <td>{{$tfe->id_asignacion}}</td>
                             <td>
-                                <a href="#" class="taquilla" taquilla="{{$tfe->key_taquilla}}" data-bs-toggle="modal" data-bs-target="#modal_info_taquilla">Taquilla ID {{$tfe->key_taquilla}} ({{$tfe->sede}})</a>
+                                <a href="#" class="taquilla" taquilla="{{$tfe->key_taquilla}}" data-bs-toggle="modal" data-bs-target="#modal_info_taquilla">Taquilla ID {{$tfe->key_taquilla}} </a>
+                                <span class="text-muted ms-2">({{$tfe->sede}})</span>
                             </td>
                             <td class="text-muted">{{$tfe->fecha}}</td>
                             <td>{{$tfe->cantidad}} Rollos</td>
@@ -51,8 +53,11 @@
                                 <a href="#" class="detalle_asignacion_rollos" vista="asignacion" asignacion="{{$tfe->id_asignacion}}" data-bs-toggle="modal" data-bs-target="#modal_asignado_forma14">Ver</a>
                             </td>
                             <td>
-                                <span class="text-secondary fst-italic">Sin recibir</span>
+                                <a href="{{route('asignar.pdf_forma14', ['asignacion' => $tfe->id_asignacion])}}">Imprimir</a>
                             </td>
+                            <!-- <td>
+                                <span class="text-secondary fst-italic">Sin recibir</span>
+                            </td> -->
                         </tr>
                     @endforeach
                 </tbody> 
@@ -69,22 +74,27 @@
                     <th>Asignado a</th>
                     <th>Fecha</th>
                     <th>Detalle</th>
-                    <th>¿Recibido?</th> 
+                    <th>Constancia</th>
+                    <!-- <th>¿Recibido?</th>  -->
                 </thead>
                 <tbody id="" class="border-light-subtle"> 
                     @foreach ($asignado_estampillas as $estampillas)
                         <tr>
                             <td>{{$estampillas->id_asignacion}}</td>
                             <td>
-                            <a href="#" class="taquilla" taquilla="{{$estampillas->key_taquilla}}" data-bs-toggle="modal" data-bs-target="#modal_info_taquilla">Taquilla ID {{$estampillas->key_taquilla}} ({{$estampillas->sede}})</a>
+                                <a href="#" class="taquilla" taquilla="{{$estampillas->key_taquilla}}" data-bs-toggle="modal" data-bs-target="#modal_info_taquilla">Taquilla ID {{$estampillas->key_taquilla}}</a>
+                                <span class="text-muted ms-2"> ({{$estampillas->sede}})</span>
                             </td>
                             <td class="text-muted">{{$estampillas->fecha}}</td>
                             <td>
                                 <a href="" class="detalle_asignacion_estampillas" vista="asignacion" asignacion="{{$estampillas->id_asignacion}}" data-bs-toggle="modal" data-bs-target="#modal_asignado_estampillas">Ver</a>
                             </td>
                             <td>
-                                <span class="text-secondary fst-italic">Sin recibir</span>
+                                <a href="{{route('asignar.pdf_estampillas', ['asignacion' => $estampillas->id_asignacion])}}">Imprimir</a>
                             </td>
+                            <!-- <td>
+                                <span class="text-secondary fst-italic">Sin recibir</span>
+                            </td> -->
                         </tr>
                     @endforeach
                 </tbody> 

@@ -34,7 +34,8 @@ return new class extends Migration
             $table->string('desde',9)->unique();
             $table->string('hasta',9)->unique();
 
-
+            $table->integer('condicion')->unsigned()->nullable(); ///////EN USO - RESERVA
+            $table->foreign('condicion')->references('id_clasificacion')->on('clasificacions')->onDelete('cascade');
         });
 
     }

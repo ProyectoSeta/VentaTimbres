@@ -67,14 +67,20 @@ Route::post('/asignar/asignar_estampillas', [App\Http\Controllers\AsignarControl
 Route::post('/asignar/info_taquilla', [App\Http\Controllers\AsignarController::class, 'info_taquilla'])->name('asignar.info_taquilla');
 Route::post('/asignar/detalle_estampillas', [App\Http\Controllers\AsignarController::class, 'detalle_estampillas'])->name('asignar.detalle_estampillas');
 Route::post('/asignar/detalle_rollos', [App\Http\Controllers\AsignarController::class, 'detalle_rollos'])->name('asignar.detalle_rollos');
-/////////PDF: ROLLOS A EMITIR
+/////////PDF: ASIGNACIONES
 Route::get('/asignar/pdf_forma14', [App\Http\Controllers\AsignarController::class, 'pdf_forma14'])->name('asignar.pdf_forma14');
 Route::get('/asignar/pdf_estampillas', [App\Http\Controllers\AsignarController::class, 'pdf_estampillas'])->name('asignar.pdf_estampillas');
-
+/////////PDF: CONSTANCIA DE ASIGNACIÓN
 
 
 ///////////////////// ASIGNACIONES DE TAQUILLAS
 Route::get('/timbres_asignados', [App\Http\Controllers\AsignadoTaquillasController::class, 'index'])->name('timbres_asignados');
+Route::post('/timbres_asignados/modal_forma14', [App\Http\Controllers\AsignadoTaquillasController::class, 'modal_forma14'])->name('timbres_asignados.modal_forma14');
+Route::post('/timbres_asignados/recibido_forma14', [App\Http\Controllers\AsignadoTaquillasController::class, 'recibido_forma14'])->name('timbres_asignados.recibido_forma14');
+Route::post('/timbres_asignados/modal_estampillas', [App\Http\Controllers\AsignadoTaquillasController::class, 'modal_estampillas'])->name('timbres_asignados.modal_estampillas');
+Route::post('/timbres_asignados/recibido_estampillas', [App\Http\Controllers\AsignadoTaquillasController::class, 'recibido_estampillas'])->name('timbres_asignados.recibido_estampillas');
+
+
 
 ///////////////////// TAQUILLAS - INVENTARIO
 Route::get('/inventario_taquillas', [App\Http\Controllers\InventarioTaquillasController::class, 'index'])->name('inventario_taquillas');

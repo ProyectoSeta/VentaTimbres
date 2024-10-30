@@ -43,7 +43,7 @@
                                         <a href="" class="detalle_asignacion_rollos" vista="taquillero" asignacion="{{$rollo->id_asignacion}}" data-bs-toggle="modal" data-bs-target="#modal_asignado_forma14">Ver</a>
                                     </td>
                                     <td>
-                                        <button class="btn btn-sm btn-success d-inline-flex align-items-center entrega_asignacion" asignacion="{{$rollo->id_asignacion}}" type="button" data-bs-toggle="modal" data-bs-target="#">
+                                        <button class="btn btn-sm btn-success d-inline-flex align-items-center recibido_forma14" asignacion="{{$rollo->id_asignacion}}" type="button" data-bs-toggle="modal" data-bs-target="#modal_recibido_forma14">
                                             <i class="bx bx-check"></i>
                                         </button>
                                     </td>
@@ -75,7 +75,7 @@
                                         <a href="" class="detalle_asignacion_estampillas" vista="taquillero" asignacion="{{$estampilla->id_asignacion}}" data-bs-toggle="modal" data-bs-target="#modal_asignado_estampillas">Ver</a>
                                     </td>
                                     <td>
-                                        <button class="btn btn-sm btn-success d-inline-flex align-items-center entrega_asignacion" asignacion="{{$estampilla->id_asignacion}}" type="button" data-bs-toggle="modal" data-bs-target="#">
+                                        <button class="btn btn-sm btn-success d-inline-flex align-items-center recibido_estampillas" asignacion="{{$estampilla->id_asignacion}}" type="button" data-bs-toggle="modal" data-bs-target="#modal_recibido_estampillas">
                                             <i class="bx bx-check"></i>
                                         </button>
                                     </td>
@@ -128,10 +128,22 @@
         </div>  <!-- cierra modal-dialog -->
     </div>
 
-    <!-- ************  TIMBRES RECIBIDOS ************** -->
-    <div class="modal fade" id="modal_asignado_estampillas" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <!-- ************  TIMBRES RECIBIDOS - FORMA 14 ************** -->
+    <div class="modal fade" id="modal_recibido_forma14" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
         <div class="modal-dialog">
-            <div class="modal-content" id="content_asignado_estampillas">
+            <div class="modal-content" id="content_recibido_forma14">
+                <div class="my-5 py-5 d-flex flex-column text-center">
+                    <i class='bx bx-loader-alt bx-spin fs-1 mb-3' style='color:#0077e2'  ></i>
+                    <span class="text-muted">Cargando, por favor espere un momento...</span>
+                </div>
+            </div>  <!-- cierra modal-content -->
+        </div>  <!-- cierra modal-dialog -->
+    </div>
+
+    <!-- ************  TIMBRES RECIBIDOS - ESTAMPILLAS ************** -->
+    <div class="modal fade" id="modal_recibido_estampillas" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content" id="content_recibido_estampillas">
                 <div class="my-5 py-5 d-flex flex-column text-center">
                     <i class='bx bx-loader-alt bx-spin fs-1 mb-3' style='color:#0077e2'  ></i>
                     <span class="text-muted">Cargando, por favor espere un momento...</span>
@@ -140,7 +152,6 @@
         </div>  <!-- cierra modal-dialog -->
     </div>
   
-
 
 
 <!--************************************************-->
@@ -259,9 +270,100 @@
             });
         });
 
+        ///////////////////////////  RECIBIDO FORMA 14
+        $(document).on('click','.recibido_forma14', function(e) {
+            e.preventDefault(); 
+            var asignacion = $(this).attr('asignacion');
+
+            $.ajax({
+                headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') },
+                type: 'POST',
+                url: '{{route("timbres_asignados.modal_forma14") }}',
+                data: {asignacion:asignacion},
+                success: function(response) {
+                    console.log(response);
+                    $('#content_recibido_forma14').html(response);                 
+                },
+                error: function() {
+                }
+            });
+        });
+
+        ///////////////////////////  RECIBIDO ESTAMPILLAS
+        $(document).on('click','.recibido_estampillas', function(e) {
+            e.preventDefault(); 
+            var asignacion = $(this).attr('asignacion');
+
+            $.ajax({
+                headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') },
+                type: 'POST',
+                url: '{{route("timbres_asignados.modal_estampillas") }}',
+                data: {asignacion:asignacion},
+                success: function(response) {
+                    // console.log(response);
+                    $('#content_recibido_estampillas').html(response);                 
+                },
+                error: function() {
+                }
+            });
+        });
+
               
     });
 
+    function recibidoForma14(){
+        var formData = new FormData(document.getElementById("form_recibido_forma14"));
+        $.ajax({
+            headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') },
+            url:'{{route("timbres_asignados.recibido_forma14") }}',
+            type:'POST',
+            contentType:false,
+            cache:false,
+            processData:false,
+            async: true,
+            data: formData,
+            success: function(response){
+                console.log(response);
+                if (response.success) {
+                    alert('LOS ROLLOS SE HAN RECIBIDO CORRECTAMENTE.');
+                    window.location.href = "{{ route('timbres_asignados')}}";
+                }else{
+                    alert('Disculpe, ha ocurrido un error.');                  
+                }  
+
+            },
+            error: function(error){
+                
+            }
+        });
+    }
+
+    function recibidoEstampillas(){
+        var formData = new FormData(document.getElementById("form_recibido_estampillas"));
+        $.ajax({
+            headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') },
+            url:'{{route("timbres_asignados.recibido_estampillas") }}',
+            type:'POST',
+            contentType:false,
+            cache:false,
+            processData:false,
+            async: true,
+            data: formData,
+            success: function(response){
+                // console.log(response);
+                if (response.success) {
+                    alert('LAS ESTAMPILLAS SE HAN RECIBIDO CORRECTAMENTE.');
+                    window.location.href = "{{ route('timbres_asignados')}}";
+                }else{
+                    alert('Disculpe, ha ocurrido un error.');                  
+                }  
+
+            },
+            error: function(error){
+                
+            }
+        });
+    }
 
     
     

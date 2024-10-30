@@ -21,5 +21,25 @@ class TaquillasSedeer extends Seeder
             'key_sede' => 1,
             'key_funcionario' => 3
         ]);
+        DB::table('taquillas')->insert([
+            'key_sede' => 2,
+            'key_funcionario' => 4
+        ]);
+        DB::table('taquillas')->insert([
+            'key_sede' => 3,
+            'key_funcionario' => 5
+        ]);
+        DB::table('taquillas')->insert([
+            'key_sede' => 4,
+            'key_funcionario' => 6
+        ]);
+        DB::table('taquillas')->insert([
+            'key_sede' => 5,
+            'key_funcionario' => 7
+        ]);
+
+
+
+        
     }
 }

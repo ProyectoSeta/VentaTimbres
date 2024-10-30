@@ -15,40 +15,11 @@
 @section('content')
     
     <div class="container rounded-4 p-3 px-0" style="background-color:#ffff;">
-        <div class="d-flex justify-content-between align-items-center mb-4">
-            <h3 class="mb-3 text-navy titulo fw-bold">Asignación de Timbres <span class="text-secondary fs-4">| Taquillas</span></h3>
-            <div class="mb-3">
-                <button type="button" class="btn bg-navy rounded-pill px-3 btn-sm fw-bold d-flex align-items-center" id="" data-bs-toggle="modal" data-bs-target="#modal_asignar_timbres">
-                    <i class='bx bx-plus fw-bold fs-6 pe-2'></i>
-                    <span>Asignar</span>
-                </button>
-            </div>
-        </div>
-         
-
-        <!-- <div class="table-responsive" style="font-size:12.7px">
-            <table id="example" class="table text-center border-light-subtle" style="font-size:12.7px">
-                <thead>
-                    <th>#</th>
-                    <th>Asignado a</th>
-                    <th>Fecha</th>
-                    <th>Forma</th> 
-                    <th>Detalle</th>
-                    <th>¿Recibido?</th> 
-                </thead>
-                <tbody id="" class="border-light-subtle"> 
-                     
-                  
-                </tbody> 
-            </table>
-        </div> -->
-
-        
-
+       
         <div class="">
             <h2 class="text-navy fw-bold titulo mb-3 text-center"><span class="text-secondary">Sede | </span>Principal </h2>
-            <div class="row align-items-md-stretch">
-                <div class="col-lg-6">
+            <div class="row col-lg-6 align-items-md-stretch">
+                <div class="col">
                     <div class="border h-100 rounded-4 d-flex justify-content-between px-3 py-3">
                         <!-- titulo -->
                         <div class="">
@@ -83,7 +54,7 @@
                         </div><!-- cierra inventario -->
                     </div><!-- cierra border -->
                 </div>
-                <div class="col-lg-6">
+                <div class="col">
                     <div class="border h-100 rounded-4 d-flex justify-content-between px-3 py-3">
                         <!-- titulo -->
                         <div class="">

@@ -26,6 +26,7 @@ class DatabaseSeeder extends Seeder
         $this->call(VariablesSeeder::class);
         $this->call(FormasSeeder::class);
         $this->call(InventarioEstampillasSedeer::class);
+        $this->call(InventarioTaquillasSedeer::class);
         
         // \App\Models\User::factory(10)->create();
 

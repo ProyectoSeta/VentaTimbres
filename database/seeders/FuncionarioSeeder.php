@@ -22,16 +22,51 @@ class FuncionarioSeeder extends Seeder
 
 
         DB::table('funcionarios')->insert([
-            'nombre' => 'Taquillero 1',
+            'nombre' => 'Sujeto Uno',
             'ci_condicion' => 'V',
             'ci_nro' => '0000001',
             'cargo' => 'Taquillero',
         ]);
 
         DB::table('funcionarios')->insert([
-            'nombre' => 'Taquillero 2',
+            'nombre' => 'Sujeto Dos',
             'ci_condicion' => 'V',
             'ci_nro' => '0000002',
+            'cargo' => 'Taquillero',
+        ]);
+
+        DB::table('funcionarios')->insert([
+            'nombre' => 'Sujeto Tres',
+            'ci_condicion' => 'V',
+            'ci_nro' => '0000003',
+            'cargo' => 'Taquillero',
+        ]);
+
+        DB::table('funcionarios')->insert([
+            'nombre' => 'Sujeto Cuatro',
+            'ci_condicion' => 'V',
+            'ci_nro' => '0000004',
+            'cargo' => 'Taquillero',
+        ]);
+
+        DB::table('funcionarios')->insert([
+            'nombre' => 'Sujeto Cinco',
+            'ci_condicion' => 'V',
+            'ci_nro' => '0000005',
+            'cargo' => 'Taquillero',
+        ]);
+
+        DB::table('funcionarios')->insert([
+            'nombre' => 'Sujeto Seis',
+            'ci_condicion' => 'V',
+            'ci_nro' => '0000006',
+            'cargo' => 'Taquillero',
+        ]);
+
+        DB::table('funcionarios')->insert([
+            'nombre' => 'Sujeto Siete',
+            'ci_condicion' => 'V',
+            'ci_nro' => '0000007',
             'cargo' => 'Taquillero',
         ]);
     }

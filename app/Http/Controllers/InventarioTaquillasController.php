@@ -1,7 +1,7 @@
 <?php
 
 namespace App\Http\Controllers;
-
+use DB;
 use Illuminate\Http\Request;
 
 class InventarioTaquillasController extends Controller
@@ -11,7 +11,22 @@ class InventarioTaquillasController extends Controller
      */
     public function index()
     {
-        return view('inventario_taquillas');
+        $query = DB::table('taquillas')->select('id_taquilla')->get();
+        $taquillas = [];
+        
+        foreach ($query as $key) { 
+            $c1 = DB::table('inventario_taquillas')->where('key_taquilla','=', $key->id_taquilla)->first();
+print_r($c1->cantidad_estampillas);
+            // $array = array(
+            //             'id_taquilla' => $key->id_taquilla,
+            //             'cantidad_tfe' => $c1->cantidad_tfe,
+            //             'cantidad_estampillas' => $c2->cantidad_estampillas,
+            //         );
+            // $a = (object) $array;
+            // array_push($taquillas,$a);
+        }
+
+        // return view('inventario_taquillas',compact('taquillas'));
     }
 
     /**
