@@ -6,6 +6,29 @@
 @section('content')
     <div class="mx-3">
         <div class="d-flex justify-content-center align-items-center mt-3 pb-3" style="font-size:14px">
+            <ul class="nav nav-pills titulo px-3 w-100 d-flex" id="pills-tab" role="tablist">                 
+                <li class="nav-item me-3" role="presentation">
+                    <a class="nav-link active" id="pills-f14-tab" data-bs-toggle="pill" data-bs-target="#pills-f14" type="button" role="tab" aria-controls="pills-f14" aria-selected="true">
+                        <div class="d-flex gap-1 pe-2">
+                            <div class="ms-2">
+                                <h6 class="mb-1 text-700 text-nowrap" style="font-size:13px">Timbre</h6>
+                                <h6 class="mb-0 lh-1 fw-bold">Forma 14</h6>
+                            </div>
+                        </div>
+                    </a>
+                </li>
+                <li class="nav-item" role="presentation">
+                    <a class="nav-link" id="pills-tmovil-tab" data-bs-toggle="pill" data-bs-target="#pills-tmovil" type="button" role="tab" aria-controls="pills-tmovil" aria-selected="false">
+                        <div class="d-flex gap-1 pe-2">
+                            <div class="ms-2">
+                                <h6 class="mb-1 text-700 text-nowrap " style="font-size:13px">Timbre</h6>
+                                <h6 class="mb-0 lh-1 fw-bold ">Movil</h6>
+                            </div>
+                        </div>
+                    </a>
+                </li>
+            </ul>
+
             <!-- UCD HOY -->
             <div class="w-50">
                 <div class="d-flex bg-navy rounded-4">
@@ -20,196 +43,195 @@
         </div>
 
 
-        <div class="row">
-            <div class="col-xl-8 pe-5" id="">
-                <form id="form_venta_f14" method="post" onsubmit="event.preventDefault(); ventaF14()">
-                    <!-- *************** DATOS CONTRIBUYENTE ******************-->
-                    <div class="mb-2" style="font-size:13px">
-                        <div class="d-flex justify-content-center">
-                            <div class="row w-100">
-                                <h5 class="titulo fw-bold text-navy my-3">Contribuyente | <span class="text-secondary fs-6">Datos</span></h5>
-                                <!-- Tipo Contribuyente -->
-                                <div class="col-sm-3">
-                                    <label class="form-label" for="condicion_sujeto">Condición</label><span class="text-danger">*</span>
-                                    <select class="form-select form-select-sm" id="condicion_sujeto" aria-label="Small select example" name="condicion_sujeto">
-                                        <option>Seleccione</option>
-                                        <option value="natural">Natural</option>
-                                        <option value="juridica">Jurídica</option>
-                                        <option value="firma_personal">Firma Personal</option>
-                                    </select>
-                                </div>
-                                <!-- ci o rif -->
-                                <div class="col-sm-5">
-                                    <label class="form-label" for="identidad_condicion">C.I / R.I.F</label><span class="text-danger">*</span>
-                                    <div class="row">
-                                        <div class="col-5">
-                                            <select class="form-select form-select-sm" id="identidad_condicion" aria-label="Small select example" name="identidad_condicion">
-                                                <option>Seleccione</option>
-                                            </select>
+
+
+
+        <div class="tab-content" id="pills-tabContent">
+            <!-- FORMA 14 -->
+            <div class="tab-pane fade show active " id="pills-f14" role="tabpanel" aria-labelledby="pills-f14-tab" tabindex="0">
+                <div class="row">
+                    <div class="col-xl-8 pe-5" id="">
+                        <form id="form_venta_f14" method="post" onsubmit="event.preventDefault(); ventaF14()">
+                            <!-- *************** DATOS CONTRIBUYENTE ******************-->
+                            <div class="mb-2" style="font-size:13px">
+                                <div class="d-flex justify-content-center">
+                                    <div class="row w-100">
+                                        <h5 class="titulo fw-bold text-navy my-3">Contribuyente | <span class="text-secondary fs-6">Datos</span></h5>
+                                        <div class="col-sm-6">
+                                            <label class="form-label" for="identidad_condicion">C.I / R.I.F</label><span class="text-danger">*</span>
+                                            <div class="row">
+                                                <div class="col-4">
+                                                    <select class="form-select form-select-sm" id="identidad_condicion" aria-label="Small select example" name="identidad_condicion">
+                                                        <option value="V">V</option>
+                                                        <option value="E">E</option>
+                                                        <option value="J">J</option>
+                                                        <option value="G">G</option>
+                                                    </select>
+                                                </div>
+                                                <div class="col-1">-</div>
+                                                <div class="col-7">
+                                                    <input type="number" id="identidad_nro" class="form-control form-control-sm" name="identidad_nro" required >
+                                                    <p class="text-end text-muted fw-bold mb-0" style="font-size:12px;">Ejemplo: 7521004</p>
+                                                </div>
+                                            </div>
                                         </div>
-                                        <!-- <div class="col-1">-</div> -->
-                                        <div class="col-7">
-                                            <input type="number" id="identidad_nro" class="form-control form-control-sm" name="identidad_nro" required >
-                                            <p class="text-end text-muted fw-bold mb-0" style="font-size:12px;">Ejemplo: 7521004</p>
+                                        <div class="col-sm-6">
+                                            <label class="form-label" for="nombre">Nombre / Razon Social</label><span class="text-danger">*</span>
+                                            <input type="text" id="nombre" class="form-control form-control-sm" name="nombre" disabled required>
                                         </div>
                                     </div>
                                 </div>
-                                <!-- nombre o razon -->
-                                <div class="col-sm-4">
-                                    <label class="form-label" for="nombre">Nombre / Razon Social</label><span class="text-danger">*</span>
-                                    <input type="text" id="nombre" class="form-control form-control-sm" name="nombre" disabled required>
+
+                                <div class="d-flex justify-content-center mt-3 mb-3 d-none" id="btns_add_contribuyente">
+                                    <button type="button" class="btn btn-secondary btn-sm me-3" id="btn_cancel_add_c">Cancelar</button>
+                                    <button type="button" class="btn btn-success btn-sm" id="btn_add_contribuyente">Registrar</button>
+                                </div>
+                            </div>
+
+                            <!-- **************** DATOS TRAMITE **************** -->
+                            <div class="mb-4" style="font-size:13px">
+                                <div class="d-flex flex-column tramites">
+                                    <div class="d-flex justify-content-center">
+                                        <div class="row w-100">
+                                            <h5 class="titulo fw-bold text-navy my-3">Tramite | <span class="text-secondary fs-6">Datos</span></h5>
+                                            <div class="col-sm-3">
+                                                <label class="form-label" for="ente">Ente</label><span class="text-danger">*</span>
+                                                <select class="form-select form-select-sm ente" nro="1" disabled>
+                                                    @foreach ($entes as $ente)
+                                                        <option value="{{$ente->id_ente}}">{{$ente->ente}}</option>
+                                                    @endforeach
+                                                    
+                                                </select>
+                                            </div>
+                                            <div class="col-sm-6">
+                                                <label class="form-label" for="tramite">Tramite</label><span class="text-danger">*</span>
+                                                <select class="form-select form-select-sm tramite" name="tramite[]" nro="1" id="tramite_1" disabled>
+                                                    <option value="">Seleccione el tramite </option>
+                                                        @foreach ($tramites as $tramite)
+                                                            <option value="{{$tramite->id_tramite}}">{{$tramite->tramite}}</option>
+                                                        @endforeach
+                                                </select>
+                                            </div>
+                                            <div class="col-sm-2">
+                                                <label class="form-label" for="ucd_tramite">UCD</label><span class="text-danger">*</span>
+                                                <input type="text" class="form-control form-control-sm ucd_tramite" id="ucd_tramite_1" disabled required>
+                                            </div>
+                                            <div class="col-sm-1 pt-4">
+                                                <a  href="javascript:void(0);" class="btn add_button_tramite disabled border-0">
+                                                    <i class="bx bx-plus fs-4" style="color:#038ae4"></i>
+                                                </a>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                            </div>
+
+
+                            <!-- ************************ PAGO *****************************-->
+                            <div class="mb-2" style="font-size:13px">
+                                <div class="d-flex flex-column pago_timbre">
+                                    <div class="d-flex justify-content-center" >
+                                        <div class="row w-100">
+                                            <h5 class="titulo fw-bold text-navy my-3">Pago | <span class="text-secondary fs-6">Timbre Fiscal</span></h5>
+                                            <div class="col-sm-4">
+                                                <label class="form-label" for="metodo">Metodo de Pago</label><span class="text-danger">*</span>
+                                                <select class="form-select form-select-sm metodo" aria-label="Small select example" i="1" name="metodo_one" disabled>
+                                                    <option value="punto">Punto</option>
+                                                    <option value="efectivo">Efectivo Bs.</option>
+                                                </select>
+                                            </div>
+                                            <div class="col-sm-3">
+                                                <label class="form-label" for="comprobante">No. Comprobante</label><span class="text-danger">*</span>
+                                                <input type="number" class="form-control form-control-sm comprobante" name="comprobante_one" id="comprobante_1" disabled required>
+                                            </div>
+                                            <div class="col-sm-4">
+                                                <label class="form-label" for="debitado">Monto Debitado </label><span class="text-danger">*</span>
+                                                <input type="number" step="0.01" id="debitado_1" class="form-control form-control-sm debitado" name="debitado_one" disabled required>
+                                            </div>
+                                            <div class="col-sm-1 pt-4">
+                                                <a  href="javascript:void(0);" class="btn add_button disabled border-0">
+                                                    <i class="bx bx-plus fs-4" style="color:#038ae4"></i>
+                                                </a>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                            </div>
+                            
+
+                            <p class="text-muted text-end fw-bold mt-3" style="font-size:13px"><span style="color:red">*</span> Campos requeridos.</p>
+
+                            <div class="d-flex justify-content-center mt-3 mb-3">
+                                <a class="btn btn-secondary btn-sm me-3" data-bs-toggle="modal" data-bs-target="#modal_timbre_impreso" >Cancelar</a>
+                                <button type="submit" class="btn btn-success btn-sm" id="btn_submit_venta" >Realizar Venta</button>
+                            </div>
+                        </form>
+                    </div>
+                    <!-- ******************************* -->
+                    <div class="col-xl-4 pb-3 px-3">
+                        <div class="">
+                            <h5 class="titulo fw-bold text-success fs-4 mt-4 mb-3">Total a Pagar</h5>
+                            <div class="d-flex flex-column">
+                                <div class="bg-light rounded-3 px-3 py-2 mb-2">
+                                    <div class="d-flex justify-content-between align-items-center">
+                                        <p class="d-flex flex-column titulo mb-0">
+                                            <span class="fs-3 fw-bold text-navy">UCD</span>
+                                            <span class="fw-bold text-muted" style="font-size:13px">Unidad de cuenta dinamica</span>
+                                        </p>
+                                        <span class="fs-1 text-navy fw-bold" id="ucd">0 </span>
+                                    </div>
+                                </div>
+                                <div class="bg-light rounded-3 px-3 py-2">
+                                    <div class="d-flex justify-content-between align-items-center">
+                                        <p class="d-flex flex-column titulo mb-0">
+                                            <span class="fs-3 fw-bold text-navy">Bolivares</span>
+                                        </p>
+                                        <span class="fs-1 text-navy fw-bold" id="bolivares">0.00</span>
+                                    </div>
                                 </div>
                             </div>
                         </div>
-
-                        <div class="d-flex justify-content-center mt-3 mb-3 d-none" id="btns_add_contribuyente">
-                            <button type="button" class="btn btn-secondary btn-sm me-3" id="btn_cancel_add_c">Cancelar</button>
-                            <button type="button" class="btn btn-success btn-sm" id="btn_add_contribuyente">Registrar</button>
-                        </div>
-                    </div>
-
-                    <!-- **************** DATOS TRAMITE **************** -->
-                    <div class="mb-4" style="font-size:13px">
-                        <div class="d-flex flex-column tramites">
-                            <div class="d-flex justify-content-center">
-                                <div class="row w-100">
-                                    <h5 class="titulo fw-bold text-navy my-3">Tramite | <span class="text-secondary fs-6">Datos</span></h5>
-                                    <div class="col-sm-3">
-                                        <label class="form-label" for="ente">Ente</label><span class="text-danger">*</span>
-                                        <select class="form-select form-select-sm ente" nro="1" disabled>
-                                            @foreach ($entes as $ente)
-                                                <option value="{{$ente->id_ente}}">{{$ente->ente}}</option>
-                                            @endforeach
-                                            
-                                        </select>
-                                    </div>
-                                    <div class="col-sm-6">
-                                        <label class="form-label" for="tramite">Tramite</label><span class="text-danger">*</span>
-                                        <select class="form-select form-select-sm tramite" name="tramite[]" nro="1" id="tramite_1" disabled>
-                                            <option value="">Seleccione el tramite </option>
-                                                @foreach ($tramites as $tramite)
-                                                    <option value="{{$tramite->id_tramite}}">{{$tramite->tramite}}</option>
-                                                @endforeach
-                                        </select>
-                                    </div>
-                                    <div class="col-sm-2">
-                                        <label class="form-label" for="ucd_tramite">UCD</label><span class="text-danger">*</span>
-                                        <input type="text" class="form-control form-control-sm ucd_tramite" id="ucd_tramite_1" disabled required>
-                                    </div>
-                                    <div class="col-sm-1 pt-4">
-                                        <a  href="javascript:void(0);" class="btn add_button_tramite disabled border-0">
-                                            <i class="bx bx-plus fs-4" style="color:#038ae4"></i>
-                                        </a>
+                        <!--  -->
+                        <div class="">
+                            <h5 class="titulo fw-bold text-success fs-4 mt-4 mb-3">Pagado</h5>
+                            <div class="d-flex flex-column">
+                                <div class="bg-body-secondary rounded-3 px-3 py-1 mb-2">
+                                    <div class="d-flex justify-content-between align-items-center">
+                                        <p class="d-flex flex-column titulo mb-0">
+                                            <span class="fs-5 fw-bold text-navy">Debitado</span>
+                                        </p>
+                                        <span class="fs-4 text-navy fw-bold" id="debitado">0.00</span>
                                     </div>
                                 </div>
-                            </div>
-                        </div>
-                        
-                    </div>
-
-
-                    <!-- ************************ PAGO *****************************-->
-                    <div class="mb-2" style="font-size:13px">
-                        <div class="d-flex flex-column pago_timbre">
-                            <div class="d-flex justify-content-center" >
-                                <div class="row w-100">
-                                    <h5 class="titulo fw-bold text-navy my-3">Pago | <span class="text-secondary fs-6">Timbre Fiscal</span></h5>
-                                    <div class="col-sm-4">
-                                        <label class="form-label" for="metodo">Metodo de Pago</label><span class="text-danger">*</span>
-                                        <select class="form-select form-select-sm metodo" aria-label="Small select example" i="1" name="metodo_one" disabled>
-                                            <option value="punto">Punto</option>
-                                            <option value="efectivo">Efectivo Bs.</option>
-                                        </select>
-                                    </div>
-                                    <div class="col-sm-3">
-                                        <label class="form-label" for="comprobante">No. Comprobante</label><span class="text-danger">*</span>
-                                        <input type="number" class="form-control form-control-sm comprobante" name="comprobante_one" id="comprobante_1" disabled required>
-                                    </div>
-                                    <div class="col-sm-4">
-                                        <label class="form-label" for="debitado">Monto Debitado </label><span class="text-danger">*</span>
-                                        <input type="number" step="0.01" id="debitado_1" class="form-control form-control-sm debitado" name="debitado_one" disabled required>
-                                    </div>
-                                    <div class="col-sm-1 pt-4">
-                                        <a  href="javascript:void(0);" class="btn add_button disabled border-0">
-                                            <i class="bx bx-plus fs-4" style="color:#038ae4"></i>
-                                        </a>
+                                <div class="bg-body-secondary rounded-3 px-3 py-1 mb-2">
+                                    <div class="d-flex justify-content-between align-items-center">
+                                        <p class="d-flex flex-column titulo mb-0">
+                                            <span class="fs-5 fw-bold text-navy">Diferencia</span>
+                                        </p>
+                                        <span class="fs-4 text-navy fw-bold" id="diferencia">0.00</span>
                                     </div>
                                 </div>
-                            </div>
-                        </div>
-                        
-                    </div>
-                    
-
-                    <p class="text-muted text-end fw-bold mt-3" style="font-size:13px"><span style="color:red">*</span> Campos requeridos.</p>
-
-                    <div class="d-flex justify-content-center mt-3 mb-3">
-                        <a class="btn btn-secondary btn-sm me-3" data-bs-toggle="modal" data-bs-target="#modal_timbre_impreso" >Cancelar</a>
-                        <button type="submit" class="btn btn-success btn-sm" id="btn_submit_venta" >Realizar Venta</button>
-                    </div>
-                </form>
-            </div>
-            <!-- ******************************* -->
-            <div class="col-xl-4 pb-3 px-3">
-                <div class="">
-                    <h5 class="titulo fw-bold text-success fs-4 mt-4 mb-3">Total a Pagar</h5>
-                    <div class="d-flex flex-column">
-                        <div class="bg-light rounded-3 px-3 py-2 mb-2">
-                            <div class="d-flex justify-content-between align-items-center">
-                                <p class="d-flex flex-column titulo mb-0">
-                                    <span class="fs-3 fw-bold text-navy">UCD</span>
-                                    <span class="fw-bold text-muted" style="font-size:13px">Unidad de cuenta dinamica</span>
-                                </p>
-                                <span class="fs-1 text-navy fw-bold" id="ucd">0 </span>
-                            </div>
-                        </div>
-                        <div class="bg-light rounded-3 px-3 py-2">
-                            <div class="d-flex justify-content-between align-items-center">
-                                <p class="d-flex flex-column titulo mb-0">
-                                    <span class="fs-3 fw-bold text-navy">Bolivares</span>
-                                </p>
-                                <span class="fs-1 text-navy fw-bold" id="bolivares">0.00</span>
+                                <div class="bg-body-secondary rounded-3 px-3 py-1">
+                                    <div class="d-flex justify-content-between align-items-center">
+                                        <p class="d-flex flex-column titulo mb-0">
+                                            <span class="fs-5 fw-bold text-navy">Vuelto</span>
+                                        </p>
+                                        <span class="fs-4 text-navy fw-bold" id="vuelto">0.00</span>
+                                    </div>
+                                </div>
                             </div>
                         </div>
                     </div>
                 </div>
-                <!--  -->
-                <div class="">
-                    <h5 class="titulo fw-bold text-success fs-4 mt-4 mb-3">Pagado</h5>
-                    <div class="d-flex flex-column">
-                        <div class="bg-body-secondary rounded-3 px-3 py-1 mb-2">
-                            <div class="d-flex justify-content-between align-items-center">
-                                <p class="d-flex flex-column titulo mb-0">
-                                    <span class="fs-5 fw-bold text-navy">Debitado</span>
-                                </p>
-                                <span class="fs-4 text-navy fw-bold" id="debitado">0.00</span>
-                            </div>
-                        </div>
-                        <div class="bg-body-secondary rounded-3 px-3 py-1 mb-2">
-                            <div class="d-flex justify-content-between align-items-center">
-                                <p class="d-flex flex-column titulo mb-0">
-                                    <span class="fs-5 fw-bold text-navy">Diferencia</span>
-                                </p>
-                                <span class="fs-4 text-navy fw-bold" id="diferencia">0.00</span>
-                            </div>
-                        </div>
-                        <div class="bg-body-secondary rounded-3 px-3 py-1">
-                            <div class="d-flex justify-content-between align-items-center">
-                                <p class="d-flex flex-column titulo mb-0">
-                                    <span class="fs-5 fw-bold text-navy">Vuelto</span>
-                                </p>
-                                <span class="fs-4 text-navy fw-bold" id="vuelto">0.00</span>
-                            </div>
-                        </div>
-                    </div>
-                </div>
             </div>
-        </div>
 
-
-
-
-       
+            <!-- TIMBRE MOVIL -->
+            <div class="tab-pane fade" id="pills-tmovil" role="tabpanel" aria-labelledby="pills-tmovil-tab" tabindex="0">
+                
+            </div>
+        </div>        
     </div>
     
     
@@ -492,51 +514,51 @@
     <script type="text/javascript">
         $(document).ready(function () {
             ///////////////////////////////////////AGREGAR CAMPOS A OTRO(S) PAGO
-                var maxFieldTramite = 4; //Input fields increment limitation
-                var c = 1; //Initial field counter is 1
+            var maxFieldTramite = 4; //Input fields increment limitation
+            var c = 1; //Initial field counter is 1
 
-                $(document).on('click', '.add_button_tramite', function(e){ //Once add button is clicked
-                    if(c < maxFieldTramite){ //Check maximum number of input fields
-                        c++; //Increment field counter
-                        $('.tramites').append('<div class="d-flex justify-content-center ">'+
-                                            '<div class="row w-100 mt-2">'+
-                                                '<div class="col-sm-3">'+
-                                                    '<label class="form-label" for="ente">Ente</label><span class="text-danger">*</span>'+
-                                                    '<select class="form-select form-select-sm ente" nro="'+c+'">'+
-                                                        '@foreach ($entes as $ente)'+
-                                                            '<option value="{{$ente->id_ente}}">{{$ente->ente}}</option>'+
-                                                        '@endforeach'+
-                                                        
-                                                    '</select>'+
-                                                '</div>'+
-                                                '<div class="col-sm-6">'+
-                                                    '<label class="form-label" for="tramite">Tramite</label><span class="text-danger">*</span>'+
-                                                    '<select class="form-select form-select-sm tramite" name="tramite[]" nro="'+c+'" id="tramite_'+c+'" required>'+
-                                                        '<option value="">Seleccione el tramite </option>'+
-                                                            '@foreach ($tramites as $tramite)'+
-                                                                '<option value="{{$tramite->id_tramite}}">{{$tramite->tramite}}</option>'+
-                                                            '@endforeach'+
-                                                    '</select>'+
-                                                '</div>'+
-                                                '<div class="col-sm-2">'+
-                                                    '<label class="form-label" for="ucd_tramite">UCD</label><span class="text-danger">*</span>'+
-                                                    '<input type="text" class="form-control form-control-sm ucd_tramite" id="ucd_tramite_'+c+'" disabled>'+
-                                                '</div>'+
-                                                '<div class="col-sm-1 pt-4">'+
-                                                    '<a  href="javascript:void(0);" class="btn remove_button_tramite" >'+
-                                                        '<i class="bx bx-x fs-4"></i>'+
-                                                    '</a>'+
-                                                '</div>'+
+            $(document).on('click', '.add_button_tramite', function(e){ //Once add button is clicked
+                if(c < maxFieldTramite){ //Check maximum number of input fields
+                    c++; //Increment field counter
+                    $('.tramites').append('<div class="d-flex justify-content-center ">'+
+                                        '<div class="row w-100 mt-2">'+
+                                            '<div class="col-sm-3">'+
+                                                '<label class="form-label" for="ente">Ente</label><span class="text-danger">*</span>'+
+                                                '<select class="form-select form-select-sm ente" nro="'+c+'">'+
+                                                    '@foreach ($entes as $ente)'+
+                                                        '<option value="{{$ente->id_ente}}">{{$ente->ente}}</option>'+
+                                                    '@endforeach'+
+                                                    
+                                                '</select>'+
                                             '</div>'+
-                                        '</div>'); // Add field html
-                    }
-                });
+                                            '<div class="col-sm-6">'+
+                                                '<label class="form-label" for="tramite">Tramite</label><span class="text-danger">*</span>'+
+                                                '<select class="form-select form-select-sm tramite" name="tramite[]" nro="'+c+'" id="tramite_'+c+'" required>'+
+                                                    '<option value="">Seleccione el tramite </option>'+
+                                                        '@foreach ($tramites as $tramite)'+
+                                                            '<option value="{{$tramite->id_tramite}}">{{$tramite->tramite}}</option>'+
+                                                        '@endforeach'+
+                                                '</select>'+
+                                            '</div>'+
+                                            '<div class="col-sm-2">'+
+                                                '<label class="form-label" for="ucd_tramite">UCD</label><span class="text-danger">*</span>'+
+                                                '<input type="text" class="form-control form-control-sm ucd_tramite" id="ucd_tramite_'+c+'" disabled>'+
+                                            '</div>'+
+                                            '<div class="col-sm-1 pt-4">'+
+                                                '<a  href="javascript:void(0);" class="btn remove_button_tramite" >'+
+                                                    '<i class="bx bx-x fs-4"></i>'+
+                                                '</a>'+
+                                            '</div>'+
+                                        '</div>'+
+                                    '</div>'); // Add field html
+                }
+            });
 
-                $(document).on('click', '.remove_button_tramite', function(e){ //Once remove button is clicked
-                    e.preventDefault();
-                    $(this).parent('div').parent('div').remove(); //Remove field html
-                    c--; //Decrement field counter
-                });
+            $(document).on('click', '.remove_button_tramite', function(e){ //Once remove button is clicked
+                e.preventDefault();
+                $(this).parent('div').parent('div').remove(); //Remove field html
+                c--; //Decrement field counter
+            });
             ///////////////////////////////////////////////////////////////////
 
 
@@ -790,26 +812,6 @@
                     $('#comprobante_'+i).attr('disabled', false);
                 }
                
-            });
-
-
-            //////////////////////////// TRAMITES SEGUN EL ENTE
-            $(document).on('change','#condicion_sujeto', function(e) {
-                e.preventDefault(); 
-                var value = $(this).val(); 
-
-                $('#identidad_condicion option').remove();
-
-                if (value == "natural" || value == "firma_personal") {
-                    $('#identidad_condicion').append('<option>Seleccione</option>'+
-                                                    '<option value="V">V</option>'+
-                                                    '<option value="E">E</option>');
-                }else{
-                    $('#identidad_condicion').append('<option>Seleccione</option>'+
-                                                    '<option value="J">J</option>'+
-                                                    '<option value="G">G</option>');
-                }
-
             });
 
         });
