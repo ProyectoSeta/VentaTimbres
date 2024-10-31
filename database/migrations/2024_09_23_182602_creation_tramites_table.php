@@ -16,14 +16,20 @@ return new class extends Migration
 
             $table->string('tramite');
 
+            $table->integer('key_ente')->unsigned();
+            $table->foreign('key_ente')->references('id_ente')->on('entes')->onDelete('cascade');
+
             $table->integer('alicuota')->unsigned(); ///////UCD - PORCENTAJE
             $table->foreign('alicuota')->references('id_tipo')->on('tipos')->onDelete('cascade');
 
             $table->float('natural');
             $table->float('juridico');
 
-            $table->integer('key_ente')->unsigned();
-            $table->foreign('key_ente')->references('id_ente')->on('entes')->onDelete('cascade');
+            $table->float('pequeña');
+            $table->float('mediana');
+            $table->float('grande');
+
+            
 
         });
     }

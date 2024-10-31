@@ -14,13 +14,15 @@ return new class extends Migration
         Schema::create('contribuyentes', function (Blueprint $table) {
             $table->increments('id_contribuyente');
 
+            $table->integer('condicion_sujeto')->unsigned(); ///////natural - firma personal - juridico?
+            $table->foreign('condicion_sujeto')->references('id_tipo')->on('tipos')->onDelete('cascade');
+
             $table->enum('identidad_condicion',['V','E','J','G']);
             $table->string('identidad_nro',12)->unique();
 
             $table->string('nombre_razon');
 
-            // $table->integer('type_contribuyente')->unsigned(); ///////natural - firma personal - ente
-            // $table->foreign('type_contribuyente')->references('id_tipo')->on('tipos')->onDelete('cascade');
+            
 
             $table->timestamps();
         });
