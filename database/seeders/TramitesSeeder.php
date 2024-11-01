@@ -16,63 +16,102 @@ class TramitesSeeder extends Seeder
         ////////////////REGISTRO
         DB::table('tramites')->insert([
             'tramite' => 'Legalización',
+            'key_ente' => 1,
             'alicuota' => 7,
             'natural' => '3',
             'juridico' => '3',
-            'key_ente' => 1,
+            'pequeña' => null,
+            'mediana' => null,
+            'grande' => null,
+            
         ]);
         DB::table('tramites')->insert([
             'tramite' => 'Partida de Nacimiento',
+            'key_ente' => 1,
             'alicuota' => 7,
             'natural' => '3',
             'juridico' => '3',
-            'key_ente' => 1
+            'pequeña' => null,
+            'mediana' => null,
+            'grande' => null,
         ]);
         DB::table('tramites')->insert([
             'tramite' => 'Registro de Título Universitario',
+            'key_ente' => 1,
             'alicuota' => 7,
             'natural' => '2',
             'juridico' => '2',
-            'key_ente' => 1
+            'pequeña' => null,
+            'mediana' => null,
+            'grande' => null,
         ]);
         DB::table('tramites')->insert([
             'tramite' => 'Sellado de Libro',
+            'key_ente' => 1,
             'alicuota' => 7,
             'natural' => '3',
             'juridico' => '10',
-            'key_ente' => 1
+            'pequeña' => null,
+            'mediana' => null,
+            'grande' => null,
         ]);
 
         ///////////// ALCALDÍA
         DB::table('tramites')->insert([
             'tramite' => 'Licencia de Actividad Económica',
+            'key_ente' => 2,
             'alicuota' => 7,
             'natural' => '3',
             'juridico' => '10',
-            'key_ente' => 2
+            'pequeña' => null,
+            'mediana' => null,
+            'grande' => null,
+            
         ]);
         DB::table('tramites')->insert([
             'tramite' => 'Uso conforme',
+            'key_ente' => 2,
             'alicuota' => 7,
             'natural' => '10',
             'juridico' => '10',
-            'key_ente' => 2
+            'pequeña' => null,
+            'mediana' => null,
+            'grande' => null,
         ]);
 
         ////////////NOTARÍA
         DB::table('tramites')->insert([
             'tramite' => 'Poder Natural',
+            'key_ente' => 3,
             'alicuota' => 7,
             'natural' => '5',
             'juridico' => '5',
-            'key_ente' => 3
+            'pequeña' => null,
+            'mediana' => null,
+            'grande' => null,
         ]);
         DB::table('tramites')->insert([
             'tramite' => 'Poder Especial',
+            'key_ente' => 3,
             'alicuota' => 7,
             'natural' => '10',
             'juridico' => '10',
-            'key_ente' => 3
+            'pequeña' => null,
+            'mediana' => null,
+            'grande' => null,
+        ]);
+
+
+        ///////////BOMBEROS
+        DB::table('tramites')->insert([
+            'tramite' => 'Permiso de Bomberos',
+            'key_ente' => 4,
+            'alicuota' => 7,
+            'natural' => '0',
+            'juridico' => '0',
+            'pequeña' => '100',
+            'mediana' => '250',
+            'grande' => '500',
         ]);
     }
 }

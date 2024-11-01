@@ -33,9 +33,9 @@
                                     <label class="form-label" for="condicion_sujeto">Condición</label><span class="text-danger">*</span>
                                     <select class="form-select form-select-sm" id="condicion_sujeto" aria-label="Small select example" name="condicion_sujeto">
                                         <option>Seleccione</option>
-                                        <option value="natural">Natural</option>
-                                        <option value="juridica">Jurídica</option>
-                                        <option value="firma_personal">Firma Personal</option>
+                                        <option value="9">Natural</option>
+                                        <option value="10">Firma Personal</option>
+                                        <option value="11">Ente</option>
                                     </select>
                                 </div>
                                 <!-- ci o rif -->
@@ -76,7 +76,7 @@
                                     <h5 class="titulo fw-bold text-navy my-3">Tramite | <span class="text-secondary fs-6">Datos</span></h5>
                                     <div class="col-sm-3">
                                         <label class="form-label" for="ente">Ente</label><span class="text-danger">*</span>
-                                        <select class="form-select form-select-sm ente" nro="1" disabled>
+                                        <select class="form-select form-select-sm ente" nro="1" id="ente_1" disabled>
                                             @foreach ($entes as $ente)
                                                 <option value="{{$ente->id_ente}}">{{$ente->ente}}</option>
                                             @endforeach
@@ -104,7 +104,25 @@
                                 </div>
                             </div>
                         </div>
-                        
+
+                        <!-- tamaño de empresa -->
+                        <div class="mx-3 mt-4 d-none" id="content_tamaño">
+                            <p class="text-muted my-0 pb-0">*Ingrese el tamaño de la Empresa.</p>
+                            <div class="d-flex align-items-center justify-content-evenly">
+                                <div class="">
+                                    <label class="form-label" for="">Tamaño de la empresa (Mts2):</label><span class="text-danger">*</span>
+                                    <div class="d-flex align-items-center">
+                                        <input type="text" id="metros" class="form-control form-control-sm me-2" name="metros" required>
+                                        <span class="fw-bold">Mts2</span>
+                                    </div>
+                                </div>
+
+                                <div class="text-center pt-4" id="tamaño">
+                                    <!-- <p class="fs-4 fw-bold mb-0">Mediana</p>
+                                    <p class="text-secondary">*Desde 151, Hasta 399 mts2.</p> -->
+                                </div>
+                            </div>
+                        </div>
                     </div>
 
 
@@ -502,7 +520,7 @@
                                             '<div class="row w-100 mt-2">'+
                                                 '<div class="col-sm-3">'+
                                                     '<label class="form-label" for="ente">Ente</label><span class="text-danger">*</span>'+
-                                                    '<select class="form-select form-select-sm ente" nro="'+c+'">'+
+                                                    '<select class="form-select form-select-sm ente" nro="'+c+'" id="ente_'+c+'">'+
                                                         '@foreach ($entes as $ente)'+
                                                             '<option value="{{$ente->id_ente}}">{{$ente->ente}}</option>'+
                                                         '@endforeach'+
@@ -523,7 +541,7 @@
                                                     '<input type="text" class="form-control form-control-sm ucd_tramite" id="ucd_tramite_'+c+'" disabled>'+
                                                 '</div>'+
                                                 '<div class="col-sm-1 pt-4">'+
-                                                    '<a  href="javascript:void(0);" class="btn remove_button_tramite" >'+
+                                                    '<a  href="javascript:void(0);" class="btn remove_button_tramite" nro="'+c+'">'+
                                                         '<i class="bx bx-x fs-4"></i>'+
                                                     '</a>'+
                                                 '</div>'+
@@ -533,6 +551,27 @@
                 });
 
                 $(document).on('click', '.remove_button_tramite', function(e){ //Once remove button is clicked
+                    
+
+                    var nro =  $(this).attr('nro');
+                    var ente =  $('#ente_'+nro).val();
+
+                    if (ente == 4) {
+                        var u = 0;
+                        $(".ente").each(function(e){
+                            var value = $(this).val();
+                            if (value == 4) {
+                                u++;
+                            }
+                        });
+
+                        if (u == 1) {
+                            $('#content_tamaño').addClass('d-none');
+                        }
+                        console.log(u);
+                    }
+
+
                     e.preventDefault();
                     $(this).parent('div').parent('div').remove(); //Remove field html
                     c--; //Decrement field counter
@@ -585,12 +624,13 @@
                 e.preventDefault(); 
                 var value = $(this).val();
                 var condicion = $('#identidad_condicion').val();
+                var condicion_sujeto = $('#condicion_sujeto').val();
 
                 $.ajax({
                     headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') },
                     type: 'POST',
                     url: '{{route("venta.search") }}',
-                    data: {value:value,condicion:condicion},
+                    data: {value:value,condicion:condicion,condicion_sujeto:condicion_sujeto},
                     success: function(response) {
                         // console.log(response);               
                         if (response.success) {
@@ -686,24 +726,32 @@
                 var nro =  $(this).attr('nro');
                 var value = $(this).val();
 
+                var condicion_sujeto =  $('#condicion_sujeto').val();
+                var ente =  $('#ente_'+nro).val();
+
                 if (value == '') {
                     $('#ucd_tramite_'+nro).val('0');
                 }else{
-                    $.ajax({
-                        headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') },
-                        type: 'POST',
-                        url: '{{route("venta.ucd_tramite") }}',
-                        data: {value:value},
-                        success: function(response) {
-                            if (response.success) {
-                                $('#ucd_tramite_'+nro).val(response.valor);
-                            }else{
-                                ////alert
-                            }   
-                        },
-                        error: function() {
-                        }
-                    });
+                    if (ente == 4) {
+                        $('#content_tamaño').removeClass('d-none');
+                        // $('#content_tamaño').html('');
+                    }else{
+                        $.ajax({
+                            headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') },
+                            type: 'POST',
+                            url: '{{route("venta.ucd_tramite") }}',
+                            data: {value:value,condicion_sujeto:condicion_sujeto},
+                            success: function(response) {
+                                if (response.success) {
+                                    $('#ucd_tramite_'+nro).val(response.valor);
+                                }else{
+                                    ////alert
+                                }   
+                            },
+                            error: function() {
+                            }
+                        });
+                    }
                 }
             });
 
@@ -713,7 +761,7 @@
                 e.preventDefault(); 
                 var nro =  $(this).attr('nro');
                 var value = $(this).val();
-                // var unidad = $(this).attr('unidad');
+
                 $.ajax({
                     headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') },
                     type: 'POST',
@@ -731,6 +779,25 @@
             //////////////////////////// VALOR DEL TRAMITE SELECCIONADO
             $(document).on('change','.tramite', function(e) {
                 calcular();
+            });
+
+
+            //////////////////////////// VALOR DEL TRAMITE SEGUN EL TAMAÑO
+            $(document).on('change','#metros', function(e) {
+                e.preventDefault(); 
+                var value = $(this).val();
+
+                $.ajax({
+                    headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') },
+                    type: 'POST',
+                    url: '{{route("venta.tramites") }}',
+                    data: {value:value},
+                    success: function(response) {
+                        $('#tramite_'+nro).html(response);
+                    },
+                    error: function() {
+                    }
+                });
             });
 
 
@@ -800,7 +867,7 @@
 
                 $('#identidad_condicion option').remove();
 
-                if (value == "natural" || value == "firma_personal") {
+                if (value == "9" || value == "10") {
                     $('#identidad_condicion').append('<option>Seleccione</option>'+
                                                     '<option value="V">V</option>'+
                                                     '<option value="E">E</option>');

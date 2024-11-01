@@ -24,5 +24,9 @@ class EntesSeeder extends Seeder
         DB::table('entes')->insert([
             'ente' => 'Notaría',
         ]);
+
+        DB::table('entes')->insert([
+            'ente' => 'Bomberos',
+        ]);
     }
 }

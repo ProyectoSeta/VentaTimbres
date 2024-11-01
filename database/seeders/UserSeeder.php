@@ -27,6 +27,7 @@ class UserSeeder extends Seeder
 
         ////////////SUJETO PRUEBA CONTRIBUYENTE
         DB::table('contribuyentes')->insert([
+            'condicion_sujeto' => 9,
             'identidad_condicion' => 'V',
             'identidad_nro' =>'123456',
             'nombre_razon' => 'Prueba Uno'

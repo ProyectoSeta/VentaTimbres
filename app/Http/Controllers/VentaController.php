@@ -34,8 +34,10 @@ class VentaController extends Controller
     {
         $value = $request->post('value');
         $condicion = $request->post('condicion');
+        $condicion_sujeto = $request->post('condicion_sujeto');
         // return response($condicion);
         $query = DB::table('contribuyentes')->select('nombre_razon')
+                                            ->where('condicion_sujeto','=', $condicion_sujeto)
                                             ->where('identidad_condicion','=', $condicion)
                                             ->where('identidad_nro','=', $value)
                                             ->first();
@@ -54,12 +56,24 @@ class VentaController extends Controller
     public function ucd_tramite(Request $request)
     {
         $value = $request->post('value');
-        $query = DB::table('tramites')->select('ucd')->where('id_tramite','=', $value)->first();
-        
-        if ($query) {
-            return response()->json(['success' => true, 'valor' => $query->ucd]);
+        $condicion_sujeto = $request->post('condicion_sujeto');
+
+        if ($condicion_sujeto == 10 || $condicion_sujeto == 11) {
+            //////juridico
+            $query = DB::table('tramites')->select('juridico')->where('id_tramite','=', $value)->first();
+            if ($query) {
+                return response()->json(['success' => true, 'valor' => $query->juridico]);
+            }else{
+                return response()->json(['success' => false]);
+            }
         }else{
-            return response()->json(['success' => false]);
+            ////natural
+            $query = DB::table('tramites')->select('natural')->where('id_tramite','=', $value)->first();
+            if ($query) {
+                return response()->json(['success' => true, 'valor' => $query->natural]);
+            }else{
+                return response()->json(['success' => false]);
+            }
         }
         
     }

@@ -34,7 +34,7 @@
 
                                     <div class="d-flex justify-content-between ">
                                         <span class="fs-6 me-1">Taquillero</span>
-                                        <span class="fs-6">{{$taquilla->taquillero}}</span>
+                                        <span class="fs-6 fw-bold text-navy">{{$taquilla->taquillero}}</span>
                                     </div>
                                 </div>
                                 <!-- inventario -->
