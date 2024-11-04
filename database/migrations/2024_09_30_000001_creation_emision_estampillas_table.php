@@ -19,7 +19,7 @@ return new class extends Migration
             $table->foreign('key_user')->references('id')->on('users')->onDelete('cascade');
             
             $table->date('ingreso_inventario')->nullable();
-            
+            $table->string('qr')->unique()->nullable();
 
         });
     }

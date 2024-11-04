@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Http\Request;
+use SimpleSoftwareIO\QrCode\Facades\QrCode;
 use DB;
 class EstampillasController extends Controller
 {
@@ -42,7 +43,7 @@ class EstampillasController extends Controller
     }
 
 
-    public function modal_emitir(Request $request)
+    public function modal_emitir()
     {
         $option = '<option value="Seleccione">Seleccione</option>';
         $query = DB::table('ucd_denominacions')->where('estampillas','=','true')->get();
@@ -51,6 +52,8 @@ class EstampillasController extends Controller
             $value = $denomi->denominacion;
             $option .= '<option value="'.$value.'">'.$value.' UCD</option>';
         }
+        $c = DB::table('variables')->select('valor')->where('variable','=','cant_timbres_tira')->first();
+        $cant_timbres_tira = $c->valor;
 
         $html = '<div class="modal-header p-2 pt-3 d-flex justify-content-center">
                     <div class="text-center">
@@ -60,7 +63,7 @@ class EstampillasController extends Controller
                     </div>
                 </div>
                 <div class="modal-body px-5 py-3" style="font-size:13px">
-                    <p class="text-secondary">*NOTA: Cada tira emitida trae un total de 160 Estampillas.</p>
+                    <p class="text-secondary">*NOTA: Cada tira emitida trae un total de '.$cant_timbres_tira.' Estampillas.</p>
                     <form id="form_emitir_estampillas" method="post" onsubmit="event.preventDefault(); emitirEstampillas()">
                         <div class="d-flex flex-column" id="conten_detalle_emision_estampillas">
                             <div class="row pb-2">
@@ -149,10 +152,14 @@ class EstampillasController extends Controller
         
 
         ////////////////////////////////////////////////////////////////// EMISIÓN
-        $consulta = DB::table('estampillas')->selectRaw("count(*) as total")->first();
         $insert_emision = DB::table('emision_estampillas')->insert(['key_user' => $user]); 
         if ($insert_emision) {
             $id_emision = DB::table('emision_estampillas')->max('id_emision');
+
+            $url = 'https://estampillas.tributosaragua.com.ve/?id='.$id_emision; 
+            QrCode::format('png')->size(180)->eye('circle')->generate($url, public_path('assets/qrEstampillas/qrcode_TM'.$id_emision.'.png'));
+           
+            $update_qr = DB::table('emision_estampillas')->where('id_emision', '=', $id_emision)->update(['qr' => 'assets/qrEstampillas/qrcode_TM'.$id_emision.'.png']);
         }else{
             return response()->json(['success' => false]);  
         }
@@ -160,6 +167,7 @@ class EstampillasController extends Controller
         $tables = '';
 
         ////////////////////////////////////////////////////////////////// INSERCIÓN DE TIRAS
+        $consulta = DB::table('estampillas')->selectRaw("count(*) as total")->first();
         if ($consulta->total == 0) {
             //////////////PRIMERA EMISIÓN
             foreach ($emitir as $e) {

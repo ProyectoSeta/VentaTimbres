@@ -25,9 +25,9 @@ return new class extends Migration
             $table->float('natural');
             $table->float('juridico');
 
-            $table->float('pequeña')->nullable();
-            $table->float('mediana')->nullable();
-            $table->float('grande')->nullable();
+            $table->float('small')->nullable();
+            $table->float('medium')->nullable();
+            $table->float('large')->nullable();
 
             
 

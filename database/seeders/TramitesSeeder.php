@@ -20,9 +20,9 @@ class TramitesSeeder extends Seeder
             'alicuota' => 7,
             'natural' => '3',
             'juridico' => '3',
-            'pequeña' => null,
-            'mediana' => null,
-            'grande' => null,
+            'small' => null,
+            'medium' => null,
+            'large' => null,
             
         ]);
         DB::table('tramites')->insert([
@@ -31,9 +31,9 @@ class TramitesSeeder extends Seeder
             'alicuota' => 7,
             'natural' => '3',
             'juridico' => '3',
-            'pequeña' => null,
-            'mediana' => null,
-            'grande' => null,
+            'small' => null,
+            'medium' => null,
+            'large' => null,
         ]);
         DB::table('tramites')->insert([
             'tramite' => 'Registro de Título Universitario',
@@ -41,9 +41,9 @@ class TramitesSeeder extends Seeder
             'alicuota' => 7,
             'natural' => '2',
             'juridico' => '2',
-            'pequeña' => null,
-            'mediana' => null,
-            'grande' => null,
+            'small' => null,
+            'medium' => null,
+            'large' => null,
         ]);
         DB::table('tramites')->insert([
             'tramite' => 'Sellado de Libro',
@@ -51,9 +51,9 @@ class TramitesSeeder extends Seeder
             'alicuota' => 7,
             'natural' => '3',
             'juridico' => '10',
-            'pequeña' => null,
-            'mediana' => null,
-            'grande' => null,
+            'small' => null,
+            'medium' => null,
+            'large' => null,
         ]);
 
         ///////////// ALCALDÍA
@@ -63,9 +63,9 @@ class TramitesSeeder extends Seeder
             'alicuota' => 7,
             'natural' => '3',
             'juridico' => '10',
-            'pequeña' => null,
-            'mediana' => null,
-            'grande' => null,
+            'small' => null,
+            'medium' => null,
+            'large' => null,
             
         ]);
         DB::table('tramites')->insert([
@@ -74,9 +74,9 @@ class TramitesSeeder extends Seeder
             'alicuota' => 7,
             'natural' => '10',
             'juridico' => '10',
-            'pequeña' => null,
-            'mediana' => null,
-            'grande' => null,
+            'small' => null,
+            'medium' => null,
+            'large' => null,
         ]);
 
         ////////////NOTARÍA
@@ -86,9 +86,9 @@ class TramitesSeeder extends Seeder
             'alicuota' => 7,
             'natural' => '5',
             'juridico' => '5',
-            'pequeña' => null,
-            'mediana' => null,
-            'grande' => null,
+            'small' => null,
+            'medium' => null,
+            'large' => null,
         ]);
         DB::table('tramites')->insert([
             'tramite' => 'Poder Especial',
@@ -96,9 +96,9 @@ class TramitesSeeder extends Seeder
             'alicuota' => 7,
             'natural' => '10',
             'juridico' => '10',
-            'pequeña' => null,
-            'mediana' => null,
-            'grande' => null,
+            'small' => null,
+            'medium' => null,
+            'large' => null,
         ]);
 
 
@@ -109,9 +109,9 @@ class TramitesSeeder extends Seeder
             'alicuota' => 7,
             'natural' => '0',
             'juridico' => '0',
-            'pequeña' => '100',
-            'mediana' => '250',
-            'grande' => '500',
+            'small' => '100',
+            'medium' => '250',
+            'large' => '500',
         ]);
     }
 }

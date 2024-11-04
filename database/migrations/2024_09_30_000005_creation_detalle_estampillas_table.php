@@ -27,12 +27,13 @@ return new class extends Migration
             $table->foreign('key_taquilla')->references('id_taquilla')->on('taquillas')->onDelete('cascade');
 
             $table->integer('cantidad');
+            $table->integer('secuencia');
 
             $table->integer('desde_correlativo');
             $table->integer('hasta_correlativo');
 
-            $table->string('desde',9)->unique();
-            $table->string('hasta',9)->unique();
+            $table->string('desde',9);
+            $table->string('hasta',9);
 
             $table->integer('condicion')->unsigned()->nullable(); ///////EN USO - RESERVA
             $table->foreign('condicion')->references('id_clasificacion')->on('clasificacions')->onDelete('cascade');

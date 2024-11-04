@@ -26,8 +26,8 @@ return new class extends Migration
             $table->integer('desde_correlativo');
             $table->integer('hasta_correlativo');
 
-            $table->string('desde',9)->unique();
-            $table->string('hasta',9)->unique();
+            $table->string('desde',9);
+            $table->string('hasta',9);
             
             $table->integer('estado')->unsigned(); ///////EMISIÓN - INVENTARIO - ASIGNADA (TOTAL)
             $table->foreign('estado')->references('id_clasificacion')->on('clasificacions')->onDelete('cascade');

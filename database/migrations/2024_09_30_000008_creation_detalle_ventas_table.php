@@ -11,25 +11,19 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('detalle_venta_estampillas', function (Blueprint $table) {
+        Schema::create('detalle_ventas', function (Blueprint $table) {
             $table->increments('correlativo');
 
             $table->integer('key_venta')->unsigned();
             $table->foreign('key_venta')->references('id_venta')->on('ventas')->onDelete('cascade');
 
-            $table->integer('key_tramite')->unsigned(); 
+            $table->integer('key_tramite')->unsigned();
             $table->foreign('key_tramite')->references('id_tramite')->on('tramites')->onDelete('cascade');
 
-            $table->integer('key_denominacion')->unsigned();
-            $table->foreign('key_denominacion')->references('id')->on('ucd_denominacions')->onDelete('cascade');
+            $table->integer('forma')->unsigned(); ///////FORMA 14 - ESTAMPILLAS
+            $table->foreign('forma')->references('id_tipo')->on('tipos')->onDelete('cascade');
 
-            $table->integer('secuencia');
-
-            $table->integer('nro_correlativo');
-            $table->integer('nro')->unique(); ////correlativo
-
-            $table->integer('key_tira')->unsigned();
-            $table->foreign('key_tira')->references('id_tira')->on('estampillas')->onDelete('cascade');
+            $table->integer('cantidad');
 
 
         });

@@ -13,7 +13,7 @@
                         <span>UCD Hoy   </span>
                     </div>
                     <div class="py-2 px-3 fs-6 fw-bold text-end">
-                        <span>40.93 bs. (EUR)</span>
+                        <span>{{$ucd}} bs. (EUR)</span>
                     </div> 
                 </div>
             </div>
@@ -74,7 +74,7 @@
                             <div class="d-flex justify-content-center">
                                 <div class="row w-100">
                                     <h5 class="titulo fw-bold text-navy my-3">Tramite | <span class="text-secondary fs-6">Datos</span></h5>
-                                    <div class="col-sm-3">
+                                    <div class="col-sm-2">
                                         <label class="form-label" for="ente">Ente</label><span class="text-danger">*</span>
                                         <select class="form-select form-select-sm ente" nro="1" id="ente_1" disabled>
                                             @foreach ($entes as $ente)
@@ -83,9 +83,9 @@
                                             
                                         </select>
                                     </div>
-                                    <div class="col-sm-6">
+                                    <div class="col-sm-3">
                                         <label class="form-label" for="tramite">Tramite</label><span class="text-danger">*</span>
-                                        <select class="form-select form-select-sm tramite" name="tramite[]" nro="1" id="tramite_1" disabled>
+                                        <select class="form-select form-select-sm tramite" name="tramite[1][tramite]" nro="1" id="tramite_1" disabled>
                                             <option value="">Seleccione el tramite </option>
                                                 @foreach ($tramites as $tramite)
                                                     <option value="{{$tramite->id_tramite}}">{{$tramite->tramite}}</option>
@@ -95,6 +95,17 @@
                                     <div class="col-sm-2">
                                         <label class="form-label" for="ucd_tramite">UCD</label><span class="text-danger">*</span>
                                         <input type="text" class="form-control form-control-sm ucd_tramite" id="ucd_tramite_1" disabled required>
+                                    </div>
+                                    <div class="col-sm-2">
+                                        <label class="form-label" for="forma">Timbre</label><span class="text-danger">*</span>
+                                        <select class="form-select form-select-sm forma" nro="1" name="tramite[1][forma]" id="forma_1" required>
+                                            <option value="">Seleccione</option>
+                                        </select>
+                                        <p class="text-end my-0 text-muted" id="cant_timbre_1"></p>
+                                    </div>
+                                    <div class="col-sm-2">
+                                        <label class="form-label" for="">No. Asociado</label><span class="text-danger">*</span>
+                                        <input type="text" class="form-control form-control-sm " id="" disabled >
                                     </div>
                                     <div class="col-sm-1 pt-4">
                                         <a  href="javascript:void(0);" class="btn add_button_tramite disabled border-0">
@@ -112,14 +123,13 @@
                                 <div class="">
                                     <label class="form-label" for="">Tamaño de la empresa (Mts2):</label><span class="text-danger">*</span>
                                     <div class="d-flex align-items-center">
-                                        <input type="text" id="metros" class="form-control form-control-sm me-2" name="metros" required>
+                                        <input type="number" id="metros" class="form-control form-control-sm me-2" name="metros" required>
                                         <span class="fw-bold">Mts2</span>
                                     </div>
                                 </div>
 
-                                <div class="text-center pt-4" id="tamaño">
-                                    <!-- <p class="fs-4 fw-bold mb-0">Mediana</p>
-                                    <p class="text-secondary">*Desde 151, Hasta 399 mts2.</p> -->
+                                <div class="text-center pt-4" id="size">
+                                    
                                 </div>
                             </div>
                         </div>
@@ -136,7 +146,6 @@
                                         <label class="form-label" for="metodo">Metodo de Pago</label><span class="text-danger">*</span>
                                         <select class="form-select form-select-sm metodo" aria-label="Small select example" i="1" name="metodo_one" disabled>
                                             <option value="punto">Punto</option>
-                                            <option value="efectivo">Efectivo Bs.</option>
                                         </select>
                                     </div>
                                     <div class="col-sm-3">
@@ -148,7 +157,7 @@
                                         <input type="number" step="0.01" id="debitado_1" class="form-control form-control-sm debitado" name="debitado_one" disabled required>
                                     </div>
                                     <div class="col-sm-1 pt-4">
-                                        <a  href="javascript:void(0);" class="btn add_button disabled border-0">
+                                        <a  href="javascript:void(0);" class="btn add_button disabled border-0" title="Agregar monto en Efectivo">
                                             <i class="bx bx-plus fs-4" style="color:#038ae4"></i>
                                         </a>
                                     </div>
@@ -163,7 +172,7 @@
 
                     <div class="d-flex justify-content-center mt-3 mb-3">
                         <a class="btn btn-secondary btn-sm me-3" data-bs-toggle="modal" data-bs-target="#modal_timbre_impreso" >Cancelar</a>
-                        <button type="submit" class="btn btn-success btn-sm" id="btn_submit_venta" >Realizar Venta</button>
+                        <button type="submit" class="btn btn-success btn-sm" id="btn_submit_venta" data-bs-toggle="modal" data-bs-target="#modal_seleccion_forma">Realizar Venta</button>
                     </div>
                 </form>
             </div>
@@ -176,9 +185,9 @@
                             <div class="d-flex justify-content-between align-items-center">
                                 <p class="d-flex flex-column titulo mb-0">
                                     <span class="fs-3 fw-bold text-navy">UCD</span>
-                                    <span class="fw-bold text-muted" style="font-size:13px">Unidad de cuenta dinamica</span>
+                                    <span class="fw-bold text-muted" style="font-size:13px">Unidad de Cuenta Dinámica</span>
                                 </p>
-                                <span class="fs-1 text-navy fw-bold" id="ucd">0 </span>
+                                <span class="fs-2 text-navy fw-bold" id="ucd">0 </span>
                             </div>
                         </div>
                         <div class="bg-light rounded-3 px-3 py-2">
@@ -186,7 +195,7 @@
                                 <p class="d-flex flex-column titulo mb-0">
                                     <span class="fs-3 fw-bold text-navy">Bolivares</span>
                                 </p>
-                                <span class="fs-1 text-navy fw-bold" id="bolivares">0.00</span>
+                                <span class="fs-2 text-navy fw-bold" id="bolivares">0,00</span>
                             </div>
                         </div>
                     </div>
@@ -200,7 +209,7 @@
                                 <p class="d-flex flex-column titulo mb-0">
                                     <span class="fs-5 fw-bold text-navy">Debitado</span>
                                 </p>
-                                <span class="fs-4 text-navy fw-bold" id="debitado">0.00</span>
+                                <span class="fs-4 text-navy fw-bold" id="debitado">0,00</span>
                             </div>
                         </div>
                         <div class="bg-body-secondary rounded-3 px-3 py-1 mb-2">
@@ -208,7 +217,7 @@
                                 <p class="d-flex flex-column titulo mb-0">
                                     <span class="fs-5 fw-bold text-navy">Diferencia</span>
                                 </p>
-                                <span class="fs-4 text-navy fw-bold" id="diferencia">0.00</span>
+                                <span class="fs-4 text-navy fw-bold" id="diferencia">0,00</span>
                             </div>
                         </div>
                         <div class="bg-body-secondary rounded-3 px-3 py-1">
@@ -216,7 +225,7 @@
                                 <p class="d-flex flex-column titulo mb-0">
                                     <span class="fs-5 fw-bold text-navy">Vuelto</span>
                                 </p>
-                                <span class="fs-4 text-navy fw-bold" id="vuelto">0.00</span>
+                                <span class="fs-4 text-navy fw-bold" id="vuelto">0,00</span>
                             </div>
                         </div>
                     </div>
@@ -382,6 +391,72 @@
         </div>  <!-- cierra modal-dialog -->
     </div>
 
+    <div class="modal fade" id="modal_seleccion_forma" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content" id="modal_seleccion_forma">
+                <div class="modal-header">
+                    <!-- <i class='bx bx-error-circle fs-2  me-2'></i> -->
+                    <!-- <i class='bx bxs-widget fs-2 me-2'></i> -->
+                    <h1 class="modal-title fs-5 fw-bold text-navy">Selección de Forma | <span class="text-muted">Venta</span></h1>
+                </div>
+                <div class="modal-body px-4 py-3" style="font-size:12.7px">
+                   
+                    <div class="">
+                        <form action="">
+                            <table class="table">
+                                <tr>
+                                    <th>Tramite</th>
+                                    <th>UCD</th>
+                                    <th>Timbre</th>
+                                    <th>Cant.</th>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <span>Permiso de Bomberos</span>
+                                        <input type="hidden" name="tramite[1][tramite]" value="">
+                                    </td>
+                                    <td>
+                                        <span>100 UCD</span>
+                                    </td>
+                                    <td>
+                                        <select class="form-select form-select-sm ente" name="tramite[1][timbre]">
+                                            <option value="">TFE-14</option>
+                                            <option value="">Estampilla</option>                                            
+                                        </select>
+                                    </td>
+                                    <td>
+                                        <span>1</span>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <span>Licencia de Actividad Económica</span>
+                                        <input type="hidden" name="tramite[2][tramite]" value="">
+                                    </td>
+                                    <td>
+                                        <span>10 UCD</span>
+                                    </td>
+                                    <td>
+                                        <select class="form-select form-select-sm ente" name="tramite[2][timbre]">
+                                            <option value="">TFE-14</option>
+                                            <option value="">Estampilla</option>                                            
+                                        </select>
+                                    </td>
+                                    <td>
+                                        <span>1</span>
+                                    </td>
+                                </tr>
+                            </table>
+                        </form>
+                    </div>
+
+                    
+                </div>
+            </div>  <!-- cierra modal-content -->
+        </div>  <!-- cierra modal-dialog -->
+    </div>
+
+    
 
     <!-- <div class="modal fade" id="modal_timbre_impreso" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
         <div class="modal-dialog ">
@@ -509,8 +584,8 @@
 
     <script type="text/javascript">
         $(document).ready(function () {
-            ///////////////////////////////////////AGREGAR CAMPOS A OTRO(S) PAGO
-                var maxFieldTramite = 4; //Input fields increment limitation
+            ///////////////////////////////////////AGREGAR CAMPOS A OTRO(S) TRAMITES
+                var maxFieldTramite = 3; //Input fields increment limitation
                 var c = 1; //Initial field counter is 1
 
                 $(document).on('click', '.add_button_tramite', function(e){ //Once add button is clicked
@@ -527,7 +602,7 @@
                                                         
                                                     '</select>'+
                                                 '</div>'+
-                                                '<div class="col-sm-6">'+
+                                                '<div class="col-sm-4">'+
                                                     '<label class="form-label" for="tramite">Tramite</label><span class="text-danger">*</span>'+
                                                     '<select class="form-select form-select-sm tramite" name="tramite[]" nro="'+c+'" id="tramite_'+c+'" required>'+
                                                         '<option value="">Seleccione el tramite </option>'+
@@ -540,6 +615,13 @@
                                                     '<label class="form-label" for="ucd_tramite">UCD</label><span class="text-danger">*</span>'+
                                                     '<input type="text" class="form-control form-control-sm ucd_tramite" id="ucd_tramite_'+c+'" disabled>'+
                                                 '</div>'+
+                                                '<div class="col-sm-2">'+
+                                                    '<label class="form-label" for="forma">Timbre</label><span class="text-danger">*</span>'+
+                                                    '<select class="form-select form-select-sm forma" nro="'+c+'" name="tramite['+c+'][forma]" id="forma_'+c+'" required>'+
+                                                        '<option value="">Seleccione</option>'+
+                                                    '</select>'+
+                                                    '<p class="text-end my-0 text-muted" id="cant_timbre_'+c+'"></p>'+
+                                                '</div>'+
                                                 '<div class="col-sm-1 pt-4">'+
                                                     '<a  href="javascript:void(0);" class="btn remove_button_tramite" nro="'+c+'">'+
                                                         '<i class="bx bx-x fs-4"></i>'+
@@ -550,9 +632,7 @@
                     }
                 });
 
-                $(document).on('click', '.remove_button_tramite', function(e){ //Once remove button is clicked
-                    
-
+                $(document).on('click', '.remove_button_tramite', function(e){ 
                     var nro =  $(this).attr('nro');
                     var ente =  $('#ente_'+nro).val();
 
@@ -575,6 +655,7 @@
                     e.preventDefault();
                     $(this).parent('div').parent('div').remove(); //Remove field html
                     c--; //Decrement field counter
+                    calcular();
                 });
             ///////////////////////////////////////////////////////////////////
 
@@ -591,12 +672,12 @@
                                 '<div class="col-sm-4">'+
                                     '<label class="form-label" for="">Metodo de Pago</label><span class="text-danger">*</span>'+
                                     '<select class="form-select form-select-sm metodo" name="metodo_two" >'+
-                                        '<option value="">Punto</option>'+
+                                        '<option value="efectivo">Efectivo Bs.</option>'+
                                     '</select>'+
                                 '</div>'+
                                 '<div class="col-sm-3">'+
                                     '<label class="form-label" for="">No. Comprobante</label><span class="text-danger">*</span>'+
-                                    '<input type="number" class="form-control form-control-sm comprobante" name="comprobante_two" required>'+
+                                    '<input type="number" class="form-control form-control-sm comprobante" name="comprobante_two" disabled>'+
                                 '</div>'+
                                 '<div class="col-sm-4">'+
                                     '<label class="form-label" for="">Monto Debitado </label><span class="text-danger">*</span>'+
@@ -638,8 +719,12 @@
                             $('#nombre').val(response.nombre);
                             $('#nombre').attr('disabled', true);
 
+                            $('#identidad_condicion').attr('disabled', true);
+                            $('#condicion_sujeto').attr('disabled', true);
+
                             $('.ente').attr('disabled', false);
                             $('.tramite').attr('disabled', false);
+                            $('.forma').attr('disabled', false);
 
                             $('.metodo').attr('disabled', false);
                             $('.comprobante').attr('disabled', false);
@@ -654,9 +739,13 @@
                             $('#btns_add_contribuyente').removeClass('d-none');
                             $('#nombre').attr('disabled', false);
                             $('#nombre').val('');
+
+                            $('#identidad_condicion').attr('disabled', false);
+                            $('#condicion_sujeto').attr('disabled', false);
                             
                             $('.ente').attr('disabled', true);
                             $('.tramite').attr('disabled', true);
+                            $('.forma').attr('disabled', true);
 
                             $('.metodo').attr('disabled', true);
                             $('.comprobante').attr('disabled', true);
@@ -679,6 +768,7 @@
             /////////////////////////// BTN CANCELAR REGISTRO CONTRIBUYENTE
             $(document).on('click','#btn_add_contribuyente', function(e) {
                 e.preventDefault();
+                var condicion_sujeto = $('#condicion_sujeto').val();
                 var condicion = $('#identidad_condicion').val();
                 var nro = $('#identidad_nro').val();
                 var nombre = $('#nombre').val();
@@ -687,13 +777,28 @@
                     headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') },
                     type: 'POST',
                     url: '{{route("venta.add_contribuyente") }}',
-                    data: {condicion:condicion,nro:nro,nombre:nombre},
+                    data: {condicion:condicion,nro:nro,nombre:nombre,condicion_sujeto:condicion_sujeto},
                     success: function(response) {
                         console.log(response);
                         if (response.success) {
                             $('#nombre').attr('disabled', true);
                             $('#btns_add_contribuyente').addClass('d-none');
                             alert('REGISTRO DE CONTRIBUYENTE EXITOSO.');
+
+
+                            $('.ente').attr('disabled', false);
+                            $('.tramite').attr('disabled', false);
+
+                            $('.metodo').attr('disabled', false);
+                            $('.comprobante').attr('disabled', false);
+                            $('.debitado').attr('disabled', false);
+
+                            $('.add_button_tramite').removeClass('disabled');
+                            $('.add_button').removeClass('disabled');
+
+                            $('#btn_submit_venta').attr('disabled', false);
+
+
                         }else{
                             if (response.nota) {
                                 alert(response.nota);
@@ -728,22 +833,58 @@
 
                 var condicion_sujeto =  $('#condicion_sujeto').val();
                 var ente =  $('#ente_'+nro).val();
+                var metros = $('#metros').val();
 
                 if (value == '') {
                     $('#ucd_tramite_'+nro).val('0');
                 }else{
                     if (ente == 4) {
                         $('#content_tamaño').removeClass('d-none');
-                        // $('#content_tamaño').html('');
+                        if (metros != 0) {
+                            $.ajax({
+                                headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') },
+                                type: 'POST',
+                                url: '{{route("venta.metros") }}',
+                                data: {value:metros,tramite:value},
+                                success: function(response) {
+                                    console.log(response)
+                                    $('#ucd_tramite_'+nro).val(response);
+                                    
+                                    $('#forma_'+nro+' option').remove();
+                                    if (response < 14) {
+                                        $('#forma_'+nro).append('<option>Seleccione</option>'+
+                                                    '<option value="3">TFE-14</option>'+
+                                                    '<option value="4">Estampilla</option>');
+                                    }else{
+                                        $('#forma_'+nro).append('<option>Seleccione</option>'+
+                                                    '<option value="3">TFE-14</option>');
+                                    }
+
+                                    calcular();
+                                },
+                                error: function() {
+                                }
+                            });
+                        }
                     }else{
                         $.ajax({
                             headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') },
                             type: 'POST',
                             url: '{{route("venta.ucd_tramite") }}',
-                            data: {value:value,condicion_sujeto:condicion_sujeto},
+                            data: {value:value,condicion_sujeto:condicion_sujeto,metros:metros},
                             success: function(response) {
                                 if (response.success) {
                                     $('#ucd_tramite_'+nro).val(response.valor);
+
+                                    $('#forma_'+nro+' option').remove();
+                                    if (response.valor < 14) {
+                                        $('#forma_'+nro).append('<option>Seleccione</option>'+
+                                                    '<option value="3">TFE-14</option>'+
+                                                    '<option value="4">Estampilla</option>');
+                                    }else{
+                                        $('#forma_'+nro).append('<option>Seleccione</option>'+
+                                                    '<option value="3">TFE-14</option>');
+                                    }
                                 }else{
                                     ////alert
                                 }   
@@ -776,27 +917,61 @@
             });
 
 
-            //////////////////////////// VALOR DEL TRAMITE SELECCIONADO
+            //////////////////////////// MONTO TOTAL
             $(document).on('change','.tramite', function(e) {
                 calcular();
             });
 
 
             //////////////////////////// VALOR DEL TRAMITE SEGUN EL TAMAÑO
-            $(document).on('change','#metros', function(e) {
+            $(document).on('keyup','#metros', function(e) {
                 e.preventDefault(); 
                 var value = $(this).val();
 
-                $.ajax({
-                    headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') },
-                    type: 'POST',
-                    url: '{{route("venta.tramites") }}',
-                    data: {value:value},
-                    success: function(response) {
-                        $('#tramite_'+nro).html(response);
-                    },
-                    error: function() {
+                $(".tramite").each(function(e){
+                    var tramite = $(this).val();
+                    var nro = $(this).attr('nro');
+
+                    if (tramite == 9) {
+                        $.ajax({
+                            headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') },
+                            type: 'POST',
+                            url: '{{route("venta.metros") }}',
+                            data: {value:value,tramite:tramite},
+                            success: function(response) {
+                                // console.log(response)
+                                $('#ucd_tramite_'+nro).val(response);
+
+                                $('#forma_'+nro+' option').remove();
+                                if (response < 14) {
+                                    $('#forma_'+nro).append('<option>Seleccione</option>'+
+                                                '<option value="3">TFE-14</option>'+
+                                                '<option value="4">Estampilla</option>');
+                                }else{
+                                    $('#forma_'+nro).append('<option>Seleccione</option>'+
+                                                '<option value="3">TFE-14</option>');
+                                }
+
+                                if (value > 0 && value <= 150) {
+                                    $('#size').html('<p class="fs-4 fw-bold mb-0">Pequeña</p>'+
+                                                    '<p class="text-secondary">*Hasta 150 mts2.</p>');
+                                }else if(value > 150 && value < 400){
+                                    $('#size').html('<p class="fs-4 fw-bold mb-0">Mediana</p>'+
+                                                    '<p class="text-secondary">*Desde 151, Hasta 399 mts2.</p>');
+                                }else if(value >= 400){
+                                    $('#size').html('<p class="fs-4 fw-bold mb-0">Grande</p>'+
+                                                    '<p class="text-secondary">*Mayor a 400 mts2.</p>');
+                                }else if(value == 0){
+                                    $('#size').html('');
+                                }
+
+                                calcular();
+                            },
+                            error: function() {
+                            }
+                        });
                     }
+                    
                 });
             });
 
@@ -805,7 +980,10 @@
             $(document).on('keyup','.debitado', function(e) {
                 var id = $(this).attr('id');
                 var value = $(this).val();
+                var metros = $('#metros').val();
                 var otro_debito = 0;
+
+                var condicion_sujeto =  $('#condicion_sujeto').val();
 
                 if (id == 'debitado_1') {
                     otro_debito = $("#debitado_2").val();
@@ -823,7 +1001,7 @@
                     headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') },
                     type: 'POST',
                     url: '{{route("venta.debitado") }}',
-                    data: {value:value,tramites:tramites,otro_debito:otro_debito},
+                    data: {value:value,tramites:tramites,otro_debito:otro_debito,metros:metros,condicion_sujeto:condicion_sujeto},
                     success: function(response) {
                         console.log(response);
                         $('#debitado').html(response.debito);
@@ -860,7 +1038,7 @@
             });
 
 
-            //////////////////////////// TRAMITES SEGUN EL ENTE
+            //////////////////////////// CONDICIÓN SUJETO
             $(document).on('change','#condicion_sujeto', function(e) {
                 e.preventDefault(); 
                 var value = $(this).val(); 
@@ -879,6 +1057,23 @@
 
             });
 
+
+            //////////////////ESTAMPILLA 10UCD
+            $(document).on('change','.forma', function(e) {
+                var value = $(this).val();
+                var nro =  $(this).attr('nro');
+
+                var ucd =  $('#ucd_tramite_'+nro).val();
+
+                if (value == 4  && ucd == 10) {
+                    $('#cant_timbre_'+nro).html('2 Und.');
+                }else{
+                    $('#cant_timbre_'+nro).html('1 Und.');
+                }
+
+
+
+            });
         });
 
         function calcular(){
@@ -888,11 +1083,14 @@
                 tramites.push(t);
             });
 
+            var metros = $('#metros').val();
+            var condicion_sujeto =  $('#condicion_sujeto').val();
+
             $.ajax({
                 headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') },
                 type: 'POST',
                 url: '{{route("venta.total") }}',
-                data: {tramites:tramites},
+                data: {tramites:tramites,metros:metros,condicion_sujeto:condicion_sujeto},
                 success: function(response) {
                     // console.log(response);
                     $('#ucd').html(response.ucd);

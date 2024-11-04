@@ -67,10 +67,10 @@ Route::post('/asignar/asignar_estampillas', [App\Http\Controllers\AsignarControl
 Route::post('/asignar/info_taquilla', [App\Http\Controllers\AsignarController::class, 'info_taquilla'])->name('asignar.info_taquilla');
 Route::post('/asignar/detalle_estampillas', [App\Http\Controllers\AsignarController::class, 'detalle_estampillas'])->name('asignar.detalle_estampillas');
 Route::post('/asignar/detalle_rollos', [App\Http\Controllers\AsignarController::class, 'detalle_rollos'])->name('asignar.detalle_rollos');
-/////////PDF: ASIGNACIONES
+/////////PDF: CONSTANCIA DE ASIGNACIÓN
 Route::get('/asignar/pdf_forma14', [App\Http\Controllers\AsignarController::class, 'pdf_forma14'])->name('asignar.pdf_forma14');
 Route::get('/asignar/pdf_estampillas', [App\Http\Controllers\AsignarController::class, 'pdf_estampillas'])->name('asignar.pdf_estampillas');
-/////////PDF: CONSTANCIA DE ASIGNACIÓN
+
 
 
 ///////////////////// ASIGNACIONES DE TAQUILLAS
@@ -90,7 +90,11 @@ Route::get('/venta', [App\Http\Controllers\VentaController::class, 'index'])->na
 Route::post('/venta/search', [App\Http\Controllers\VentaController::class, 'search'])->name('venta.search');
 Route::post('/venta/ucd_tramite', [App\Http\Controllers\VentaController::class, 'ucd_tramite'])->name('venta.ucd_tramite');
 Route::post('/venta/tramites', [App\Http\Controllers\VentaController::class, 'tramites'])->name('venta.tramites');
+Route::post('/venta/metros', [App\Http\Controllers\VentaController::class, 'metros'])->name('venta.metros');
+
 Route::post('/venta/total', [App\Http\Controllers\VentaController::class, 'total'])->name('venta.total');
 Route::post('/venta/debitado', [App\Http\Controllers\VentaController::class, 'debitado'])->name('venta.debitado');
 Route::post('/venta/add_contribuyente', [App\Http\Controllers\VentaController::class, 'add_contribuyente'])->name('venta.add_contribuyente');
 Route::post('/venta/venta_f14', [App\Http\Controllers\VentaController::class, 'venta_f14'])->name('venta.venta_f14');
+
+Route::post('/venta/venta', [App\Http\Controllers\VentaController::class, 'venta'])->name('venta.venta');
