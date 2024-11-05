@@ -19,6 +19,9 @@ return new class extends Migration
             
             $table->integer('desde');
             $table->integer('hasta');
+
+            $table->integer('cantidad');
+            $table->integer('vendido');
             
             $table->integer('estado')->unsigned(); ///////INVENTARIO - ASIGNADO
             $table->foreign('estado')->references('id_clasificacion')->on('clasificacions')->onDelete('cascade');
@@ -29,7 +32,7 @@ return new class extends Migration
             $table->integer('key_taquilla')->unsigned()->nullable();
             $table->foreign('key_taquilla')->references('id_taquilla')->on('taquillas')->onDelete('cascade');
 
-            $table->integer('condicion')->unsigned()->nullable(); ///////EN USO - RESERVA
+            $table->integer('condicion')->unsigned()->nullable(); ///////EN USO - RESERVA - VENDIDO
             $table->foreign('condicion')->references('id_clasificacion')->on('clasificacions')->onDelete('cascade');
         });
     }

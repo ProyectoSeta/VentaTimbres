@@ -42,5 +42,11 @@ class InventarioTaquillasSedeer extends Seeder
             'cantidad_tfe' => 0,
             'cantidad_estampillas' => 0
         ]);
+
+        DB::table('inventario_taquillas')->insert([
+            'key_taquilla' => 6,
+            'cantidad_tfe' => 0,
+            'cantidad_estampillas' => 0
+        ]);
     }
 }

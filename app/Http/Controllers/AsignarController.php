@@ -126,7 +126,7 @@ class AsignarController extends Controller
                                                                         ->update(['estado' => 2,
                                                                                     'key_asignacion' => $id_asignacion,
                                                                                     'key_taquilla' => $taquilla,
-                                                                                    'condicion' => 4
+                                                                                    'condicion' => 8
                                                                                 ]);
                                 if ($update) {
                                     $tr .= '<tr>
@@ -559,12 +559,13 @@ class AsignarController extends Controller
                                                                                 'key_denominacion' => $e['denominacion'],
                                                                                 'key_taquilla' => $taquilla, 
                                                                                 'cantidad' => $asignar,
+                                                                                'vendido' => 0,
                                                                                 'secuencia' => $query->secuencia,
                                                                                 'desde_correlativo' => $desde_correlativo,
                                                                                 'hasta_correlativo' => $hasta_correlativo,
                                                                                 'desde' => $desde,
                                                                                 'hasta' => $hasta,
-                                                                                'condicion' => 4]);
+                                                                                'condicion' => 8]);
                         if ($insert_de) {
                             $new_cantidad_asignada = $query->cantidad_asignada + $asignar;
 
@@ -621,12 +622,13 @@ class AsignarController extends Controller
                                                                                 'key_denominacion' => $e['denominacion'],
                                                                                 'key_taquilla' => $taquilla, 
                                                                                 'cantidad' => $timbres_disponibles,
+                                                                                'vendido' => 0,
                                                                                 'secuencia' => $query->secuencia,
                                                                                 'desde_correlativo' => $desde_correlativo,
                                                                                 'hasta_correlativo' => $hasta_correlativo,
                                                                                 'desde' => $desde,
                                                                                 'hasta' => $hasta,
-                                                                                'condicion' => 4]);
+                                                                                'condicion' => 8]);
                         if ($insert_de) {
                             $new_cantidad_asignada = $query->cantidad_asignada + $timbres_disponibles;
 

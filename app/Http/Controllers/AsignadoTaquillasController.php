@@ -123,9 +123,9 @@ class AsignadoTaquillasController extends Controller
 
         $update = DB::table('asignacion_estampillas')->where('id_asignacion','=',$asignacion)->update(['fecha_recibido' => $hoy]);
         $update_inv = DB::table('inventario_taquillas')->where('key_taquilla','=',$c2->id_taquilla)->update(['cantidad_estampillas' => $new_cant]);
+        $update_condicion = DB::table('detalle_estampillas')->where('key_asignacion','=',$asignacion)->update(['condicion' => 4]);
 
-
-        if ($update && $update_inv) {
+        if ($update && $update_inv && $update_condicion) {
             /////bitacora
             return response()->json(['success' => true]);
         }else{
@@ -219,8 +219,9 @@ class AsignadoTaquillasController extends Controller
 
         $update = DB::table('asignacion_rollos')->where('id_asignacion','=',$asignacion)->update(['fecha_recibido' => $hoy]);
         $update_inv = DB::table('inventario_taquillas')->where('key_taquilla','=',$c2->id_taquilla)->update(['cantidad_tfe' => $new_cant]);
+        $update_condicion = DB::table('inventario_rollos')->where('key_asignacion','=',$asignacion)->update(['condicion' => 4]);
 
-        if ($update && $update_inv) {
+        if ($update && $update_inv && $update_condicion) {
             /////bitacora
             return response()->json(['success' => true]);
         }else{

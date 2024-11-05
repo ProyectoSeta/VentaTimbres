@@ -36,5 +36,13 @@ class ClasificacionSeeder extends Seeder
         DB::table('clasificacions')->insert([
             'nombre_clf' => 'Rollos',
         ]);
+
+
+        DB::table('clasificacions')->insert([
+            'nombre_clf' => 'Vendido',
+        ]);
+        DB::table('clasificacions')->insert([
+            'nombre_clf' => 'Sin recibir',
+        ]);
     }
 }

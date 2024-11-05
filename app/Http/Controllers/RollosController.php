@@ -128,15 +128,18 @@ class RollosController extends Controller
         if ($insert_emision) {
             $id_emision = DB::table('emision_rollos')->max('id_emision');
             
-            
+            $c1 =  DB::table('variables')->select('valor')->where('variable','=','cant_timbres_rollo')->first();
+            $cant_timbres_rollo = $c1->valor;
+
             for($i=1; $i <= $cantidad; $i++) { 
-                $hasta = ($desde + 160) - 1; 
+                $hasta = ($desde + $cant_timbres_rollo) - 1; 
                 
                 
                 $insert_detalle = DB::table('detalle_emision_rollos')->insert([
                             'key_emision' => $id_emision,
                             'desde' => $desde,
-                            'hasta' => $hasta]);     
+                            'hasta' => $hasta,
+                            'cantidad' => $cant_timbres_rollo]);     
 
                 if ($insert_detalle) {
                     $length = 6;
@@ -162,7 +165,7 @@ class RollosController extends Controller
                         </div>
                     </div>
                     <div class="modal-body px-5 py-3" style="font-size:13px">
-                        <p class="text-secondary">*NOTA: Cada rollo emitido trae un total de 160 Trimbres Fiscales.</p>
+                        <p class="text-secondary">*NOTA: Cada rollo emitido trae un total de '.$cant_timbres_rollo.' Trimbres Fiscales.</p>
                     
                         <div class="">
                             <table class="table text-center">
@@ -240,7 +243,10 @@ class RollosController extends Controller
                         'key_emision' => $emision,
                         'desde' => $detalle->desde,
                         'hasta' => $detalle->hasta,
-                        'estado' => 1,]); 
+                        'cantidad' => $detalle->cantidad,
+                        'vendido' => 0,
+                        'estado' => 1,
+                        'condicion' => null]); 
             if ($insert_inv) {
                 # code...
             }else{

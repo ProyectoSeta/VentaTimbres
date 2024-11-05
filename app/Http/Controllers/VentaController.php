@@ -301,6 +301,106 @@ class VentaController extends Controller
     }
 
 
+
+    public function disponibilidad(Request $request){
+        $forma = $request->post('value');
+        $tramite = $request->post('tramite');
+        $condicion_sujeto = $request->post('condicion_sujeto');
+
+        $user = auth()->id();
+        $q1 = DB::table('users')->select('key_sujeto')->where('id','=',$user)->first();
+        $q2 = DB::table('taquillas')->select('id_taquilla')->where('key_funcionario','=',$q1->key_sujeto)->first();
+
+        $id_taquila = $q2->id_taquilla;
+
+
+        if ($condicion_sujeto == 10 || $condicion_sujeto == 11){
+            ///// juridico
+            $consulta = DB::table('tramites')->select('juridico')->where('id_tramite','=', $tramite)->first();
+            $ucd_tramite = $consulta->juridico;
+        }else{
+            ///// natural
+            $consulta = DB::table('tramites')->select('natural')->where('id_tramite','=', $tramite)->first();
+            $ucd_tramite = $consulta->natural;
+        }
+
+
+        $cantidad = '';
+
+        if ($forma == 4) {
+            ///////////////////////// ESTAMPILLAS
+            if ($ucd_tramite == 10) {
+                $cantidad = 2;
+            }else{
+                $cantidad = 1;
+            }
+
+            $q3 = DB::table('inventario_taquillas')->select('cantidad_estampillas')->where('key_taquilla','=', $id_taquila)->first();
+
+            if ($q3->cantidad_estampillas >= $cantidad) {
+                $c1 = DB::table('ucd_denominacions')->select('id')->where('denominacion','=', $ucd_tramite)->first();
+                
+                $q4 = DB::table('detalle_estampillas')->select('cantidad','vendido')->where('key_denominacion','=', $c1->id)
+                                                                        ->where('key_taquilla','=', $id_taquila)
+                                                                        ->where('condicion','!=',7)
+                                                                        ->where('condicion','!=',8)
+                                                                        ->first();
+                if ($q4) {
+                    ///// si hay
+                    $disponible = $q4->cantidad - $q4->vendido;
+                    if ($disponible >= $cantidad) {
+                        return response()->json(['success' => true]);
+                    }else{
+                        return response()->json(['success' => false, 'nota' => 'No hay suficientes estampillas de '.$ucd_tramite.' UCD, en el Inventario de la Taquilla.']);
+                    }
+                }else{
+                    ///// no hay
+                    return response()->json(['success' => false, 'nota' => 'No hay suficientes estampillas de '.$ucd_tramite.' UCD, en el Inventario de la Taquilla.']);
+                }        
+               
+            }else{
+                return response()->json(['success' => false, 'nota' => 'No hay suficientes estampillas en el Inventario de la Taquilla.']);
+            }
+
+        }else{
+            ///////////////////////////// FORMA 14
+            $q3 = DB::table('inventario_taquillas')->select('cantidad_tfe')->where('key_taquilla','=', $id_taquila)->first();
+            if ($q3->cantidad_tfe > 1) {
+                $q4 = DB::table('inventario_rollos')->select('cantidad','vendido')
+                                                                        ->where('key_taquilla','=', $id_taquila)
+                                                                        ->where('condicion','!=',7)
+                                                                        ->where('condicion','!=',8)
+                                                                        ->first();
+                if ($q4) {
+                    ////////si hay
+                    return response()->json(['success' => true]);
+                }else{
+                    ///// no hay
+                    return response()->json(['success' => false, 'nota' => 'No hay timbres disponibles en la Taquilla.']);
+                }
+            }else{
+                return response()->json(['success' => false, 'nota' => 'Disculpe, no tiene rollo(s) de Timbres Fiscales en su Inventario.']);
+            }
+
+
+
+        }
+
+
+
+    
+
+
+    }
+
+
+
+
+
+
+
+
+
     public function venta_f14(Request $request)
     {
         $user = auth()->id();

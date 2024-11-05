@@ -20,7 +20,7 @@ return new class extends Migration
             $table->integer('desde');
             $table->integer('hasta');
             
-
+            $table->integer('cantidad');
         });
     }
 

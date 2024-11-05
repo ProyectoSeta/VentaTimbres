@@ -91,10 +91,14 @@ Route::post('/venta/search', [App\Http\Controllers\VentaController::class, 'sear
 Route::post('/venta/ucd_tramite', [App\Http\Controllers\VentaController::class, 'ucd_tramite'])->name('venta.ucd_tramite');
 Route::post('/venta/tramites', [App\Http\Controllers\VentaController::class, 'tramites'])->name('venta.tramites');
 Route::post('/venta/metros', [App\Http\Controllers\VentaController::class, 'metros'])->name('venta.metros');
+Route::post('/venta/disponibilidad', [App\Http\Controllers\VentaController::class, 'disponibilidad'])->name('venta.disponibilidad');
 
 Route::post('/venta/total', [App\Http\Controllers\VentaController::class, 'total'])->name('venta.total');
 Route::post('/venta/debitado', [App\Http\Controllers\VentaController::class, 'debitado'])->name('venta.debitado');
 Route::post('/venta/add_contribuyente', [App\Http\Controllers\VentaController::class, 'add_contribuyente'])->name('venta.add_contribuyente');
+
+
+
 Route::post('/venta/venta_f14', [App\Http\Controllers\VentaController::class, 'venta_f14'])->name('venta.venta_f14');
 
 Route::post('/venta/venta', [App\Http\Controllers\VentaController::class, 'venta'])->name('venta.venta');

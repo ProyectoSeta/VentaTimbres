@@ -74,7 +74,7 @@
                             <div class="d-flex justify-content-center">
                                 <div class="row w-100">
                                     <h5 class="titulo fw-bold text-navy my-3">Tramite | <span class="text-secondary fs-6">Datos</span></h5>
-                                    <div class="col-sm-2">
+                                    <div class="col-sm-3">
                                         <label class="form-label" for="ente">Ente</label><span class="text-danger">*</span>
                                         <select class="form-select form-select-sm ente" nro="1" id="ente_1" disabled>
                                             @foreach ($entes as $ente)
@@ -83,7 +83,7 @@
                                             
                                         </select>
                                     </div>
-                                    <div class="col-sm-3">
+                                    <div class="col-sm-4">
                                         <label class="form-label" for="tramite">Tramite</label><span class="text-danger">*</span>
                                         <select class="form-select form-select-sm tramite" name="tramite[1][tramite]" nro="1" id="tramite_1" disabled>
                                             <option value="">Seleccione el tramite </option>
@@ -102,10 +102,6 @@
                                             <option value="">Seleccione</option>
                                         </select>
                                         <p class="text-end my-0 text-muted" id="cant_timbre_1"></p>
-                                    </div>
-                                    <div class="col-sm-2">
-                                        <label class="form-label" for="">No. Asociado</label><span class="text-danger">*</span>
-                                        <input type="text" class="form-control form-control-sm " id="" disabled >
                                     </div>
                                     <div class="col-sm-1 pt-4">
                                         <a  href="javascript:void(0);" class="btn add_button_tramite disabled border-0">
@@ -172,7 +168,7 @@
 
                     <div class="d-flex justify-content-center mt-3 mb-3">
                         <a class="btn btn-secondary btn-sm me-3" data-bs-toggle="modal" data-bs-target="#modal_timbre_impreso" >Cancelar</a>
-                        <button type="submit" class="btn btn-success btn-sm" id="btn_submit_venta" data-bs-toggle="modal" data-bs-target="#modal_seleccion_forma">Realizar Venta</button>
+                        <button type="submit" class="btn btn-success btn-sm" id="btn_submit_venta" data-bs-toggle="modal" data-bs-target="#modal_venta_realizada">Realizar Venta</button>
                     </div>
                 </form>
             </div>
@@ -391,64 +387,17 @@
         </div>  <!-- cierra modal-dialog -->
     </div>
 
-    <div class="modal fade" id="modal_seleccion_forma" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-        <div class="modal-dialog modal-lg">
-            <div class="modal-content" id="modal_seleccion_forma">
+    <div class="modal fade" id="modal_venta_realizada" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-xl">
+            <div class="modal-content" id="content_venta_realizada">
                 <div class="modal-header">
-                    <!-- <i class='bx bx-error-circle fs-2  me-2'></i> -->
-                    <!-- <i class='bx bxs-widget fs-2 me-2'></i> -->
-                    <h1 class="modal-title fs-5 fw-bold text-navy">Selección de Forma | <span class="text-muted">Venta</span></h1>
+                    <h1 class="modal-title fs-5 fw-bold text-navy">Venta realizada | <span class="text-muted">Timbres</span></h1>
                 </div>
                 <div class="modal-body px-4 py-3" style="font-size:12.7px">
-                   
-                    <div class="">
-                        <form action="">
-                            <table class="table">
-                                <tr>
-                                    <th>Tramite</th>
-                                    <th>UCD</th>
-                                    <th>Timbre</th>
-                                    <th>Cant.</th>
-                                </tr>
-                                <tr>
-                                    <td>
-                                        <span>Permiso de Bomberos</span>
-                                        <input type="hidden" name="tramite[1][tramite]" value="">
-                                    </td>
-                                    <td>
-                                        <span>100 UCD</span>
-                                    </td>
-                                    <td>
-                                        <select class="form-select form-select-sm ente" name="tramite[1][timbre]">
-                                            <option value="">TFE-14</option>
-                                            <option value="">Estampilla</option>                                            
-                                        </select>
-                                    </td>
-                                    <td>
-                                        <span>1</span>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td>
-                                        <span>Licencia de Actividad Económica</span>
-                                        <input type="hidden" name="tramite[2][tramite]" value="">
-                                    </td>
-                                    <td>
-                                        <span>10 UCD</span>
-                                    </td>
-                                    <td>
-                                        <select class="form-select form-select-sm ente" name="tramite[2][timbre]">
-                                            <option value="">TFE-14</option>
-                                            <option value="">Estampilla</option>                                            
-                                        </select>
-                                    </td>
-                                    <td>
-                                        <span>1</span>
-                                    </td>
-                                </tr>
-                            </table>
-                        </form>
-                    </div>
+                   <div class="d-flex">
+
+                   </div>
+                    
 
                     
                 </div>
@@ -835,6 +784,10 @@
                 var ente =  $('#ente_'+nro).val();
                 var metros = $('#metros').val();
 
+                $('#ucd_tramite_'+nro).val('');
+                $('#forma_'+nro+' option').remove();
+                $('#forma_'+nro).append('<option>Seleccione</option>');
+
                 if (value == '') {
                     $('#ucd_tramite_'+nro).val('0');
                 }else{
@@ -849,17 +802,8 @@
                                 success: function(response) {
                                     console.log(response)
                                     $('#ucd_tramite_'+nro).val(response);
-                                    
-                                    $('#forma_'+nro+' option').remove();
-                                    if (response < 14) {
-                                        $('#forma_'+nro).append('<option>Seleccione</option>'+
-                                                    '<option value="3">TFE-14</option>'+
-                                                    '<option value="4">Estampilla</option>');
-                                    }else{
-                                        $('#forma_'+nro).append('<option>Seleccione</option>'+
-                                                    '<option value="3">TFE-14</option>');
-                                    }
 
+                                    forma(nro,response);
                                     calcular();
                                 },
                                 error: function() {
@@ -876,15 +820,7 @@
                                 if (response.success) {
                                     $('#ucd_tramite_'+nro).val(response.valor);
 
-                                    $('#forma_'+nro+' option').remove();
-                                    if (response.valor < 14) {
-                                        $('#forma_'+nro).append('<option>Seleccione</option>'+
-                                                    '<option value="3">TFE-14</option>'+
-                                                    '<option value="4">Estampilla</option>');
-                                    }else{
-                                        $('#forma_'+nro).append('<option>Seleccione</option>'+
-                                                    '<option value="3">TFE-14</option>');
-                                    }
+                                    forma(nro,response.valor);
                                 }else{
                                     ////alert
                                 }   
@@ -942,15 +878,7 @@
                                 // console.log(response)
                                 $('#ucd_tramite_'+nro).val(response);
 
-                                $('#forma_'+nro+' option').remove();
-                                if (response < 14) {
-                                    $('#forma_'+nro).append('<option>Seleccione</option>'+
-                                                '<option value="3">TFE-14</option>'+
-                                                '<option value="4">Estampilla</option>');
-                                }else{
-                                    $('#forma_'+nro).append('<option>Seleccione</option>'+
-                                                '<option value="3">TFE-14</option>');
-                                }
+                                forma(nro,response);
 
                                 if (value > 0 && value <= 150) {
                                     $('#size').html('<p class="fs-4 fw-bold mb-0">Pequeña</p>'+
@@ -1058,12 +986,14 @@
             });
 
 
-            //////////////////ESTAMPILLA 10UCD
+            //////////////////ESTAMPILLA 10UCD Y DISPONIBILIDAD DE TIMBRE
             $(document).on('change','.forma', function(e) {
                 var value = $(this).val();
                 var nro =  $(this).attr('nro');
 
                 var ucd =  $('#ucd_tramite_'+nro).val();
+                var tramite =  $('#tramite_'+nro).val();
+                var condicion_sujeto =  $('#condicion_sujeto').val();
 
                 if (value == 4  && ucd == 10) {
                     $('#cant_timbre_'+nro).html('2 Und.');
@@ -1071,11 +1001,30 @@
                     $('#cant_timbre_'+nro).html('1 Und.');
                 }
 
-
+                $.ajax({
+                    headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') },
+                    type: 'POST',
+                    url: '{{route("venta.disponibilidad") }}',
+                    data: {value:value,tramite:tramite,condicion_sujeto:condicion_sujeto},
+                    success: function(response) {
+                        // console.log(response);
+                        if (response.success) {
+                            
+                        }else{
+                            alert(response.nota);
+                            forma(nro,ucd)
+                        }
+                        
+                    },
+                    error: function() {
+                    }
+                });
 
             });
         });
 
+
+        ////////////////// CALCULAR TOTAL
         function calcular(){
             var tramites = [];
             $('.tramite').each(function(){
@@ -1110,6 +1059,28 @@
 
             // console.log(tramites);
         }
+
+
+        ///////////////// ADD CAMPO FORMA Y (DISPONIBILIDAD)
+        function forma(nro,ucd) {
+            // console.log(nro+'/'+ucd);
+            ///////////////////////////  ADD CAMPO FORMA(S)
+            $('#forma_'+nro+' option').remove();
+
+            if (ucd < 14) {
+                $('#forma_'+nro).append('<option>Seleccione</option>'+
+                            '<option value="3">TFE-14</option>'+
+                            '<option value="4">Estampilla</option>');
+            }else{
+                $('#forma_'+nro).append('<option>Seleccione</option>'+
+                            '<option value="3">TFE-14</option>');
+            }
+
+            /////////////////////////DISPONIBILIDAD
+
+        }
+
+
 
         function ventaF14(){
             var formData = new FormData(document.getElementById("form_venta_f14"));
