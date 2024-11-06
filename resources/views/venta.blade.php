@@ -22,7 +22,7 @@
 
         <div class="row">
             <div class="col-xl-8 pe-5" id="">
-                <form id="form_venta_f14" method="post" onsubmit="event.preventDefault(); ventaF14()">
+                <form id="form_venta" method="post" onsubmit="event.preventDefault(); venta()">
                     <!-- *************** DATOS CONTRIBUYENTE ******************-->
                     <div class="mb-2" style="font-size:13px">
                         <div class="d-flex justify-content-center">
@@ -119,7 +119,7 @@
                                 <div class="">
                                     <label class="form-label" for="">Tamaño de la empresa (Mts2):</label><span class="text-danger">*</span>
                                     <div class="d-flex align-items-center">
-                                        <input type="number" id="metros" class="form-control form-control-sm me-2" name="metros" required>
+                                        <input type="number" id="metros" class="form-control form-control-sm me-2" name="metros">
                                         <span class="fw-bold">Mts2</span>
                                     </div>
                                 </div>
@@ -140,17 +140,17 @@
                                     <h5 class="titulo fw-bold text-navy my-3">Pago | <span class="text-secondary fs-6">Timbre Fiscal</span></h5>
                                     <div class="col-sm-4">
                                         <label class="form-label" for="metodo">Metodo de Pago</label><span class="text-danger">*</span>
-                                        <select class="form-select form-select-sm metodo" aria-label="Small select example" i="1" name="metodo_one" disabled>
-                                            <option value="punto">Punto</option>
+                                        <select class="form-select form-select-sm metodo" aria-label="Small select example" i="1" name="pago[1][metodo]" disabled>
+                                            <option value="5">Punto</option>
                                         </select>
                                     </div>
                                     <div class="col-sm-3">
                                         <label class="form-label" for="comprobante">No. Comprobante</label><span class="text-danger">*</span>
-                                        <input type="number" class="form-control form-control-sm comprobante" name="comprobante_one" id="comprobante_1" disabled required>
+                                        <input type="number" class="form-control form-control-sm comprobante" name="pago[1][comprobante]" id="comprobante_1" disabled required>
                                     </div>
                                     <div class="col-sm-4">
                                         <label class="form-label" for="debitado">Monto Debitado </label><span class="text-danger">*</span>
-                                        <input type="number" step="0.01" id="debitado_1" class="form-control form-control-sm debitado" name="debitado_one" disabled required>
+                                        <input type="number" step="0.01" id="debitado_1" class="form-control form-control-sm debitado" name="pago[1][debitado]" disabled required>
                                     </div>
                                     <div class="col-sm-1 pt-4">
                                         <a  href="javascript:void(0);" class="btn add_button disabled border-0" title="Agregar monto en Efectivo">
@@ -168,7 +168,7 @@
 
                     <div class="d-flex justify-content-center mt-3 mb-3">
                         <a class="btn btn-secondary btn-sm me-3" data-bs-toggle="modal" data-bs-target="#modal_timbre_impreso" >Cancelar</a>
-                        <button type="submit" class="btn btn-success btn-sm" id="btn_submit_venta" data-bs-toggle="modal" data-bs-target="#modal_venta_realizada">Realizar Venta</button>
+                        <button type="submit" class="btn btn-success btn-sm" id="btn_submit_venta">Realizar Venta</button>
                     </div>
                 </form>
             </div>
@@ -394,12 +394,130 @@
                     <h1 class="modal-title fs-5 fw-bold text-navy">Venta realizada | <span class="text-muted">Timbres</span></h1>
                 </div>
                 <div class="modal-body px-4 py-3" style="font-size:12.7px">
-                   <div class="d-flex">
 
-                   </div>
-                    
+                    <div class="row">
+                        <!-- DETALLE TIMBRE(S) -->
+                        <div class="col-lg-8">
+                            <p class="text-center text-muted titulo fw-bold mb-2 fs-6">Timbres Fiscales</p>
+                            <div class="border mb-4 rounded-3">
+                                <div class="d-flex justify-content-between px-3 py-2 align-items-center">
+                                    <!-- DATOS -->
+                                    <div class="">
+                                        <div class="text-danger fw-bold fs-4" id="">A-8001002<span class="text-muted ms-2">TFE-14</span></div> 
+                                        <table class="table table-borderless table-sm">
+                                            <tr>
+                                                <th>Ente:</th>
+                                                <td>Bomberos</td>
+                                            </tr>
+                                            <tr>
+                                                <th>Tramite:</th>
+                                                <td>Permiso de Bomberos</td>
+                                            </tr>
+                                        </table>
+                                    </div>
+                                    <!-- UCD -->
+                                    <div class="">
+                                        <div class="text-center titulo fw-bold fs-3">100 UCD</div>
+                                    </div>
+                                    <!-- QR -->
+                                    <div class="text-center">
+                                        <img src="{{asset('assets/qrcode_G1.png')}}" class="img-fluid" alt="" width="110px">
+                                    </div>
+                                </div>
+                            </div>
 
-                    
+                            <div class="border mb-4 rounded-3">
+                                <div class="d-flex justify-content-between px-3 py-2 align-items-center">
+                                    <!-- DATOS -->
+                                    <div class="">
+                                        <div class="text-danger fw-bold fs-4" id="">
+                                            B31000001<span class="text-muted ms-2">Estampilla</span></div> 
+                                        <table class="table table-borderless table-sm">
+                                            <tr>
+                                                <th>Ente:</th>
+                                                <td>Registro</td>
+                                            </tr>
+                                            <tr>
+                                                <th>Tramite:</th>
+                                                <td>Título Universitario</td>
+                                            </tr>
+                                        </table>
+                                    </div>
+                                    <!-- UCD -->
+                                    <div class="">
+                                        <div class="text-center titulo fw-bold fs-3">2 UCD</div>
+                                    </div>
+                                    <!-- QR -->
+                                    <div class="text-center">
+                                        <img src="{{asset('assets/qrcode_G1.png')}}" class="img-fluid" alt="" width="110px">
+                                    </div>
+                                </div>
+                            </div>
+
+                        </div>
+                        <!-- DETALLE PAGO -->
+                        <div class="col-lg-4">
+                            <div class="border rounded-3 py-2 px-3">
+                                <div class="d-flex flex-column text-center">
+                                    <div class="fw-bold text-navy">Servicio Tributario del Estado Aragua</div>
+                                    <div class="text-muted">G-20008920-2</div>
+                                </div>
+
+                                <table class="table table-sm my-3">
+                                    <tr>
+                                        <th>Forma</th>
+                                        <th>Cant.</th>
+                                        <th>UCD</th>
+                                    </tr>
+                                    <tr>
+                                        <td>TFE-14</td>
+                                        <td>1</td>
+                                        <td>100</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Estampilla</td>
+                                        <td>1</td>
+                                        <td>2</td>
+                                    </tr>
+                                </table>
+
+                                <div class="d-flex justify-content-center">
+                                    <table class="table table-sm w-50">
+                                        <tr>
+                                            <th>Total UCD</th>
+                                            <td>102</td>
+                                        </tr>
+                                        <tr>
+                                            <th>UCD Hoy</th>
+                                            <td>40,96</td>
+                                        </tr>
+                                        <tr>
+                                            <th>Total Bs.</th>
+                                            <td class="table-warning">4.700,00</td>
+                                        </tr>
+                                    </table>
+                                </div>
+
+                                <table class="table table-sm">
+                                    <tr>
+                                        <th>Debito</th>
+                                        <td class="table-warning">4.600,00</td>
+                                        <td>#4015</td>
+                                    </tr>
+                                    <tr>
+                                        <th>Efectivo</th>
+                                        <td class="table-warning">30,00</td>
+                                        <td><span class="text-secondary fst-italic">No aplica</span></td>
+                                    </tr>
+                                </table>
+
+                            </div>
+                        </div>
+                    </div>  <!--  cierra div.row   -->
+
+                    <div class="d-flex justify-content-center mt-3 mb-3">
+                        <a class="btn btn-secondary btn-sm me-3">Cancelar</a>
+                    </div>
                 </div>
             </div>  <!-- cierra modal-content -->
         </div>  <!-- cierra modal-dialog -->
@@ -553,7 +671,7 @@
                                                 '</div>'+
                                                 '<div class="col-sm-4">'+
                                                     '<label class="form-label" for="tramite">Tramite</label><span class="text-danger">*</span>'+
-                                                    '<select class="form-select form-select-sm tramite" name="tramite[]" nro="'+c+'" id="tramite_'+c+'" required>'+
+                                                    '<select class="form-select form-select-sm tramite" name="tramite['+c+'][tramite]" nro="'+c+'" id="tramite_'+c+'" required>'+
                                                         '<option value="">Seleccione el tramite </option>'+
                                                             '@foreach ($tramites as $tramite)'+
                                                                 '<option value="{{$tramite->id_tramite}}">{{$tramite->tramite}}</option>'+
@@ -620,17 +738,17 @@
                             '<div class="row w-100">'+
                                 '<div class="col-sm-4">'+
                                     '<label class="form-label" for="">Metodo de Pago</label><span class="text-danger">*</span>'+
-                                    '<select class="form-select form-select-sm metodo" name="metodo_two" >'+
-                                        '<option value="efectivo">Efectivo Bs.</option>'+
+                                    '<select class="form-select form-select-sm metodo" name="pago[2][metodo]" >'+
+                                        '<option value="6">Efectivo Bs.</option>'+
                                     '</select>'+
                                 '</div>'+
                                 '<div class="col-sm-3">'+
                                     '<label class="form-label" for="">No. Comprobante</label><span class="text-danger">*</span>'+
-                                    '<input type="number" class="form-control form-control-sm comprobante" name="comprobante_two" disabled>'+
+                                    '<input type="number" class="form-control form-control-sm comprobante" name="pago[2][comprobante]" disabled>'+
                                 '</div>'+
                                 '<div class="col-sm-4">'+
                                     '<label class="form-label" for="">Monto Debitado </label><span class="text-danger">*</span>'+
-                                    '<input type="number" step="0.01" id="debitado_2" class="form-control form-control-sm debitado" name="debitado_two"  required>'+
+                                    '<input type="number" step="0.01" id="debitado_2" class="form-control form-control-sm debitado" name="pago[2][debitado]"  required>'+
                                 '</div>'+
                                 '<div class="col-sm-1  pt-4">'+
                                     '<a  href="javascript:void(0);" class="btn remove_button" >'+
@@ -668,8 +786,8 @@
                             $('#nombre').val(response.nombre);
                             $('#nombre').attr('disabled', true);
 
-                            $('#identidad_condicion').attr('disabled', true);
-                            $('#condicion_sujeto').attr('disabled', true);
+                            // $('#identidad_condicion').attr('disabled', true);
+                            // $('#condicion_sujeto').attr('disabled', true);
 
                             $('.ente').attr('disabled', false);
                             $('.tramite').attr('disabled', false);
@@ -689,8 +807,8 @@
                             $('#nombre').attr('disabled', false);
                             $('#nombre').val('');
 
-                            $('#identidad_condicion').attr('disabled', false);
-                            $('#condicion_sujeto').attr('disabled', false);
+                            // $('#identidad_condicion').attr('disabled', false);
+                            // $('#condicion_sujeto').attr('disabled', false);
                             
                             $('.ente').attr('disabled', true);
                             $('.tramite').attr('disabled', true);
@@ -950,20 +1068,20 @@
             });
             
 
-            //////////////////////////// DESABILITAR CAMPO NO COMPROBANTE
-            $(document).on('change','.metodo', function(e) {
-                e.preventDefault(); 
-                var value = $(this).val();
-                var i = $(this).attr('i');
-                console.log(value+'/'+i);
-                if (value == 'efectivo') {
-                    $('#comprobante_'+i).attr('disabled', true);
-                    $('#comprobante_'+i).val('');
-                }else{
-                    $('#comprobante_'+i).attr('disabled', false);
-                }
+            // //////////////////////////// DESABILITAR CAMPO NO COMPROBANTE
+            // $(document).on('change','.metodo', function(e) {
+            //     e.preventDefault(); 
+            //     var value = $(this).val();
+            //     var i = $(this).attr('i');
+            //     console.log(value+'/'+i);
+            //     if (value == '6') {
+            //         $('#comprobante_'+i).attr('disabled', true);
+            //         $('#comprobante_'+i).val('');
+            //     }else{
+            //         $('#comprobante_'+i).attr('disabled', false);
+            //     }
                
-            });
+            // });
 
 
             //////////////////////////// CONDICIÓN SUJETO
@@ -1061,7 +1179,7 @@
         }
 
 
-        ///////////////// ADD CAMPO FORMA Y (DISPONIBILIDAD)
+        ///////////////// ADD CAMPO FORMA 
         function forma(nro,ucd) {
             // console.log(nro+'/'+ucd);
             ///////////////////////////  ADD CAMPO FORMA(S)
@@ -1076,18 +1194,16 @@
                             '<option value="3">TFE-14</option>');
             }
 
-            /////////////////////////DISPONIBILIDAD
-
         }
 
 
 
-        function ventaF14(){
-            var formData = new FormData(document.getElementById("form_venta_f14"));
+        function venta(){
+            var formData = new FormData(document.getElementById("form_venta"));
             // console.log("alo");
             $.ajax({
                 headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') },
-                url:'{{route("venta.venta_f14") }}',
+                url:'{{route("venta.venta") }}',
                 type:'POST',
                 contentType:false,
                 cache:false,

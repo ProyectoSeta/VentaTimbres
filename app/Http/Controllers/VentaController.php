@@ -1,7 +1,7 @@
 <?php
 
 namespace App\Http\Controllers;
-
+use SimpleSoftwareIO\QrCode\Facades\QrCode;
 use Illuminate\Http\Request;
 use DB;
 class VentaController extends Controller
@@ -396,7 +396,168 @@ class VentaController extends Controller
 
 
 
+    public function venta(Request $request){
+        // return response($request->post('pago'));
+        /////////////////////////////////////// USER Y TAQUILLA
+        $user = auth()->id();
+        $query = DB::table('users')->select('key_sujeto')->where('id','=',$user)->first();
+        $q2 = DB::table('taquillas')->select('id_taquilla')->where('key_funcionario','=',$query->key_sujeto)->first();
 
+        $id_taquilla = $q2->id_taquilla;
+
+        ///////////////////////////////////////  CONTRIBUYENTE
+        $condicion_sujeto = $request->post('condicion_sujeto');
+        $identidad_condicion = $request->post('identidad_condicion');
+        $identidad_nro = $request->post('identidad_nro');
+
+        $q1 = DB::table('contribuyentes')->select('id_contribuyente')
+                                            ->where('condicion_sujeto','=', $condicion_sujeto)
+                                            ->where('identidad_condicion','=', $identidad_condicion)
+                                            ->where('identidad_nro','=', $identidad_nro)
+                                            ->first();
+        $id_contribuyente = $q1->id_contribuyente;
+
+
+        //////////////////////////////////////// UCD
+        $q3 =  DB::table('ucds')->select('id','valor')->orderBy('id', 'desc')->first();
+        $id_ucd = $q3->id;
+        $valor_ucd = $q3->valor;
+
+
+        /////////////////////////////////////// INSERT VENTA
+        $i1 =DB::table('ventas')->insert(['key_user' => $user, 
+                                        'key_taquilla' => $id_taquilla, 
+                                        'key_contribuyente' => $id_contribuyente,
+                                        'key_ucd' => $id_ucd]); 
+
+        if ($i1) {
+            $id_venta = DB::table('ventas')->max('id_venta');
+        }else{
+            return response()->json(['success' => false]);
+        }
+
+        /////////////////////////////////////// INSERT DETALLE Y SUMA TOTAL 
+        $total_ucd = 0;
+        $tramites = $request->post('tramite');
+
+        foreach ($tramites as $tramite) {
+            if ( $tramite['forma'] == 3) {
+                ////////////////////////// FORMA 14
+                $nro_timbre = '';
+                $id_rollo = '';
+
+                //////////// BUSCAR CORRELATIVO
+                $c1 = DB::table('detalle_venta_tfes')->select('nro_timbre','key_rollo')->orderBy('id', 'desc')->first();
+                if ($c1) {
+                    /////////hay registro de ventas
+                    $nro_hipotetico= $c1->nro_timbre + 1; 
+
+                    $c2 = DB::table('inventario_rollos')->select('hasta','vendido')->where('id_rollo','=',$c1->key_rollo)->first();
+                    if ($c2->hasta >= $nro_hipotetico) {
+                        ///////// el nro sigue dentro del rango del rollo
+                        $nro_timbre = $nro_hipotetico;
+                        $id_rollo = $c1->key_rollo;
+
+                        if ($c2->hasta == $nro_timbre) {
+                            $update_rollo = DB::table('inventario_rollos')->where('id_rollo','=',$c1->key_rollo)->update(['condicion' => 7]);
+                        }
+
+                        $new_vendido = $c2->vendido + 1;
+                        $update_vendido = DB::table('inventario_rollos')->where('id_rollo','=',$c1->key_rollo)->update(['vendido' => $new_vendido]);
+                    }else{
+                        //////// Buscar el siguiente rollo asignado
+                        $c3 = DB::table('inventario_rollos')->select('desde','id_rollo')->where('key_taquilla','=',$id_taquilla)->where('condicion','=', 4)->first();
+                        if ($c3) {
+                            $nro_timbre = $c3->desde;
+                            $id_rollo = $c3->id_rollo;
+                        }else{
+                            return response()->json(['success' => false, 'nota'=> 'Disculpe, no tiene rollos disponibles asignados a su taquilla.']);
+                        }
+                    }
+                }else{
+                    /////////primera venta a realizarse
+                    $c4 = DB::table('inventario_rollos')->select('desde','id_rollo')->where('key_taquilla','=',$id_taquilla)->where('condicion','=', 4)->first();
+                    if ($c4) {
+                        $nro_timbre = $c4->desde;
+                        $id_rollo = $c4->id_rollo;
+                    }else{
+                        return response()->json(['success' => false, 'nota'=> 'Disculpe, no tiene rollos disponibles asignados a su taquilla.']);
+                    }
+                }
+
+                //////////////// INSERT DETALLE 
+                $key_tramite = $tramite['tramite'];
+               
+                if ($key_tramite == 9) {
+                    $metros = $request->post('metros');
+
+                    if ($metros > 0 && $metros <= 150) {
+                        ////pequeña
+                        $consulta = DB::table('tramites')->select('small')->where('id_tramite','=', $key_tramite)->first();
+                        $ucd_tramite = $consulta->small;
+                    }elseif ($metros > 150 && $metros < 400) {
+                        /////mediana
+                        $consulta = DB::table('tramites')->select('medium')->where('id_tramite','=', $key_tramite)->first();
+                        $ucd_tramite = $consulta->medium;
+                    }elseif ($metros >= 400) {
+                        /////grande
+                        $consulta = DB::table('tramites')->select('large')->where('id_tramite','=', $key_tramite)->first();
+                        $ucd_tramite = $consulta->large;
+                    }                  
+ 
+                    $total_ucd = $total_ucd + $ucd_tramite;
+
+                }else{
+                    if ($condicion_sujeto == 10 || $condicion_sujeto == 11) {
+                        //////juridico (firma personal - empresa)
+                        $consulta = DB::table('tramites')->select('juridico')->where('id_tramite','=', $key_tramite)->first();
+                        $ucd_tramite = $consulta->juridico;
+                    }else{
+                        ////natural
+                        $consulta = DB::table('tramites')->select('natural')->where('id_tramite','=', $key_tramite)->first();
+                        $ucd_tramite = $consulta->natural;
+                    }
+                    $total_ucd = $total_ucd + $ucd_tramite;
+                }
+
+                //// buscar key denominacions
+                $q4 = DB::table('ucd_denominacions')->select('id')->where('denominacion','=',$ucd_tramite)->first();
+                $key_denominacion = $q4->id;
+
+                ////insert y QR
+                $url = 'https://forma14.tributosaragua.com.ve/?id='.$nro_timbre; 
+                QrCode::format('png')->size(180)->eye('circle')->generate($url, public_path('assets/qrForma14/qrcode_TFE'.$nro_timbre.'.png'));
+                
+                $i2 =DB::table('detalle_venta_tfes')->insert(['key_venta' => $id_venta, 
+                                                            'key_denominacion' => $key_denominacion, 
+                                                            'nro_timbre' => $nro_timbre,
+                                                            'key_tramite' => $key_tramite,
+                                                            'qr' => 'assets/qrForma14/qrcode_TFE'.$nro_timbre.'.png',
+                                                            'key_rollo' => $id_rollo]); 
+
+            }else{
+                ///////////// ESTAMPILLAS
+            }
+
+        }
+
+        $pagos = $request->post('pago');
+        foreach ($pagos as $pago) {
+            if ($pago['metodo'] == 5) {
+                $i3 =DB::table('pago_ventas')->insert(['key_venta' => $id_venta, 
+                                                        'metodo' => 5, 
+                                                        'comprobante' => $pago['comprobante'],
+                                                        'monto' => $pago['debitado']]); 
+            }else{
+                $i3 =DB::table('pago_ventas')->insert(['key_venta' => $id_venta, 
+                                                        'metodo' => 6, 
+                                                        'comprobante' => null,
+                                                        'monto' => $pago['debitado']]); 
+            }
+        }
+
+
+    }
 
 
 
