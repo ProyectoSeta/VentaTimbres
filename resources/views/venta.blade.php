@@ -167,8 +167,8 @@
                     <p class="text-muted text-end fw-bold mt-3" style="font-size:13px"><span style="color:red">*</span> Campos requeridos.</p>
 
                     <div class="d-flex justify-content-center mt-3 mb-3">
-                        <a class="btn btn-secondary btn-sm me-3" data-bs-toggle="modal" data-bs-target="#modal_timbre_impreso" >Cancelar</a>
-                        <button type="submit" class="btn btn-success btn-sm" id="btn_submit_venta">Realizar Venta</button>
+                        <a class="btn btn-secondary btn-sm me-3" data-bs-toggle="modal" data-bs-target="#modal_venta_realizada" >Cancelar</a>
+                        <button type="submit" class="btn btn-success btn-sm" disabled id="btn_submit_venta">Realizar Venta</button>
                     </div>
                 </form>
             </div>
@@ -387,138 +387,10 @@
         </div>  <!-- cierra modal-dialog -->
     </div>
 
-    <div class="modal fade" id="modal_venta_realizada" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal fade" id="modal_venta_realizada" tabindex="-1" data-bs-backdrop="static" data-bs-keyboard="false" aria-labelledby="exampleModalLabel" aria-hidden="true">
         <div class="modal-dialog modal-xl">
             <div class="modal-content" id="content_venta_realizada">
-                <div class="modal-header">
-                    <h1 class="modal-title fs-5 fw-bold text-navy">Venta realizada | <span class="text-muted">Timbres</span></h1>
-                </div>
-                <div class="modal-body px-4 py-3" style="font-size:12.7px">
-
-                    <div class="row">
-                        <!-- DETALLE TIMBRE(S) -->
-                        <div class="col-lg-8">
-                            <p class="text-center text-muted titulo fw-bold mb-2 fs-6">Timbres Fiscales</p>
-                            <div class="border mb-4 rounded-3">
-                                <div class="d-flex justify-content-between px-3 py-2 align-items-center">
-                                    <!-- DATOS -->
-                                    <div class="">
-                                        <div class="text-danger fw-bold fs-4" id="">A-8001002<span class="text-muted ms-2">TFE-14</span></div> 
-                                        <table class="table table-borderless table-sm">
-                                            <tr>
-                                                <th>Ente:</th>
-                                                <td>Bomberos</td>
-                                            </tr>
-                                            <tr>
-                                                <th>Tramite:</th>
-                                                <td>Permiso de Bomberos</td>
-                                            </tr>
-                                        </table>
-                                    </div>
-                                    <!-- UCD -->
-                                    <div class="">
-                                        <div class="text-center titulo fw-bold fs-3">100 UCD</div>
-                                    </div>
-                                    <!-- QR -->
-                                    <div class="text-center">
-                                        <img src="{{asset('assets/qrcode_G1.png')}}" class="img-fluid" alt="" width="110px">
-                                    </div>
-                                </div>
-                            </div>
-
-                            <div class="border mb-4 rounded-3">
-                                <div class="d-flex justify-content-between px-3 py-2 align-items-center">
-                                    <!-- DATOS -->
-                                    <div class="">
-                                        <div class="text-danger fw-bold fs-4" id="">
-                                            B31000001<span class="text-muted ms-2">Estampilla</span></div> 
-                                        <table class="table table-borderless table-sm">
-                                            <tr>
-                                                <th>Ente:</th>
-                                                <td>Registro</td>
-                                            </tr>
-                                            <tr>
-                                                <th>Tramite:</th>
-                                                <td>Título Universitario</td>
-                                            </tr>
-                                        </table>
-                                    </div>
-                                    <!-- UCD -->
-                                    <div class="">
-                                        <div class="text-center titulo fw-bold fs-3">2 UCD</div>
-                                    </div>
-                                    <!-- QR -->
-                                    <div class="text-center">
-                                        <img src="{{asset('assets/qrcode_G1.png')}}" class="img-fluid" alt="" width="110px">
-                                    </div>
-                                </div>
-                            </div>
-
-                        </div>
-                        <!-- DETALLE PAGO -->
-                        <div class="col-lg-4">
-                            <div class="border rounded-3 py-2 px-3">
-                                <div class="d-flex flex-column text-center">
-                                    <div class="fw-bold text-navy">Servicio Tributario del Estado Aragua</div>
-                                    <div class="text-muted">G-20008920-2</div>
-                                </div>
-
-                                <table class="table table-sm my-3">
-                                    <tr>
-                                        <th>Forma</th>
-                                        <th>Cant.</th>
-                                        <th>UCD</th>
-                                    </tr>
-                                    <tr>
-                                        <td>TFE-14</td>
-                                        <td>1</td>
-                                        <td>100</td>
-                                    </tr>
-                                    <tr>
-                                        <td>Estampilla</td>
-                                        <td>1</td>
-                                        <td>2</td>
-                                    </tr>
-                                </table>
-
-                                <div class="d-flex justify-content-center">
-                                    <table class="table table-sm w-50">
-                                        <tr>
-                                            <th>Total UCD</th>
-                                            <td>102</td>
-                                        </tr>
-                                        <tr>
-                                            <th>UCD Hoy</th>
-                                            <td>40,96</td>
-                                        </tr>
-                                        <tr>
-                                            <th>Total Bs.</th>
-                                            <td class="table-warning">4.700,00</td>
-                                        </tr>
-                                    </table>
-                                </div>
-
-                                <table class="table table-sm">
-                                    <tr>
-                                        <th>Debito</th>
-                                        <td class="table-warning">4.600,00</td>
-                                        <td>#4015</td>
-                                    </tr>
-                                    <tr>
-                                        <th>Efectivo</th>
-                                        <td class="table-warning">30,00</td>
-                                        <td><span class="text-secondary fst-italic">No aplica</span></td>
-                                    </tr>
-                                </table>
-
-                            </div>
-                        </div>
-                    </div>  <!--  cierra div.row   -->
-
-                    <div class="d-flex justify-content-center mt-3 mb-3">
-                        <a class="btn btn-secondary btn-sm me-3">Cancelar</a>
-                    </div>
-                </div>
+                
             </div>  <!-- cierra modal-content -->
         </div>  <!-- cierra modal-dialog -->
     </div>
@@ -786,8 +658,6 @@
                             $('#nombre').val(response.nombre);
                             $('#nombre').attr('disabled', true);
 
-                            // $('#identidad_condicion').attr('disabled', true);
-                            // $('#condicion_sujeto').attr('disabled', true);
 
                             $('.ente').attr('disabled', false);
                             $('.tramite').attr('disabled', false);
@@ -806,9 +676,6 @@
                             $('#btns_add_contribuyente').removeClass('d-none');
                             $('#nombre').attr('disabled', false);
                             $('#nombre').val('');
-
-                            // $('#identidad_condicion').attr('disabled', false);
-                            // $('#condicion_sujeto').attr('disabled', false);
                             
                             $('.ente').attr('disabled', true);
                             $('.tramite').attr('disabled', true);
@@ -832,7 +699,28 @@
             });
 
 
-            /////////////////////////// BTN CANCELAR REGISTRO CONTRIBUYENTE
+            $(document).on('change','#identidad_condicion', function(e) {
+                $('#identidad_nro').val('');
+
+                $('#btns_add_contribuyente').removeClass('d-none');
+                $('#nombre').attr('disabled', false);
+                $('#nombre').val('');
+                
+                $('.ente').attr('disabled', true);
+                $('.tramite').attr('disabled', true);
+                $('.forma').attr('disabled', true);
+
+                $('.metodo').attr('disabled', true);
+                $('.comprobante').attr('disabled', true);
+                $('.debitado').attr('disabled', true);
+
+                $('.add_button_tramite').addClass('disabled');
+                $('.add_button').addClass('disabled');
+
+                $('#btn_submit_venta').attr('disabled', true);
+            });
+
+            /////////////////////////// BTN REGISTRO CONTRIBUYENTE
             $(document).on('click','#btn_add_contribuyente', function(e) {
                 e.preventDefault();
                 var condicion_sujeto = $('#condicion_sujeto').val();
@@ -855,6 +743,7 @@
 
                             $('.ente').attr('disabled', false);
                             $('.tramite').attr('disabled', false);
+                            $('.forma').attr('disabled', false);
 
                             $('.metodo').attr('disabled', false);
                             $('.comprobante').attr('disabled', false);
@@ -1197,7 +1086,7 @@
         }
 
 
-
+        //////////////// VENTA DE TIMBRES
         function venta(){
             var formData = new FormData(document.getElementById("form_venta"));
             // console.log("alo");
@@ -1212,6 +1101,16 @@
                 data: formData,
                 success: function(response){
                     console.log(response);
+                    if (response.success) {
+                        $('#modal_venta_realizada').modal('show');
+                        $('#content_venta_realizada').html(response.html);
+                    }else{
+                        if (response.nota) {
+                            alert(response.nota);
+                        }else{
+                            alert('Disculpe, ha ocurrido un error');
+                        }
+                    }
                        
                 },
                 error: function(error){

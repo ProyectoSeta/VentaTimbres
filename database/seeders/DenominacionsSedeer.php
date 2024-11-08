@@ -52,7 +52,7 @@ class DenominacionsSedeer extends Seeder
             'denominacion' => '15',
             'forma01' => 'false',
             'forma14' => 'true',
-            'estampillas' => 'true',
+            'estampillas' => 'false',
             'identificador' => 'F',
         ]);
         DB::table('ucd_denominacions')->insert([

@@ -14,7 +14,7 @@ return new class extends Migration
         Schema::create('detalle_venta_estampillas', function (Blueprint $table) {
             $table->increments('correlativo');
 
-            $table->integer('key_venta')->unsigned();
+            $table->integer('key_venta')->unsigned()->nullable();
             $table->foreign('key_venta')->references('id_venta')->on('ventas')->onDelete('cascade');
 
             $table->integer('key_tramite')->unsigned(); 
@@ -26,7 +26,7 @@ return new class extends Migration
             $table->integer('secuencia');
 
             $table->integer('nro_correlativo');
-            $table->integer('nro')->unique(); ////correlativo
+            $table->string('nro',9)->unique(); ////correlativo
 
             $table->integer('key_tira')->unsigned();
             $table->foreign('key_tira')->references('id_tira')->on('estampillas')->onDelete('cascade');

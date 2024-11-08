@@ -20,7 +20,7 @@ return new class extends Migration
             $table->integer('metodo')->unsigned(); ///////PUNTO - EFECTIVO
             $table->foreign('metodo')->references('id_tipo')->on('tipos')->onDelete('cascade');
 
-            $table->integer('comprobante'); 
+            $table->integer('comprobante')->nullable(); 
             $table->decimal('monto');
 
 

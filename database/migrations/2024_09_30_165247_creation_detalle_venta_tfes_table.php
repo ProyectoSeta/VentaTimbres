@@ -14,7 +14,7 @@ return new class extends Migration
         Schema::create('detalle_venta_tfes', function (Blueprint $table) {
             $table->increments('correlativo');
 
-            $table->integer('key_venta')->unsigned();
+            $table->integer('key_venta')->unsigned()->nullable();
             $table->foreign('key_venta')->references('id_venta')->on('ventas')->onDelete('cascade');
 
             $table->integer('key_denominacion')->unsigned();
