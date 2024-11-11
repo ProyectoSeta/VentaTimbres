@@ -94,11 +94,11 @@
                                     </div>
                                     <div class="col-sm-2">
                                         <label class="form-label" for="ucd_tramite">UCD</label><span class="text-danger">*</span>
-                                        <input type="text" class="form-control form-control-sm ucd_tramite" id="ucd_tramite_1" disabled required>
+                                        <input type="text" class="form-control form-control-sm ucd_tramite" id="ucd_tramite_1" nro="1" disabled required>
                                     </div>
                                     <div class="col-sm-2">
                                         <label class="form-label" for="forma">Timbre</label><span class="text-danger">*</span>
-                                        <select class="form-select form-select-sm forma" nro="1" name="tramite[1][forma]" id="forma_1" required>
+                                        <select class="form-select form-select-sm forma" nro="1" name="tramite[1][forma]"id="forma_1" required>
                                             <option value="">Seleccione</option>
                                         </select>
                                         <p class="text-end my-0 text-muted" id="cant_timbre_1"></p>
@@ -552,7 +552,7 @@
                                                 '</div>'+
                                                 '<div class="col-sm-2">'+
                                                     '<label class="form-label" for="ucd_tramite">UCD</label><span class="text-danger">*</span>'+
-                                                    '<input type="text" class="form-control form-control-sm ucd_tramite" id="ucd_tramite_'+c+'" disabled>'+
+                                                    '<input type="text" class="form-control form-control-sm ucd_tramite" id="ucd_tramite_'+c+'" nro="'+c+'" disabled>'+
                                                 '</div>'+
                                                 '<div class="col-sm-2">'+
                                                     '<label class="form-label" for="forma">Timbre</label><span class="text-danger">*</span>'+
@@ -999,22 +999,46 @@
                 var nro =  $(this).attr('nro');
 
                 var ucd =  $('#ucd_tramite_'+nro).val();
-                var tramite =  $('#tramite_'+nro).val();
-                var condicion_sujeto =  $('#condicion_sujeto').val();
-
+                var array = [];
+            
                 if (value == 4  && ucd == 10) {
                     $('#cant_timbre_'+nro).html('2 Und.');
+                    var cant = 2;
                 }else{
                     $('#cant_timbre_'+nro).html('1 Und.');
+                    var cant = 1;
                 }
+
+                $('.ucd_tramite').each(function(e){
+                    var ucd_each = $(this).val();
+                    var nro_each = $(this).attr('nro');
+                    var forma_each =  $('#forma_'+nro_each).val();
+
+                    if (ucd_each == ucd && nro_each != nro && forma_each == value) {
+                        if (forma_each == 4  && ucd_each == 10) {
+                            cant = cant + 2;  
+                        }else{
+                            cant++;
+                        }
+                    }
+                });
+
+
+                var objeto = {
+                    ucd: ucd,
+                    forma: value,
+                    cantidad: cant
+                };
+                array.push(objeto);
+                               
 
                 $.ajax({
                     headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') },
                     type: 'POST',
                     url: '{{route("venta.disponibilidad") }}',
-                    data: {value:value,tramite:tramite,condicion_sujeto:condicion_sujeto},
+                    data: {array:array},
                     success: function(response) {
-                        // console.log(response);
+                        console.log(response);
                         if (response.success) {
                             
                         }else{

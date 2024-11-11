@@ -17,6 +17,9 @@ return new class extends Migration
             $table->integer('key_venta')->unsigned()->nullable();
             $table->foreign('key_venta')->references('id_venta')->on('ventas')->onDelete('cascade');
 
+            $table->integer('key_detalle_estampilla')->unsigned();
+            $table->foreign('key_detalle_estampilla')->references('correlativo')->on('detalle_estampillas')->onDelete('cascade');
+
             $table->integer('key_tramite')->unsigned(); 
             $table->foreign('key_tramite')->references('id_tramite')->on('tramites')->onDelete('cascade');
 
