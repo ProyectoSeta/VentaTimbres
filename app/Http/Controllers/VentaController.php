@@ -608,7 +608,15 @@ class VentaController extends Controller
                     /////////////////////////////////////////////////////////////////////////////////////////////////////////// ESTAMPILLAS
                     $key_tramite = $tramite['tramite'];
                     $exist_estampillas = true;
-                    
+
+
+                    $nro_timbre = '';
+                    $secuencia = '';
+                    $key_tira = '';
+                    $id_correlativo = '';
+
+
+                    //////// Valor del ucd tramite
                     if ($condicion_sujeto == 10 || $condicion_sujeto == 11) {
                         //////juridico (firma personal - empresa)
                         $consulta = DB::table('tramites')->select('juridico')->where('id_tramite','=', $key_tramite)->first();
@@ -618,57 +626,52 @@ class VentaController extends Controller
                         $consulta = DB::table('tramites')->select('natural')->where('id_tramite','=', $key_tramite)->first();
                         $ucd_tramite = $consulta->natural;
                     }
-
-                    $total_ucd = $total_ucd + $ucd_tramite;
-
-                    $nro_timbre = '';
-                    $secuencia = '';
-                    $key_tira = '';
-                    $id_correlativo = '';
+                    
 
                     ///////Buscar el id denominacion e identificador de forma
                     if ($ucd_tramite == 10) {
                         $q5 = DB::table('ucd_denominacions')->select('id','identificador')->where('denominacion','=','5')->first();
-                        $key_denominacion = $q5->id;
+                        $key_denominacion = $q5->id; 
                         $identificador_ucd = $q5->identificador;
                     }else{
                         $q5 = DB::table('ucd_denominacions')->select('id','identificador')->where('denominacion','=',$ucd_tramite)->first();
                         $key_denominacion = $q5->id;
                         $identificador_ucd = $q5->identificador;
                     }
+
+                    
+                    $total_ucd = $total_ucd + $ucd_tramite;
                     
 
-                    /////////////////////////BUSCAR CORRELATIVO
-                    if ($ucd_tramite == 10) { ////10 UCD
-                        $key_deno_10 = 4;
+                    ///////////////////////// BUSCAR CORRELATIVO
+                    if ($ucd_tramite == 10) { //// 10 UCD
+                        $ucd_alert = 5;
                         for ($i=0; $i < 2; $i++) { 
                             $c5 = DB::table('detalle_venta_estampillas')->select('key_detalle_estampilla','secuencia','nro_correlativo','key_tira')
-                                                                        ->where('key_denominacion','=',$key_deno_10)
+                                                                        ->where('key_denominacion','=',$key_denominacion)
+                                                                        ->where('key_taquilla','=',$id_taquilla)
                                                                         ->orderBy('correlativo', 'desc')->first();
                             if ($c5) {
                                 /////// se han registrado ventas de esta denominacion
                                 $nro_hipotetico = $c5->nro_correlativo + 1;
 
-                                $q6 = DB::table('detalle_estampillas')->select('hasta_correlativo')
-                                                                    ->where('correlativo','=', $c5->key_detalle_estampilla)
-                                                                    ->where('key_tira','=',$c5->key_tira)
-                                                                    ->where('key_taquilla','=',$id_taquilla)
-                                                                    ->first();
-                                if ($q6->hasta_correlativo >= $nro_hipotetico) {
+                                $q6 = DB::table('detalle_estampillas')->select('desde_correlativo','hasta_correlativo')->where('correlativo','=', $c5->key_detalle_estampilla)->first();
+
+                                if ($nro_hipotetico >= $q6->desde_correlativo && $q6->hasta_correlativo >= $nro_hipotetico) {
                                     //////// esta dentro del rango de la fracción de tira asignada
                                     $nro_timbre = $nro_hipotetico;
                                     $secuencia = $c5->secuencia;
                                     $key_tira = $c5->key_tira;
                                     $id_correlativo = $c5->key_detalle_estampilla;
-                                    $key_detalle_estampilla = $c5->key_detalle_estampilla;
 
                                     if ($q6->hasta_correlativo == $nro_timbre) {
+                                        ///// ultimo timbre de la asignacion
                                         $update_condicion = DB::table('detalle_estampillas')->where('correlativo','=',$id_correlativo)->update(['condicion' => 7]);
                                     }
                                 }else{
                                     /////// buscar otra fracción de tira asignada
                                     $c6 = DB::table('detalle_estampillas')->select('correlativo','secuencia','desde_correlativo','key_tira')
-                                                                        ->where('key_denominacion','=',$key_deno_10)
+                                                                        ->where('key_denominacion','=',$key_denominacion)
                                                                         ->where('key_taquilla','=',$id_taquilla)
                                                                         ->where('condicion','=', 4)
                                                                         ->first();
@@ -677,18 +680,18 @@ class VentaController extends Controller
                                         $secuencia = $c6->secuencia;
                                         $key_tira = $c6->key_tira;
                                         $id_correlativo = $c6->correlativo;
-                                        $key_detalle_estampilla = $c6->correlativo;
 
+                                        //////////// primer timbre de la asignacion (En uso)
                                         $update_condicion = DB::table('detalle_estampillas')->where('correlativo','=',$id_correlativo)->update(['condicion' => 3]);
                                     }else{
-                                        return response()->json(['success' => false, 'nota'=> 'Disculpe, no hay en su Inventario, estampillas de '.$ucd_tramite.' UCD disponibles.']);
+                                        return response()->json(['success' => false, 'nota'=> 'Disculpe, no hay en su Inventario, estampillas de '.$ucd_alert.' UCD disponibles.']);
                                     }
                                 }
 
                             }else{
                                 ////// es la primera venta
                                 $c7 = DB::table('detalle_estampillas')->select('correlativo','secuencia','desde_correlativo','key_tira')
-                                                                    ->where('key_denominacion','=',$key_deno_10)
+                                                                    ->where('key_denominacion','=',$key_denominacion)
                                                                     ->where('key_taquilla','=',$id_taquilla)
                                                                     ->where('condicion','=', 4)
                                                                     ->first();
@@ -697,11 +700,11 @@ class VentaController extends Controller
                                     $secuencia = $c7->secuencia;
                                     $key_tira = $c7->key_tira;
                                     $id_correlativo = $c7->correlativo;
-                                    $key_detalle_estampilla = $c7->correlativo;
 
+                                    //////////// primer timbre de la asignacion (En uso)
                                     $update_condicion = DB::table('detalle_estampillas')->where('correlativo','=',$id_correlativo)->update(['condicion' => 3]);
                                 }else{
-                                    return response()->json(['success' => false, 'nota'=> 'Disculpe, no hay en su Inventario, estampillas de '.$ucd_tramite.' UCD disponibles.']);
+                                    return response()->json(['success' => false, 'nota'=> 'Disculpe, no hay en su Inventario, estampillas de '.$ucd_alert.' UCD disponibles.']);
                                 }
                             }
 
@@ -717,9 +720,9 @@ class VentaController extends Controller
 
                             ////////////////INSERT DETALLE VENTA ESTAMPILLAS
                             $i3 =DB::table('detalle_venta_estampillas')->insert([
-                                                                    'key_detalle_estampilla' => $key_detalle_estampilla,
+                                                                    'key_detalle_estampilla' => $id_correlativo,
                                                                     'key_tramite' => $key_tramite,
-                                                                    'key_denominacion' => $key_deno_10, 
+                                                                    'key_denominacion' => $key_denominacion, 
                                                                     'secuencia' => $secuencia,
                                                                     'nro_correlativo' => $nro_timbre,
                                                                     'nro' => $nro,
@@ -771,18 +774,18 @@ class VentaController extends Controller
                         }////// cierra for
 
                     }else{ ////////// OTRAS DENOMINACIONES 
-                        $c5 = DB::table('detalle_venta_estampillas')->select('correlativo','secuencia','nro_correlativo','key_tira')
+                        $c5 = DB::table('detalle_venta_estampillas')->select('correlativo','key_detalle_estampilla','secuencia','nro_correlativo','key_tira')
                                                                         ->where('key_denominacion','=',$key_denominacion)
+                                                                        ->where('key_taquilla','=',$id_taquilla)
                                                                         ->orderBy('correlativo', 'desc')->first();
                         if ($c5) {
                             /////// se han registrado ventas de esta denominacion
                             $nro_hipotetico = $c5->nro_correlativo + 1; 
 
-                            $q6 = DB::table('detalle_estampillas')->select('correlativo','hasta_correlativo')
-                                                                ->where('key_tira','=',$c5->key_tira)
-                                                                ->where('key_taquilla','=',$id_taquilla)
+                            $q6 = DB::table('detalle_estampillas')->select('desde_correlativo','hasta_correlativo')
+                                                                ->where('correlativo','=',$c5->key_detalle_estampilla)
                                                                 ->first();
-                            if ($q6->hasta_correlativo >= $nro_hipotetico) {
+                            if ($nro_hipotetico >= $q6->desde_correlativo && $q6->hasta_correlativo >= $nro_hipotetico) {
                                 //////// esta dentro del rango de la fracción de tira asignada
                                 $nro_timbre = $nro_hipotetico;
                                 $secuencia = $c5->secuencia;
@@ -790,6 +793,7 @@ class VentaController extends Controller
                                 $id_correlativo = $c5->correlativo;
 
                                 if ($q6->hasta_correlativo == $nro_timbre) {
+                                    //////ultimo timbre de la asgnación
                                     $update_condicion = DB::table('detalle_estampillas')->where('correlativo','=',$id_correlativo)->update(['condicion' => 7]);
                                 }
                             }else{
@@ -805,6 +809,7 @@ class VentaController extends Controller
                                     $key_tira = $c6->key_tira;
                                     $id_correlativo = $c6->correlativo;
 
+                                    ///////primer timbre de la asignación (En uso)
                                     $update_condicion = DB::table('detalle_estampillas')->where('correlativo','=',$id_correlativo)->update(['condicion' => 3]);
                                 }else{
                                     return response()->json(['success' => false, 'nota'=> 'Disculpe, no hay en su Inventario, estampillas de '.$ucd_tramite.' UCD disponibles.']);
@@ -824,6 +829,7 @@ class VentaController extends Controller
                                 $key_tira = $c7->key_tira;
                                 $id_correlativo = $c7->correlativo;
 
+                                ///////primer timbre de la asignación (En uso)
                                 $update_condicion = DB::table('detalle_estampillas')->where('correlativo','=',$id_correlativo)->update(['condicion' => 3]);
                             }else{
                                 return response()->json(['success' => false, 'nota'=> 'Disculpe, no hay en su Inventario, estampillas de '.$ucd_tramite.' UCD disponibles.']);
