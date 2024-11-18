@@ -726,7 +726,8 @@ class VentaController extends Controller
                                                                     'secuencia' => $secuencia,
                                                                     'nro_correlativo' => $nro_timbre,
                                                                     'nro' => $nro,
-                                                                    'key_tira' => $key_tira]); 
+                                                                    'key_tira' => $key_tira,
+                                                                    'key_taquilla' => $id_taquilla]); 
                             if ($i3) {
                                 $id_correlativo_detalle = DB::table('detalle_venta_estampillas')->max('correlativo');
                                 array_push($array_correlativo_estampillas,$id_correlativo_detalle);
@@ -848,12 +849,14 @@ class VentaController extends Controller
 
                         ////////////////INSERT DETALLE VENTA ESTAMPILLAS
                         $i3 =DB::table('detalle_venta_estampillas')->insert([
+                                                                'key_detalle_estampilla' => $id_correlativo,
                                                                 'key_tramite' => $key_tramite,
                                                                 'key_denominacion' => $key_denominacion, 
                                                                 'secuencia' => $secuencia,
                                                                 'nro_correlativo' => $nro_timbre,
                                                                 'nro' => $nro,
-                                                                'key_tira' => $key_tira]); 
+                                                                'key_tira' => $key_tira,
+                                                                'key_taquilla' => $id_taquilla]); 
                         if ($i3) {
                             $id_correlativo_detalle = DB::table('detalle_venta_estampillas')->max('correlativo');
                             array_push($array_correlativo_estampillas,$id_correlativo_detalle);

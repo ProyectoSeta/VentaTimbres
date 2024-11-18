@@ -44,5 +44,14 @@ class ClasificacionSeeder extends Seeder
         DB::table('clasificacions')->insert([
             'nombre_clf' => 'Sin recibir',
         ]);
+
+
+        //////ESTADOS RITEA
+        DB::table('clasificacions')->insert([
+            'nombre_clf' => 'Vigente',
+        ]);
+        DB::table('clasificacions')->insert([
+            'nombre_clf' => 'Vencido',
+        ]);
     }
 }

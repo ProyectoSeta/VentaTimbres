@@ -84,6 +84,9 @@ Route::post('/timbres_asignados/recibido_estampillas', [App\Http\Controllers\Asi
 
 ///////////////////// TAQUILLAS - INVENTARIO
 Route::get('/inventario_taquillas', [App\Http\Controllers\InventarioTaquillasController::class, 'index'])->name('inventario_taquillas');
+Route::post('/inventario_taquillas/detalle', [App\Http\Controllers\InventarioTaquillasController::class, 'detalle'])->name('inventario_taquillas.detalle');
+
+
 
 //////////////////////  VENTA FORMA 14 - ESTAMPILLAS
 Route::get('/venta', [App\Http\Controllers\VentaController::class, 'index'])->name('venta');
@@ -96,9 +99,5 @@ Route::post('/venta/disponibilidad', [App\Http\Controllers\VentaController::clas
 Route::post('/venta/total', [App\Http\Controllers\VentaController::class, 'total'])->name('venta.total');
 Route::post('/venta/debitado', [App\Http\Controllers\VentaController::class, 'debitado'])->name('venta.debitado');
 Route::post('/venta/add_contribuyente', [App\Http\Controllers\VentaController::class, 'add_contribuyente'])->name('venta.add_contribuyente');
-
-
-
-Route::post('/venta/venta_f14', [App\Http\Controllers\VentaController::class, 'venta_f14'])->name('venta.venta_f14');
 
 Route::post('/venta/venta', [App\Http\Controllers\VentaController::class, 'venta'])->name('venta.venta');

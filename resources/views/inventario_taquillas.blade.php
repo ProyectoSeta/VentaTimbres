@@ -19,11 +19,19 @@
         <div class="">
             @foreach ($taquillas as $taquilla)
                 @if ($taquilla->salto == true)
-                    <h2 class="text-navy fw-bold titulo mb-3 text-center"><span class="text-secondary">Sede | </span>{{$taquilla->sede}}</h2>
+                    <h2 class="text-navy fw-bold titulo mb-3 text-center"><span class="text-secondary">
+                        @if ($taquilla->sede == 'Principal Maracay')
+                            Sede
+                        @else
+                            Foránea
+                        @endif
+                         
+                        | </span>{{$taquilla->sede}}
+                    </h2>
                     <div class="row align-items-md-stretch">
                 @else
                     @if ($taquilla->fin == false)
-                        <div class="col-lg-6 mb-4">
+                        <div class="col-lg-6 mb-5">
                             <div class="border h-100 rounded-4 d-flex justify-content-between px-3 py-3">
                                 <!-- titulo -->
                                 <div class="">
@@ -42,14 +50,14 @@
                                     <div class="row d-flex justify-content-center  mb-0">
                                         <div class="col-sm-6 text-center">
                                             <h5 class="fw-bold">TFE 14</h5>
-                                            <div class="border rounded-4 p-3" role="button">
+                                            <div class="border rounded-4 p-3 detalle_timbres">
                                                 <h3 class="text-navy fw-bold">{{$taquilla->cantidad_tfe}}</h3>
                                                 <span style="font-size:13px">Unidades</span>
                                             </div>
                                         </div>
                                         <div class="col-sm-6 text-center">
                                         <h5 class="fw-bold">Estampillas</h5>
-                                            <div class="border rounded-4 p-3" role="button">
+                                            <div class="border rounded-4 p-3 detalle_timbres" role="button" taquilla="{{$taquilla->id_taquilla}}" data-bs-toggle="modal" data-bs-target="#modal_detalle_timbres">
                                                 <h3 class="text-navy fw-bold">{{$taquilla->cantidad_estampillas}}</h3>
                                                 <span style="font-size:13px">Unidades</span>
                                             </div>
@@ -65,49 +73,6 @@
             @endforeach
 
 
-
-
-
-            <!--  -->
-
-
-
-
-                
-                <!-- <div class="col">
-                    <div class="border h-100 rounded-4 d-flex justify-content-between px-3 py-3">
-                        <div class="">
-                            <div class="text-navy d-flex justify-content-betwee flex-column">
-                                <h2 class="fw-bold titulo">Taquilla</h2>
-                                <h2 class="fw-bold text-primary titulo">ID 002</h2>
-                            </div>
-
-                            <div class="d-flex justify-content-between ">
-                                <span class="fs-6 me-1">Taquillero</span>
-                                <span class="fs-6">Victor Acosta</span>
-                            </div>
-                        </div>
-                        
-                        <div class="d-flex">
-                            <div class="row d-flex justify-content-center  mb-0">
-                                <div class="col-sm-6 text-center">
-                                    <h5 class="fw-bold">TFE 14</h5>
-                                    <div class="border rounded-4 p-3" role="button">
-                                        <h3 class="text-navy fw-bold">1222</h3>
-                                        <span style="font-size:13px">Unidades</span>
-                                    </div>
-                                </div>
-                                <div class="col-sm-6 text-center">
-                                <h5 class="fw-bold">Estampillas</h5>
-                                    <div class="border rounded-4 p-3" role="button">
-                                        <h3 class="text-navy fw-bold">114</h3>
-                                        <span style="font-size:13px">Unidades</span>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div> -->
             </div>
         </div>
 
@@ -124,7 +89,17 @@
     
 <!--****************** MODALES **************************-->
     
-
+    <!-- ************  DETALLE TIMBRES ************** -->
+    <div class="modal fade" id="modal_detalle_timbres" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog ">
+            <div class="modal-content" id="content_detalle_timbres">
+                <div class="my-5 py-5 d-flex flex-column text-center">
+                    <i class='bx bx-loader-alt bx-spin fs-1 mb-3' style='color:#0077e2'  ></i>
+                    <span class="text-muted">Cargando, por favor espere un momento...</span>
+                </div>
+            </div>  <!-- cierra modal-content -->
+        </div>  <!-- cierra modal-dialog -->
+    </div>
 
 
 <!--************************************************-->
@@ -178,7 +153,24 @@
 
 <script type="text/javascript">
     $(document).ready(function () {
-        
+        /////////////////////////// MODAL DETALLE TIMBRES
+        $(document).on('click','.detalle_timbres', function(e) {
+            e.preventDefault();
+            var taquilla = $(this).attr('taquilla');
+
+            $.ajax({
+                headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') },
+                type: 'POST',
+                url: '{{route("inventario_taquillas.detalle") }}',
+                data: {taquilla:taquilla},
+                success: function(response) {
+                    // console.log(response);
+                    $('#content_detalle_timbres').html(response);
+                },
+                error: function() {
+                }
+            });
+        });
 
               
     });
