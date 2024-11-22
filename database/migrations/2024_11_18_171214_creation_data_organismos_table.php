@@ -26,6 +26,7 @@ return new class extends Migration
             $table->foreign('key_parroquia')->references('id')->on('parroquias')->onDelete('cascade');
 
             /////// ENTE ADSCRITO
+            $table->enum('adscrito',['No','Si']);
             $table->enum('condicion_rif_ente_ads',['G'])->nullable();
             $table->integer('nro_rif_ente_ads')->nullable();
             $table->string('nombre_ente_ads')->nullable();
@@ -37,8 +38,8 @@ return new class extends Migration
             $table->string('cargo_max_aut');
             $table->string('email_max_aut');
 
-            $table->integer('tlf_movil');
-            $table->integer('tlf_fijo')->nullable();
+            $table->string('tlf_movil');
+            $table->string('tlf_fijo')->nullable();
 
             $table->string('doc_rif');
             $table->string('gaceta_nomb_doc');

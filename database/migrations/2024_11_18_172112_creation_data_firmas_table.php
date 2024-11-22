@@ -25,14 +25,17 @@ return new class extends Migration
             $table->integer('key_parroquia')->unsigned();
             $table->foreign('key_parroquia')->references('id')->on('parroquias')->onDelete('cascade');
 
-            $table->integer('tlf_movil');
-            $table->integer('tlf_fijo')->nullable();
-
-
+            $table->date('fecha_vec_rif');
             $table->string('doc_rif');
+
+            $table->enum('ci_condicion',['V','E']);
+            $table->string('ci_nro',12)->unique();
+
+            $table->string('tlf_movil');
+            $table->string('tlf_fijo')->nullable();
+
             $table->string('doc_ci');
             
-            $table->date('fecha_vec_rif');
             
         });
     }

@@ -26,14 +26,14 @@ return new class extends Migration
             $table->foreign('key_parroquia')->references('id')->on('parroquias')->onDelete('cascade');
 
             $table->string('doc_rif');
-            $table->string('doc_ci');
+            // $table->string('doc_ci');
 
-            $table->integer('tlf_movil');
-            $table->integer('tlf_fijo')->nullable();
+            $table->string('tlf_movil');
+            $table->string('tlf_fijo')->nullable();
 
             $table->date('fecha_nacimiento');
 
-            $table->date('fecha_vec_rif');
+            $table->date('fecha_venc_rif');
         });
     }
 

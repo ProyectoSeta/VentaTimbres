@@ -29,6 +29,7 @@ class DatabaseSeeder extends Seeder
         $this->call(InventarioTaquillasSedeer::class);
 
         $this->call(LocalidadesSeeder::class);
+        $this->call(ActividadesEconomicasSeeder::class);
        
 
         

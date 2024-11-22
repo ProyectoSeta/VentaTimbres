@@ -13,6 +13,8 @@ return new class extends Migration
 	        $table->increments('id');
 	        $table->string('estado');
 	        $table->string('iso_3166-2');
+
+			$table->timestamps();
 	    });
 
 	    Schema::create('municipios',function (Blueprint $table)
@@ -21,6 +23,8 @@ return new class extends Migration
 	        $table->integer('estado_id')->unsigned();
 	        $table->string('municipio');
 	        $table->foreign('estado_id')->references('id')->on('estados');
+
+			$table->timestamps();
 	    });
 
 	    Schema::create('parroquias',function (Blueprint $table)
@@ -29,6 +33,8 @@ return new class extends Migration
 	        $table->integer('municipio_id')->unsigned();
 	        $table->string('parroquia');
 	        $table->foreign('municipio_id')->references('id')->on('municipios');
+
+			$table->timestamps();
 	    });
 	}
 
@@ -39,10 +45,7 @@ return new class extends Migration
 	 */
 	public function down()
 	{
-		Schema::drop('estados');
-		Schema::drop('municipios');
-		Schema::drop('ciudades');
-		Schema::drop('parroquias');
+		
 	}
 
 };
