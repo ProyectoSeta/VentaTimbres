@@ -18,13 +18,13 @@ return new class extends Migration
             $table->foreign('key_contribuyente')->references('id_contribuyente')->on('contribuyentes')->onDelete('cascade');
             
             $table->date('fecha_registro');
-            $table->date('fecha_renovacion');
-            $table->date('fecha_vencimiento');
+            $table->date('fecha_renovacion')->nullable();
+            $table->date('fecha_vencimiento')->nullable();
 
             $table->integer('estado')->unsigned(); ///////VIGENTE - VENCIDO
             $table->foreign('estado')->references('id_clasificacion')->on('clasificacions')->onDelete('cascade');
            
-            $table->string('qr');
+            $table->string('qr')->nullable();
 
             
         });

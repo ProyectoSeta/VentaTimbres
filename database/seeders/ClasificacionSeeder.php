@@ -53,5 +53,8 @@ class ClasificacionSeeder extends Seeder
         DB::table('clasificacions')->insert([
             'nombre_clf' => 'Vencido',
         ]);
+        DB::table('clasificacions')->insert([
+            'nombre_clf' => 'Verificando',
+        ]);
     }
 }
