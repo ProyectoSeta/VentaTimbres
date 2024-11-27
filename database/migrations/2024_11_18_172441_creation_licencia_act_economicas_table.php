@@ -17,9 +17,9 @@ return new class extends Migration
             $table->integer('key_contribuyente')->unsigned();
             $table->foreign('key_contribuyente')->references('id_contribuyente')->on('contribuyentes')->onDelete('cascade');
             
-            $table->integer('nro');
+            $table->string('nro');
 
-            $table->date('fecha_vecimiento');
+            $table->date('fecha_vencimiento');
             $table->string('doc_licencia');
 
             
