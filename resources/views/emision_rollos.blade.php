@@ -206,81 +206,111 @@
         });
     </script>
 
-<script type="text/javascript">
-    $(document).ready(function () {
-        /////////////////////////// MODAL ENVIAR A INVENTARIO
-        $(document).on('click','.enviar_inventario', function(e) {
-            e.preventDefault();
-            var emision = $(this).attr('emision');
-            // $('#btn_enviar_inventario').attr('disabled', true);
+    <script type="text/javascript">
+        $(document).ready(function () {
+            /////////////////////////// MODAL ENVIAR A INVENTARIO
+            $(document).on('click','.enviar_inventario', function(e) {
+                e.preventDefault();
+                var emision = $(this).attr('emision');
+                // $('#btn_enviar_inventario').attr('disabled', true);
 
-            $.ajax({
-                headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') },
-                type: 'POST',
-                url: '{{route("rollos.modal_enviar") }}',
-                data: {emision:emision},
-                success: function(response) {
-                    console.log(response);
-                    $('#content_enviar_inventario').html(response);
-
-                },
-                error: function() {
-                }
-            });
-        });
-
-        /////////////////////////// ELIMINAR EMISIÓN ROLOS
-        $(document).on('click','.delete_emision', function(e) {
-            e.preventDefault();
-            var emision = $(this).attr('emision');
-            if (confirm('¿Desea eliminar la ID Emision '+emision+'?')){
                 $.ajax({
                     headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') },
                     type: 'POST',
-                    url: '{{route("rollos.delete") }}',
+                    url: '{{route("rollos.modal_enviar") }}',
                     data: {emision:emision},
                     success: function(response) {
-                        // console.log(response);
-                        if (response.success) {
-                            alert('LA EMISIÓN ID '+emision+' SE HA ELIMINADO CORRECTAMENTE.');
-                            window.location.href = "{{ route('emision_rollos')}}";
-                        }else{
-                            alert('Disculpe, ha ocurrido un error.');
-                        }  
+                        console.log(response);
+                        $('#content_enviar_inventario').html(response);
+
                     },
                     error: function() {
                     }
                 });
-            }
-        });
+            });
 
-
-        /////////////////////////// MODAL DETALLE EMISIÓN
-        $(document).on('click','.detalle_emision_rollo', function(e) {
-            e.preventDefault();
-            var emision = $(this).attr('emision');
-
-            $.ajax({
-                headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') },
-                type: 'POST',
-                url: '{{route("rollos.detalles") }}',
-                data: {emision:emision},
-                success: function(response) {
-                    // console.log(response);
-                    $('#content_detalle_emision_rollos').html(response);
-                },
-                error: function() {
+            /////////////////////////// ELIMINAR EMISIÓN ROLOS
+            $(document).on('click','.delete_emision', function(e) {
+                e.preventDefault();
+                var emision = $(this).attr('emision');
+                if (confirm('¿Desea eliminar la ID Emision '+emision+'?')){
+                    $.ajax({
+                        headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') },
+                        type: 'POST',
+                        url: '{{route("rollos.delete") }}',
+                        data: {emision:emision},
+                        success: function(response) {
+                            // console.log(response);
+                            if (response.success) {
+                                alert('LA EMISIÓN ID '+emision+' SE HA ELIMINADO CORRECTAMENTE.');
+                                window.location.href = "{{ route('emision_rollos')}}";
+                            }else{
+                                alert('Disculpe, ha ocurrido un error.');
+                            }  
+                        },
+                        error: function() {
+                        }
+                    });
                 }
             });
+
+
+            /////////////////////////// MODAL DETALLE EMISIÓN
+            $(document).on('click','.detalle_emision_rollo', function(e) {
+                e.preventDefault();
+                var emision = $(this).attr('emision');
+
+                $.ajax({
+                    headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') },
+                    type: 'POST',
+                    url: '{{route("rollos.detalles") }}',
+                    data: {emision:emision},
+                    success: function(response) {
+                        // console.log(response);
+                        $('#content_detalle_emision_rollos').html(response);
+                    },
+                    error: function() {
+                    }
+                });
+            });
+
         });
 
-    });
+        function emitirRollos(){
+            var formData = new FormData(document.getElementById("form_emitir_rollos"));
+                $.ajax({
+                    headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') },
+                    url:'{{route("rollos.emitir") }}',
+                    type:'POST',
+                    contentType:false,
+                    cache:false,
+                    processData:false,
+                    async: true,
+                    data: formData,
+                    success: function(response){
+                        console.log(response);
+                        if (response.success) {
+                            $('#modal_emitir_rollos').modal('hide');
+                            $('#modal_correlativo_rollos').modal('show');
+                            $('#content_correlativo_rollos').html(response.html);
+                        
+                        }else{
+                            alert('Disculpe, ha ocurrido un error en la Emisión de Rollos.');
+                        }  
 
-    function emitirRollos(){
-        var formData = new FormData(document.getElementById("form_emitir_rollos"));
+                    },
+                    error: function(error){
+                        
+                    }
+                });
+        }
+
+
+        function enviarRollosInventario(){
+            var formData = new FormData(document.getElementById("form_enviar_inventario"));
             $.ajax({
                 headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') },
-                url:'{{route("rollos.emitir") }}',
+                url:'{{route("rollos.enviar_inventario") }}',
                 type:'POST',
                 contentType:false,
                 cache:false,
@@ -290,12 +320,10 @@
                 success: function(response){
                     console.log(response);
                     if (response.success) {
-                        $('#modal_emitir_rollos').modal('hide');
-                        $('#modal_correlativo_rollos').modal('show');
-                        $('#content_correlativo_rollos').html(response.html);
-                       
+                        alert('LOS ROLLOS SE HAN ENVIADO AL INVENTARIO EXITOSAMENTE');
+                        window.location.href = "{{ route('emision_rollos')}}";
                     }else{
-                        alert('Disculpe, ha ocurrido un error en la Emisión de Rollos.');
+                        alert('Disculpe, ha ocurrido un error.');
                     }  
 
                 },
@@ -303,35 +331,7 @@
                     
                 }
             });
-    }
-
-
-    function enviarRollosInventario(){
-        var formData = new FormData(document.getElementById("form_enviar_inventario"));
-        $.ajax({
-            headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') },
-            url:'{{route("rollos.enviar_inventario") }}',
-            type:'POST',
-            contentType:false,
-            cache:false,
-            processData:false,
-            async: true,
-            data: formData,
-            success: function(response){
-                console.log(response);
-                if (response.success) {
-                    alert('LOS ROLLOS SE HAN ENVIADO AL INVENTARIO EXITOSAMENTE');
-                    window.location.href = "{{ route('emision_rollos')}}";
-                }else{
-                    alert('Disculpe, ha ocurrido un error.');
-                }  
-
-            },
-            error: function(error){
-                
-            }
-        });
-    }
+        }
 
 
     </script>

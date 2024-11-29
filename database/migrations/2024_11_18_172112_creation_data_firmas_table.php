@@ -36,7 +36,11 @@ return new class extends Migration
 
             $table->string('doc_ci');
             
-            
+            $table->integer('estado')->unsigned(); /////// EN REVISIÓN - CORRECCIÓN - POR APROBACIÓN - VERIFICADO 
+            $table->foreign('estado')->references('id_clasificacion')->on('clasificacions')->onDelete('cascade');
+
+            $table->string('observacion')->nullable();
+            $table->date('fecha_ult_obv')->nullable();
         });
     }
 

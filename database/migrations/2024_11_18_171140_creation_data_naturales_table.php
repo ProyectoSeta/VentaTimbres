@@ -32,8 +32,14 @@ return new class extends Migration
             $table->string('tlf_fijo')->nullable();
 
             $table->date('fecha_nacimiento');
-
             $table->date('fecha_venc_rif');
+
+            $table->integer('estado')->unsigned(); /////// EN REVISIÓN - CORRECCIÓN - POR APROBACIÓN - VERIFICADO 
+            $table->foreign('estado')->references('id_clasificacion')->on('clasificacions')->onDelete('cascade');
+
+            $table->string('observacion')->nullable();
+            $table->date('fecha_ult_obv')->nullable();
+
         });
     }
 

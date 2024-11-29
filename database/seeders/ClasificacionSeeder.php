@@ -56,5 +56,20 @@ class ClasificacionSeeder extends Seeder
         DB::table('clasificacions')->insert([
             'nombre_clf' => 'Verificando',
         ]);
+
+
+        /////ESTADOS DATAS 
+        DB::table('clasificacions')->insert([
+            'nombre_clf' => 'En Revisión',
+        ]);
+        DB::table('clasificacions')->insert([
+            'nombre_clf' => 'Corrección',
+        ]);
+        DB::table('clasificacions')->insert([
+            'nombre_clf' => 'Por Aprobación',
+        ]);
+        DB::table('clasificacions')->insert([
+            'nombre_clf' => 'Verificado',
+        ]);
     }
 }
