@@ -8,16 +8,36 @@
 
 
     <main>
-        <div class="position-relative overflow-hidden p-3 p-md-5 m-md-3 text-center bg-white">
+        <div class="position-relative overflow-hidden p-3 p-md-5 m-md-3 text-center bg-white container-fluid">
             <div class="p-lg-5 mx-auto my-5">
                 <h1 class="display-5 text-navy fw-bold">FORMA 14 | Estampillas</h1>
-                <h3 class="fw-normal text-muted mb-3">Venta de Timbres Fiscales</h3>
+                <h3 class="fw-normal text-muted mb-3 titulo">Venta de Timbres Fiscales</h3>
                 <div class="d-flex gap-3 justify-content-center fw-normal titulo" style="font-size:12.7px">
-                    <button type="button" class="btn btn-s btn-primary py-1">Aperturar Taquilla</button>
-                    <a href="{{ route('venta') }}" class="btn btn-s btn-success py-1">Vender</a>
-                    <button type="button" class="btn btn-s btn-secondary  py-1">Cierre</button>
+                    @if ($apertura_admin == false)
+                        <p class="text-muted titulo fs-5">Disculpe, el usuario administrador no ha aperturado esta Taquilla todavia. Ante cualquier duda, 
+                            comuniquese con su Supervisor.</p>
+                    @elseif ($apertura_admin == true && $apertura_taquillero == false)
+                        <button type="button" class="btn btn-s btn-primary py-1">Aperturar Taquilla</button>
+                    @elseif ($apertura_taquillero == true)
+                        <button type="button" class="btn btn-s btn-primary py-1">Bóveda</button>
+                        <a href="{{ route('venta') }}" class="btn btn-s btn-success py-1">Vender</a>
+                        <button type="button" class="btn btn-s btn-secondary  py-1">Cierre</button>
+                    @endif               
                 </div>
             </div>
+
+            @if ($apertura_admin == true && $apertura_taquillero == false)
+                <div class="text-end fw-bold">
+                    <span>Apertura Administrador: <span class="text-muted">{{$hora_apertura_admin}}</span> </span>
+                </div>       
+            @elseif ($apertura_taquillero == true)
+                <div class="text-end fw-bold">
+                    <span>Apertura Administrador: <span class="text-muted">{{$hora_apertura_admin}}</span> </span><br>
+                    <span>Apertura Taquillero: <span class="text-muted">{{$hora_apertura_taquillero}}</span> </span>
+                </div>
+            @endif 
+
+            
         </div>
 
 

@@ -30,7 +30,7 @@ class DatabaseSeeder extends Seeder
 
         $this->call(LocalidadesSeeder::class);
         $this->call(ActividadesEconomicasSeeder::class);
-       
+        $this->call(EfectivoTaquillasSeeder::class);
 
         
         // \App\Models\User::factory(10)->create();

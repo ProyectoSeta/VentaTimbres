@@ -364,6 +364,12 @@ return [
             'route'         => 'inventario_taquillas',
             'icon'       => 'fas fa-angle-right pe-2',  
         ],
+        ['header' => 'Apertura'],
+        [
+            'text'        => 'Taquillas',
+            'route'         => 'apertura',
+            'icon'       => 'fas fa-angle-right pe-2',  
+        ],
 
 
 

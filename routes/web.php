@@ -101,3 +101,9 @@ Route::post('/venta/debitado', [App\Http\Controllers\VentaController::class, 'de
 Route::post('/venta/add_contribuyente', [App\Http\Controllers\VentaController::class, 'add_contribuyente'])->name('venta.add_contribuyente');
 
 Route::post('/venta/venta', [App\Http\Controllers\VentaController::class, 'venta'])->name('venta.venta');
+
+
+///////////////////// APERTURA TAQUILLAS
+Route::get('/apertura', [App\Http\Controllers\AperturaTaquillasController::class, 'index'])->name('apertura');
+Route::post('/apertura/modal_apertura', [App\Http\Controllers\AperturaTaquillasController::class, 'modal_apertura'])->name('apertura.modal_apertura');
+Route::post('/apertura/apertura_taquillas', [App\Http\Controllers\AperturaTaquillasController::class, 'apertura_taquillas'])->name('apertura.apertura_taquillas');
