@@ -17,7 +17,7 @@
                         <p class="text-muted titulo fs-5">Disculpe, el usuario administrador no ha aperturado esta Taquilla todavia. Ante cualquier duda, 
                             comuniquese con su Supervisor.</p>
                     @elseif ($apertura_admin == true && $apertura_taquillero == false)
-                        <button type="button" class="btn btn-s btn-primary py-1">Aperturar Taquilla</button>
+                        <button type="button" class="btn btn-s btn-primary py-1" data-bs-toggle="modal" data-bs-target="#modal_apertura_taquilla">Aperturar Taquilla</button>
                     @elseif ($apertura_taquillero == true)
                         <button type="button" class="btn btn-s btn-primary py-1">Bóveda</button>
                         <a href="{{ route('venta') }}" class="btn btn-s btn-success py-1">Vender</a>
@@ -52,8 +52,8 @@
         </div>
 
 
-        
-        <!-- <div class="row g-0">
+<!--         
+        <div class="row g-0">
             <div class="col-md-6">
                 <div class="bg-body-tertiary me-md-3 pt-3 px-3 pt-md-5 px-md-5 text-center overflow-hidden">
                     <div class="my-3 py-3">
@@ -77,7 +77,35 @@
 
     </main>
     
+<!-- *********************************  MODALES ******************************* -->
+    <!-- ************ APERTURA DE TAQUILLA ************** -->
+    <div class="modal fade" id="modal_apertura_taquilla" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content" id="content_apertura_taquillas">
+                <div class="modal-header p-2 pt-3 d-flex justify-content-center">
+                    <div class="text-center">
+                        <i class="bx bx-lock-open-alt fs-2 text-muted me-2"></i>
+                        <h1 class="modal-title fs-5 fw-bold text-navy">Apertura Taquilla</h1>
+                    </div>
+                </div> 
+                <div class="modal-body px-5 py-3" style="font-size:13px">
+                    <form id="form_aperturar_taquilla" method="post" onsubmit="event.preventDefault(); aperturaTaquilla()">
+                        
+                        <label for="clave" class="form-label"><span class="text-danger">* </span>Ingrese la clave de seguridad de la Taquilla:</label>
+                        <input type="password" id="clave" class="form-control form-control-sm" name="clave">
 
+                        <p class="text-muted text-end"><span style="color:red">*</span> Campos requeridos.</p>
+
+                        <div class="d-flex justify-content-center mt-3 mb-3">
+                            <button type="button" class="btn btn-secondary btn-sm me-2" data-bs-dismiss="modal">Cancelar</button>
+                            <button type="submit" class="btn btn-success btn-sm">Aperturar</button>
+                        </div>
+                    </form>
+                </div>
+            </div>  <!-- cierra modal-content -->
+        </div>  <!-- cierra modal-dialog -->
+    </div>
+<!-- ************************************************************************** -->
 
 
 @stop
@@ -110,6 +138,38 @@
         $(document).ready(function () {
           
         });
+
+        function aperturaTaquilla(){
+            var formData = new FormData(document.getElementById("form_aperturar_taquilla"));
+                $.ajax({
+                    headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') },
+                    url:'{{route("home.apertura_taquilla") }}',
+                    type:'POST',
+                    contentType:false,
+                    cache:false,
+                    processData:false,
+                    async: true,
+                    data: formData,
+                    success: function(response){
+                        console.log(response);
+                        if (response.success) {
+                            alert('TAQUILLA APERTURADA.');
+                            window.location.href = "{{ route('home')}}";
+                        }else{
+                            if (response.nota != '') {
+                                alert(response.nota);
+                            }else{
+                                alert('Disculpe, ha ocurrido un error.');
+                            }
+                            
+                        }  
+
+                    },
+                    error: function(error){
+                        
+                    }
+                });
+        }
     </script>
   
 @stop

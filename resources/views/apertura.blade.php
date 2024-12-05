@@ -6,37 +6,32 @@
     
     <script src="{{ asset('jss/bundle.js') }}" defer></script>
     <link href="{{asset('css/datatable.min.css') }}" rel="stylesheet">
-    <!-- <script src="{{asset('vendor/sweetalert.js') }}"></script>  -->
     <script src="{{ asset('jss/jquery-3.5.1.js') }}" ></script>
-
-    <!-- <img src="{{asset('assets/bf-1.svg')}}" class="w-100" alt="..."> -->
 @stop
 
 @section('content')
-    <main class="container p-3">
+    <div class="mx-5">
         
-        <div class="d-flex justify-content-between align-items-center mb-5">
-            <div class="text-navy fs-3 titulo fw-bold">Hoy</div>
+        <div class="row d-flex align-items-center mb-5">
+            <div class="col-md-6 text-navy fs-3 titulo fw-bold">Hoy | <span class="fs-4" style="color:#004cbd">{{$hoy_view}}</span></div>
 
-            <div class="text-muted fw-bold fs-5">
-                24-02-2025
+            <div class="col-md-6 d-flex justify-content-end">
+                <button type="button" class="btn bg-navy rounded-pill px-3 btn-sm fw-bold d-flex align-items-center" id="apertura_taquillas" data-bs-toggle="modal" data-bs-target="#modal_apertura_taquillas">
+                    <i class='bx bx-plus fw-bold fs-6 pe-2'></i>
+                    <span>Aperturar</span>
+                </button>
             </div>
-
-            <button type="button" class="btn bg-navy rounded-pill px-3 btn-sm fw-bold d-flex align-items-center" id="apertura_taquillas" data-bs-toggle="modal" data-bs-target="#modal_apertura_taquillas">
-                <i class='bx bx-plus fw-bold fs-6 pe-2'></i>
-                <span>Aperturar</span>
-            </button>
         </div>
 
 
         <p class="text-navy fw-bold fs-4 titulo">Taquillas aperturadas | <span class="text-muted">Hoy</span></p>
 
         <div class="table-responsive" style="font-size:12.7px">
-            <table id="table_apertura_hoy" class="table text-center border-light-subtle" style="font-size:12.7px">
+            <table id="table_apertura_hoy" class="table text-center border-light-subtle" style="font-size:13px">
                 <thead>
-                <tr>
-                        <th>#</th>
-                        <th>Taquilla</th>
+                    <tr>
+                        <th>ID Taquilla</th>
+                        <th>Ubicación</th>
                         <th>Taquillero</th>
                         <th>Hora Apertura</th>
                         <th>Apertura Taquillero</th>
@@ -44,41 +39,59 @@
                     </tr> 
                 </thead>
                 <tbody>
-                    <tr>
-                        <td></td>
-                        <td></td>
-                        <td></td>
-                        <td></td>
-                        <td></td>
-                        <td></td>
-                    </tr>
+                    @foreach ($aperturas as $apertura)
+                        <tr>
+                            <td>{{$apertura->id_taquilla}}</td>
+                            <td>{{$apertura->ubicacion}}</td>
+                            <td>{{$apertura->taquillero}}</td>
+                            <td>
+                                <span class="badge bg-primary-subtle border border-primary-subtle text-primary-emphasis rounded-pill" style="font-size:12.7px">{{$apertura->hora_apertura}}</span>
+                                <!-- <span class="badge bg-info-subtle border border-info-subtle text-info-emphasis rounded-pill" style="font-size:12.7px">{{$apertura->hora_apertura}}</span> -->
+                            </td>
+                            <td>
+                                @if ($apertura->apertura_taquillero == null)
+                                    <span class="fst-italic fw-bold text-muted">Taquillero sin Aperturar.</span>
+                                @else
+                                    {{$apertura->apertura_taquillero}}
+                                @endif
+                            </td>
+                            <td>
+                                @if ($apertura->cierre_taquilla == null)
+                                    <span class="fst-italic fw-bold text-muted">Sin cierre de Taquilla.</span>
+                                @else
+                                    {{$apertura->cierre_taquilla}}
+                                @endif
+                            </td>
+                        </tr>
+                    @endforeach
                 </tbody>
-                
             </table>
         </div>
 
-        <div class="d-flex justify-content-between my-5">
+        <div class="d-flex justify-content-between mt-5 mb-2">
             <p class="text-navy fw-bold fs-4 titulo">Taquillas aperturadas | <span class="text-muted">Buscar por fecha</span></p>
 
             <div class="d-flex align-items-center" >
                 <input type="date" class="form-control me-2" style="font-size:13px" id="fecha_search_apertura">  
                 <button type="button" class="btn btn-secondary pb-1" id="btn_search_apertura"><i class='bx bx-search fs-6 m-0'></i></button>
             </div>
-            
-
         </div>
-    </main>
+
+        <div id="content_table_search">
+           
+        </div>
+    </div>
     
 
 <!-- *********************************  MODALES ******************************* -->
     <!-- ************ APERTURA DE TAQUILLAS ************** -->
     <div class="modal fade" id="modal_apertura_taquillas" tabindex="-1" aria-hidden="true">
-            <div class="modal-dialog modal-lg">
-                <div class="modal-content" id="content_apertura_taquillas">
-                    
-                </div>  <!-- cierra modal-content -->
-            </div>  <!-- cierra modal-dialog -->
-        </div>
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content" id="content_apertura_taquillas">
+                
+            </div>  <!-- cierra modal-content -->
+        </div>  <!-- cierra modal-dialog -->
+    </div>
 <!-- ************************************************************************** -->
 
 @stop
@@ -126,6 +139,7 @@
                     }
                 }
             );
+
             $('#table_apertura').DataTable(
                 {
                     // "order": [[ 0, "desc" ]],
@@ -143,6 +157,24 @@
                     }
                 }
             );
+
+            // $('#table_apertura_fecha').DataTable(
+            //     {
+            //         // "order": [[ 0, "desc" ]],
+            //         "language": {
+            //             "lengthMenu": " Mostrar  _MENU_  Registros por página",
+            //             "zeroRecords": "No se encontraron registros",
+            //             "info": "Mostrando página _PAGE_ de _PAGES_",
+            //             "infoEmpty": "No se encuentran Registros",
+            //             "infoFiltered": "(filtered from _MAX_ total records)",
+            //             'search':"Buscar",
+            //             'paginate':{
+            //                 'next':'Siguiente',
+            //                 'previous':'Anterior'
+            //             }
+            //         }
+            //     }
+            // );
 
         });
     </script>
@@ -177,6 +209,27 @@
                     $('#label_'+taquilla).html('No');
                 }
             });
+
+            /////////////////////////// CONTENT: TABLE SEARCH POR FECHA
+            $(document).on('click','#btn_search_apertura', function(e) {
+                e.preventDefault();
+                var fecha = $('#fecha_search_apertura').val();
+
+                $.ajax({
+                    headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') },
+                    type: 'POST',
+                    url: '{{route("apertura.search_fecha") }}',
+                    data: {fecha:fecha},
+                    success: function(response) {
+                        console.log(response);
+                        $('#content_table_search').html(response);
+                        $('#table_apertura_fecha').DataTable();
+                    },
+                    error: function() {
+                    }
+                });
+            });
+
         });
 
         function aperturaTaquillas(){
@@ -193,8 +246,8 @@
                     success: function(response){
                         console.log(response);
                         if (response.success) {
-                        alert('LOS ROLLOS SE HAN ENVIADO AL INVENTARIO EXITOSAMENTE');
-                            window.location.href = "{{ route('emision_rollos')}}";
+                            alert('SE HAN APERTURADO LAS TAQUILLAS CORRECTAMENTE.');
+                            window.location.href = "{{ route('apertura')}}";
                         }else{
                             alert('Disculpe, ha ocurrido un error.');
                         }  

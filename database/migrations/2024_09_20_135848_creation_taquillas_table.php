@@ -20,6 +20,8 @@ return new class extends Migration
             $table->integer('key_funcionario')->unsigned();
             $table->foreign('key_funcionario')->references('id_funcionario')->on('funcionarios')->onDelete('cascade');
 
+            $table->string('clave');
+
             $table->timestamps();
         });
     }

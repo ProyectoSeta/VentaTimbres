@@ -27,6 +27,7 @@ Route::post('/user', [App\Http\Controllers\UserController::class, 'store'])->nam
 
 /////////////////////  HOME
 Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
+Route::post('/home/apertura_taquilla', [App\Http\Controllers\HomeController::class, 'apertura_taquilla'])->name('home.apertura_taquilla');
 
 
 
@@ -107,3 +108,4 @@ Route::post('/venta/venta', [App\Http\Controllers\VentaController::class, 'venta
 Route::get('/apertura', [App\Http\Controllers\AperturaTaquillasController::class, 'index'])->name('apertura');
 Route::post('/apertura/modal_apertura', [App\Http\Controllers\AperturaTaquillasController::class, 'modal_apertura'])->name('apertura.modal_apertura');
 Route::post('/apertura/apertura_taquillas', [App\Http\Controllers\AperturaTaquillasController::class, 'apertura_taquillas'])->name('apertura.apertura_taquillas');
+Route::post('/apertura/search_fecha', [App\Http\Controllers\AperturaTaquillasController::class, 'search_fecha'])->name('apertura.search_fecha');

@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 use DB;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Hash; 
 
 class HomeController extends Controller
 {
@@ -67,6 +68,36 @@ class HomeController extends Controller
     }
 
     
-  
+    public function apertura_taquilla(Request $request){
+        $pass = $request->post('clave');
+        $hoy = date('Y-m-d');
+
+        $user = auth()->id();
+        $query = DB::table('users')->select('key_sujeto')->where('id','=',$user)->first();
+        $q2 = DB::table('taquillas')->select('id_taquilla','clave')->where('key_funcionario','=',$query->key_sujeto)->first();
+        if ($q2) {
+            /// usuario taquillero
+            $id_taquilla = $q2->id_taquilla;
+
+            if (Hash::check($q2->clave, $pass)) {
+                $hora = date('H:i:s');
+                $update = DB::table('apertura_taquillas')->where('key_taquilla', '=', $id_taquilla)
+                                                        ->where('fecha','=', $hoy)
+                                                        ->update(['apertura_taquillero' => $hora]);
+                if ($update) {
+                    return response()->json(['success' => true]);
+                }else{
+                    return response()->json(['success' => false]);
+                }
+            }else{
+                return response()->json(['success' => false, 'nota' => 'Disculpe, la contraseña ingresada no es válida.']);
+            }
+        }else{
+            ////no esta asignado a ninguna taquilla
+            /////BITACORA 
+            return response()->json(['success' => false, 'nota' => 'Disculpe, usted no se encuentra asociado a ninguna taquilla.']);
+        }
+
+    }
     
 }
