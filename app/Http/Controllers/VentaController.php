@@ -950,6 +950,7 @@ class VentaController extends Controller
 
             foreach ($pagos as $pago) {
                 if ($pago['metodo'] == 5) {
+                    /////////////PUNTO
                     $i3 =DB::table('pago_ventas')->insert(['key_venta' => $id_venta, 
                                                             'metodo' => 5, 
                                                             'comprobante' => $pago['comprobante'],
@@ -961,6 +962,7 @@ class VentaController extends Controller
                                                 <td>#'.$pago['comprobante'].'</td>
                                             </tr>';
                 }else{
+                    ///////////EFECTIVO
                     $i3 =DB::table('pago_ventas')->insert(['key_venta' => $id_venta, 
                                                             'metodo' => 6, 
                                                             'comprobante' => null,
@@ -971,6 +973,11 @@ class VentaController extends Controller
                                                 <td class="table-warning">'.$formato_debito_efectivo.'</td>
                                                 <td><span class="text-secondary fst-italic">No aplica</span></td>
                                             </tr>';
+                    
+                    //////// SUMA EFECTIVO EN EL TAQUILLA (TEMPORAL - DIARIO)
+                    // $consulta_temps = DB::table('efectivo_taquillas_temps')->select('key_sujeto')->where('id','=',$user)->first();
+                    
+                    // $update_efectivo_temp = DB::table('ventas')->where('id_venta','=',$id_venta)->update(['total_ucd' => $total_ucd, 'total_bolivares' => $total_bolivares]);
                 }
             }
 

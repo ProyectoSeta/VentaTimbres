@@ -53,8 +53,8 @@ class HomeController extends Controller
                 //////taquillero aperturo 
                 $apertura_admin = true;
                 $apertura_taquillero = true;
-                $hora_apertura_admin = $q3->apertura_admin;
-                $hora_apertura_taquillero = $q3->apertura_taquillero;
+                $hora_apertura_admin = date("h:i A",strtotime($q3->apertura_admin));
+                $hora_apertura_taquillero = date("h:i A",strtotime($q3->apertura_taquillero));
             }
             
         }else{
@@ -62,7 +62,13 @@ class HomeController extends Controller
             $apertura_admin = false;
         }
 
-        return view('home', compact('apertura_admin','apertura_taquillero','hora_apertura_admin','hora_apertura_taquillero'));
+
+        $dias = array("Domingo","Lunes","Martes","Miercoles","Jueves","Viernes","Sábado");
+        $meses = array("Enero","Febrero","Marzo","Abril","Mayo","Junio","Julio","Agosto","Septiembre","Octubre","Noviembre","Diciembre");   
+
+        $hoy_view = $dias[date('w')].", ".date('d')." de ".$meses[date('n')-1]. " ".date('Y');
+
+        return view('home', compact('apertura_admin','apertura_taquillero','hora_apertura_admin','hora_apertura_taquillero','hoy_view'));
 
 
     }
@@ -70,27 +76,67 @@ class HomeController extends Controller
     
     public function apertura_taquilla(Request $request){
         $pass = $request->post('clave');
-        $hoy = date('Y-m-d');
 
+        if ($pass == '' || $pass == null) {
+            return response()->json(['success' => false, 'nota' => 'Ingrese la clave de seguridad.']);
+        }else{
+            $hoy = date('Y-m-d');
+
+            $user = auth()->id();
+            $query = DB::table('users')->select('key_sujeto')->where('id','=',$user)->first();
+            $q2 = DB::table('taquillas')->select('id_taquilla','clave')->where('key_funcionario','=',$query->key_sujeto)->first();
+            if ($q2) {
+                /// usuario taquillero
+                $id_taquilla = $q2->id_taquilla;
+
+                if (Hash::check($pass, $q2->clave)) {
+                    $hora = date('H:i:s');
+                    $update = DB::table('apertura_taquillas')->where('key_taquilla', '=', $id_taquilla)
+                                                            ->where('fecha','=', $hoy)
+                                                            ->update(['apertura_taquillero' => $hora]);
+                    if ($update) {
+                        return response()->json(['success' => true]);
+                    }else{
+                        return response()->json(['success' => false]);
+                    }
+                }else{
+                    return response()->json(['success' => false, 'nota' => 'Disculpe, la contraseña ingresada no es válida.']);
+                }
+            }else{
+                ////no esta asignado a ninguna taquilla
+                /////BITACORA 
+                return response()->json(['success' => false, 'nota' => 'Disculpe, usted no se encuentra asociado a ninguna taquilla.']);
+            }
+        }
+        
+
+    }
+
+
+
+
+
+
+    public function fondo_caja(Request $request){
+        $hoy = date('Y-m-d');
         $user = auth()->id();
+
         $query = DB::table('users')->select('key_sujeto')->where('id','=',$user)->first();
         $q2 = DB::table('taquillas')->select('id_taquilla','clave')->where('key_funcionario','=',$query->key_sujeto)->first();
         if ($q2) {
-            /// usuario taquillero
             $id_taquilla = $q2->id_taquilla;
-
-            if (Hash::check($q2->clave, $pass)) {
-                $hora = date('H:i:s');
+            $fondo = $request->post('fondo');
+            if ($fondo == 0) {
+                return response()->json(['success' => true]);
+            }else{
                 $update = DB::table('apertura_taquillas')->where('key_taquilla', '=', $id_taquilla)
-                                                        ->where('fecha','=', $hoy)
-                                                        ->update(['apertura_taquillero' => $hora]);
+                                                    ->where('fecha','=', $hoy)
+                                                    ->update(['fondo_caja' => $fondo]);
                 if ($update) {
                     return response()->json(['success' => true]);
                 }else{
                     return response()->json(['success' => false]);
                 }
-            }else{
-                return response()->json(['success' => false, 'nota' => 'Disculpe, la contraseña ingresada no es válida.']);
             }
         }else{
             ////no esta asignado a ninguna taquilla
@@ -98,6 +144,7 @@ class HomeController extends Controller
             return response()->json(['success' => false, 'nota' => 'Disculpe, usted no se encuentra asociado a ninguna taquilla.']);
         }
 
+        
     }
     
 }

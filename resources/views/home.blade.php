@@ -8,6 +8,8 @@
 
 
     <main>
+        <div class="text-navy fs-3 tituo fw-semibold my-3 ms-4">{{$hoy_view}}</div>
+
         <div class="position-relative overflow-hidden p-3 p-md-5 m-md-3 text-center bg-white container-fluid">
             <div class="p-lg-5 mx-auto my-5">
                 <h1 class="display-5 text-navy fw-bold">FORMA 14 | Estampillas</h1>
@@ -19,23 +21,33 @@
                     @elseif ($apertura_admin == true && $apertura_taquillero == false)
                         <button type="button" class="btn btn-s btn-primary py-1" data-bs-toggle="modal" data-bs-target="#modal_apertura_taquilla">Aperturar Taquilla</button>
                     @elseif ($apertura_taquillero == true)
-                        <button type="button" class="btn btn-s btn-primary py-1">Bóveda</button>
+                        <button type="button" class="btn btn-s btn-dark py-1" data-bs-toggle="offcanvas" data-bs-target="#historial_boveda" aria-controls="historial_boveda">Historial Bv.</button>
+                        <button type="button" class="btn btn-s btn-dark py-1">Bóveda</button>
                         <a href="{{ route('venta') }}" class="btn btn-s btn-success py-1">Vender</a>
                         <button type="button" class="btn btn-s btn-secondary  py-1">Cierre</button>
                     @endif               
                 </div>
+
+                <div class="my-4">
+                    @if ($apertura_admin == true && $apertura_taquillero == false)
+                        <div class="fw-bold">
+                            <span>Apertura Administrador: <span class="text-muted">{{$hora_apertura_admin}}</span> </span>
+                        </div>       
+                    @elseif ($apertura_taquillero == true)
+                        <div class="fw-bold">
+                            <span>
+                                APERTURA ADMINISTRADOR: <span class="badge bg-primary-subtle border border-primary-subtle text-primary-emphasis rounded-pill" style="font-size:13px">{{$hora_apertura_admin}}</span>
+                            </span>
+                            <br>
+                            <span>
+                                APERTURA TAQUILLERO: <span class="badge bg-primary-subtle border border-primary-subtle text-primary-emphasis rounded-pill" style="font-size:13px">{{$hora_apertura_taquillero}}</span>
+                            </span>
+                        </div>
+                    @endif 
+                </div>
             </div>
 
-            @if ($apertura_admin == true && $apertura_taquillero == false)
-                <div class="text-end fw-bold">
-                    <span>Apertura Administrador: <span class="text-muted">{{$hora_apertura_admin}}</span> </span>
-                </div>       
-            @elseif ($apertura_taquillero == true)
-                <div class="text-end fw-bold">
-                    <span>Apertura Administrador: <span class="text-muted">{{$hora_apertura_admin}}</span> </span><br>
-                    <span>Apertura Taquillero: <span class="text-muted">{{$hora_apertura_taquillero}}</span> </span>
-                </div>
-            @endif 
+            
 
             
         </div>
@@ -52,8 +64,8 @@
         </div>
 
 
-<!--         
-        <div class="row g-0">
+                 
+        <!-- <div class="row g-0">
             <div class="col-md-6">
                 <div class="bg-body-tertiary me-md-3 pt-3 px-3 pt-md-5 px-md-5 text-center overflow-hidden">
                     <div class="my-3 py-3">
@@ -79,7 +91,7 @@
     
 <!-- *********************************  MODALES ******************************* -->
     <!-- ************ APERTURA DE TAQUILLA ************** -->
-    <div class="modal fade" id="modal_apertura_taquilla" tabindex="-1" aria-hidden="true">
+    <div class="modal fade" id="modal_apertura_taquilla" tabindex="-1" aria-hidden="true"  data-bs-backdrop="static" data-bs-keyboard="false">
         <div class="modal-dialog">
             <div class="modal-content" id="content_apertura_taquillas">
                 <div class="modal-header p-2 pt-3 d-flex justify-content-center">
@@ -92,7 +104,46 @@
                     <form id="form_aperturar_taquilla" method="post" onsubmit="event.preventDefault(); aperturaTaquilla()">
                         
                         <label for="clave" class="form-label"><span class="text-danger">* </span>Ingrese la clave de seguridad de la Taquilla:</label>
-                        <input type="password" id="clave" class="form-control form-control-sm" name="clave">
+                        <input type="password" id="clave" class="form-control form-control-sm" name="clave" required>
+
+                        <p class="text-muted text-end"><span style="color:red">*</span> Campos requeridos.</p>
+
+                        <div class="d-flex justify-content-center mt-3 mb-3">
+                            <button type="button" class="btn btn-secondary btn-sm me-2" data-bs-dismiss="modal">Cancelar</button>
+                            <button type="submit" class="btn btn-success btn-sm">Aperturar</button>
+                        </div>
+                    </form>
+                </div>
+            </div>  <!-- cierra modal-content -->
+        </div>  <!-- cierra modal-dialog -->
+    </div>
+
+
+    <!-- ************ MODAL FONDO DE CAJA ************** -->
+    <div class="modal fade" id="modal_fondo_caja" tabindex="-1" aria-hidden="true"  data-bs-backdrop="static" data-bs-keyboard="false">
+        <div class="modal-dialog">
+            <div class="modal-content" id="content_fonfo_caja">
+                <div class="modal-header p-2 pt-3 d-flex justify-content-center">
+                    <div class="text-center">
+                        <i class='bx bxs-coin-stack  fs-2 text-muted me-2'></i>
+                        <h1 class="modal-title fs-5 fw-bold text-navy">Fondo de Caja</h1>
+                    </div>
+                </div> 
+                <div class="modal-body px-5 py-3" style="font-size:13px">
+                    <form id="form_fondo_caja" method="post" onsubmit="event.preventDefault(); fondoCaja()">
+                        
+                        <label for="clave" class="form-label"><span class="text-danger">* </span>Ingrese el fonde de caja con el que apertura la Taquilla:</label>
+                        
+                        <div class="d-flex align-items-center">
+                            <input type="number" id="fondo" class="form-control form-control-sm me-2" name="fondo" required> <span>Bs.</span>
+                        </div>
+                        
+                        <div class="form-check mt-2">
+                            <input class="form-check-input" type="checkbox" value="0" id="sin_fondo">
+                            <label class="form-check-label" for="sin_fondo">
+                                Sin Fondo de Caja
+                            </label>
+                        </div>
 
                         <p class="text-muted text-end"><span style="color:red">*</span> Campos requeridos.</p>
 
@@ -106,6 +157,49 @@
         </div>  <!-- cierra modal-dialog -->
     </div>
 <!-- ************************************************************************** -->
+
+<!-- ***************************** CANVAS ************************************-->
+    <!-- HISTORIAL INGRESO BOVEDA -->
+    <div class="offcanvas offcanvas-start" tabindex="-1" id="historial_boveda" aria-labelledby="historial_boveda">
+        <div class="offcanvas-header">
+            <i class='bx bx-detail text-muted me-3 fs-4'></i>
+            <h5 class="offcanvas-title titulo fs-5 fw-bold text-navy" id="">Bóveda | <span class="text-muted">Historial</span></h5>
+            <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+        </div>
+        <div class="offcanvas-body px-3" style="font-size:13px">               
+
+            <p class="text-muted">*Nota: El historial que se muestra a continuación corresponde al día de hoy.</p>
+            
+            <table class="table text-center">
+                <thead>
+                    <tr>
+                        <th>#</th>
+                        <th>Hora</th>
+                        <th>Monto</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td class="text-muted">1</td>
+                        <td>
+                            <span class="badge bg-primary-subtle border border-primary-subtle text-primary-emphasis rounded-pill" style="font-size:12.7px">10:45 AM</span>
+                        </td>
+                        <td class="fw-bold">500 Bs.</td>
+                    </tr>
+                    <tr>
+                        <td class="text-muted">2</td>
+                        <td>
+                            <span class="badge bg-primary-subtle border border-primary-subtle text-primary-emphasis rounded-pill" style="font-size:12.7px">01:02 AM</span>
+                        </td>
+                        <td class="fw-bold">620 Bs.</td>
+                    </tr>
+                </tbody>
+            </table>
+            
+        </div>
+    </div>
+
+<!-- ************************************************************************* -->
 
 
 @stop
@@ -136,7 +230,14 @@
 
     <script type="text/javascript">
         $(document).ready(function () {
-          
+            /////////////////////// SIN FONDO
+            $(document).on('click', '#sin_fondo', function(e){ 
+                if($("#sin_fondo").is(':checked')) {
+                    $('#fondo').val('0.00');
+                } else {
+                    $('#fondo').val('');
+                }
+            });
         });
 
         function aperturaTaquilla(){
@@ -154,7 +255,10 @@
                         console.log(response);
                         if (response.success) {
                             alert('TAQUILLA APERTURADA.');
-                            window.location.href = "{{ route('home')}}";
+
+                            $('#modal_apertura_taquilla').modal('hide');
+                            $('#modal_fondo_caja').modal('show');
+
                         }else{
                             if (response.nota != '') {
                                 alert(response.nota);
@@ -162,6 +266,39 @@
                                 alert('Disculpe, ha ocurrido un error.');
                             }
                             
+                        }  
+
+                    },
+                    error: function(error){
+                        
+                    }
+                });
+        }
+
+
+        function fondoCaja(){
+            var formData = new FormData(document.getElementById("form_fondo_caja"));
+                $.ajax({
+                    headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') },
+                    url:'{{route("home.fondo_caja") }}',
+                    type:'POST',
+                    contentType:false,
+                    cache:false,
+                    processData:false,
+                    async: true,
+                    data: formData,
+                    success: function(response){
+                        console.log(response);
+                        if (response.success) {
+                            alert('GUARDADO EXITOSAMENTE.');
+                            window.location.href = "{{ route('home')}}";
+                        }else{
+                            if (response.nota != '') {
+                                alert(response.nota);
+                            }else{
+                                alert('Disculpe, ha ocurrido un error. La taquilla aperturará con un Fondo de caja 0 Bs.');
+                            }
+                            window.location.href = "{{ route('home')}}";
                         }  
 
                     },

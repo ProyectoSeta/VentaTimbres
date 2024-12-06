@@ -140,7 +140,7 @@ class AperturaTaquillasController extends Controller
         $apertura = $request->post('apertura');
 
         foreach ($apertura as $id_taquilla) {
-            $insert = DB::table('apertura_taquillas')->insert(['key_taquilla' => $id_taquilla]);
+            $insert = DB::table('apertura_taquillas')->insert(['key_taquilla' => $id_taquilla,'fondo_caja' => 0]);
         }
         
         return response()->json(['success' => true]); 

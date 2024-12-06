@@ -28,6 +28,7 @@ Route::post('/user', [App\Http\Controllers\UserController::class, 'store'])->nam
 /////////////////////  HOME
 Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
 Route::post('/home/apertura_taquilla', [App\Http\Controllers\HomeController::class, 'apertura_taquilla'])->name('home.apertura_taquilla');
+Route::post('/home/fondo_caja', [App\Http\Controllers\HomeController::class, 'fondo_caja'])->name('home.fondo_caja');
 
 
 

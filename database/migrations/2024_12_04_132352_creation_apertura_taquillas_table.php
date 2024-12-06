@@ -21,6 +21,9 @@ return new class extends Migration
 
             $table->time('apertura_admin');
             $table->time('apertura_taquillero')->nullable();
+            $table->time('cierre_taquilla')->nullable();
+
+            $table->float('fondo_caja');
 
             
         });
