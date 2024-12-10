@@ -21,8 +21,8 @@
                     @elseif ($apertura_admin == true && $apertura_taquillero == false)
                         <button type="button" class="btn btn-s btn-primary py-1" data-bs-toggle="modal" data-bs-target="#modal_apertura_taquilla">Aperturar Taquilla</button>
                     @elseif ($apertura_taquillero == true)
-                        <button type="button" class="btn btn-s btn-dark py-1" data-bs-toggle="offcanvas" data-bs-target="#historial_boveda" aria-controls="historial_boveda">Historial Bv.</button>
-                        <button type="button" class="btn btn-s btn-dark py-1">Bóveda</button>
+                        <button type="button" class="btn btn-s btn-dark py-1" id="btn_historial_boveda" data-bs-toggle="offcanvas" data-bs-target="#historial_boveda" aria-controls="historial_boveda">Historial Bv.</button>
+                        <button type="button" class="btn btn-s btn-dark py-1" id="btn_boveda" data-bs-toggle="modal" data-bs-target="#modal_ingresar_boveda">Bóveda</button>
                         <a href="{{ route('venta') }}" class="btn btn-s btn-success py-1">Vender</a>
                         <button type="button" class="btn btn-s btn-secondary  py-1">Cierre</button>
                     @endif               
@@ -156,47 +156,27 @@
             </div>  <!-- cierra modal-content -->
         </div>  <!-- cierra modal-dialog -->
     </div>
+
+
+    <!-- ************ MODAL BOVEDA ************** -->
+    <div class="modal fade" id="modal_ingresar_boveda" tabindex="-1" aria-hidden="true"  data-bs-backdrop="static" data-bs-keyboard="false">
+        <div class="modal-dialog">
+            <div class="modal-content" id="content_ingresar_boveda">
+                
+            </div>  <!-- cierra modal-content -->
+        </div>  <!-- cierra modal-dialog -->
+    </div>
+
+
 <!-- ************************************************************************** -->
+
+
+
 
 <!-- ***************************** CANVAS ************************************-->
     <!-- HISTORIAL INGRESO BOVEDA -->
     <div class="offcanvas offcanvas-start" tabindex="-1" id="historial_boveda" aria-labelledby="historial_boveda">
-        <div class="offcanvas-header">
-            <i class='bx bx-detail text-muted me-3 fs-4'></i>
-            <h5 class="offcanvas-title titulo fs-5 fw-bold text-navy" id="">Bóveda | <span class="text-muted">Historial</span></h5>
-            <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Close"></button>
-        </div>
-        <div class="offcanvas-body px-3" style="font-size:13px">               
-
-            <p class="text-muted">*Nota: El historial que se muestra a continuación corresponde al día de hoy.</p>
-            
-            <table class="table text-center">
-                <thead>
-                    <tr>
-                        <th>#</th>
-                        <th>Hora</th>
-                        <th>Monto</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr>
-                        <td class="text-muted">1</td>
-                        <td>
-                            <span class="badge bg-primary-subtle border border-primary-subtle text-primary-emphasis rounded-pill" style="font-size:12.7px">10:45 AM</span>
-                        </td>
-                        <td class="fw-bold">500 Bs.</td>
-                    </tr>
-                    <tr>
-                        <td class="text-muted">2</td>
-                        <td>
-                            <span class="badge bg-primary-subtle border border-primary-subtle text-primary-emphasis rounded-pill" style="font-size:12.7px">01:02 AM</span>
-                        </td>
-                        <td class="fw-bold">620 Bs.</td>
-                    </tr>
-                </tbody>
-            </table>
-            
-        </div>
+        
     </div>
 
 <!-- ************************************************************************* -->
@@ -227,6 +207,7 @@
     <script src="{{ asset('jss/jquery-3.5.1.js') }}" ></script>
     <script src="{{ asset('jss/toastr.js') }}" integrity="sha512-VEd+nq25CkR676O+pLBnDW09R7VQX9Mdiij052gVCp5yVH3jGtH70Ho/UUv4mJDsEdTvqRCFZg0NKGiojGnUCw==" ></script>
 
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
     <script type="text/javascript">
         $(document).ready(function () {
@@ -237,6 +218,66 @@
                 } else {
                     $('#fondo').val('');
                 }
+            });
+
+
+            /////////////////// MODAL BOVEDA
+            $(document).on('click', '#btn_boveda', function(e){ 
+                $.ajax({
+                    headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') },
+                    type: 'POST',
+                    url: '{{route("home.modal_boveda") }}',
+                    success: function(response) {
+                        $('#content_ingresar_boveda').html(response);
+                        if (response == false) {
+                            alert('Disculpe, ha ocurrido un error.');
+                        }
+                    },
+                    error: function() {
+                    }
+                });
+            });
+
+
+            ///////////////// EFECTIVO
+            $.ajax({
+                headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') },
+                type: 'POST',
+                url: '{{route("home.alert_boveda") }}',
+                success: function(response) {
+                    console.log(response);
+                    if (response) {
+                        // Swal.fire({
+                        //     icon: "warning",
+                        //     iconColor: "#004cbd",
+                        //     title: "Parece que has superado el Límite de Efectivo en Taquilla.",
+                        //     // text: 'Dirigete a la ventana principal e ingresa el monto total o parcial del efectivo actual en Bóveda.',
+                        //     confirmButtonColor: "#004cbd",
+                        // });
+                    }else{
+                        alert('Disculpe, ha ocurrido un error.');                        
+                    }
+                },
+                error: function() {
+                }
+            });
+
+
+            ///////////////// HISTORIAL BOVEDA
+            $(document).on('click', '#btn_historial_boveda', function(e){ 
+                $.ajax({
+                    headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') },
+                    type: 'POST',
+                    url: '{{route("home.historial_boveda") }}',
+                    success: function(response) {
+                        $('#historial_boveda').html(response);
+                        if (response == false) {
+                            alert('Disculpe, ha ocurrido un error.');
+                        }
+                    },
+                    error: function() {
+                    }
+                });
             });
         });
 
@@ -301,6 +342,33 @@
                             window.location.href = "{{ route('home')}}";
                         }  
 
+                    },
+                    error: function(error){
+                        
+                    }
+                });
+        }
+
+
+        function ingresoBoveda(){
+            var formData = new FormData(document.getElementById("form_ingreso_boveda"));
+                $.ajax({
+                    headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') },
+                    url:'{{route("home.ingreso_boveda") }}',
+                    type:'POST',
+                    contentType:false,
+                    cache:false,
+                    processData:false,
+                    async: true,
+                    data: formData,
+                    success: function(response){
+                        console.log(response);
+                        if (response.success) {
+                            alert('INGRESO EXITOSO.');
+                            window.location.href = "{{ route('home')}}";
+                        }else{
+                            alert('Disculpe, ha ocurrido un error.');
+                        }  
                     },
                     error: function(error){
                         

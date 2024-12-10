@@ -85,3 +85,9 @@
 .show>.nav-pills .nav-link{
     background: #022040 !important;  
 }
+
+
+.card-icon:hover{
+    transform:translate(-50%, -50%);
+    transition: all 0.3s ease-in-out;
+}

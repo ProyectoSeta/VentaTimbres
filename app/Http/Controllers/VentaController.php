@@ -864,8 +864,8 @@ class VentaController extends Controller
                             $cant_estampillas = $cant_estampillas + 1;
                             $cant_ucd_estampillas = $cant_ucd_estampillas + $ucd_tramite;
 
-                            $consulta_emision_tira = DB::table('estampillas')->select('key_emision')->where('id_tira','=',$key_tira);
-                            $consulta_qr_tira = DB::table('emision_estampillas')->select('qr')->where('id_emision','=',$consulta_emision_tira->key_emision);
+                            $consulta_emision_tira = DB::table('estampillas')->select('key_emision')->where('id_tira','=',$key_tira)->first();
+                            $consulta_qr_tira = DB::table('emision_estampillas')->select('qr')->where('id_emision','=',$consulta_emision_tira->key_emision)->first();
 
                             $row_timbres .= '<div class="border mb-4 rounded-3">
                                                 <div class="d-flex justify-content-between px-3 py-2 align-items-center">
@@ -975,9 +975,11 @@ class VentaController extends Controller
                                             </tr>';
                     
                     //////// SUMA EFECTIVO EN EL TAQUILLA (TEMPORAL - DIARIO)
-                    // $consulta_temps = DB::table('efectivo_taquillas_temps')->select('key_sujeto')->where('id','=',$user)->first();
-                    
-                    // $update_efectivo_temp = DB::table('ventas')->where('id_venta','=',$id_venta)->update(['total_ucd' => $total_ucd, 'total_bolivares' => $total_bolivares]);
+                    $consulta_temps = DB::table('efectivo_taquillas_temps')->select('efectivo')->where('key_taquilla','=',$id_taquilla)->first();
+                    $monto_efectivo_temp = $consulta_temps->efectivo;
+                    $total_new_efectivo_temps = $monto_efectivo_temp + $pago['debitado'];                   
+
+                    $update_efectivo_temp = DB::table('efectivo_taquillas_temps')->where('key_taquilla','=',$id_taquilla)->update(['efectivo' => $total_new_efectivo_temps]);
                 }
             }
 
@@ -988,7 +990,7 @@ class VentaController extends Controller
                                         <td>'.$cant_tfe.'</td>
                                         <td>'.$cant_ucd_tfe.'</td>
                                     </tr>';
-            }
+            } 
             if ($exist_estampillas == true) {
                 $tr_detalle_timbres .= '<tr>
                                         <td>Estampillas</td>

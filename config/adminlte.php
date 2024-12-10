@@ -370,6 +370,12 @@ return [
             'route'         => 'apertura',
             'icon'       => 'fas fa-angle-right pe-2',  
         ],
+        ['header' => 'Sedes | Taquillas '],
+        [
+            'text'        => 'Agregar y/o Modificar',
+            'route'         => 'sede_taquilla',
+            'icon'       => 'fas fa-angle-right pe-2',  
+        ],
 
 
 

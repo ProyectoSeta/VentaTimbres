@@ -27,6 +27,8 @@
             
     <link rel="stylesheet" href="{{asset('assets/style.css')}}">
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+    
   
 
     @vite(['resources/sass/app.scss', 'resources/js/app.js'])
