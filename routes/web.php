@@ -119,4 +119,12 @@ Route::post('/apertura/search_fecha', [App\Http\Controllers\AperturaTaquillasCon
 
 ///////////////////// SEDES TAQUILLAS
 Route::get('/sede_taquilla', [App\Http\Controllers\SedeTaquillaController::class, 'index'])->name('sede_taquilla');
+Route::post('/sede_taquilla/new_sede', [App\Http\Controllers\SedeTaquillaController::class, 'new_sede'])->name('sede_taquilla.new_sede');
+Route::post('/sede_taquilla/new_taquillero', [App\Http\Controllers\SedeTaquillaController::class, 'new_taquillero'])->name('sede_taquilla.new_taquillero');
+Route::post('/sede_taquilla/modal_new_taquilla', [App\Http\Controllers\SedeTaquillaController::class, 'modal_new_taquilla'])->name('sede_taquilla.modal_new_taquilla');
+Route::post('/sede_taquilla/new_taquilla', [App\Http\Controllers\SedeTaquillaController::class, 'new_taquilla'])->name('sede_taquilla.new_taquilla');
+
+Route::post('/sede_taquilla/sedes', [App\Http\Controllers\SedeTaquillaController::class, 'sedes'])->name('sede_taquilla.sedes');
+Route::post('/sede_taquilla/taquillas', [App\Http\Controllers\SedeTaquillaController::class, 'taquillas'])->name('sede_taquilla.taquillas');
+Route::post('/sede_taquilla/taquilleros', [App\Http\Controllers\SedeTaquillaController::class, 'taquilleros'])->name('sede_taquilla.taquilleros');
 
