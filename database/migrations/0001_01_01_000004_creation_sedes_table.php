@@ -14,7 +14,9 @@ return new class extends Migration
         Schema::create('sedes', function (Blueprint $table) {
             $table->increments('id_sede');
             $table->string('sede');
-           
+            
+            $table->integer('estado')->unsigned(); ///////HABILITADO - DESHABILITADO
+            $table->foreign('estado')->references('id_clasificacion')->on('clasificacions')->onDelete('cascade');
 
             $table->timestamps();
         });

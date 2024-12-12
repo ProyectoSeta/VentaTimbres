@@ -22,6 +22,9 @@ return new class extends Migration
 
             $table->string('clave');
 
+            $table->integer('estado')->unsigned(); ///////HABILITADO - DESHABILITADO
+            $table->foreign('estado')->references('id_clasificacion')->on('clasificacions')->onDelete('cascade');
+
             $table->timestamps();
         });
     }

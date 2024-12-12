@@ -19,33 +19,37 @@ class TaquillasSedeer extends Seeder
         DB::table('taquillas')->insert([
             'key_sede' => 1,
             'key_funcionario' => 2,
-            'clave' => Hash::make($pass)
+            'clave' => Hash::make($pass),
+            'estado' => 16
         ]);
         DB::table('taquillas')->insert([
             'key_sede' => 1,
             'key_funcionario' => 3,
-            'clave' => Hash::make($pass)
+            'clave' => Hash::make($pass),
+            'estado' => 16
         ]);
         DB::table('taquillas')->insert([
             'key_sede' => 2,
             'key_funcionario' => 4,
-            'clave' => Hash::make($pass)
+            'clave' => Hash::make($pass),
+            'estado' => 16
         ]);
-        DB::table('taquillas')->insert([
-            'key_sede' => 3,
-            'key_funcionario' => 5,
-            'clave' => Hash::make($pass)
-        ]);
-        DB::table('taquillas')->insert([
-            'key_sede' => 4,
-            'key_funcionario' => 6,
-            'clave' => Hash::make($pass)
-        ]);
-        DB::table('taquillas')->insert([
-            'key_sede' => 5,
-            'key_funcionario' => 7,
-            'clave' => Hash::make($pass)
-        ]);
+
+        // DB::table('taquillas')->insert([
+        //     'key_sede' => 3,
+        //     'key_funcionario' => 5,
+        //     'clave' => Hash::make($pass)
+        // ]);
+        // DB::table('taquillas')->insert([
+        //     'key_sede' => 4,
+        //     'key_funcionario' => 6,
+        //     'clave' => Hash::make($pass)
+        // ]);
+        // DB::table('taquillas')->insert([
+        //     'key_sede' => 5,
+        //     'key_funcionario' => 7,
+        //     'clave' => Hash::make($pass)
+        // ]);
 
 
 

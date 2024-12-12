@@ -124,7 +124,12 @@ Route::post('/sede_taquilla/new_taquillero', [App\Http\Controllers\SedeTaquillaC
 Route::post('/sede_taquilla/modal_new_taquilla', [App\Http\Controllers\SedeTaquillaController::class, 'modal_new_taquilla'])->name('sede_taquilla.modal_new_taquilla');
 Route::post('/sede_taquilla/new_taquilla', [App\Http\Controllers\SedeTaquillaController::class, 'new_taquilla'])->name('sede_taquilla.new_taquilla');
 
-Route::post('/sede_taquilla/sedes', [App\Http\Controllers\SedeTaquillaController::class, 'sedes'])->name('sede_taquilla.sedes');
-Route::post('/sede_taquilla/taquillas', [App\Http\Controllers\SedeTaquillaController::class, 'taquillas'])->name('sede_taquilla.taquillas');
-Route::post('/sede_taquilla/taquilleros', [App\Http\Controllers\SedeTaquillaController::class, 'taquilleros'])->name('sede_taquilla.taquilleros');
+Route::post('/sede_taquilla/update_clave', [App\Http\Controllers\SedeTaquillaController::class, 'update_clave'])->name('sede_taquilla.update_clave');
+Route::post('/sede_taquilla/habilitar_taquilla', [App\Http\Controllers\SedeTaquillaController::class, 'habilitar_taquilla'])->name('sede_taquilla.habilitar_taquilla');
+
+
+
+
+
+// Route::post('/sede_taquilla/taquilleros', [App\Http\Controllers\SedeTaquillaController::class, 'taquilleros'])->name('sede_taquilla.taquilleros');
 

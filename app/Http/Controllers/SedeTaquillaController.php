@@ -217,43 +217,35 @@ class SedeTaquillaController extends Controller
 
 
 
-    //////////////////////////////////    TABLAS    ///////////////////////////////////////////
+    ////////////////////////////////////////////////////////////////////////
     /**
      * Display the specified resource.
      */
-    public function sedes()
-    {
-        $tr = '';
-        $c1 = DB::table('sedes')->get();
-        foreach ($c1 as $key) {
-            $tr .= '<tr>
-                        <td>'.$key->id_sede.'</td>
-                        <td>'.$key->sede.'</td>
-                        <td></td>
-                    </tr>';
+    // 
+    public function update_clave(Request $request)
+    {   
+        $validator = Validator::make($request->all(), [
+            'password' => ['required', Password::min(8)
+            ->letters() // Requerir al menos una letra...
+            ->mixedCase() // Requerir al menos una letra mayúscula y una minúscula...
+            ->numbers() // Requerir al menos un número...
+            ->symbols() // Requerir al menos un símbolo...
+            ->uncompromised()],
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json(['success' => false, 'error' => $validator->errors()]);
+        }else{
+            $id_taquilla = $request->post('id');
+            $update = DB::table('taquillas')->where('key_taquilla', '=', $id_taquilla)->update(['clave' => bcrypt($request->post('password'))]);
+            if ($update) {
+                ///////////////////BITACORA
+                return response()->json(['success' => true]);
+            }else{
+                return response()->json(['success' => false]);
+            }
         }
-
-        $html = '<div class="d-flex justify-content-between align-items-center mb-2 mt-5">
-                    <h3 class="mb-3 text-navy titulo fw-bold">Sedes <span class="text-secondary fs-4">| Registradas</span></h3>
-                </div>
-
-                <div class="table-responsive" style="font-size:12.7px">
-                    <table id="taquillas" class="table text-center border-light-subtle" style="font-size:12.7px">
-                        <thead>
-                            <th>#</th>
-                            <th>Ubicación</th>
-                            <th>Eliminar</th>
-                        </thead>
-                        <tbody class="border-light-subtle"> 
-                            '.$tr.'
-                        </tbody> 
-                    </table>
-                </div>';
-        
-        return response();
     }
-
-
     /**
      * Show the form for editing the specified resource.
      */
@@ -265,10 +257,7 @@ class SedeTaquillaController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, string $id)
-    {
-        //
-    }
+    
 
     /**
      * Remove the specified resource from storage.

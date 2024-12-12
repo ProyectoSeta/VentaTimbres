@@ -71,5 +71,13 @@ class ClasificacionSeeder extends Seeder
         DB::table('clasificacions')->insert([
             'nombre_clf' => 'Verificado',
         ]);
+
+        //////ESTADOS: TAQUILLAS - FUNCIONARIOS - SEDES
+        DB::table('clasificacions')->insert([
+            'nombre_clf' => 'Habilitado',
+        ]);
+        DB::table('clasificacions')->insert([
+            'nombre_clf' => 'Deshabilitado',
+        ]);
     }
 }

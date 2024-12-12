@@ -15,18 +15,23 @@ class SedesSeeder extends Seeder
     {
         DB::table('sedes')->insert([
             'sede' => 'Principal Maracay',
+            'estado' => 16
         ]);
         DB::table('sedes')->insert([
             'sede' => 'Victoria',
+            'estado' => 16
         ]);
         DB::table('sedes')->insert([
             'sede' => 'Cagua',
+            'estado' => 16
         ]);
         DB::table('sedes')->insert([
             'sede' => 'La Villa',
+            'estado' => 16
         ]);
         DB::table('sedes')->insert([
             'sede' => 'Turmero',
+            'estado' => 16
         ]);
     }
 }

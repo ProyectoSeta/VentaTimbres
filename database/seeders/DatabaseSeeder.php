@@ -22,6 +22,7 @@ class DatabaseSeeder extends Seeder
         $this->call(UcdSeeder::class);
         $this->call(SedesSeeder::class);
         $this->call(TaquillasSedeer::class);
+        $this->call(HistorialTaquillasSeeder::class);
         $this->call(DenominacionsSedeer::class);
         $this->call(VariablesSeeder::class);
         $this->call(FormasSeeder::class);

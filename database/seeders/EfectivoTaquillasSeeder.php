@@ -25,17 +25,17 @@ class EfectivoTaquillasSeeder extends Seeder
             'key_taquilla' => 3,
             'efectivo' => '0'
         ]);
-        DB::table('efectivo_taquillas_temps')->insert([
-            'key_taquilla' => 4,
-            'efectivo' => '0'
-        ]);
-        DB::table('efectivo_taquillas_temps')->insert([
-            'key_taquilla' => 5,
-            'efectivo' => '0'
-        ]);
-        DB::table('efectivo_taquillas_temps')->insert([
-            'key_taquilla' => 6,
-            'efectivo' => '0'
-        ]);
+        // DB::table('efectivo_taquillas_temps')->insert([
+        //     'key_taquilla' => 4,
+        //     'efectivo' => '0'
+        // ]);
+        // DB::table('efectivo_taquillas_temps')->insert([
+        //     'key_taquilla' => 5,
+        //     'efectivo' => '0'
+        // ]);
+        // DB::table('efectivo_taquillas_temps')->insert([
+        //     'key_taquilla' => 6,
+        //     'efectivo' => '0'
+        // ]);
     }
 }

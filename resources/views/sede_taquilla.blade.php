@@ -27,9 +27,9 @@
 						<!-- <a href="#" class="btn btn-sm btn-secondary">Crear</a> -->
 					</div>
 				</div>
-                <div class="text-center">
+                <!-- <div class="text-center">
                     <button type="button" class="btn btn-secondary btn-sm" id="btn_ver_sedes">Ver Sedes</button>
-                </div>
+                </div> -->
 			</div>
 
             <!-- NUEVO TAQUILLERO -->
@@ -49,9 +49,9 @@
 						<!-- <a href="#" class="btn btn-sm btn-secondary">Crear</a> -->
 					</div>
 				</div>
-                <div class="text-center">
+                <!-- <div class="text-center">
                     <button type="button" class="btn btn-secondary btn-sm">Ver Taquilleros</button>
-                </div>
+                </div> -->
 			</div>
 
             <!-- NUEVA TAQUILLA -->
@@ -71,34 +71,84 @@
 						<!-- <a href="#" class="btn btn-sm btn-secondary">Crear</a> -->
 					</div>
 				</div>
-                <div class="text-center">
+                <!-- <div class="text-center">
                     <button type="button" class="btn btn-secondary btn-sm">Ver Taquillas</button>
-                </div>
+                </div> -->
 			</div>
 		</div>
 
 
-        <div id="content_ver_registros">
-            <div class="d-flex justify-content-between align-items-center mb-2 mt-5">
-                <h3 class="mb-3 text-navy titulo fw-bold">Taquillas <span class="text-secondary fs-4">| Registradas</span></h3>
-            </div>
-
-            <div class="table-responsive" style="font-size:12.7px">
-                <table id="taquillas" class="table text-center border-light-subtle" style="font-size:12.7px">
-                    <thead>
-                        <th>#</th>
-                        <th>Fecha</th>
-                        <th>Detalle</th>
-                        <th>¿Recibido?</th> 
-                    </thead>
-                    <tbody class="border-light-subtle"> 
-                        <tr>
-                            <td></td>
-                            <td></td>
-                            <td></td>
-                        </tr>
-                    </tbody> 
-                </table>
+        <div id="content_ver_registros" class=" mt-5">
+            <div class="row">
+                <!-- /////////////////// TABLA TAQUILLAS //////////////////// -->
+                <div class="col-md-7 pe-5">
+                    <h3 class="text-navy fw-bold mb-4">Taquillas</h3>
+                    <div class="table-responsive" style="font-size:12.7px">
+                        <table id="taquillas" class="table text-center border-light-subtle" style="font-size:12.7px">
+                            <thead>
+                                <th>#</th>
+                                <th>Ubicacion</th>
+                                <th>Taquillero</th>
+                                <th>Clave</th>
+                                <th>Desabilitar/Habilitar</th> 
+                            </thead>
+                            <tbody class="border-light-subtle"> 
+                                <tr>
+                                    <td class="text-secondary">1</td>
+                                    <td class="text-mutedfw-bold">Principal Maracay</td>
+                                    <td class="text-navy fw-bold">Juan Perez</td>
+                                    <td>
+                                        <a href="#" class="update_clave" data-bs-toggle="modal" data-bs-target="#modal_update_clave" taquilla="1">Actualizar</a>
+                                    </td>
+                                    <td>
+                                        <div class="form-check form-switch">
+                                            <input class="form-check-input fs-6 check_habilitar_taquilla" type="checkbox" role="switch" id="taquilla_check_1" taquilla="" checked title="Habilitada">
+                                        </div>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td class="text-secondary">1</td>
+                                    <td class="text-mutedfw-bold">Principal Maracay</td>
+                                    <td class="text-navy fw-bold">Juan Perez</td>
+                                    <td>
+                                        <a href="#" class="update_clave" data-bs-toggle="modal" data-bs-target="#modal_update_clave" taquilla="1">Actualizar</a>
+                                    </td>
+                                    <td>
+                                        <div class="form-check form-switch">
+                                            <input class="form-check-input fs-6 check_habilitar_taquilla" type="checkbox" role="switch" id="taquilla_check_2" taquilla="" checked title="Habilitada">
+                                        </div>
+                                    </td>
+                                </tr>
+                            </tbody> 
+                        </table>
+                    </div>
+                </div>
+                <!-- /////////////////// TABLA TAQUILLEROS /////////////////// -->
+                <div class="col-md-5">
+                    <h3 class="text-navy fw-bold mb-4">Taquilleros</h3>
+                    <div class="table-responsive" style="font-size:12.7px">
+                        <table id="taquilleros" class="table text-center border-light-subtle" style="font-size:12.7px">
+                            <thead>
+                                <th>#</th>
+                                <th>Nombre</th>
+                                <th>Desabilitar/Habilitar</th> 
+                            </thead>
+                            <tbody class="border-light-subtle"> 
+                                <tr>
+                                    <td>
+                                        <img src="{{asset('assets/user2.png')}}" alt="" width="30px">
+                                    </td>
+                                    <td class="text-navy fw-bold">Juan Perez</td>
+                                    <td>
+                                        <div class="form-check form-switch">
+                                            <input class="form-check-input fs-6" type="checkbox" role="switch" id="" checked title="Habilitada">
+                                        </div>
+                                    </td>
+                                </tr>
+                            </tbody> 
+                        </table>
+                    </div>
+                </div>
             </div>
         </div>
 
@@ -130,7 +180,7 @@
                         
                         <div class="row d-flex align-items-center mt-3">
                             <div class="col-3">
-                                <label for="clave" class="form-label">Ubicación:<span class="text-danger"> *</span></label>
+                                <label for="ubicacion" class="form-label">Ubicación:<span class="text-danger"> *</span></label>
                             </div>
                             <div class="col-9">
                                 <input type="text" id="ubicacion" class="form-control form-control-sm" name="ubicacion" required>
@@ -246,6 +296,50 @@
     </div>
 
 
+    <!-- ************ ACTUALIZAR CLAVE TAQUILLA  ************** -->
+    <div class="modal fade" id="modal_update_clave" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content" id="content_update_clave">
+                <div class="modal-header p-2 pt-3 d-flex justify-content-center">
+                    <div class="text-center">
+                        <i class='bx bx-edit fs-2 text-muted me-2'></i>
+                        <h1 class="modal-title fs-5 fw-bold text-navy">Actualizar clave</h1>
+                        <span>Clave de Taquilla <span class="text-secondary">| Apertura y cierre.</span></span>
+                    </div>
+                </div> 
+                <div class="modal-body px-5 py-3" style="font-size:13px">
+                    <form id="form_update_clave" method="post" onsubmit="event.preventDefault(); updateClave()">
+                        
+                        <div class="row d-flex align-items-center mt-3">
+                            <div class="col-3">
+                                <label for="clave" class="form-label">Clave:<span class="text-danger"> *</span></label>
+                            </div>
+                            <div class="col-9">
+                                <input type="password" id="clave" class="form-control form-control-sm" name="password" required>
+                            </div>
+                        </div>
+                        <input type="hidden" id="input_taquilla" name="id">
+
+                        <p class="text-muted text-end"><span style="color:red">*</span> Campo requerido.</p>
+
+                        <div class="text-muted mt-2 mb-3" style="font-size:14px">
+                            <span>La Contraseña debe contener:</span> 
+                            <ol>
+                                <li>Mínimo 8 caracteres.</li>
+                                <li>Caracteres alfanuméricos.</li>
+                                <li>Caracteres especiales (Ejemplo: ., @, $, *, %, !, &, entre otros.).</li>
+                            </ol>
+                        </div>
+
+                        <div class="d-flex justify-content-center mt-3 mb-3">
+                            <button type="button" class="btn btn-secondary btn-sm me-2" data-bs-dismiss="modal">Cancelar</button>
+                            <button type="submit" class="btn btn-success btn-sm">Aceptar</button>
+                        </div>
+                    </form>
+                </div>
+            </div>  <!-- cierra modal-content -->
+        </div>  <!-- cierra modal-dialog -->
+    </div>
 
 
 <!--************************************************-->
@@ -289,13 +383,31 @@
                     }
                 }
             );
+
+            $('#taquilleros').DataTable(
+                {
+                    // "order": [[ 0, "desc" ]],
+                    "language": {
+                        "lengthMenu": " Mostrar  _MENU_  Registros por página",
+                        "zeroRecords": "No hay Timbres Forma 14 asignados a esta Taquilla.",
+                        "info": "Mostrando página _PAGE_ de _PAGES_",
+                        "infoEmpty": "No se encuentran Registros",
+                        "infoFiltered": "(filtered from _MAX_ total records)",
+                        'search':"Buscar",
+                        'paginate':{
+                            'next':'Siguiente',
+                            'previous':'Anterior'
+                        }
+                    }
+                }
+            );
         });
     </script>
 
     <script type="text/javascript">
         $(document).ready(function () {
-           ///////////////// MODAL NUEVA TAQUILLA
-           $(document).on('click', '#new_taquilla', function(e){ 
+            ///////////////// MODAL NUEVA TAQUILLA
+            $(document).on('click', '#new_taquilla', function(e){ 
                 $.ajax({
                     headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') },
                     type: 'POST',
@@ -309,20 +421,65 @@
                 });
             });
 
+
             ///////////////// VER SEDES
-           $(document).on('click', '#btn_ver_sedes', function(e){ 
+            $(document).on('click', '#btn_ver_sedes', function(e){ 
                 $.ajax({
                     headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') },
                     type: 'POST',
-                    url: '{{route("sede_taquilla.sedes") }}',
+                    url: '{{route("home") }}',
                     success: function(response) {
                         $('#content_ver_registros').html(response);
-                        
+                        $('#tableSedes').DataTable();
                     },
                     error: function() {
                     }
                 });
             });
+
+
+            ///////////////// ID  TAQUILLA INPUT
+            $(document).on('click', '.update_clave', function(e){ 
+                var taquilla = $(this).attr('taquilla');
+                $('#input_taquilla').val(taquilla);
+            });
+
+
+            ///////////////// CHECK HABILITAR TAQUILA
+            $(document).on('click', '.check_habilitar_taquilla', function(e){ 
+                var taquilla = $(this).attr('taquilla');
+
+                if($(this).is(':checked')) {
+                    if (confirm('¿Desea Habilitar la taquilla ID ?')) {
+                        var checked = true;
+                        $.ajax({
+                            headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') },
+                            type: 'POST',
+                            url: '{{route("sede_taquilla.habilitar_taquilla") }}',
+                            data: {taquilla:taquilla,checked:checked},
+                            success: function(response) {
+                                if (response) {
+                                    
+                                }else{
+                                    $("#taquilla_check_"+taquilla).attr("checked", false);
+                                    alert('Disculpe, ha ocurrido un error.');
+                                }
+                            },
+                            error: function() {
+                            }
+                        });
+                    }else{
+                        $("#taquilla_check_"+taquilla).prop("checked", this.value==1);
+                    }
+                } else {
+                    checked = false;
+                }
+
+                
+                
+            });
+            
+
 
         });
 
@@ -407,6 +564,39 @@
                             }
                             
                         }  
+                    },
+                    error: function(error){
+                        
+                    }
+                });
+        }
+
+
+
+        function updateClave(){
+            var formData = new FormData(document.getElementById("form_update_clave"));
+                $.ajax({
+                    headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') },
+                    url:'{{route("sede_taquilla.update_clave") }}',
+                    type:'POST',
+                    contentType:false,
+                    cache:false,
+                    processData:false,
+                    async: true,
+                    data: formData,
+                    success: function(response){
+                        console.log(response);
+                        // if (response.success) {
+                        //     alert('REGISTRO DE TAQUILLERO EXITOSO.');
+                        //     window.location.href = "{{ route('sede_taquilla')}}";
+                        // }else{
+                        //     if (response.error != '') {
+                        //         alert(response.error);
+                        //     }else{
+                        //         alert('Disculpe, ha ocurrido un error.');
+                        //     }
+                            
+                        // }  
                     },
                     error: function(error){
                         
