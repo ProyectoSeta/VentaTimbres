@@ -93,32 +93,28 @@
                                 <th>Desabilitar/Habilitar</th> 
                             </thead>
                             <tbody class="border-light-subtle"> 
-                                <tr>
-                                    <td class="text-secondary">1</td>
-                                    <td class="text-mutedfw-bold">Principal Maracay</td>
-                                    <td class="text-navy fw-bold">Juan Perez</td>
-                                    <td>
-                                        <a href="#" class="update_clave" data-bs-toggle="modal" data-bs-target="#modal_update_clave" taquilla="1">Actualizar</a>
-                                    </td>
-                                    <td>
-                                        <div class="form-check form-switch">
-                                            <input class="form-check-input fs-6 check_habilitar_taquilla" type="checkbox" role="switch" id="taquilla_check_1" taquilla="" checked title="Habilitada">
-                                        </div>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td class="text-secondary">1</td>
-                                    <td class="text-mutedfw-bold">Principal Maracay</td>
-                                    <td class="text-navy fw-bold">Juan Perez</td>
-                                    <td>
-                                        <a href="#" class="update_clave" data-bs-toggle="modal" data-bs-target="#modal_update_clave" taquilla="1">Actualizar</a>
-                                    </td>
-                                    <td>
-                                        <div class="form-check form-switch">
-                                            <input class="form-check-input fs-6 check_habilitar_taquilla" type="checkbox" role="switch" id="taquilla_check_2" taquilla="" checked title="Habilitada">
-                                        </div>
-                                    </td>
-                                </tr>
+                                @foreach ($taquillas as $taquilla)
+                                    <tr>
+                                        <td class="text-secondary">{{$taquilla->id_taquilla}}</td>
+                                        <td class="text-mutedfw-bold">{{$taquilla->sede}}</td>
+                                        <td class="text-navy fw-bold">{{$taquilla->nombre}}</td>
+                                        <td>
+                                            <a href="#" class="update_clave" data-bs-toggle="modal" data-bs-target="#modal_update_clave" taquilla="{{$taquilla->id_taquilla}}">Actualizar</a>
+                                        </td>
+                                        <td>
+                                            @if ($taquilla->estado == 16)
+                                                <div class="form-check form-switch">
+                                                    <input class="form-check-input fs-6 check_habilitar_taquilla" type="checkbox" role="switch" id="taquilla_check_{{$taquilla->id_taquilla}}" taquilla="{{$taquilla->id_taquilla}}" checked title="Habilitada">
+                                                </div> 
+                                            @else
+                                                <div class="form-check form-switch">
+                                                    <input class="form-check-input fs-6 check_habilitar_taquilla" type="checkbox" role="switch" id="taquilla_check_{{$taquilla->id_taquilla}}" taquilla="{{$taquilla->id_taquilla}}" title="Deshabilitada">
+                                                </div>
+                                            @endif
+                                            
+                                        </td>
+                                    </tr>
+                                @endforeach
                             </tbody> 
                         </table>
                     </div>
@@ -134,17 +130,19 @@
                                 <th>Desabilitar/Habilitar</th> 
                             </thead>
                             <tbody class="border-light-subtle"> 
-                                <tr>
-                                    <td>
-                                        <img src="{{asset('assets/user2.png')}}" alt="" width="30px">
-                                    </td>
-                                    <td class="text-navy fw-bold">Juan Perez</td>
-                                    <td>
-                                        <div class="form-check form-switch">
-                                            <input class="form-check-input fs-6" type="checkbox" role="switch" id="" checked title="Habilitada">
-                                        </div>
-                                    </td>
-                                </tr>
+                                @foreach ($taquilleros as $taquillero)
+                                    <tr>
+                                        <td>
+                                            <img src="{{asset('assets/user2.png')}}" alt="" width="30px">
+                                        </td>
+                                        <td class="text-navy fw-bold">{{$taquillero->nombre}}</td>
+                                        <td>
+                                            <div class="form-check form-switch">
+                                                <input class="form-check-input fs-6" type="checkbox" role="switch" id="taquillero_{{$taquillero->id_funcionario}}" funcionario="{{$taquillero->id_funcionario}}" checked title="Taquillero activo">
+                                            </div>
+                                        </td>
+                                    </tr> 
+                                @endforeach
                             </tbody> 
                         </table>
                     </div>
@@ -445,39 +443,63 @@
             });
 
 
-            ///////////////// CHECK HABILITAR TAQUILA
-            $(document).on('click', '.check_habilitar_taquilla', function(e){ 
-                var taquilla = $(this).attr('taquilla');
+            // ///////////////// CHECK HABILITAR/DESHABILITAR TAQUILA
+            // $(document).on('click', '.check_habilitar_taquilla', function(e){ 
+            //     var taquilla = $(this).attr('taquilla');
+            //     var checked = '';
+            //     if($(this).is(':checked')) {
+            //         //////////////////// HABILITAR TAQUILLA
+            //         if (confirm('¿Desea Habilitar la taquilla ID '+taquilla+'?')) {
+            //             checked = true;
+            //             $.ajax({
+            //                 headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') },
+            //                 type: 'POST',
+            //                 url: '{{route("sede_taquilla.habilitar_taquilla") }}',
+            //                 data: {taquilla:taquilla,checked:checked},
+            //                 success: function(response) {
+            //                     console.log(response);
+            //                     if (response) {
+            //                         alert('SE HA HABILITADO LA TAQUILLA EXITOSAMENTE.');
+            //                         window.location.href = "{{ route('sede_taquilla')}}";
+            //                     }else{
+            //                         $("#taquilla_check_"+taquilla).attr("checked", false);
+            //                         alert('Disculpe, ha ocurrido un error.');
+            //                     }
+            //                 },
+            //                 error: function() {
+            //                 }
+            //             });
+            //         }else{
+            //             $("#taquilla_check_"+taquilla).prop ("checked", false);
+            //         }
+            //     }else{
+            //         /////////////////////// DESHABILITAR TAQUILLA
+            //         if (confirm('¿Desea Deshabilitar la taquilla ID '+taquilla+'?')) {
+            //             checked = false;
+            //             $.ajax({
+            //                 headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') },
+            //                 type: 'POST',
+            //                 url: '{{route("sede_taquilla.habilitar_taquilla") }}',
+            //                 data: {taquilla:taquilla,checked:checked},
+            //                 success: function(response) {
+            //                     console.log(response);
+            //                     // if (response) {
+            //                     //     alert('SE HA DESHABILITADO LA TAQUILLA EXITOSAMENTE.');
+            //                     //     window.location.href = "{{ route('sede_taquilla')}}";
+            //                     // }else{
+            //                     //     $("#taquilla_check_"+taquilla).attr("checked", true);
+            //                     //     alert('Disculpe, ha ocurrido un error.');
+            //                     // }
+            //                 },
+            //                 error: function() {
+            //                 }
+            //             });
+            //         }else{
+            //             $("#taquilla_check_"+taquilla).prop ("checked", true);
+            //         }
+            //     }
 
-                if($(this).is(':checked')) {
-                    if (confirm('¿Desea Habilitar la taquilla ID ?')) {
-                        var checked = true;
-                        $.ajax({
-                            headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') },
-                            type: 'POST',
-                            url: '{{route("sede_taquilla.habilitar_taquilla") }}',
-                            data: {taquilla:taquilla,checked:checked},
-                            success: function(response) {
-                                if (response) {
-                                    
-                                }else{
-                                    $("#taquilla_check_"+taquilla).attr("checked", false);
-                                    alert('Disculpe, ha ocurrido un error.');
-                                }
-                            },
-                            error: function() {
-                            }
-                        });
-                    }else{
-                        $("#taquilla_check_"+taquilla).prop("checked", this.value==1);
-                    }
-                } else {
-                    checked = false;
-                }
-
-                
-                
-            });
+            // });
             
 
 

@@ -102,7 +102,7 @@ class AperturaTaquillasController extends Controller
                     <div class="text-center">
                         <i class="bx bx-lock-open-alt fs-2 text-muted me-2"></i>
                         <h1 class="modal-title fs-5 fw-bold text-navy">Aperturar Taquillas</h1>
-                        <h5 class="text-muted fs-6">25-12-2024</h5>
+                        <h5 class="text-muted fs-6">'.$hoy.'</h5>
                     </div>
                 </div>
                 <div class="modal-body px-5 py-3" style="font-size:13px">

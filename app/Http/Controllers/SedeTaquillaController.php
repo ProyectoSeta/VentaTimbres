@@ -20,7 +20,13 @@ class SedeTaquillaController extends Controller
      */
     public function index()
     {
-        return view('sede_taquilla');
+        $taquillas =  DB::table('taquillas')->join('sedes', 'taquillas.key_sede','=','sedes.id_sede')
+                                            ->join('funcionarios', 'taquillas.key_funcionario','=','funcionarios.id_funcionario')
+                                            ->select('taquillas.*','sedes.sede','funcionarios.nombre')->get();
+
+        $taquilleros = DB::table('funcionarios')->where('cargo','=','Taquillero')->get();
+
+        return view('sede_taquilla',compact('taquillas','taquilleros'));
     }
 
     /**
@@ -218,10 +224,7 @@ class SedeTaquillaController extends Controller
 
 
     ////////////////////////////////////////////////////////////////////////
-    /**
-     * Display the specified resource.
-     */
-    // 
+    // Actualizar clave de taquilla para cierre y arpertura de la misma.
     public function update_clave(Request $request)
     {   
         $validator = Validator::make($request->all(), [
@@ -246,12 +249,40 @@ class SedeTaquillaController extends Controller
             }
         }
     }
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(string $id)
+    
+
+
+    // Habilitar o deshabilitar taquilla
+    public function habilitar_taquilla(Request $request)
     {
-        //
+        $id_taquilla = $request->post('taquilla'); 
+        $checked = $request->post('checked');
+        // return response($checked);
+        if ($checked == true) {
+            // habilitar
+            echo('otro entro');
+            $update = DB::table('taquillas')->where('id_taquilla', '=', $id_taquilla)->update(['estado' => 16]);
+            if ($update) {
+                ///////////////////BITACORA
+                return response()->json(['success' => true]);
+            }else{
+                return response()->json(['success' => false]);
+            }
+        }
+        if ($checked == false) {
+            // return response('deshabilitar');
+            // // deshabilitar
+            echo('entro');
+            $update = DB::table('taquillas')->where('id_taquilla', '=', $id_taquilla)->update(['estado' => 17]);
+            if ($update) {
+                ///////////////////BITACORA
+                return response()->json(['success' => true]);
+            }else{
+                return response()->json(['success' => false]);
+            }
+        }
+        
+       
     }
 
     /**
