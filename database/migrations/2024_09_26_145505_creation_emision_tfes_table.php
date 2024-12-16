@@ -11,17 +11,17 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('emision_estampillas', function (Blueprint $table) {
+        Schema::create('emision_tfes', function (Blueprint $table) {
             $table->increments('id_emision');
             $table->date('fecha_emision');
 
             $table->integer('key_user')->unsigned();
             $table->foreign('key_user')->references('id')->on('users')->onDelete('cascade');
-
+            
             $table->integer('cantidad_timbres');
             $table->integer('desde');
             $table->integer('hasta');
-            
+
             $table->date('ingreso_inventario')->nullable();
 
             $table->integer('estado')->unsigned()->nullable(); ///////INVENTARIO - ASIGNADO

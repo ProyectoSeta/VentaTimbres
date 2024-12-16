@@ -11,17 +11,19 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('emision_rollos', function (Blueprint $table) {
-            $table->increments('id_emision');
-            $table->date('fecha_emision');
+        Schema::create('asignacion_tfes', function (Blueprint $table) {
+            $table->increments('id_asignacion');
 
             $table->integer('key_user')->unsigned();
             $table->foreign('key_user')->references('id')->on('users')->onDelete('cascade');
-            
-            $table->integer('cantidad');
-            $table->date('ingreso_inventario')->nullable();
-            
 
+            $table->date('fecha');
+            $table->integer('cantidad');
+
+            $table->integer('key_taquilla')->unsigned();
+            $table->foreign('key_taquilla')->references('id_taquilla')->on('taquillas')->onDelete('cascade');
+
+            $table->date('fecha_recibido')->nullable();
         });
     }
 

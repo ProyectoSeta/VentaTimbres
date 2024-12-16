@@ -17,25 +17,19 @@ return new class extends Migration
             $table->integer('key_venta')->unsigned()->nullable();
             $table->foreign('key_venta')->references('id_venta')->on('ventas')->onDelete('cascade');
 
-            $table->integer('key_detalle_estampilla')->unsigned();
-            $table->foreign('key_detalle_estampilla')->references('correlativo')->on('detalle_estampillas')->onDelete('cascade');
+            $table->integer('key_denominacion')->unsigned();
+            $table->foreign('key_denominacion')->references('id')->on('ucd_denominacions')->onDelete('cascade');
+
+            $table->integer('nro_timbre')->unique(); ////correlativo de papel
+            $table->string('serial')->unique(); ////correlativo de denominacion
 
             $table->integer('key_tramite')->unsigned(); 
             $table->foreign('key_tramite')->references('id_tramite')->on('tramites')->onDelete('cascade');
 
-            $table->integer('key_denominacion')->unsigned();
-            $table->foreign('key_denominacion')->references('id')->on('ucd_denominacions')->onDelete('cascade');
+            $table->string('qr')->unique();
 
-            $table->integer('secuencia');
-
-            $table->integer('nro_correlativo');
-            $table->string('nro',9)->unique(); ////correlativo
-
-            $table->integer('key_tira')->unsigned();
-            $table->foreign('key_tira')->references('id_tira')->on('estampillas')->onDelete('cascade');
-
-            $table->integer('key_taquilla')->unsigned();
-            $table->foreign('key_taquilla')->references('id_taquilla')->on('taquillas')->onDelete('cascade');
+            $table->integer('key_lote')->unsigned();
+            $table->foreign('key_lote')->references('id_lote')->on('inventario_tfes')->onDelete('cascade');
 
 
         });

@@ -15,7 +15,7 @@ return new class extends Migration
             $table->increments('id');
 
             $table->string('variable')->unique();
-            $table->integer('valor'); 
+            $table->string('valor'); 
 
 
         });

@@ -13,12 +13,21 @@ class VariablesSeeder extends Seeder
     public function run(): void
     {
         DB::table('variables')->insert([
-            'variable' => 'cant_timbres_rollo',
-            'valor' => '160'
+            'variable' => 'cant_por_emision_tfes',
+            'valor' => '1000'
         ]);
         DB::table('variables')->insert([
-            'variable' => 'cant_timbres_tira',
-            'valor' => '160'
+            'variable' => 'cant_por_emision_estampillas',
+            'valor' => '1000'
+        ]);
+
+        DB::table('variables')->insert([
+            'variable' => 'letra_correlativo_papel_tfes',
+            'valor' => 'A'
+        ]);
+        DB::table('variables')->insert([
+            'variable' => 'letra_correlativo_papel_estampillas',
+            'valor' => 'A'
         ]);
     }
 }

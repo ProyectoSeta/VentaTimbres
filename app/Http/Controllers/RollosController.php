@@ -18,9 +18,9 @@ class RollosController extends Controller
     public function index()
     {   
         $query = [];
-        $total = DB::table('emision_rollos')->selectRaw("count(*) as total")->where('ingreso_inventario','=',null)->first();
+        $total = DB::table('emision_tfes')->selectRaw("count(*) as total")->where('ingreso_inventario','=',null)->first();
         $contador = 0;
-        $consulta =  DB::table('emision_rollos')->where('ingreso_inventario','=',null)->get();
+        $consulta =  DB::table('emision_tfes')->where('ingreso_inventario','=',null)->get();
 
         foreach ($consulta as $c) {
             $contador++;
@@ -33,7 +33,7 @@ class RollosController extends Controller
             $array = array(
                 'id_emision' => $c->id_emision,
                 'fecha_emision' => $c->fecha_emision,
-                'cantidad' => $c->cantidad,
+                'cantidad' => $c->cantidad_timbres,
                 'ultimo' => $ultimo
             );
 
@@ -45,6 +45,72 @@ class RollosController extends Controller
         return view('emision_rollos', compact('query'));
     }
 
+
+    public function modal_emitir()
+    {
+        $desde = '';
+        $hasta = '';
+
+        $consulta = DB::table('emision_tfes')->selectRaw("count(*) as total")->first();
+        if ($consulta->total != 0) {
+            //////ya se han emitido 
+            $query =  DB::table('emision_tfes')->select('hasta')->orderBy('id_emision', 'desc')->first();
+            $desde = $query->hasta + 1;
+        }else{
+            /////primer lote a emitir
+            $desde = 1;
+        }
+
+        $c1 =  DB::table('variables')->select('valor')->where('variable','=','cant_por_emision_tfes')->first();
+        $cant_timbres_lote = $c1->valor;
+        $hasta = ($desde + $cant_timbres_lote) - 1; 
+
+        $html = '<div class="modal-header p-2 pt-3 d-flex justify-content-center">
+                    <div class="text-center">
+                        <i class="bx bx-collection fs-2 text-muted me-2"></i>
+                        <h1 class="modal-title fs-5 fw-bold text-navy">Emisión de Timbres Fiscales</h1>
+                        <h5 class="text-muted fw-bold">TFE - 14</h5>
+                    </div>
+                </div>
+                <div class="modal-body px-5 py-3" style="font-size:13px">
+                    <p class="text-secondary">*NOTA: Si el total de timbres fiscales a emitir 
+                        es diferente al esperado o se ha cambiado el numero de timbres a producirse por emisión, 
+                        dirigirse al modulo configuraciones para cambiar el numero total de timbres fiscales.
+                    </p>
+                    
+                    <div class="fw-bold text-center">
+                        <p class="text-navy m-0">Total de Timbres a Emitir</p>
+                        <p class="fs-5 titulo fw-semibold text-muted">'.$cant_timbres_lote.' Timbres Fiscales TFE14</p>
+                    </div>
+                    
+
+                    <div class="d-flex justify-content-center my-4">
+                        <table class="table table-borderess w-50">
+                            <tr>
+                                <th>Desde:</th>
+                                <td>'.$desde.'</td>
+                            </tr>
+                            <tr>
+                                <th>Hasta:</th>
+                                <td>'.$hasta.'</td>
+                            </tr>
+                        </table>
+                    </div>
+
+                    <form id="form_emitir_rollos" method="post" onsubmit="event.preventDefault(); emitirRollos()">
+                        <div class="d-flex justify-content-center mt-3 mb-3">
+                            <button type="button" class="btn btn-secondary btn-sm me-2" data-bs-dismiss="modal">Cancelar</button>
+                            <button type="submit" class="btn btn-success btn-sm">Emitir</button>
+                        </div>
+                    </form>
+                    
+                </div>';
+
+        return response($html);
+
+    }
+
+
     /**
      * Show the form for creating a new resource.
      */
@@ -52,29 +118,27 @@ class RollosController extends Controller
     {
         $emision = $request->post('emision'); 
         $tr = '';
-        $query =  DB::table('detalle_emision_rollos')->where('key_emision', '=', $emision)->get();
-        $i = 0;
-        foreach ($query as $detalle) {
-            $i++;
-            $desde = $detalle->desde;
-            $hasta = $detalle->hasta;
+        $query =  DB::table('emision_tfes')->where('id_emision', '=', $emision)->first();        
 
-            $length = 6;
-            $formato_desde = substr(str_repeat(0, $length).$desde, - $length);
-            $formato_hasta = substr(str_repeat(0, $length).$hasta, - $length);
+        $desde = $query->desde;
+        $hasta = $query->hasta;
 
-            $tr .= '<tr>
-                        <td>'.$i.'</td>
-                        <td>A-'.$formato_desde.'</td>
-                        <td>A-'.$formato_hasta.'</td>
-                    </tr>';
-        }
+        $length = 6;
+        $formato_desde = substr(str_repeat(0, $length).$desde, - $length);
+        $formato_hasta = substr(str_repeat(0, $length).$hasta, - $length);
+
+        $tr = '<tr>
+                    <td>#</td>
+                    <td>A-'.$formato_desde.'</td>
+                    <td>A-'.$formato_hasta.'</td>
+                </tr>';
+
 
         $html = '<div class="modal-header p-2 pt-3 d-flex justify-content-center">
                     <div class="text-center">
                         <i class="bx bxs-layer-plus fs-2 text-muted me-2"></i>
                         <h1 class="modal-title fs-5 fw-bold text-navy">Enviar a Inventario</h1>
-                        <span class="text-muted fw-bold">Rollos | Forma 14 </span>
+                        <span class="text-muted fw-bold">Lote TFE14 | Emitidos </span>
                     </div>
                 </div>
                 <div class="modal-body px-5 py-3" style="font-size:13px">
@@ -106,66 +170,57 @@ class RollosController extends Controller
     public function emitir(Request $request)
     {
         $user = auth()->id();
-        $cantidad = $request->post('cantidad'); 
         $desde = '';
         $hasta = '';
         $tr = '';
 
-        $consulta = DB::table('emision_rollos')->selectRaw("count(*) as total")->first();
+        $consulta = DB::table('emision_tfes')->selectRaw("count(*) as total")->first();
         if ($consulta->total != 0) {
-            //////ya se han emitido rollos
-            $query =  DB::table('emision_rollos')->select('id_emision')->orderBy('id_emision', 'desc')->first();
-
-            $consulta_2 =  DB::table('detalle_emision_rollos')->select('hasta')->where('key_emision','=',$query->id_emision)->orderBy('correlativo', 'desc')->first();
-
-            $desde = $consulta_2->hasta + 1;
+            //////ya se han emitido 
+            $query =  DB::table('emision_tfes')->select('hasta')->orderBy('id_emision', 'desc')->first();
+            $desde = $query->hasta + 1;
         }else{
             /////primer lote a emitir
             $desde = 1;
         }
     
-        $insert_emision = DB::table('emision_rollos')->insert(['key_user' => $user,'cantidad' => $cantidad]);   
+        $c1 =  DB::table('variables')->select('valor')->where('variable','=','cant_por_emision_tfes')->first();
+        $cant_timbres_lote = $c1->valor;
+        $hasta = ($desde + $cant_timbres_lote) - 1; 
+
+        $insert_emision = DB::table('emision_tfes')->insert([
+                                    'key_user' => $user,
+                                    'cantidad_timbres' => $cant_timbres_lote,
+                                    'desde' => $desde,
+                                    'hasta' => $hasta]);  
+  
         if ($insert_emision) {
-            $id_emision = DB::table('emision_rollos')->max('id_emision');
+            $id_emision = DB::table('emision_tfes')->max('id_emision');
+            $c2 =  DB::table('variables')->select('valor')->where('variable','=','letra_correlativo_papel_tfes')->first();
+            $letra_papel = $c2->valor;
+
+                
+            $length = 6;
+            $formato_desde = substr(str_repeat(0, $length).$desde, - $length);
+            $formato_hasta = substr(str_repeat(0, $length).$hasta, - $length);
+
+            $tr .= '<tr>
+                        <td>#</td>
+                        <td>'.$letra_papel.'-'.$formato_desde.'</td>
+                        <td>'.$letra_papel.'-'.$formato_hasta.'</td>
+                    </tr>';
+               
+               
             
-            $c1 =  DB::table('variables')->select('valor')->where('variable','=','cant_timbres_rollo')->first();
-            $cant_timbres_rollo = $c1->valor;
-
-            for($i=1; $i <= $cantidad; $i++) { 
-                $hasta = ($desde + $cant_timbres_rollo) - 1; 
-                
-                
-                $insert_detalle = DB::table('detalle_emision_rollos')->insert([
-                            'key_emision' => $id_emision,
-                            'desde' => $desde,
-                            'hasta' => $hasta,
-                            'cantidad' => $cant_timbres_rollo]);     
-
-                if ($insert_detalle) {
-                    $length = 6;
-                    $formato_desde = substr(str_repeat(0, $length).$desde, - $length);
-                    $formato_hasta = substr(str_repeat(0, $length).$hasta, - $length);
-
-                    $tr .= '<tr>
-                                <td>'.$i.'</td>
-                                <td>A-'.$formato_desde.'</td>
-                                <td>A-'.$formato_hasta.'</td>
-                            </tr>';
-                }else{
-                    return response()->json(['success' => false]);
-                }
-    
-                $desde = $hasta + 1;
-            }
 
             $html = '<div class="modal-header p-2 pt-3 d-flex justify-content-center">
                         <div class="text-center">
                             <i class="bx bx-collection fs-2 text-muted me-2"></i>
-                            <h1 class="modal-title fs-5 fw-bold text-navy">Correlativo | <span class="text-muted">Rollos emitidos</span></h1>
+                            <h1 class="modal-title fs-5 fw-bold text-navy">Correlativo | <span class="text-muted">Emisión Timbres Fiscales</span></h1>
                         </div>
                     </div>
                     <div class="modal-body px-5 py-3" style="font-size:13px">
-                        <p class="text-secondary">*NOTA: Cada rollo emitido trae un total de '.$cant_timbres_rollo.' Trimbres Fiscales.</p>
+                        <p class="text-secondary">*NOTA: El lote en emisión tiene un total de '.$cant_timbres_lote.' Trimbres Fiscales TFE-14.</p>
                     
                         <div class="">
                             <table class="table text-center">
@@ -197,36 +252,37 @@ class RollosController extends Controller
     public function pdf(Request $request)
     {
         $emision = $request->emision;
-        $dia = date('d');
-        $mes = date('m');
-        $year = date('Y');
+        // $dia = date('d');
+        // $mes = date('m');
+        // $year = date('Y');
         $tr = '';
         $length = 6;
         $correlativo = [];
-        $query =  DB::table('detalle_emision_rollos')->where('key_emision', '=', $emision)->get();
+        $query =  DB::table('emision_tfes')->where('id_emision', '=', $emision)->first();
         $c = 0;
-        foreach ($query as $detalle) {
-            $c++;
-            $desde = $detalle->desde;
-            $hasta = $detalle->hasta;
 
-            
-            $formato_desde = substr(str_repeat(0, $length).$desde, - $length);
-            $formato_hasta = substr(str_repeat(0, $length).$hasta, - $length);
+        $desde = $query->desde;
+        $hasta = $query->hasta;
 
-            $array = array(
-                        'id' => $c,
-                        'desde' => $formato_desde,
-                        'hasta' => $formato_hasta
-                    );
-            $a = (object) $array;
-            array_push($correlativo,$a);
+        $formato_desde = substr(str_repeat(0, $length).$desde, - $length);
+        $formato_hasta = substr(str_repeat(0, $length).$hasta, - $length);
 
-        }
+        $c2 =  DB::table('variables')->select('valor')->where('variable','=','letra_correlativo_papel_tfes')->first();
+        $letra_papel = $c2->valor;
+
+        $array = array(
+                    'id' => 1,
+                    'desde' => $letra_papel.''.$formato_desde,
+                    'hasta' => $letra_papel.''.$formato_hasta
+                );
+        $a = (object) $array;
+        array_push($correlativo,$a);
+
+        
 
         $pdf = PDF::loadView('pdfRollosEmitidos', compact('correlativo'));
 
-        return $pdf->download('Rollos_'.$year.''.$mes.''.$dia.'.pdf');
+        return $pdf->download('Lote_TFE14_ID'.$emision.'.pdf');
 
     }
 
@@ -236,31 +292,27 @@ class RollosController extends Controller
     public function enviar_inventario(Request $request)
     {
         $emision = $request->post('emision'); 
-        $query =  DB::table('detalle_emision_rollos')->where('key_emision', '=', $emision)->get();
 
-        foreach ($query as $detalle) {
-            $insert_inv = DB::table('inventario_rollos')->insert([
-                        'key_emision' => $emision,
-                        'desde' => $detalle->desde,
-                        'hasta' => $detalle->hasta,
-                        'cantidad' => $detalle->cantidad,
-                        'vendido' => 0,
-                        'estado' => 1,
-                        'condicion' => null]); 
-            if ($insert_inv) {
-                # code...
-            }else{
-                return response()->json(['success' => false]);
-            }
-        }
+        // $insert_inv = DB::table('inventario_tfes')->insert([
+        //             'key_emision' => $emision,
+        //             'desde' => $query->desde,
+        //             'hasta' => $query->hasta,
+        //             'cantidad' => $query->cantidad_timbres,
+        //             'vendido' => 0,
+        //             'condicion' => 8]); 
+       
+        // $id_lote = DB::table('inventario_tfes')->max('id_lote');
         $hoy = date('Y-m-d');
-        $update = DB::table('emision_rollos')->where('id_emision', '=', $emision)->update(['ingreso_inventario' => $hoy]);
-
-        ///////BITACORA
-
-        return response()->json(['success' => true]);
+        $update = DB::table('emision_tfes')->where('id_emision', '=', $emision)->update(['ingreso_inventario' => $hoy, 'estado' => 1]);
+        if ($update) {
+            //////BITACORA
+            return response()->json(['success' => true]);
+        }else{
+            return response()->json(['success' => false]);
+        }
 
     }
+
 
 
     public function detalles(Request $request){
@@ -268,7 +320,7 @@ class RollosController extends Controller
         $ingreso_inventario = '';
         
         ///////////////////////////////////////////////////////////////DETALLE EMISIÓN
-        $query = DB::table('emision_rollos')->select('fecha_emision','ingreso_inventario','cantidad')->where('id_emision','=', $emision)->first();
+        $query = DB::table('emision_tfes')->where('id_emision','=', $emision)->first();
         
         if ($query->ingreso_inventario == NULL) {
             $ingreso_inventario = '<span class="text-secondary">Sin ingreso</span>';
@@ -299,34 +351,13 @@ class RollosController extends Controller
                                 </td>
                             </tr>
                             <tr>
-                                <th>Cantidad de Rollos</th>
+                                <th>Cantidad de Timbres TFE-14</th>
                                 <td colspan="2">
-                                    '.$query->cantidad.' Unidad(es)
+                                    '.$query->cantidad_timbres.' Unidad(es)
                                 </td>
                             </tr>
                         </table>
                     </div>';
-
-        ///////////////////////////////////////////////////////////////DETALLE TIRAS
-        $query_2 = DB::table('detalle_emision_rollos')->where('key_emision','=', $emision)->get();
-        $c = 0;
-        $tr = '';
-        foreach ($query_2 as $q2) {
-            $c++;
-
-            $desde = $q2->desde;
-            $hasta = $q2->hasta;
-
-            $length = 6;
-            $formato_desde = substr(str_repeat(0, $length).$desde, - $length);
-            $formato_hasta = substr(str_repeat(0, $length).$hasta, - $length);
-
-            $tr .= ' <tr>
-                        <td>'.$c.'</td>
-                        <td>'.$desde.'</td>
-                        <td>'.$hasta.'</td>
-                    </tr>';
-        }
 
         $table_two = '<div class="d-flex justify-content-center">
                         <table class="table w-75 text-center">
@@ -335,7 +366,11 @@ class RollosController extends Controller
                                 <th>Desde</th>
                                 <th>Hasta</th>
                             </tr>
-                            '.$tr.'
+                            <tr>
+                                <td>#</td>
+                                <td>'.$query->desde.'</td>
+                                <td>'.$query->hasta.'</td>
+                            </tr>
                         </table>
                     </div>';
 
@@ -375,7 +410,7 @@ class RollosController extends Controller
     {
         $emision = $request->post('emision'); 
 
-        $delete = DB::table('emision_rollos')->where('id_emision', '=', $emision)->delete();
+        $delete = DB::table('emision_tfes')->where('id_emision', '=', $emision)->delete();
         if ($delete) {
             ///////////INCLUIR BITACORA
             return response()->json(['success' => true]);

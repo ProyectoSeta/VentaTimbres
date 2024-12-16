@@ -20,15 +20,16 @@ return new class extends Migration
             $table->integer('key_denominacion')->unsigned();
             $table->foreign('key_denominacion')->references('id')->on('ucd_denominacions')->onDelete('cascade');
 
-            $table->integer('nro_timbre')->unique(); ////correlativo
+            $table->integer('nro_timbre')->unique(); ////correlativo de papel
+            $table->string('serial')->unique(); ////correlativo de denominacion
 
             $table->integer('key_tramite')->unsigned(); 
             $table->foreign('key_tramite')->references('id_tramite')->on('tramites')->onDelete('cascade');
 
             $table->string('qr')->unique();
 
-            $table->integer('key_rollo')->unsigned();
-            $table->foreign('key_rollo')->references('id_rollo')->on('inventario_rollos')->onDelete('cascade');
+            $table->integer('key_lote')->unsigned();
+            $table->foreign('key_lote')->references('id_lote')->on('inventario_tfes')->onDelete('cascade');
 
 
 

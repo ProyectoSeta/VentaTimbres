@@ -165,11 +165,10 @@
 
                                 <p class="text-muted my-2 text-end">Taquillero designado: <span class="text-navy fw-bold" id="funcionario_forma14"> </span></p>
 
-                                <label for="cantidad" class="form-label">Cantidad de Rollos: <span style="color:red">*</span></label>
+                                <label for="cantidad" class="form-label">Cantidad de Timbres Fiscales TFE-14: <span style="color:red">*</span></label>
                                 <input class="form-control form-control-sm" type="number" name="cantidad" required>
 
-                                <p class="text-secondary mt-3">*NOTA: Cada rollo emitido trae un total de 160 Trimbres Fiscales.</p>
-
+                               
                                 <div class="d-flex justify-content-center mt-3 mb-3">
                                     <button type="button" class="btn btn-secondary btn-sm me-2" data-bs-dismiss="modal">Cancelar</button>
                                     <button type="submit" class="btn btn-success btn-sm">Asignar</button>
@@ -492,7 +491,8 @@
                 }
             });
         });
-              
+
+          
     });
 
 

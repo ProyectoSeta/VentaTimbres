@@ -31,8 +31,8 @@
         </div>
 
         <div class="titulo">
-            <h3 class="fw-bold">Correlativo de Rollos | Timbres Fiscales</h3>
-            <h4>Emisión Forma 14</h4>
+            <h3 class="fw-bold">Correlativo del Lote en Emisión | Timbres Fiscales TFE-14</h3>
+            <h4>Emisión Timbres Fiscales Electrónicos Forma 14</h4>
         </div>
         
 
@@ -48,7 +48,7 @@
                 <tbody>
                     @foreach ($correlativo as $c)
                         <tr>
-                            <td>{{$c->id}}</td>
+                            <td>#</td>
                             <td>{{$c->desde}}</td>
                             <td>{{$c->hasta}}</td>
                         </tr>

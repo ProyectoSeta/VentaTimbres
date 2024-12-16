@@ -26,7 +26,6 @@ class DatabaseSeeder extends Seeder
         $this->call(DenominacionsSedeer::class);
         $this->call(VariablesSeeder::class);
         $this->call(FormasSeeder::class);
-        $this->call(InventarioEstampillasSedeer::class);
         $this->call(InventarioTaquillasSedeer::class);
 
         $this->call(LocalidadesSeeder::class);

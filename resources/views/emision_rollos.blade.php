@@ -1,6 +1,6 @@
 @extends('adminlte::page')
 
-@section('title', 'Emisión Rollos')
+@section('title', 'Emisión TFE14')
 
 @section('content_header')
     
@@ -16,9 +16,9 @@
     
     <div class="container rounded-4 p-3" style="background-color:#ffff;">
         <div class="d-flex justify-content-between align-items-center mb-2">
-            <h3 class="mb-3 text-navy titulo fw-bold">Emitiendo <span class="text-secondary fs-4">| Rollos TFE 14</span></h3>
+            <h3 class="mb-3 text-navy titulo fw-bold">Emitiendo <span class="text-secondary fs-4">| Lote TFE 14</span></h3>
             <div class="mb-3">
-                <button type="button" class="btn bg-navy rounded-pill px-3 btn-sm fw-bold d-flex align-items-center" id="" data-bs-toggle="modal" data-bs-target="#modal_emitir_rollos">
+                <button type="button" class="btn bg-navy rounded-pill px-3 btn-sm fw-bold d-flex align-items-center" id="btn_emitir_tfes" data-bs-toggle="modal" data-bs-target="#modal_emitir_rollos">
                     <i class='bx bx-plus fw-bold fs-6 pe-2'></i>
                     <span>Emitir</span>
                 </button>
@@ -81,30 +81,10 @@
 <!--****************** MODALES **************************-->
     <div class="modal fade" id="modal_emitir_rollos" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
         <div class="modal-dialog">
-            <div class="modal-content" id="content_timbre_impreso">
-                <div class="modal-header p-2 pt-3 d-flex justify-content-center">
-                    <div class="text-center">
-                        <i class='bx bx-collection fs-2 text-muted me-2'></i>
-                        <h1 class="modal-title fs-5 fw-bold text-navy">Emisión de Rollos</h1>
-                        <h5 class="text-muted fw-bold">TFE - 14</h5>
-                    </div>
-                </div>
-                <div class="modal-body px-5 py-3" style="font-size:13px">
-                    <p class="text-secondary">*NOTA: Cada rollo emitido trae un total de 160 Trimbres Fiscales.</p>
-                    <form id="form_emitir_rollos" method="post" onsubmit="event.preventDefault(); emitirRollos()">
-                        <div class="px-4">
-                            <label for="cantidad" class="form-label">Cantidad de rollos <span class="text-danger">*</span></label>
-                            <input type="number" class="form-control" id="cantidad" placeholder="" name="cantidad" required>
-                        </div>
-
-                        <p class="text-muted text-end fw-bold mt-3" style="font-size:13px"><span style="color:red">*</span> Campos requeridos.</p>
-
-                        <div class="d-flex justify-content-center mt-3 mb-3">
-                            <button type="button" class="btn btn-secondary btn-sm me-2" data-bs-dismiss="modal">Cancelar</button>
-                            <button type="submit" class="btn btn-success btn-sm">Emitir</button>
-                        </div>
-                    </form>
-                    
+            <div class="modal-content" id="content_emitir_rollos">
+                <div class="my-5 py-5 d-flex flex-column text-center">
+                    <i class='bx bx-loader-alt bx-spin fs-1 mb-3' style='color:#0077e2'  ></i>
+                    <span class="text-muted">Cargando, por favor espere un momento...</span>
                 </div>
             </div>  <!-- cierra modal-content -->
         </div>  <!-- cierra modal-dialog -->
@@ -274,6 +254,24 @@
                 });
             });
 
+
+            /////////////////////////// MODAL EMISIÓN
+            $(document).on('click','#btn_emitir_tfes', function(e) {
+                e.preventDefault();
+
+                $.ajax({
+                    headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') },
+                    type: 'POST',
+                    url: '{{route("rollos.modal_emitir") }}',
+                    success: function(response) {
+                        // console.log(response);
+                        $('#content_emitir_rollos').html(response);
+                    },
+                    error: function() {
+                    }
+                });
+            });
+
         });
 
         function emitirRollos(){
@@ -320,7 +318,7 @@
                 success: function(response){
                     console.log(response);
                     if (response.success) {
-                        alert('LOS ROLLOS SE HAN ENVIADO AL INVENTARIO EXITOSAMENTE');
+                        alert('EL LOTE DE TFE-14 SE HAN ENVIADO AL INVENTARIO EXITOSAMENTE');
                         window.location.href = "{{ route('emision_rollos')}}";
                     }else{
                         alert('Disculpe, ha ocurrido un error.');
