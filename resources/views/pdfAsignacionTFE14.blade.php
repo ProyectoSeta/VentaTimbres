@@ -56,13 +56,13 @@
         <span class="fw-bold id">ID ASIGNACIÓN: {{$asignacion}}</span>
 
         <div class="titulo">
-            <h3 class="">Asignación de Rollos | Forma 14</h3>
+            <h3 class="">Asignación de Timbres Fiscales | Forma 14</h3>
         </div>
 
         <p class="parrafo">
-            Yo, <span class="fw-bold">{{$taquillero}}</span>, portador de la cédula de identidad <span class="fw-bold">{{$ci_taquillero}}</span>, designado a la taquilla {{$sede}} ID {{$id_taquilla}}, 
-            hago constar por medio de la presente que recibo en taquilla la cantidad de <span class="fw-bold">{{$cant_rollos}} Rollos de Timbres Fiscales</span>, para la venta de 
-            Timbres Electrónicos TFE-14. A continuación, se detalla el correlativo de los rollos recibidos:
+            Yo, <span class="fw-bold">{{$taquillero}}</span>, portador de la cédula de identidad <span class="fw-bold">{{$ci_taquillero}}</span>, designado a la taquilla ID {{$id_taquilla}} ubicada en {{$sede}}, 
+            hago constar por medio de la presente que recibo en taquilla la cantidad de <span class="fw-bold">{{$cant_timbres}} unidades de Timbres Fiscales</span>, para su venta como 
+            Timbres Fiscales Electrónicos TFE-14. A continuación, se detalla el correlativo de los Timbres recibidos:
         </p>
 
         <!-- <h4>Correlativo</h4> -->
@@ -71,10 +71,10 @@
             <table class="table_rollos" id="tabla">
                 <thead class="">
                     <tr>
-                        <th>#</th>
+                        <th>ID Emision Lote</th>
                         <th>Desde</th>
                         <th>Hasta</th>
-                        <th>Cant. Timbres</th>
+                        <th>Cant. Timbres Fiscales</th>
                     </tr>
                 </thead>
                 <tbody>

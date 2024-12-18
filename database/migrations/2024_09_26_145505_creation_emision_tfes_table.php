@@ -24,7 +24,7 @@ return new class extends Migration
 
             $table->date('ingreso_inventario')->nullable();
 
-            $table->integer('estado')->unsigned()->nullable(); ///////INVENTARIO - ASIGNADO
+            $table->integer('estado')->unsigned(); ///////INVENTARIO - ASIGNADO
             $table->foreign('estado')->references('id_clasificacion')->on('clasificacions')->onDelete('cascade');
             
 

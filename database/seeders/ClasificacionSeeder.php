@@ -79,5 +79,10 @@ class ClasificacionSeeder extends Seeder
         DB::table('clasificacions')->insert([
             'nombre_clf' => 'Deshabilitado',
         ]);
+
+        //////////ESTADO EMISION TFE(PARTE 2)
+        DB::table('clasificacions')->insert([
+            'nombre_clf' => 'En Proceso',
+        ]);
     }
 }

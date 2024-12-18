@@ -105,174 +105,115 @@ class AsignarController extends Controller
         $sede = $request->post('sede');
         $taquilla = $request->post('taquilla');
         $user = auth()->id();
+        $desde = '';
+        $hasta = '';
         $tr = '';
         $html = '';
 
         if (!empty($cantidad) || !empty($taquilla)) {
             if ($cantidad != 0) { 
-
-                $c1 = DB::table('emision_tfes')->select('id_emision','cantidad_timbres')->where('estado','=',1)->first(); 
+                $c1 = DB::table('emision_tfes')->select('id_emision','cantidad_timbres','desde','hasta')->where('estado','=',1)->first(); 
                 if ($c1) {
-                    $c2 = DB::table('inventario_tfes')->select('hasta','cantidad')->where('key_emision','=',$c1->id_emision)->orderBy('id_lote', 'desc')->first(); 
-                    $timbres_dispo = $c1->cantidad_timbres - $c2->cantidad;
-                    if ($cantidad <= $timbres_dispo) {
-                        $desde = $c2->hasta + 1;
+                    //////////////////////////////// BUSCAR DESDE - HASTA
+                    $c2 = DB::table('inventario_tfes')->select('hasta','cantidad')->where('key_emision','=',$c1->id_emision)->orderBy('id_lote', 'desc')->first();
+                    if ($c2) {
+                        //////HAY REGISTROS, HAN SIDO ASIGNADOS TIMBRE DE ESA EMISION, ULTIMO (HASTA) ASIGNADO
+                        $timbres_dispo = $c1->cantidad_timbres - $c2->cantidad;
+                        if ($timbres_dispo <= $cantidad) {
+                            /////// HAY SUFICIENTES TIMBRES DISPONIBLES EN ESA EMISION PARA CUBRIR LA ASIGNACION
+                            $desde = $c2->hasta + 1;
+                            $hasta = ($desde + $cantidad) - 1;
+                        }else{
+                            /////// NO HAY SUFICIENTES TIMBRES DISPONIBLES EN ESE EMISION PARA CUBRIR LA ASIGNACION
+                            return response()->json(['success' => false, 'nota' => 'Disculpe, no hay suficientes Timbres TFE-14 en el lote actual, asigne la cantidad disponible, y luego realice otra asignación para la cantidad restante, con el siguiente lote disponible en Inventario.']);   
+                        }
+                    }else{
+                        /////NO HAY REGISTROS EN INVENTARIO, PRIMERA ASIGNACION DE ESA EMISION(LOTE)
+                        $desde = $c1->desde;
                         $hasta = ($desde + $cantidad) - 1;
+                    }
+                    /////////////////////////////////////////////////////////
 
-                        $insert = DB::table('asignacion_tfes')->insert([
-                                                            'key_user' => $c1->id_emision,
-                                                            'cantidad' => $cantidad,
-                                                            'key_taquilla' => $taquilla]); 
-                        if ($insert) {
-                            $id_asignacion = DB::table('asignacion_tfes')->max('id_asignacio n');
+                    ///////////////////////////////////////////////// INSERTS
+                    $insert = DB::table('asignacion_tfes')->insert([
+                                            'key_user' => $user,
+                                            'cantidad' => $cantidad,
+                                            'key_taquilla' => $taquilla]); 
+                    if ($insert) {
+                        $id_asignacion = DB::table('asignacion_tfes')->max('id_asignacion');
 
-                            $insert_inv = DB::table('inventario_tfes')->insert([
-                                                            'key_emision' => $c1->id_emision,
-                                                            'desde' => $desde,
-                                                            'hasta' => $hasta,
-                                                            'cantidad' => $cantidad,
-                                                            'vendido' => 0,
-                                                            'key_asignacion' => $id_assignacion,
-                                                            'key_taquilla' => $taquilla,
-                                                            'condicion' => 8]); 
-                            if ($insert_inv) {
-
-                                $consulta =  DB::table('sedes')->select('sede')->where('id_sede','=',$sede)->first();
-                                $consulta_2 = DB::table('taquillas')
-                                                    ->join('funcionarios', 'taquillas.key_funcionario', '=', 'funcionarios.id_funcionario')
-                                                    ->select('funcionarios.nombre')
-                                                    ->where('taquillas.id_taquilla','=', $taquilla)->first();
-
-
-                                $html = '<div class="modal-header p-2 pt-3 d-flex justify-content-center">
-                                                    <div class="text-center">
-                                                        <i class="bx bxs-layer-plus fs-2 text-muted me-2"></i>
-                                                        <h1 class="modal-title fs-5 fw-bold text-navy">Rollos Asignados</h1>
-                                                        <span class="text-muted fw-bold">Forma 14 </span>
-                                                    </div>
-                                                </div>
-                                                <div class="modal-body px-5 py-3" style="font-size:13px">
-                                                    <div class="d-flex flex-column text-muted mb-3">
-                                                        <div class="d-flex justify-content-between">
-                                                            <p class="mb-1">Sede: <span class="text-navy fw-bold">'.$consulta->sede.'</span></p>
-                                                            <p class="mb-1">ID TAQUILLA: <span class="text-navy fw-bold">'.$taquilla.'</span></p>
-                                                        </div>
-                                                        <p class="mb-1">Taquillero designado: <span class="text-navy fw-bold">'.$consulta_2->nombre.'</span></p>
-                                                    </div>
-                                                    
-                                                    <div class="">
-                                                        <table class="table text-center">
-                                                            <tr>
-                                                                <th>ID Rollo</th>
-                                                                <th>Desde</th>
-                                                                <th>Hasta</th>
-                                                            </tr>
-                                                            <tr>
-                                                                <td>#</td>
-                                                                <td>'.$desde.'</td>
-                                                                <td>'.$hasta.'</td>
-                                                            </tr>
-                                                        </table>
-                                                    </div>
-                
-                
-                                                    <div class="d-flex justify-content-center mb-3">
-                                                        <a href="'.route("asignar").'" class="btn btn-secondary btn-sm me-2">Cancelar</a>
-                                                        <a href="'.route("asignar.pdf_forma14", ["asignacion" => $id_asignacion]).'" class="btn btn-dark btn-sm"  style="font-size:12.7px">Imprimir Constancia</a>
-                                                    </div>
-                                                </div>';
-                                        return response()->json(['success' => true, 'html' => $html]);
-                            }else{
-                                return response()->json(['success' => false]);
+                        $insert_inv = DB::table('inventario_tfes')->insert([
+                                                        'key_emision' => $c1->id_emision,
+                                                        'desde' => $desde,
+                                                        'hasta' => $hasta,
+                                                        'cantidad' => $cantidad,
+                                                        'vendido' => 0,
+                                                        'key_asignacion' => $id_asignacion,
+                                                        'key_taquilla' => $taquilla,
+                                                        'condicion' => 8]); 
+                        if ($insert_inv) {
+                            if ($hasta == $c1->hasta) {
+                                ///////ULTIMA ASIGNACION DEL LOTE EN USO
+                                $update = DB::table('emision_tfes')->where('id_emision', '=', $c1->id_emision)->update(['estado' => 2]);
                             }
+
+
+                            $consulta =  DB::table('sedes')->select('sede')->where('id_sede','=',$sede)->first();
+                            $consulta_2 = DB::table('taquillas')
+                                                ->join('funcionarios', 'taquillas.key_funcionario', '=', 'funcionarios.id_funcionario')
+                                                ->select('funcionarios.nombre')
+                                                ->where('taquillas.id_taquilla','=', $taquilla)->first();
+
+
+                            $html = '<div class="modal-header p-2 pt-3 d-flex justify-content-center">
+                                                <div class="text-center">
+                                                    <i class="bx bxs-layer-plus fs-2 text-muted me-2"></i>
+                                                    <h1 class="modal-title fs-5 fw-bold text-navy">Timbres Fiscales Asignados</h1>
+                                                    <span class="text-muted fw-bold">Forma 14</span>
+                                                </div>
+                                            </div>
+                                            <div class="modal-body px-5 py-3" style="font-size:13px">
+                                                <div class="d-flex flex-column text-muted mb-3">
+                                                    <div class="d-flex justify-content-between">
+                                                        <p class="mb-1">Sede: <span class="text-navy fw-bold">'.$consulta->sede.'</span></p>
+                                                        <p class="mb-1">ID TAQUILLA: <span class="text-navy fw-bold">'.$taquilla.'</span></p>
+                                                    </div>
+                                                    <p class="mb-1">Taquillero designado: <span class="text-navy fw-bold">'.$consulta_2->nombre.'</span></p>
+                                                </div>
+                                                
+                                                <div class="">
+                                                    <table class="table text-center">
+                                                        <tr>
+                                                            <th>ID Emisión Lote</th>
+                                                            <th>Desde</th>
+                                                            <th>Hasta</th>
+                                                        </tr>
+                                                        <tr>
+                                                            <td>'.$c1->id_emision.'</td>
+                                                            <td>'.$desde.'</td>
+                                                            <td>'.$hasta.'</td>
+                                                        </tr>
+                                                    </table>
+                                                </div>
+
+
+                                                <div class="d-flex justify-content-center mb-3">
+                                                    <a href="'.route("asignar").'" class="btn btn-secondary btn-sm me-2">Cancelar</a>
+                                                    <a href="'.route("asignar.pdf_forma14", ["asignacion" => $id_asignacion]).'" class="btn btn-dark btn-sm"  style="font-size:12.7px">Imprimir Constancia</a>
+                                                </div>
+                                            </div>';
+
+                            return response()->json(['success' => true, 'html' => $html]);
                         }else{
                             return response()->json(['success' => false]);
                         }
-
                     }else{
-                        return response()->json(['success' => false, 'nota' => 'Disculpe, no hay suficientes Timbres TFE-14 disponibles en el Inventario en este momento.']); 
+                        return response()->json(['success' => false]);
                     }
+
                 }else{
                     return response()->json(['success' => false, 'nota' => 'Disculpe, no hay Timbres TFE-14 disponibles en el Inventario en este momento.']); 
                 }
-
-                // $comprobacion = DB::table('inventario_rollos')->selectRaw("count(*) as total")->where('estado','=',1)->first();
-                // if ($comprobacion->total < $cantidad) {
-                //     ///////////NO HAY SUFICIENTES ROLLOS PARA REALIZAR LA ASIGNACIÓN
-                //     return response()->json(['success' => false, 'nota' => 'Disculpe, no hay suficientes rollos en el inventario para realizar la asignación.']);
-                // }else{
-                //     $insert = DB::table('asignacion_rollos')->insert(['key_user' => $user,'cantidad' => $cantidad,'key_taquilla' => $taquilla]);
-                //     if ($insert) {
-                //         $id_asignacion = DB::table('asignacion_rollos')->max('id_asignacion');
-                //         for ($i=0; $i < $cantidad; $i++) { 
-                //             $query =  DB::table('inventario_rollos')->select('id_rollo','desde','hasta')->where('estado','=',1)->first(); 
-                //             if ($query) {
-                //                 ///update key_asignación
-                //                 $update = DB::table('inventario_rollos')->where('id_rollo', '=', $query->id_rollo)
-                //                                                         ->update(['estado' => 2,
-                //                                                                     'key_asignacion' => $id_asignacion,
-                //                                                                     'key_taquilla' => $taquilla,
-                //                                                                     'condicion' => 8
-                //                                                                 ]);
-                //                 if ($update) {
-                //                     $tr .= '<tr>
-                //                                 <td>'.$query->id_rollo.'</td>
-                //                                 <td>'.$query->desde.'</td>
-                //                                 <td>'.$query->hasta.'</td>
-                //                             </tr>'; 
-                //                 }else{
-                //                     return response()->json(['success' => false]); 
-                //                 }
-                //             }else{
-                //                 return response()->json(['success' => false]);
-                //             }
-                //         }
-
-                //         $consulta =  DB::table('sedes')->select('sede')->where('id_sede','=',$sede)->first();
-                //         $consulta_2 = DB::table('taquillas')
-                //                     ->join('funcionarios', 'taquillas.key_funcionario', '=', 'funcionarios.id_funcionario')
-                //                     ->select('funcionarios.nombre')
-                //                     ->where('taquillas.id_taquilla','=', $taquilla)->first();
-
-                //         $html = '<div class="modal-header p-2 pt-3 d-flex justify-content-center">
-                //                     <div class="text-center">
-                //                         <i class="bx bxs-layer-plus fs-2 text-muted me-2"></i>
-                //                         <h1 class="modal-title fs-5 fw-bold text-navy">Rollos Asignados</h1>
-                //                         <span class="text-muted fw-bold">Forma 14 </span>
-                //                     </div>
-                //                 </div>
-                //                 <div class="modal-body px-5 py-3" style="font-size:13px">
-                //                     <div class="d-flex flex-column text-muted mb-3">
-                //                         <div class="d-flex justify-content-between">
-                //                             <p class="mb-1">Sede: <span class="text-navy fw-bold">'.$consulta->sede.'</span></p>
-                //                             <p class="mb-1">ID TAQUILLA: <span class="text-navy fw-bold">'.$taquilla.'</span></p>
-                //                         </div>
-                //                         <p class="mb-1">Taquillero designado: <span class="text-navy fw-bold">'.$consulta_2->nombre.'</span></p>
-                //                     </div>
-                //                     <p class="text-secondary">*NOTA: Cada rollo emitido trae un total de 160 Trimbres Fiscales.</p>
-                //                     <div class="">
-                //                         <table class="table text-center">
-                //                             <tr>
-                //                                 <th>ID Rollo</th>
-                //                                 <th>Desde</th>
-                //                                 <th>Hasta</th>
-                //                             </tr>
-                //                             '.$tr.'
-                //                         </table>
-                //                     </div>
-
-
-                //                     <div class="d-flex justify-content-center mb-3">
-                //                         <a href="'.route("asignar").'" class="btn btn-secondary btn-sm me-2">Cancelar</a>
-                //                         <a href="'.route("asignar.pdf_forma14", ["asignacion" => $id_asignacion]).'" class="btn btn-dark btn-sm"  style="font-size:12.7px">Imprimir Constancia</a>
-                //                     </div>
-                //                 </div>';
-                //         return response()->json(['success' => true, 'html' => $html]);
-                        
-                //     }else{
-                //         return response()->json(['success' => false]);
-                //     }
-                // }
             }else{
                 return response()->json(['success' => false, 'nota' => 'Disculpe, especifique la cantidad de rollos a Asignar.']); 
             }
@@ -289,53 +230,45 @@ class AsignarController extends Controller
     public function pdf_forma14(Request $request)
     {
         $asignacion = $request->asignacion;
-        $dia = date('d');
-        $mes = date('m');
-        $year = date('Y');
-        $tr = '';
+       
         $length = 6;
         $correlativo = [];
-        $query = DB::table('inventario_rollos')->where('key_asignacion', '=', $asignacion)->get();
+        $query = DB::table('inventario_tfes')->where('key_asignacion', '=', $asignacion)->first();
 
-        foreach ($query as $detalle) {
-            $desde = $detalle->desde;
-            $hasta = $detalle->hasta;
+        $desde = $query->desde;
+        $hasta = $query->hasta;
 
-            $cant_timbres = ($hasta - $desde) + 1;
+        $cant_timbres = $query->cantidad;
 
-            $formato_desde = substr(str_repeat(0, $length).$desde, - $length);
-            $formato_hasta = substr(str_repeat(0, $length).$hasta, - $length);
+        $formato_desde = substr(str_repeat(0, $length).$desde, - $length);
+        $formato_hasta = substr(str_repeat(0, $length).$hasta, - $length);
 
-            $array = array(
-                        'id' => $detalle->id_rollo,
-                        'desde' => $formato_desde,
-                        'hasta' => $formato_hasta,
-                        'cant_timbres' => $cant_timbres
-                    );
-            $a = (object) $array;
-            array_push($correlativo,$a);
-
-        }
-
-        $c1 = DB::table('asignacion_rollos')->select('cantidad','key_taquilla')->where('id_asignacion', '=', $asignacion)->first();
+        $array = array(
+                    'id' => $query->key_emision,
+                    'desde' => $formato_desde,
+                    'hasta' => $formato_hasta,
+                    'cant_timbres' => $cant_timbres
+                );
+        $a = (object) $array;
+        array_push($correlativo,$a);
 
         $c2 = DB::table('taquillas')
                             ->join('funcionarios', 'taquillas.key_funcionario', '=', 'funcionarios.id_funcionario')
                             ->select('funcionarios.nombre','funcionarios.ci_condicion','funcionarios.ci_nro','taquillas.key_sede')
-                            ->where('taquillas.id_taquilla','=', $c1->key_taquilla)->first();
+                            ->where('taquillas.id_taquilla','=', $query->key_taquilla)->first();
         
         $c3 = DB::table('sedes')->select('sede')->where('id_sede','=', $c2->key_sede)->first(); 
         
-        $cant_rollos = $c1->cantidad;
+        $cant_timbres = $query->cantidad;
         $taquillero = $c2->nombre;
         $sede = $c3->sede;
         $ci_taquillero = $c2->ci_condicion.''.$c2->ci_nro;
-        $id_taquilla = $c1->key_taquilla;
+        $id_taquilla = $query->key_taquilla;
 
 
-        $pdf = PDF::loadView('pdfAsignacionTFE14', compact('correlativo','cant_rollos','taquillero','sede','ci_taquillero','id_taquilla','asignacion'));
+        $pdf = PDF::loadView('pdfAsignacionTFE14', compact('correlativo','cant_timbres','taquillero','sede','ci_taquillero','id_taquilla','asignacion'));
 
-        return $pdf->download('Asignación_TFE14_'.$asignacion.'.pdf');
+        return $pdf->download('Asignación_TFE14_ID'.$asignacion.'.pdf');
     }
 
 
@@ -343,20 +276,20 @@ class AsignarController extends Controller
     public function detalle_rollos(Request $request){
         $asignacion = $request->post('asignacion');
         $vista = $request->post('vista'); 
-        $tr = '';
+
         $button = '';
         $datos = '';
 
-        $query = DB::table('asignacion_rollos')->where('id_asignacion','=',$asignacion)->first();
+        $query = DB::table('asignacion_tfes')->where('id_asignacion','=',$asignacion)->first();
+        $q2 = DB::table('inventario_tfes')->where('key_asignacion','=',$asignacion)->first();
 
-        $query_2 = DB::table('inventario_rollos')->where('key_asignacion','=',$asignacion)->get();
-        foreach ($query_2 as $q2) {
-            $tr .= '<tr>
-                        <td>'.$q2->id_rollo.'</td>
-                        <td>'.$q2->desde.'</td>
-                        <td>'.$q2->hasta.'</td>
-                    </tr>';
-        }
+        
+        $tr = '<tr>
+                    <td>'.$q2->key_emision.'</td>
+                    <td>'.$q2->desde.'</td>
+                    <td>'.$q2->hasta.'</td>
+                </tr>';
+       
         $fecha_recibido = '';
 
         if ($query->fecha_recibido == NULL) {
@@ -416,18 +349,18 @@ class AsignarController extends Controller
         $html = '<div class="modal-header p-2 pt-3 d-flex justify-content-center">
                     <div class="text-center">
                         <i class="bx bxs-collection  fs-2 text-muted me-2"></i>
-                        <h1 class="modal-title fs-5 fw-bold text-navy">Rollos Asignados</h1>
-                        <span class="text-muted fw-bold">Forma 14 </span>
+                        <h1 class="modal-title fs-5 fw-bold text-navy">Timbres Fiscales Asignados</h1>
+                        <span class="text-muted fw-bold">Lote | Forma 14</span>
                     </div>
                 </div>
                 <div class="modal-body px-5 py-3" style="font-size:13px">
                     '.$datos.'
                     <p class="text-center fw-bold text-muted fs-5  mb-2">Correlativo</p>
-                    <p class="text-secondary">*NOTA: Cada rollo emitido trae un total de 160 Trimbres Fiscales.</p>
+                    
                     <div class="">
                         <table class="table text-center">
                             <tr>
-                                <th>ID Rollo</th>
+                                <th>ID Emisión Lote</th>
                                 <th>Desde</th>
                                 <th>Hasta</th>
                             </tr>

@@ -192,7 +192,8 @@ class RollosController extends Controller
                                     'key_user' => $user,
                                     'cantidad_timbres' => $cant_timbres_lote,
                                     'desde' => $desde,
-                                    'hasta' => $hasta]);  
+                                    'hasta' => $hasta,
+                                    'estado' => 18]);  
   
         if ($insert_emision) {
             $id_emision = DB::table('emision_tfes')->max('id_emision');

@@ -24,7 +24,7 @@ class AsignadoTaquillasController extends Controller
         $c2 = DB::table('taquillas')->select('id_taquilla')->where('key_funcionario','=',$c1->key_sujeto)->first();
 
         $estampillas = DB::table('asignacion_estampillas')->where('key_taquilla','=',$c2->id_taquilla)->where('fecha_recibido','=',null)->get();
-        $rollos = DB::table('asignacion_rollos')->where('key_taquilla','=',$c2->id_taquilla)->where('fecha_recibido','=',null)->get();
+        $rollos = DB::table('asignacion_tfes')->where('key_taquilla','=',$c2->id_taquilla)->where('fecha_recibido','=',null)->get();
         
         
         return view('timbres_asignados',compact('estampillas','rollos'));
@@ -142,21 +142,21 @@ class AsignadoTaquillasController extends Controller
         $tr = '';
        
 
-        $query = DB::table('asignacion_rollos')->where('id_asignacion','=',$asignacion)->first();
+        $query = DB::table('asignacion_tfes')->where('id_asignacion','=',$asignacion)->first();
 
-        $query_2 = DB::table('inventario_rollos')->where('key_asignacion','=',$asignacion)->get();
-        foreach ($query_2 as $q2) {
-            $tr .= '<tr>
-                        <td>'.$q2->id_rollo.'</td>
-                        <td>'.$q2->desde.'</td>
-                        <td>'.$q2->hasta.'</td>
-                    </tr>';
-        }
+        $q2 = DB::table('inventario_tfes')->where('key_asignacion','=',$asignacion)->first();
+        
+        $tr = '<tr>
+                    <td>'.$q2->key_emision.'</td>
+                    <td>'.$q2->desde.'</td>
+                    <td>'.$q2->hasta.'</td>
+                </tr>';
+        
 
         $html = '<div class="modal-header p-2 pt-3 d-flex justify-content-center">
                     <div class="text-center">
                         <i class="bx bx-check-circle fs-2 text-muted me-2"></i>
-                        <h1 class="modal-title fs-5 fw-bold text-navy">Rollos | Asignados</h1>
+                        <h1 class="modal-title fs-5 fw-bold text-navy">Lote de Timbres Fiscales | Asignados</h1>
                         <span class="text-muted fw-bold">Forma 14 - </span>
                         <span class="text-navy fw-bold">Asignación ID '.$asignacion.'</span>
                     </div>
@@ -164,11 +164,11 @@ class AsignadoTaquillasController extends Controller
                 <div class="modal-body px-5 py-3" style="font-size:13px">
                     
                     <p class="text-center fw-bold text-muted fs-5  mb-2">Correlativo</p>
-                    <p class="text-secondary">*NOTA: Cada rollo emitido trae un total de 160 Trimbres Fiscales.</p>
+                    
                     <div class="">
                         <table class="table text-center">
                             <tr>
-                                <th>ID Rollo</th>
+                                <th>ID Emisión Lote</th>
                                 <th>Desde</th>
                                 <th>Hasta</th>
                             </tr>
@@ -206,20 +206,17 @@ class AsignadoTaquillasController extends Controller
         $c2 = DB::table('taquillas')->select('id_taquilla')->where('key_funcionario','=',$c1->key_sujeto)->first();
 
         $total_timbres = 0;
-        $query = DB::table('inventario_rollos')->select('desde','hasta')->where('key_asignacion','=',$asignacion)->get();
-        foreach ($query as $value) {
-            $cantidad = ($value->hasta - $value->desde) + 1;
-            $total_timbres = $total_timbres + $cantidad;
-        }
+        $query = DB::table('inventario_tfes')->select('cantidad')->where('key_asignacion','=',$asignacion)->first();
+        $total_timbres = $total_timbres + $query->cantidad;
 
         $consulta = DB::table('inventario_taquillas')->select('cantidad_tfe')->where('key_taquilla','=',$c2->id_taquilla)->first();
         $actual_inv = $consulta->cantidad_tfe;
 
         $new_cant = $actual_inv + $total_timbres;
 
-        $update = DB::table('asignacion_rollos')->where('id_asignacion','=',$asignacion)->update(['fecha_recibido' => $hoy]);
+        $update = DB::table('asignacion_tfes')->where('id_asignacion','=',$asignacion)->update(['fecha_recibido' => $hoy]);
         $update_inv = DB::table('inventario_taquillas')->where('key_taquilla','=',$c2->id_taquilla)->update(['cantidad_tfe' => $new_cant]);
-        $update_condicion = DB::table('inventario_rollos')->where('key_asignacion','=',$asignacion)->update(['condicion' => 4]);
+        $update_condicion = DB::table('inventario_tfes')->where('key_asignacion','=',$asignacion)->update(['condicion' => 4]);
 
         if ($update && $update_inv && $update_condicion) {
             /////bitacora

@@ -325,7 +325,7 @@
             success: function(response){
                 console.log(response);
                 if (response.success) {
-                    alert('LOS ROLLOS SE HAN RECIBIDO CORRECTAMENTE.');
+                    alert('EL LOTE SE HA RECIBIDO CORRECTAMENTE.');
                     window.location.href = "{{ route('timbres_asignados')}}";
                 }else{
                     alert('Disculpe, ha ocurrido un error.');                  
