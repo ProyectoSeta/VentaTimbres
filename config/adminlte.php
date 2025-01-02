@@ -335,18 +335,29 @@ return [
         //     'label'       => 4,
         //     'label_color' => 'success',
         // ],
-        ['header' => 'Emisión'],
+        ['header' => 'Papel de Seguridad'],
         [
-            'text'        => 'Rollos TFE 14',
-            'route'         => 'emision_rollos',
+            'text'        => 'Emisión',
+            'route'         => 'emision_papel',
             'icon'       => 'fas fa-angle-right pe-2',   
         ],
         [
-            'text'        => 'Estampillas',
-            'route'         => 'emision_estampillas',
+            'text'        => 'Inventario',
+            'route'         => '',
             'icon'       => 'fas fa-angle-right pe-2',   
         ],
-
+        ['header' => 'Estampillas'],
+        [
+            'text'        => 'Emisión UCD',
+            'route'         => '',
+            'icon'       => 'fas fa-angle-right pe-2',   
+        ],
+        [
+            'text'        => 'Inventario',
+            'route'         => '',
+            'icon'       => 'fas fa-angle-right pe-2',   
+        ],
+        
         ['header' => 'Asignaciones'],
         [
             'text'        => 'Asignar Timbres',
@@ -358,6 +369,21 @@ return [
             'route'         => 'timbres_asignados',
             'icon'       => 'fas fa-angle-right pe-2',  
         ],
+
+
+        // ['header' => 'Emisión'],
+        // [
+        //     'text'        => 'Rollos TFE 14',
+        //     'route'         => 'emision_rollos',
+        //     'icon'       => 'fas fa-angle-right pe-2',   
+        // ],
+        // [
+        //     'text'        => 'Estampillas',
+        //     'route'         => 'emision_estampillas',
+        //     'icon'       => 'fas fa-angle-right pe-2',   
+        // ],
+
+        
         ['header' => 'Taquillas'],
         [
             'text'        => 'Inventario',

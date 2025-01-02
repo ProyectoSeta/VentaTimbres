@@ -11,8 +11,8 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('emision_tfes', function (Blueprint $table) {
-            $table->increments('id_emision');
+        Schema::create('emision_papel_estampillas', function (Blueprint $table) {
+            $table->increments('id_lote_papel');
             $table->date('fecha_emision');
 
             $table->integer('key_user')->unsigned();
@@ -22,10 +22,14 @@ return new class extends Migration
             $table->integer('desde');
             $table->integer('hasta');
 
-            $table->date('ingreso_inventario')->nullable();
-
-            $table->integer('estado')->unsigned(); ///////INVENTARIO - ASIGNADO
+            $table->integer('emitidos'); //nro de timbres a los que ya se le ha hecho asignacion de ucd
+            
+            $table->integer('estado')->unsigned(); ///////PROCESANDO - INVENTARIO - ASIGNADO
             $table->foreign('estado')->references('id_clasificacion')->on('clasificacions')->onDelete('cascade');
+            
+            $table->date('fecha_entrega')->nullable();
+
+            
             
 
         });

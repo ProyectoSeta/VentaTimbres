@@ -18,10 +18,12 @@ return new class extends Migration
             $table->foreign('key_user')->references('id')->on('users')->onDelete('cascade');
 
             $table->date('fecha');
-            $table->integer('cantidad');
 
             $table->integer('key_taquilla')->unsigned();
             $table->foreign('key_taquilla')->references('id_taquilla')->on('taquillas')->onDelete('cascade');
+
+            $table->integer('condicion')->unsigned(); ///////SIN RECIBIR - RECIBIDO
+            $table->foreign('condicion')->references('id_clasificacion')->on('clasificacions')->onDelete('cascade');
 
             $table->date('fecha_recibido')->nullable();
  

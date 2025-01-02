@@ -28,8 +28,8 @@ return new class extends Migration
 
             $table->string('qr')->unique();
 
-            $table->integer('key_lote')->unsigned();
-            $table->foreign('key_lote')->references('id_lote')->on('inventario_tfes')->onDelete('cascade');
+            // $table->integer('key_lote')->unsigned();
+            // $table->foreign('key_lote')->references('id_lote')->on('inventario_tfes')->onDelete('cascade');
 
 
 
