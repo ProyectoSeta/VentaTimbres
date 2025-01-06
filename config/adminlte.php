@@ -343,7 +343,7 @@ return [
         ],
         [
             'text'        => 'Inventario',
-            'route'         => '',
+            'route'         => 'inventario_papel',
             'icon'       => 'fas fa-angle-right pe-2',   
         ],
         ['header' => 'Estampillas'],

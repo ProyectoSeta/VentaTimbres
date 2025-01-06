@@ -93,3 +93,11 @@
   transform: translateY(-8%);
   /* box-shadow: 1px 13px 34px 0px rgba(0,78,191,0.31); */
 }
+
+.zoom_text{
+    transition: transform 0.3s ease-in-out;
+}
+
+.zoom_text:hover{
+    transform: scale(1.05);
+}

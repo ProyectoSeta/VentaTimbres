@@ -17,6 +17,9 @@ return new class extends Migration
 
             $table->integer('key_user')->unsigned();
             $table->foreign('key_user')->references('id')->on('users')->onDelete('cascade');
+
+            $table->integer('key_proveedor')->unsigned();
+            $table->foreign('key_proveedor')->references('id_proveedor')->on('proveedores')->onDelete('cascade');
             
             $table->integer('cantidad_timbres');
             

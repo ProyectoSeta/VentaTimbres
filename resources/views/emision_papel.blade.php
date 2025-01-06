@@ -1,6 +1,6 @@
 @extends('adminlte::page')
 
-@section('title', 'Emisión Estampillas')
+@section('title', 'Emisión Papel')
 
 @section('content_header')
     
@@ -17,12 +17,6 @@
     <div class="container rounded-4 p-3" style="background-color:#ffff;">
         <div class="d-flex justify-content-between align-items-center mb-2">
             <h3 class="mb-3 text-navy titulo fw-bold">Papel de Seguridad <span class="text-secondary fs-4">| Emisión</span></h3>
-            <!-- <div class="mb-3">
-                <button type="button" class="btn bg-navy rounded-pill px-3 btn-sm fw-bold d-flex align-items-center" id="btn_emitir_estampillas" data-bs-toggle="modal" data-bs-target="#modal_emitir_estampillas">
-                    <i class='bx bx-plus fw-bold fs-6 pe-2'></i>
-                    <span>Emitir</span>
-                </button>
-            </div> -->
         </div>
 
         <ul class="nav nav-pills mb-4 d-flex justify-content-center" id="pills-tab" role="tablist">
@@ -55,10 +49,41 @@
                             <th>Hasta</th>
                             <th>Detalle</th>  <!-- fecha entrega, emitidos en ucd, user -->
                             <th>Estado</th> 
-                            <th>Opciones</th> 
+                            <th>Eliminar</th> 
+                            <th>Recibido</th>
                         </thead>
                         <tbody id="" class="border-light-subtle"> 
-                                           
+                            @foreach ($query_tfes as $q1)
+                                <tr>
+                                    <td>{{$q1->id_lote_papel}}</td>
+                                    <td class="fst-italic text-muted">{{$q1->fecha_emision}}</td>
+                                    <td class="text-navy fw-bold">{{$q1->cantidad_timbres}} und.</td>
+                                    <td class="fw-bold">{{$q1->desde}}</td>
+                                    <td class="fw-bold">{{$q1->hasta}}</td>
+                                    <td>
+                                        <a href="#" class="detalle_emision_lote_tfes" lote="{{$q1->id_lote_papel}}" data-bs-toggle="modal" data-bs-target="#modal_detalle_lote_tfes">Ver</a> 
+                                    </td>
+                                    <td>
+                                        <span class="badge text-bg-primary p-2 py-1 d-flex justify-content-center align-items-center" style="font-size: 12px;"><i class='bx bx-history fs-6 me-2'></i>En proceso</span>
+                                    </td>
+                                    <td>
+                                        @if ($q1->ultimo == true)
+                                            <span class="badge delete_lote_tfes" style="background-color: #ed0000;" role="button" lote="{{$q1->id_lote_papel}}">
+                                                <i class="bx bx-trash-alt fs-6"></i>
+                                            </span> 
+                                        @else
+                                            <span class="badge" style="background-color: #ed00008c;">
+                                                <i class="bx bx-trash-alt fs-6"></i>
+                                            </span> 
+                                        @endif
+                                    </td>
+                                    <td>
+                                        <button class="btn btn-sm btn-primary enviar_inventario_tfes d-inline-flex align-items-center ms-2"  lote="{{$q1->id_lote_papel}}"  title="Enviar a Inventario" type="button">
+                                            <i class='bx bxs-chevron-right'></i>
+                                        </button>
+                                    </td>
+                                </tr>
+                            @endforeach           
                         </tbody> 
                     </table>
                 </div>
@@ -83,10 +108,41 @@
                             <th>Hasta</th>
                             <th>Detalle</th>  <!-- fecha entrega, emitidos en ucd, user -->
                             <th>Estado</th> 
-                            <th>Opciones</th> 
+                            <th>Eliminar</th> 
+                            <th>Recibido</th>
                         </thead>
                         <tbody id="" class="border-light-subtle"> 
-                                           
+                            @foreach ($query_estampillas as $q2)
+                                <tr>
+                                    <td>{{$q2->id_lote_papel}}</td>
+                                    <td class="fst-italic text-muted">{{$q2->fecha_emision}}</td>
+                                    <td class="text-navy fw-bold">{{$q2->cantidad_timbres}} und.</td>
+                                    <td class="fw-bold">{{$q2->desde}}</td>
+                                    <td class="fw-bold">{{$q2->hasta}}</td>
+                                    <td>
+                                        <a href="#" class="detalle_emision_lote_estampillas" lote="{{$q2->id_lote_papel}}" data-bs-toggle="modal" data-bs-target="#modal_detalle_lote_estampillas">Ver</a> 
+                                    </td>
+                                    <td>
+                                        <span class="badge text-bg-primary p-2 py-1 d-flex justify-content-center align-items-center" style="font-size: 12px;"><i class='bx bx-history fs-6 me-2'></i>En proceso</span>
+                                    </td>
+                                    <td>
+                                        @if ($q2->ultimo == true)
+                                            <span class="badge delete_lote_estampillas" style="background-color: #ed0000;" role="button" lote="{{$q2->id_lote_papel}}">
+                                                <i class="bx bx-trash-alt fs-6"></i>
+                                            </span> 
+                                        @else
+                                            <span class="badge" style="background-color: #ed00008c;">
+                                                <i class="bx bx-trash-alt fs-6"></i>
+                                            </span> 
+                                        @endif
+                                    </td>
+                                    <td>
+                                        <button class="btn btn-sm btn-primary enviar_inventario_estampillas d-inline-flex align-items-center ms-2"  lote="{{$q2->id_lote_papel}}"  title="Enviar a Inventario" type="button">
+                                            <i class='bx bxs-chevron-right'></i>
+                                        </button>
+                                    </td>
+                                </tr>
+                            @endforeach              
                         </tbody> 
                     </table>
                 </div>
@@ -98,7 +154,7 @@
     
     
 
-      
+    
 
     
     
@@ -107,7 +163,10 @@
     <div class="modal fade" id="modal_emitir_papel_f14" tabindex="-1" aria-hidden="true">
         <div class="modal-dialog">
             <div class="modal-content" id="content_emitir_papel_f14">
-                
+                <div class="my-5 py-5 d-flex flex-column text-center">
+                    <i class='bx bx-loader-alt bx-spin fs-1 mb-3' style='color:#0077e2'  ></i>
+                    <span class="text-muted">Cargando, por favor espere un momento...</span>
+                </div>
             </div>  <!-- cierra modal-content -->
         </div>  <!-- cierra modal-dialog -->
     </div>
@@ -116,7 +175,34 @@
     <div class="modal fade" id="modal_emitir_papel_estampillas" tabindex="-1" aria-hidden="true">
         <div class="modal-dialog">
             <div class="modal-content" id="content_emitir_papel_estampillas">
-                
+                <div class="my-5 py-5 d-flex flex-column text-center">
+                    <i class='bx bx-loader-alt bx-spin fs-1 mb-3' style='color:#0077e2'  ></i>
+                    <span class="text-muted">Cargando, por favor espere un momento...</span>
+                </div>
+            </div>  <!-- cierra modal-content -->
+        </div>  <!-- cierra modal-dialog -->
+    </div>
+
+    <!-- ************ DETALLE LOTE: ESTAMPILLAS  ************** -->
+    <div class="modal fade" id="modal_detalle_lote_estampillas" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content" id="content_detalle_lote_estampillas">
+                 <div class="my-5 py-5 d-flex flex-column text-center">
+                    <i class='bx bx-loader-alt bx-spin fs-1 mb-3' style='color:#0077e2'  ></i>
+                    <span class="text-muted">Cargando, por favor espere un momento...</span>
+                </div>
+            </div>  <!-- cierra modal-content -->
+        </div>  <!-- cierra modal-dialog -->
+    </div>
+
+    <!-- ************ DETALLE LOTE: TFES  ************** -->
+    <div class="modal fade" id="modal_detalle_lote_tfes" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content" id="content_detalle_lote_tfes">
+                 <div class="my-5 py-5 d-flex flex-column text-center">
+                    <i class='bx bx-loader-alt bx-spin fs-1 mb-3' style='color:#0077e2'  ></i>
+                    <span class="text-muted">Cargando, por favor espere un momento...</span>
+                </div>
             </div>  <!-- cierra modal-content -->
         </div>  <!-- cierra modal-dialog -->
     </div>
@@ -233,69 +319,223 @@
             });
         });
 
+
+        /////////////////////////// ELIMINAR EMISIÓN PAPEL TFES
+        $(document).on('click','.delete_lote_tfes', function(e) {
+            e.preventDefault();
+            var lote = $(this).attr('lote');
+            if (confirm('¿Desea eliminar el Lote en emisión de Papel de Seguridad para TFE 14 con el ID. '+lote+'?')){
+                $.ajax({
+                    headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') },
+                    type: 'POST',
+                    url: '{{route("papel.delete_f14") }}',
+                    data: {lote:lote},
+                    success: function(response) {
+                        // console.log(response);
+                        if (response.success) {
+                            alert('EL LOTE ID '+lote+', PARA TFE 14, SE HA ELIMINADO CORRECTAMENTE.');
+                            window.location.href = "{{ route('emision_papel')}}";
+                        }else{
+                            alert('Disculpe, ha ocurrido un error.');
+                        }  
+                    },
+                    error: function() {
+                    }
+                });
+            }
+        });
+
+
+        /////////////////////////// ELIMINAR EMISIÓN PAPEL ESTAMPILLAS
+        $(document).on('click','.delete_lote_estampillas', function(e) {
+            e.preventDefault();
+            var lote = $(this).attr('lote');
+            if (confirm('¿Desea eliminar el Lote en emisión de Papel de Seguridad para Estampillas con el ID. '+lote+'?')){
+                $.ajax({
+                    headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') },
+                    type: 'POST',
+                    url: '{{route("papel.delete_estampillas") }}',
+                    data: {lote:lote},
+                    success: function(response) {
+                        // console.log(response);
+                        if (response.success) {
+                            alert('EL LOTE ID '+lote+', PARA ESTAMPILLAS, SE HA ELIMINADO CORRECTAMENTE.');
+                            window.location.href = "{{ route('emision_papel')}}";
+                        }else{
+                            alert('Disculpe, ha ocurrido un error.');
+                        }  
+                    },
+                    error: function() {
+                    }
+                });
+            }
+        });
+
+
+        /////////////////////////// ENVIAR A INVENTARION LOTE TFES
+        $(document).on('click','.enviar_inventario_tfes', function(e) {
+            e.preventDefault();
+            var lote = $(this).attr('lote');
+            if (confirm('¿El Lote de Papel de Seguridad ID.'+lote+' ha sido recibido?')){
+                $.ajax({
+                    headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') },
+                    type: 'POST',
+                    url: '{{route("papel.enviar_inv_f14") }}',
+                    data: {lote:lote},
+                    success: function(response) {
+                        // console.log(response);
+                        if (response.success) {
+                            alert('EL LOTE ID '+lote+' HA SIDO ENVIADO A INVENTARIO CORRECTAMENTE.');
+                            window.location.href = "{{ route('emision_papel')}}";
+                        }else{
+                            alert('Disculpe, ha ocurrido un error.');
+                        }  
+                    },
+                    error: function() {
+                    }
+                });
+            }
+        });
+
+
+        /////////////////////////// ENVIAR A INVENTARION LOTE ESTAMPILLAS
+        $(document).on('click','.enviar_inventario_estampillas', function(e) {
+            e.preventDefault();
+            var lote = $(this).attr('lote');
+            if (confirm('¿El Lote de Papel de Seguridad ID.'+lote+' ha sido recibido?')){
+                $.ajax({
+                    headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') },
+                    type: 'POST',
+                    url: '{{route("papel.enviar_inv_estampillas") }}',
+                    data: {lote:lote},
+                    success: function(response) {
+                        // console.log(response);
+                        if (response.success) {
+                            alert('EL LOTE ID '+lote+' HA SIDO ENVIADO A INVENTARIO CORRECTAMENTE.');
+                            window.location.href = "{{ route('emision_papel')}}";
+                        }else{
+                            alert('Disculpe, ha ocurrido un error.');
+                        }  
+                    },
+                    error: function() {
+                    }
+                });
+            }
+        });
+
+
+        /////////////////////////// VER DETALLES LOTE ESTAMPILLAS
+        $(document).on('click','.detalle_emision_lote_estampillas', function(e) {
+            e.preventDefault();
+            var lote = $(this).attr('lote');
+            
+            $.ajax({
+                headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') },
+                type: 'POST',
+                url: '{{route("papel.detalle_estampillas") }}',
+                data: {lote:lote},
+                success: function(response) {
+                    console.log(response);
+                    $('#content_detalle_lote_estampillas').html(response);
+                },
+                error: function() {
+                }
+            });
+        });
+
+        /////////////////////////// VER DETALLES LOTE TFES
+        $(document).on('click','.detalle_emision_lote_tfes', function(e) {
+            e.preventDefault();
+            var lote = $(this).attr('lote');
+            
+            $.ajax({
+                headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') },
+                type: 'POST',
+                url: '{{route("papel.detalle_f14")}}',
+                data: {lote:lote},
+                success: function(response) {
+                    console.log(response);
+                    $('#content_detalle_lote_tfes').html(response);
+                },
+                error: function() {
+                }
+            });
+        });
+
+
     });
 
     function emitirPapelF14(){
-            var formData = new FormData(document.getElementById("form_emitir_papel_f14"));
-                $.ajax({
-                    headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') },
-                    url:'{{route("papel.emitir_f14") }}',
-                    type:'POST',
-                    contentType:false,
-                    cache:false,
-                    processData:false,
-                    async: true,
-                    data: formData,
-                    success: function(response){
-                        console.log(response);
-                        if (response.success) {
-                            $('#content_emitir_papel_f14').html(response.html);
-                        
+        var formData = new FormData(document.getElementById("form_emitir_papel_f14"));
+        $('#content_emitir_papel_f14').html('<div class="my-5 py-5 d-flex flex-column text-center">'+
+                                                '<i class="bx bx-loader-alt bx-spin fs-1 mb-3" style="color:#0077e2"  ></i>'+
+                                                '<span class="text-muted">Cargando, por favor espere un momento...</span>'+
+                                            '</div>');
+            $.ajax({
+                headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') },
+                url:'{{route("papel.emitir_f14") }}',
+                type:'POST',
+                contentType:false,
+                cache:false,
+                processData:false,
+                async: true,
+                data: formData,
+                success: function(response){
+                    // console.log(response);
+                    if (response.success) {
+                        $('#content_emitir_papel_f14').html(response.html);
+                    
+                    }else{
+                        if (response.nota != '') {
+                            alert(response.nota);
                         }else{
-                            if (response.nota != '') {
-                                alert(response.nota);
-                            }else{
-                                alert('Disculpe, ha ocurrido un error.');
-                            }
-                            
-                        }  
+                            alert('Disculpe, ha ocurrido un error.');
+                        }
+                        window.location.href = "{{ route('emision_papel')}}";
+                    }  
 
-                    },
-                    error: function(error){
-                        
-                    }
-                });
-        }
+                },
+                error: function(error){
+                    
+                }
+            });
+    }
 
 
-        function emitirPapelEstampillas(){
-            var formData = new FormData(document.getElementById("form_emitir_papel_estampillas"));
-                $.ajax({
-                    headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') },
-                    url:'{{route("papel.emitir_estampillas") }}',
-                    type:'POST',
-                    contentType:false,
-                    cache:false,
-                    processData:false,
-                    async: true,
-                    data: formData,
-                    success: function(response){
-                        console.log(response);
-                        if (response.success) {
-                            $('#modal_emitir_rollos').modal('hide');
-                            $('#modal_correlativo_rollos').modal('show');
-                            $('#content_correlativo_rollos').html(response.html);
-                        
+    function emitirPapelEstampillas(){
+        var formData = new FormData(document.getElementById("form_emitir_papel_estampillas"));
+        $('#content_emitir_papel_estampillas').html('<div class="my-5 py-5 d-flex flex-column text-center">'+
+                                                '<i class="bx bx-loader-alt bx-spin fs-1 mb-3" style="color:#0077e2"  ></i>'+
+                                                '<span class="text-muted">Cargando, por favor espere un momento...</span>'+
+                                            '</div>');
+            $.ajax({
+                headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') },
+                url:'{{route("papel.emitir_estampillas") }}',
+                type:'POST',
+                contentType:false,
+                cache:false,
+                processData:false,
+                async: true,
+                data: formData,
+                success: function(response){
+                    // console.log(response);
+                    if (response.success) {
+                        $('#content_emitir_papel_estampillas').html(response.html);
+                    
+                    }else{
+                        if (response.nota != '') {
+                            alert(response.nota);
                         }else{
-                            alert('Disculpe, ha ocurrido un error en la Emisión de Rollos.');
-                        }  
-
-                    },
-                    error: function(error){
-                        
-                    }
-                });
-        }
+                            alert('Disculpe, ha ocurrido un error.');
+                        }
+                        window.location.href = "{{ route('emision_papel')}}";
+                    }  
+                },
+                error: function(error){
+                    
+                }
+            });
+    }
 
 
   

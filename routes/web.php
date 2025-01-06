@@ -41,6 +41,22 @@ Route::post('/papel/modal_f14', [App\Http\Controllers\PapelSeguridadController::
 Route::post('/papel/modal_estampillas', [App\Http\Controllers\PapelSeguridadController::class, 'modal_estampillas'])->name('papel.modal_estampillas');
 Route::post('/papel/emitir_f14', [App\Http\Controllers\PapelSeguridadController::class, 'emitir_f14'])->name('papel.emitir_f14');
 Route::post('/papel/emitir_estampillas', [App\Http\Controllers\PapelSeguridadController::class, 'emitir_estampillas'])->name('papel.emitir_estampillas');
+Route::post('/papel/delete_f14', [App\Http\Controllers\PapelSeguridadController::class, 'delete_f14'])->name('papel.delete_f14');
+Route::post('/papel/delete_estampillas', [App\Http\Controllers\PapelSeguridadController::class, 'delete_estampillas'])->name('papel.delete_estampillas');
+Route::post('/papel/enviar_inv_f14', [App\Http\Controllers\PapelSeguridadController::class, 'enviar_inv_f14'])->name('papel.enviar_inv_f14');
+Route::post('/papel/enviar_inv_estampillas', [App\Http\Controllers\PapelSeguridadController::class, 'enviar_inv_estampillas'])->name('papel.enviar_inv_estampillas');
+Route::post('/papel/detalle_f14', [App\Http\Controllers\PapelSeguridadController::class, 'detalle_f14'])->name('papel.detalle_f14');
+Route::post('/papel/detalle_estampillas', [App\Http\Controllers\PapelSeguridadController::class, 'detalle_estampillas'])->name('papel.detalle_estampillas');
+
+/////////PDF: PAPEL DE SEGURIDAD EMITIDOS
+Route::get('/papel/pdf_tfes', [App\Http\Controllers\PapelSeguridadController::class, 'pdf_tfes'])->name('papel.pdf_tfes');
+Route::get('/papel/pdf_estampillas', [App\Http\Controllers\PapelSeguridadController::class, 'pdf_estampillas'])->name('papel.pdf_estampillas');
+
+
+///////////////////// INVENTARIO PAPEL DE SEGURIDAD
+Route::get('/inventario_papel', [App\Http\Controllers\InventarioPapelController::class, 'index'])->name('inventario_papel');
+
+
 
 ///////////////////// EMISIÓN ROLLOS FORMA 14
 Route::get('/emision_rollos', [App\Http\Controllers\RollosController::class, 'index'])->name('emision_rollos');

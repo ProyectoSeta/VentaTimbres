@@ -35,6 +35,12 @@
         .titulo h3{
             font-family: "Poppins";
             font-weight: 700;
+            margin-bottom: 0;
+            padding-bottom: 0;
+        }
+        .titulo h4{
+            margin-top: 0;
+            padding-top: 0;
         }
         #tabla{
             margin: auto;
@@ -49,6 +55,9 @@
             padding: 15px;
             padding-bottom: 6px;
         }
+        .thead tr th{
+            font-weight: bold;
+        }
     </style>
 </head>
 <body>
@@ -58,14 +67,14 @@
         </div>
 
         <div class="titulo">
-            <h3 class="fw-bold">Correlativo del Lote en Emisión | Timbres Fiscales TFE-14</h3>
-            <h4>Emisión Timbres Fiscales Electrónicos Forma 14</h4>
+            <h3 class="fw-bold">Correlativo del Lote en Emisión | PAPEL DE SEGURIDAD</h3>
+            <h4>Timbres Fiscales Electrónicos Forma 14</h4>
         </div>
         
 
         <div class="div_table_rollos">
             <table class="table_rollos" id="tabla">
-                <thead class="">
+                <thead class="thead">
                     <tr>
                         <th width="10%">#</th>
                         <th>Desde</th>
