@@ -1,13 +1,40 @@
 <!DOCTYPE html>
 <html>
 <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    
     <title>PDF Template</title>
     <style>
+        @font-face{
+            font-family: "Poppins";
+            src: url('{{storage_path('fonts/Poppins-Light.ttf')}}') format('truetype');
+            font-weight: 300;
+            font-style: normal;
+        }
+        @font-face{
+            font-family: "Poppins";
+            src: url('{{storage_path('fonts/Poppins-Regular.ttf')}}') format('truetype');
+            font-weight: 400;
+            font-style: normal;
+        }
+        @font-face{
+            font-family: "Poppins";
+            src: url('{{storage_path('fonts/Poppins-Bold.ttf')}}') format('truetype');
+            font-weight: 700;
+            font-style: normal;
+        }
         *{
-            font-family: "Reddit Sans", sans-serif;
+            font-family: "Poppins";
+            font-weight: 300;
         }
         .titulo{
             text-align: center;
+        }
+        .titulo h3{
+            font-family: "Poppins";
+            font-weight: 700;
         }
         #tabla{
             margin: auto;
@@ -40,7 +67,7 @@
             <table class="table_rollos" id="tabla">
                 <thead class="">
                     <tr>
-                        <th>#</th>
+                        <th width="10%">#</th>
                         <th>Desde</th>
                         <th>Hasta</th>
                     </tr>

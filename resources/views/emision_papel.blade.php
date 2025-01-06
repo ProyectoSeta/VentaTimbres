@@ -107,94 +107,16 @@
     <div class="modal fade" id="modal_emitir_papel_f14" tabindex="-1" aria-hidden="true">
         <div class="modal-dialog">
             <div class="modal-content" id="content_emitir_papel_f14">
-                <div class="modal-header p-2 pt-3 d-flex justify-content-center">
-                    <div class="text-center">
-                        <i class='bx bx-plus-circle fs-2 text-muted me-2'></i>
-                        <h1 class="modal-title fs-5 fw-bold text-navy">Emisión</h1>
-                        <span>Papel de Seguridad | TFE-14</span>
-                    </div>
-                </div> 
-                <div class="modal-body px-5 py-3" style="font-size:13px">
-                    <p class="text-muted">*NOTA: Si el total de timbres fiscales a emitir 
-                        es diferente al esperado o se ha cambiado el numero de timbres a producirse por emisión, 
-                        dirigirse al modulo configuraciones (Papel de Seguridad) para cambiar el numero total de timbres fiscales.
-                    </p>
-                    
-                    <div class="fw-bold text-center">
-                        <p class="text-navy m-0">Total de Timbres a Emitir</p>
-                        <p class="fs-5 titulo fw-semibold text-muted">1000 Timbres TFE-14 | Papel de Seguridad</p>
-                    </div>
-                    
-
-                    <div class="d-flex justify-content-center my-4">
-                        <table class="table table-borderess w-50">
-                            <tr>
-                                <th>Desde:</th>
-                                <td>1</td>
-                            </tr>
-                            <tr>
-                                <th>Hasta:</th>
-                                <td>1000</td>
-                            </tr>
-                        </table>
-                    </div>
-
-                    <form id="form_emitir_rollos" method="post" onsubmit="event.preventDefault(); emitirPapelF14()">
-                        <div class="d-flex justify-content-center mt-3 mb-3">
-                            <button type="button" class="btn btn-secondary btn-sm me-2" data-bs-dismiss="modal">Cancelar</button>
-                            <button type="submit" class="btn btn-success btn-sm">Emitir</button>
-                        </div>
-                    </form>
-                    
-                </div>
+                
             </div>  <!-- cierra modal-content -->
         </div>  <!-- cierra modal-dialog -->
     </div>
 
-    <!-- ************ EMITIR PAPEL DE SEGURIDAD: FORMA 14  ************** -->
+    <!-- ************ EMITIR PAPEL DE SEGURIDAD: ESTAMPILLAS  ************** -->
     <div class="modal fade" id="modal_emitir_papel_estampillas" tabindex="-1" aria-hidden="true">
         <div class="modal-dialog">
             <div class="modal-content" id="content_emitir_papel_estampillas">
-                <div class="modal-header p-2 pt-3 d-flex justify-content-center">
-                    <div class="text-center">
-                        <i class='bx bx-plus-circle fs-2 text-muted me-2'></i>
-                        <h1 class="modal-title fs-5 fw-bold text-navy">Emisión</h1>
-                        <span>Papel de Seguridad | Estampillas</span>
-                    </div>
-                </div> 
-                <div class="modal-body px-5 py-3" style="font-size:13px">
-                    <p class="text-muted">*NOTA: Si el total de timbres fiscales a emitir 
-                        es diferente al esperado o se ha cambiado el numero de timbres a producirse por emisión, 
-                        dirigirse al modulo configuraciones (Papel de Seguridad) para cambiar el numero total de timbres fiscales.
-                    </p>
-                    
-                    <div class="fw-bold text-center">
-                        <p class="text-navy m-0">Total de Timbres a Emitir</p>
-                        <p class="fs-5 titulo fw-semibold text-muted">1000 Timbres Estampillas | Papel de Seguridad</p>
-                    </div>
-                    
-
-                    <div class="d-flex justify-content-center my-4">
-                        <table class="table table-borderess w-50">
-                            <tr>
-                                <th>Desde:</th>
-                                <td>1</td>
-                            </tr>
-                            <tr>
-                                <th>Hasta:</th>
-                                <td>1000</td>
-                            </tr>
-                        </table>
-                    </div>
-
-                    <form id="form_emitir_rollos" method="post" onsubmit="event.preventDefault(); emitirPapelEstampillas()">
-                        <div class="d-flex justify-content-center mt-3 mb-3">
-                            <button type="button" class="btn btn-secondary btn-sm me-2" data-bs-dismiss="modal">Cancelar</button>
-                            <button type="submit" class="btn btn-success btn-sm">Emitir</button>
-                        </div>
-                    </form>
-                    
-                </div>
+                
             </div>  <!-- cierra modal-content -->
         </div>  <!-- cierra modal-dialog -->
     </div>
@@ -275,10 +197,105 @@
 
 <script type="text/javascript">
     $(document).ready(function () {
-       
+
+        /////////////////////////// MODAL EMISION PAPEL FORMA 14
+        $(document).on('click','#btn_emitir_papel_f14', function(e) {
+            e.preventDefault();
+
+            $.ajax({
+                headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') },
+                type: 'POST',
+                url: '{{route("papel.modal_f14") }}',
+                success: function(response) {
+                    // console.log(response);
+                    $('#content_emitir_papel_f14').html(response);
+                },
+                error: function() {
+                }
+            });
+        });
+
+
+        /////////////////////////// MODAL EMISION PAPEL  ESTAMPILLAS
+        $(document).on('click','#btn_emitir_papel_estampillas', function(e) {
+            e.preventDefault();
+
+            $.ajax({
+                headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') },
+                type: 'POST',
+                url: '{{route("papel.modal_estampillas") }}',
+                success: function(response) {
+                    // console.log(response);
+                    $('#content_emitir_papel_estampillas').html(response);
+                },
+                error: function() {
+                }
+            });
+        });
 
     });
 
+    function emitirPapelF14(){
+            var formData = new FormData(document.getElementById("form_emitir_papel_f14"));
+                $.ajax({
+                    headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') },
+                    url:'{{route("papel.emitir_f14") }}',
+                    type:'POST',
+                    contentType:false,
+                    cache:false,
+                    processData:false,
+                    async: true,
+                    data: formData,
+                    success: function(response){
+                        console.log(response);
+                        if (response.success) {
+                            $('#content_emitir_papel_f14').html(response.html);
+                        
+                        }else{
+                            if (response.nota != '') {
+                                alert(response.nota);
+                            }else{
+                                alert('Disculpe, ha ocurrido un error.');
+                            }
+                            
+                        }  
+
+                    },
+                    error: function(error){
+                        
+                    }
+                });
+        }
+
+
+        function emitirPapelEstampillas(){
+            var formData = new FormData(document.getElementById("form_emitir_papel_estampillas"));
+                $.ajax({
+                    headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') },
+                    url:'{{route("papel.emitir_estampillas") }}',
+                    type:'POST',
+                    contentType:false,
+                    cache:false,
+                    processData:false,
+                    async: true,
+                    data: formData,
+                    success: function(response){
+                        console.log(response);
+                        if (response.success) {
+                            $('#modal_emitir_rollos').modal('hide');
+                            $('#modal_correlativo_rollos').modal('show');
+                            $('#content_correlativo_rollos').html(response.html);
+                        
+                        }else{
+                            alert('Disculpe, ha ocurrido un error en la Emisión de Rollos.');
+                        }  
+
+                    },
+                    error: function(error){
+                        
+                    }
+                });
+        }
 
 
   

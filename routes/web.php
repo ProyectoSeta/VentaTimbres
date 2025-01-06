@@ -37,7 +37,10 @@ Route::post('/home/historial_boveda', [App\Http\Controllers\HomeController::clas
 
 ///////////////////// PAPEL DE SEGURIDAD
 Route::get('/emision_papel', [App\Http\Controllers\PapelSeguridadController::class, 'index'])->name('emision_papel');
-
+Route::post('/papel/modal_f14', [App\Http\Controllers\PapelSeguridadController::class, 'modal_f14'])->name('papel.modal_f14');
+Route::post('/papel/modal_estampillas', [App\Http\Controllers\PapelSeguridadController::class, 'modal_estampillas'])->name('papel.modal_estampillas');
+Route::post('/papel/emitir_f14', [App\Http\Controllers\PapelSeguridadController::class, 'emitir_f14'])->name('papel.emitir_f14');
+Route::post('/papel/emitir_estampillas', [App\Http\Controllers\PapelSeguridadController::class, 'emitir_estampillas'])->name('papel.emitir_estampillas');
 
 ///////////////////// EMISIÓN ROLLOS FORMA 14
 Route::get('/emision_rollos', [App\Http\Controllers\RollosController::class, 'index'])->name('emision_rollos');

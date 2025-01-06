@@ -11,20 +11,14 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('detalle_asignacion_estampillas', function (Blueprint $table) {
+        Schema::create('inventario_tfes', function (Blueprint $table) {
             $table->increments('correlativo');
 
             $table->integer('key_taquilla')->unsigned();
             $table->foreign('key_taquilla')->references('id_taquilla')->on('taquillas')->onDelete('cascade');
 
             $table->integer('key_asignacion')->unsigned();
-            $table->foreign('key_asignacion')->references('id_asignacion')->on('asignacion_estampillas')->onDelete('cascade');
-
-            $table->integer('key_inventario_estampilla')->unsigned();
-            $table->foreign('key_inventario_estampilla')->references('id_inventario_estampilla')->on('inventario_estampillas')->onDelete('cascade');
-
-            $table->integer('key_denominacion')->unsigned();
-            $table->foreign('key_denominacion')->references('id')->on('ucd_denominacions')->onDelete('cascade');
+            $table->foreign('key_asignacion')->references('id_asignacion')->on('asignacion_tfes')->onDelete('cascade');
 
             $table->integer('cantidad_timbres');
             
