@@ -26,12 +26,12 @@
                 </div>
                 <div class="">
                     <div class="row">
-                        <div class="col-sm-8 d-flex flex-column">
+                        <div class="col-lg-8 d-flex flex-column">
                             <div class=" fs-3 text-navy fw-bold" >Disponible en Inventario</div>
                             <div class="text-secondary">Para asignar a Taquilla</div>
                         </div>
-                        <div class="col-sm-4">
-                            <div class="fs-1 text-primary fw-bold bg-primary-subtle text-center rounded-4">359 <span class="fs-5">Und.</span></div>
+                        <div class="col-lg-4">
+                            <div class="fs-1 text-primary fw-bold bg-primary-subtle text-center rounded-4  px-2">{{$total_f14}} <span class="fs-5">Und.</span></div>
                         </div>
                     </div>
                 </div>
@@ -42,12 +42,12 @@
                 </div>
                 <div class="">
                     <div class="row">
-                        <div class="col-sm-8 d-flex flex-column">
+                        <div class="col-lg-8 d-flex flex-column">
                             <div class=" fs-3 text-navy fw-bold" >Disponible en Inventario</div>
                             <div class="text-secondary">Para emitir UCD</div>
                         </div>
-                        <div class="col-sm-4">
-                            <div class="fs-1 text-primary fw-bold bg-primary-subtle text-center rounded-4">250 <span class="fs-5">Und.</span></div>
+                        <div class="col-lg-4">
+                            <div class="fs-1 text-primary fw-bold bg-primary-subtle text-center rounded-4 px-2">{{$total_estampillas}} <span class="fs-5">Und.</span></div>
                         </div>
                     </div>
                 </div>

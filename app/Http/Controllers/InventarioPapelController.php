@@ -71,9 +71,27 @@ class InventarioPapelController extends Controller
         }
 
 
+        // TOTALES
+        $total_f14 = 0;
+        $total_estampillas = 0;
+
+        $t1 = DB::table('emision_papel_tfes')->select('cantidad_timbres','asignados')->where('estado', '=', 1)->get();
+        foreach ($t1 as $k1) {
+            $total_prev = $k1->cantidad_timbres - $k1->asignados;
+            $total_f14 = $total_f14 + $total_prev;
+        }
+
+        $t2 = DB::table('emision_papel_estampillas')->select('cantidad_timbres','emitidos')->where('estado', '=', 1)->get();
+        foreach ($t2 as $k2) {
+            $total_prev = $k2->cantidad_timbres - $k2->emitidos;
+            $total_estampillas = $total_estampillas + $total_prev;
+        }
+
+
+
         
         
-        return view('inventario_papel', compact('query_tfes','query_estampillas'));
+        return view('inventario_papel', compact('query_tfes','query_estampillas','total_f14','total_estampillas'));
 
     }
 
