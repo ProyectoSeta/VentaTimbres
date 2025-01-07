@@ -58,6 +58,15 @@ Route::get('/inventario_papel', [App\Http\Controllers\InventarioPapelController:
 
 
 
+///////////////////// EMISION DE DENOMINACIONES UCD - ESTAMPILLAS
+Route::get('/emision_ucd', [App\Http\Controllers\EmisionUcdController::class, 'index'])->name('emision_ucd');
+
+
+
+
+
+
+
 ///////////////////// EMISIÓN ROLLOS FORMA 14
 Route::get('/emision_rollos', [App\Http\Controllers\RollosController::class, 'index'])->name('emision_rollos');
 Route::post('/rollos/modal_emitir', [App\Http\Controllers\RollosController::class, 'modal_emitir'])->name('rollos.modal_emitir');

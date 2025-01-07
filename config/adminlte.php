@@ -349,7 +349,7 @@ return [
         ['header' => 'Estampillas'],
         [
             'text'        => 'Emisión UCD',
-            'route'         => '',
+            'route'         => 'emision_ucd',
             'icon'       => 'fas fa-angle-right pe-2',   
         ],
         [

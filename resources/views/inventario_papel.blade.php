@@ -26,11 +26,11 @@
                 </div>
                 <div class="">
                     <div class="row">
-                        <div class="col-lg-8 d-flex flex-column">
+                        <div class="col-lg -8 d-flex flex-column">
                             <div class=" fs-3 text-navy fw-bold" >Disponible en Inventario</div>
                             <div class="text-secondary">Para asignar a Taquilla</div>
                         </div>
-                        <div class="col-lg-4">
+                        <div class="col-lg -4">
                             <div class="fs-1 text-primary fw-bold bg-primary-subtle text-center rounded-4  px-2">{{$total_f14}} <span class="fs-5">Und.</span></div>
                         </div>
                     </div>
@@ -42,11 +42,11 @@
                 </div>
                 <div class="">
                     <div class="row">
-                        <div class="col-lg-8 d-flex flex-column">
+                        <div class="col-lg -8 d-flex flex-column">
                             <div class=" fs-3 text-navy fw-bold" >Disponible en Inventario</div>
                             <div class="text-secondary">Para emitir UCD</div>
                         </div>
-                        <div class="col-lg-4">
+                        <div class="col-lg -4">
                             <div class="fs-1 text-primary fw-bold bg-primary-subtle text-center rounded-4 px-2">{{$total_estampillas}} <span class="fs-5">Und.</span></div>
                         </div>
                     </div>
@@ -148,17 +148,17 @@
                                         <a href="#" class="detalle_emision_lote_estampillas" lote="{{$q2->id_lote_papel}}" data-bs-toggle="modal" data-bs-target="#modal_detalle_lote_estampillas">Ver</a> 
                                     </td>
                                     <td>
-                                        @if ($q1->estado == 18)
+                                        @if ($q2->estado == 18)
                                             <span class="fst-italic text-secondary">No Aplica</span>
                                         @else
                                             
                                         @endif
                                     </td>
                                     <td>
-                                        @if ($q1->estado == 18)
+                                        @if ($q2->estado == 18)
                                             <!-- EN PROCESO -->
                                             <span class="badge text-bg-primary p-2 py-1 d-flex justify-content-center align-items-center" style="font-size: 12px;"><i class='bx bx-history fs-6 me-2'></i>En proceso</span>
-                                        @elseif ($q1->estado == 1)
+                                        @elseif ($q2->estado == 1)
                                             <!-- INVENTARIO -->
                                               <span class="badge bg-warning p-2 py-1 d-flex justify-content-center align-items-center" style="font-size: 12px;"><i class='bx bx-collection fs-6 me-2'></i> Inventario</span>
                                         @else
