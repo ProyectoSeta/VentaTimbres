@@ -25,7 +25,7 @@ return new class extends Migration
             $table->string('email');
 
             $table->integer('tlf_movil');
-            $table->integer('tlf_fijo');
+            $table->integer('tlf_fijo')->nullable();
         });
     }
 

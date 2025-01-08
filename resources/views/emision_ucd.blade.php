@@ -32,7 +32,7 @@
                             <div class="text-secondary">Para emitir denominaciones UCD</div>
                         </div>
                         <div class="col-lg -4">
-                            <div class="fs-2 text-primary fw-bold bg-primary-subtle text-center rounded-4  px-2">500 <span class="fs-5">Und.</span></div>
+                            <div class="fs-2 text-primary fw-bold bg-primary-subtle text-center rounded-4  px-2">{{$total_estampillas}} <span class="fs-5">Und.</span></div>
                         </div>
                     </div>
                 </div>
@@ -54,7 +54,7 @@
                             <div class="text-secondary">En Inventario</div>
                         </div>
                         <div class="col-md-7 d-flex align-items-center">
-                            <div class="fs-2  fw-bold bg-dark-subtle text-center rounded-3 px-3">550 <span class="fs-5">Und.</span></div>
+                            <div class="fs-2  fw-bold bg-dark-subtle text-center rounded-3 px-3">{{$de->total_timbres}} <span class="fs-5">Und.</span></div>
                         </div>
                     </div>
                 </div>
@@ -110,56 +110,10 @@
     <!-- ************ DETALLE LOTE: ESTAMPILLAS  ************** -->
     <div class="modal fade" id="modal_emitir_ucd_estampillas" tabindex="-1" aria-hidden="true">
         <div class="modal-dialog">
-            <div class="modal-content" id="content_detalle_lote_estampillas">
-                <div class="modal-header p-2 pt-3 d-flex justify-content-center">
-                    <div class="text-center">
-                        <i class="bx bx-plus-circle fs-2 text-muted me-2"></i>
-                        <h1 class="modal-title fs-5 fw-bold text-navy">Emisión</h1>
-                        <span>Estampillas | Por Denominaciones UCD </span>
-                    </div>
-                </div>
-                <div class="modal-body px-5 py-3" style="font-size:13px">
-                    <form id="form_emitir_papel_f14" method="post" onsubmit="event.preventDefault(); emitirPapelF14()">
-                        <div class="d-flex justify-content-center">
-                            <div class="row">
-                                <div class="col-lg-8 d-flex flex-column">
-                                    <div class="fs-6 text-navy fw-bold" >Disponible en Inventario</div>
-                                    <div class="text-secondary">Para emitir denominaciones UCD</div>
-                                </div>
-                                <div class="col-lg-4">
-                                    <div class="fs-6 text-primary fw-bold bg-primary-subtle text-center rounded-4 px-2">5000 <span class="fs-6">Und.</span></div>
-                                </div>
-                            </div>
-                        </div>
-
-                        <div class="text-center text-navy fw-bold titulo my-3">Emisión</div>
-                        
-                        <div id="row_emision_ucd">
-                            <div class="row">
-                                <div class="col-sm-5">
-                                    <label for="ucd" class="form-label">Denominación: <span class="text-danger">*</span></label>
-
-                                </div>
-                                <div class="col-sm-6">
-                                    <label for="cantidad" class="form-label">Cantidad: <span class="text-danger">*</span></label>
-                                    <input type="number" class="form-control form-control-sm cantidad" id="cantidad_1" i="1" name="emitir[1][cantidad]" required>
-                                </div>
-                                <div class="col-md-1 pt-4">
-                                    <a  href="javascript:void(0);" class="btn add_button border-0">
-                                        <i class="bx bx-plus fs-4" style="color:#038ae4"></i>
-                                    </a>
-                                </div>
-                            </div>
-                        </div>
-                        
-
-
-                        <div class="d-flex justify-content-center mt-4 mb-3">
-                            <button type="button" class="btn btn-secondary btn-sm me-2" data-bs-dismiss="modal">Cancelar</button>
-                            <button type="submit" class="btn btn-success btn-sm">Emitir</button>
-                        </div>
-                    </form>
-                    
+            <div class="modal-content" id="content_emitir_ucd_estampillas">
+                <div class="my-5 py-5 d-flex flex-column text-center">
+                    <i class='bx bx-loader-alt bx-spin fs-1 mb-3' style='color:#0077e2'  ></i>
+                    <span class="text-muted">Cargando, por favor espere un momento...</span>
                 </div>
             </div>  <!-- cierra modal-content -->
         </div>  <!-- cierra modal-dialog -->
@@ -219,21 +173,128 @@
                     }
                 }
             );
-
-           
-
         });
     </script>
 
 <script type="text/javascript">
     $(document).ready(function () {
-       
+        ///////////////////////////////////////AGREGAR CAMPOS A OTRA(S) DENOMINACIONES
+            var maxFieldTramite = 2; //Input fields increment limitation
+            var c = 1; //Initial field counter is 1
+
+            $(document).on('click', '.add_button', function(e){ //Once add button is clicked
+                if(c < maxFieldTramite){ //Check maximum number of input fields
+                    c++; //Increment field counter
+
+                    $.ajax({
+                        headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') },
+                        type: 'POST',
+                        url: '{{route("emision_ucd.denominacions") }}',
+                        success: function(response) {
+                            // console.log(response);
+                            $('#row_emision_ucd').append('<div class="row">'+
+                                    '<div class="col-md-5">'+
+                                        '<select class="form-select form-select-sm denominacion" id="denominacion_'+c+'" i="'+c+'" name="emitir['+c+'][denominacion]">'+
+                                            response+
+                                        '</select>'+
+                                    '</div>'+
+                                    '<div class="col-md-6">'+
+                                        '<input type="number" class="form-control form-control-sm cantidad" id="cantidad_'+c+'" i="'+c+'"  name="emitir['+c+'][cantidad]" required>'+
+                                    '</div>'+
+                                    '<div class="col-md-1">'+
+                                        '<a  href="javascript:void(0);" class="btn remove_button" >'+
+                                            '<i class="bx bx-x fs-4"></i>'+
+                                        '</a>'+
+                                    '</div>'+
+                                '</div>'); // Add field html
+                        },
+                        error: function() {
+                        }
+                    });
+
+                    
+                }
+            });
+
+            $(document).on('click', '.remove_button', function(e){ //Once remove button is clicked
+                e.preventDefault();
+                $(this).parent('div').parent('div').remove(); //Remove field html
+                c--; //Decrement field counter
+            });
+        ///////////////////////////////////////////////////////////////////
       
+        /////////////////////////// MODAL EMITIR ESTAMPILLAS POR DENOMINACION
+        $(document).on('click','#btn_emitir_ucd_estampillas', function(e) {
+            e.preventDefault();
+            $.ajax({
+                headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') },
+                type: 'POST',
+                url: '{{route("emision_ucd.modal_emitir") }}',
+                success: function(response) {
+                    // console.log(response);
+                    $('#content_emitir_ucd_estampillas').html(response);
+                },
+                error: function() {
+                }
+            });
+        });
+
+        ///////////////////////COLOCAR SELECCIONE SI EL VALOR (DENOMINACION) YA HA SIDO ESCOGIDO
+        $(document).on('change','.denominacion', function(e) {
+            var value = $(this).val();
+            var i = $(this).attr('i');
+            var x = false;
+
+            $('.denominacion').each(function(e){
+                var d = $(this).val();
+                var d_i = $(this).attr('i');
+                
+                if (d == value && d_i != i) {
+                    x = true;
+                }
+                
+            });
+
+            if (x == true) {
+                alert("Disculpe, no puede seleccionar dos (2) denominaciones del mismo valor para la misma emisión.");
+                $('#denominacion_'+i)[0].selectedIndex = 0;
+            }
+        });
 
 
     });
 
-  
+    function emitirEstampillasUcd(){
+        var formData = new FormData(document.getElementById("form_emitir_estampillas_ucd"));
+        $.ajax({
+            headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') },
+            url:'{{route("emision_ucd.emitir_denominacion") }}',
+            type:'POST',
+            contentType:false,
+            cache:false,
+            processData:false,
+            async: true,
+            data: formData,
+            success: function(response){
+                console.log(response);
+                // if (response.success) {
+                //     $('#modal_emitir_estampillas').modal('hide');
+                //     $('#modal_correlativo_tiras').modal('show');
+                //     $('#content_correlativo_tiras').html(response.html);
+                // }else{
+                //     if (response.nota != '') {
+                //         alert(response.nota);
+                //     }else{
+                //         alert('Disculpe, ha ocurrido un error en la emisión. Vuelva a intentarlo.');
+                //     }
+                    
+                // }
+            },
+            error: function(error){
+                
+            }
+        });
+    }
 
 
   

@@ -28,7 +28,10 @@ return new class extends Migration
             $table->integer('desde');
             $table->integer('hasta');
 
-            $table->integer('secuencia');
+            $table->integer('asignado');
+
+            $table->integer('estado')->unsigned(); ///// INVENTARIO - ASIGNADO
+            $table->foreign('estado')->references('id_clasificacion')->on('clasificacions')->onDelete('cascade');
             
            
         });
