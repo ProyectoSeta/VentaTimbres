@@ -64,6 +64,8 @@ Route::post('/emision_ucd/denominacions', [App\Http\Controllers\EmisionUcdContro
 Route::post('/emision_ucd/modal_emitir', [App\Http\Controllers\EmisionUcdController::class, 'modal_emitir'])->name('emision_ucd.modal_emitir');
 Route::post('/emision_ucd/emitir_denominacion', [App\Http\Controllers\EmisionUcdController::class, 'emitir_denominacion'])->name('emision_ucd.emitir_denominacion');
 
+/////////PDF:  EMISION DE DENOMINACIONES UCD - ESTAMPILLAS
+Route::get('/emision_ucd/pdf_emision', [App\Http\Controllers\EmisionUcdController::class, 'pdf_emision'])->name('emision_ucd.pdf_emision');
 
 
 

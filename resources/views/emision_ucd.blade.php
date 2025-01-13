@@ -86,6 +86,11 @@
                 </tbody> 
             </table>
         </div>
+
+
+
+
+
         
 
         
@@ -107,10 +112,22 @@
     
     
 <!--****************** MODALES **************************-->
-    <!-- ************ DETALLE LOTE: ESTAMPILLAS  ************** -->
+    <!-- ************ EMISIÓN ESTAMPILLAS POR DENOMINACIÓN  ************** -->
     <div class="modal fade" id="modal_emitir_ucd_estampillas" tabindex="-1" aria-hidden="true">
         <div class="modal-dialog">
             <div class="modal-content" id="content_emitir_ucd_estampillas">
+                <div class="my-5 py-5 d-flex flex-column text-center">
+                    <i class='bx bx-loader-alt bx-spin fs-1 mb-3' style='color:#0077e2'  ></i>
+                    <span class="text-muted">Cargando, por favor espere un momento...</span>
+                </div>
+            </div>  <!-- cierra modal-content -->
+        </div>  <!-- cierra modal-dialog -->
+    </div>
+
+    <!-- ************ CORRELATIVO ESTAMPILLAS X DENO  ************** -->
+    <div class="modal fade" id="modal_correlativo_ucd_estampillas" tabindex="-1" data-bs-backdrop="static" data-bs-keyboard="false" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content" id="content_correlativo_ucd_estampillas">
                 <div class="my-5 py-5 d-flex flex-column text-center">
                     <i class='bx bx-loader-alt bx-spin fs-1 mb-3' style='color:#0077e2'  ></i>
                     <span class="text-muted">Cargando, por favor espere un momento...</span>
@@ -277,18 +294,22 @@
             data: formData,
             success: function(response){
                 console.log(response);
-                // if (response.success) {
-                //     $('#modal_emitir_estampillas').modal('hide');
-                //     $('#modal_correlativo_tiras').modal('show');
-                //     $('#content_correlativo_tiras').html(response.html);
-                // }else{
-                //     if (response.nota != '') {
-                //         alert(response.nota);
-                //     }else{
-                //         alert('Disculpe, ha ocurrido un error en la emisión. Vuelva a intentarlo.');
-                //     }
+                $('#content_emitir_ucd_estampillas').html('<div class="my-5 py-5 d-flex flex-column text-center">'+
+                                                            '<i class="bx bx-loader-alt bx-spin fs-1 mb-3" style="color:#0077e2"  ></i>'+
+                                                            '<span class="text-muted">Cargando, por favor espere un momento...</span>'+
+                                                        '</div>');
+                if (response.success) {
+                    $('#modal_emitir_ucd_estampillas').modal('hide');
+                    $('#modal_correlativo_ucd_estampillas').modal('show');
+                    $('#content_correlativo_ucd_estampillas').html(response.html);
+                }else{
+                    if (response.nota != '') {
+                        alert(response.nota);
+                    }else{
+                        alert('Disculpe, ha ocurrido un error en la emisión. Vuelva a intentarlo.');
+                    }
                     
-                // }
+                }
             },
             error: function(error){
                 

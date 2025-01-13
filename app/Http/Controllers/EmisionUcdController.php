@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 use DB;
 use Barryvdh\DomPDF\Facade\Pdf;
+use SimpleSoftwareIO\QrCode\Facades\QrCode;
 use Illuminate\Http\Request;
 
 class EmisionUcdController extends Controller
@@ -150,6 +151,8 @@ class EmisionUcdController extends Controller
         $emitir = $request->post('emitir');
         $user = auth()->id();
 
+        $tr = '';
+
         $total_timbres_emitir = 0;
         $timbres_disponibles = 0;
 
@@ -225,11 +228,59 @@ class EmisionUcdController extends Controller
                                 $delete = DB::table('asignacion_ucd_estampillas')->where('id_asignacion_ucd', '=', $id_asignacion)->delete();
                                 return response()->json(['success' => false]);
                             }
+
+
+                            ///// GENERAR QRS
+                            for ($i=$desde; $i <= $hasta; $i++) { 
+                                $url = 'https://estampillas.tributosaragua.com.ve/?id='.$i.'?lp='.$key->id_lote_papel; 
+                                QrCode::format('png')->size(180)->eye('circle')->generate($url, public_path('assets/qrEstampillas/qrcode_EST'.$i.'.png'));
+                            }
                         }
                     }
+
+                    $c3 = DB::table('ucd_denominacions')->select('denominacion')->where('id', '=', $key_deno)->first();
+
+                    $tr .= '<tr>
+                                <td><span class="fw-bold text-navy fs-6">'.$c3->denominacion.' UCD</span></td>
+                                <td>'.$desde.'</td>
+                                <td>'.$hasta.'</td>
+                                <td>'.$cantidad.'</td>
+                            </tr>';
                 }
 
-                return response()->json(['success' => true]);
+                $html = '<div class="modal-header p-2 pt-3 d-flex justify-content-center">
+                            <div class="text-center">
+                                <i class="bx bxs-collection fs-2 text-muted me-2"></i>
+                                <h1 class="modal-title fs-5 fw-bold text-navy">Correlativo | Estampillas</h1>
+                                <span>Denominaciones UCD </span>
+                            </div>
+                        </div>
+                        <div class="modal-body px-5 py-3" style="font-size:13px">
+                            <p class="text-muted ">NOTA: Tener en cuenta que la secuencia "Desde" y "Hasta" corresponden 
+                                al correlativo de papel impreso en el Papel de Seguridad para las Estampillas.</p>
+                            <table class="table text-center">
+                                <thead>
+                                    <tr>
+                                        <th>Denominación</th>
+                                        <th>Desde</th>
+                                        <th>Hasta</th>
+                                        <th>Cant.</th>    
+                                    </tr>    
+                                </thead> 
+                                <tbody>
+                                    '.$tr.'
+                                </tbody>   
+                            </table>    
+                                
+                            <p class="text-muted">IMPORTANTE: .</p>
+
+                            <div class="d-flex justify-content-center mt-4 mb-3">
+                                <a href="'.route("emision_ucd").'" class="btn btn-secondary btn-sm me-2">Cancelar</a>
+                                <a href="'.route("emision_ucd.pdf_emision", ["asignacion" => $id_asignacion]).'" class="btn btn-dark btn-sm"  style="font-size:12.7px">PDF</a>
+                            </div>
+                        </div>';
+
+                return response()->json(['success' => true, 'html' => $html]);
             
             }else{
                 return response()->json(['success' => false]);
@@ -238,6 +289,25 @@ class EmisionUcdController extends Controller
         }else{
             return response()->json(['success' => false, 'nota' => 'Disculpe, no hay suficiente papel de seguridad de estampillas para realizar la Emisión.']);
         }
+
+    }
+
+
+
+
+
+    public function pdf_emision(Request $request)
+    {
+        $asignacion = $request->asignacion;
+
+        $query =  DB::table('inventario_estampillas')->join('ucd_denominacions', 'inventario_estampillas.key_denominacion', '=','ucd_denominacions.id')
+                                                    ->select('inventario_estampillas.*','ucd_denominacions.denominacion','ucd_denominacions.identificador')
+                                                    ->where('inventario_estampillas.key_asignacion_ucd', '=', $asignacion)->get();
+
+
+        $pdf = PDF::setPaper([0,0,283.5,141.7])->loadView('pdfAsignacionUcdEstampillas', compact('query'));
+
+        return $pdf->download('ESTAMPILLAS_UCD_A'.$asignacion.'.pdf');
 
     }
 
