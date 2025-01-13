@@ -19,6 +19,7 @@ class EmisionUcdController extends Controller
     
     public function index()
     {
+        // DENOMINACIONES PARA ESTAMPILLAS
         $deno = [];
         $q1 = DB::table('ucd_denominacions')->where('estampillas', '=', 'true')->get();
         foreach ($q1 as $key) {
@@ -40,7 +41,7 @@ class EmisionUcdController extends Controller
             array_push($deno,$a);
         }
 
-
+        // TOTAL PAPEL DE SEGURIDAD DISPONIBLE
         $total_estampillas = 0;
         $t2 = DB::table('emision_papel_estampillas')->select('cantidad_timbres','emitidos')->where('estado', '=', 1)->get();
         foreach ($t2 as $k2) {
@@ -48,7 +49,41 @@ class EmisionUcdController extends Controller
             $total_estampillas = $total_estampillas + $total_prev;
         }
 
-        return view('emision_ucd',compact('deno','total_estampillas'));
+
+        // ASIGNACIONES DE UCD A ESTAMPILLAS
+        $query_asignaciones = [];
+        $query = DB::table('asignacion_ucd_estampillas')->join('funcionarios', 'asignacion_ucd_estampillas.key_user', '=','funcionarios.id_funcionario')
+                                                        ->select('asignacion_ucd_estampillas.*','funcionarios.nombre','funcionarios.cargo')
+                                                        ->get();
+
+        $total = DB::table('asignacion_ucd_estampillas')->selectRaw("count(*) as total")->first();
+        $contador = 0;
+
+        foreach ($query as $key) {
+            $contador++;
+            $ultimo = false;
+
+            if ($contador == $total->total) {
+                $ultimo = true;
+            }
+
+            $array = array(
+                'id_asignacion_ucd' => $key->id_asignacion_ucd,
+                'fecha' => $key->fecha,
+                'hora' => date("h:i A",strtotime($key->hora)),
+                'nombre' => $key->nombre,
+                'cargo' => $key->cargo,
+                'key_user' => $key->key_user,
+                'ultimo' => $ultimo
+            );
+
+            $a = (object) $array;
+            array_push($query_asignaciones,$a);
+        }
+
+
+
+        return view('emision_ucd',compact('deno','total_estampillas','query_asignaciones'));
     }
 
     public function denominacions()
@@ -88,8 +123,8 @@ class EmisionUcdController extends Controller
         $html = '<div class="modal-header p-2 pt-3 d-flex justify-content-center">
                     <div class="text-center">
                         <i class="bx bx-plus-circle fs-2 text-muted me-2"></i>
-                        <h1 class="modal-title fs-5 fw-bold text-navy">Emisión</h1>
-                        <span>Estampillas | Por Denominaciones UCD </span>
+                        <h1 class="modal-title fs-5 fw-bold text-navy">Asignación de UCD</h1>
+                        <span>Estampillas | Denominaciones UCD </span>
                     </div>
                 </div>
                 <div class="modal-body px-5 py-3" style="font-size:13px">
@@ -134,7 +169,7 @@ class EmisionUcdController extends Controller
 
                         <div class="d-flex justify-content-center mt-4 mb-3">
                             <button type="button" class="btn btn-secondary btn-sm me-2" data-bs-dismiss="modal">Cancelar</button>
-                            <button type="submit" class="btn btn-success btn-sm">Emitir</button>
+                            <button type="submit" class="btn btn-success btn-sm">Aceptar</button>
                         </div>
                     </form>
                     
@@ -179,11 +214,13 @@ class EmisionUcdController extends Controller
                     $key_deno = $em['denominacion'];
                     $cantidad = $em['cantidad'];
     
-                    $q1 = DB::table('emision_papel_estampillas')->select('id_lote_papel','desde','hasta','emitidos')->where('cantidad_timbres', '!=', 'emitidos')->where('estado', '=', 1)->get();
+                    $q1 = DB::table('emision_papel_estampillas')->select('id_lote_papel','desde','hasta','emitidos','cantidad_timbres')->where('cantidad_timbres', '!=', 'emitidos')->where('estado', '=', 1)->get();
     
                     $timbres_emitidos = 0;
-    
+                    $timbres_restantes = $cantidad;
+                    
                     foreach ($q1 as $key) {
+                        
                         if ($timbres_emitidos == $cantidad) {
                             # cancelar foreach
                             break;
@@ -197,14 +234,16 @@ class EmisionUcdController extends Controller
                                 $desde = $key->desde;
                             }
     
-                            $hasta_prev = ($desde + $cantidad) - 1;
+                            $hasta_prev = ($desde + $timbres_restantes) - 1;
                             if ($hasta_prev > $key->hasta) {
                                 $hasta = $key->hasta;
-                                $emitidos = $emitidos + (($hasta - $desde) + 1);
+                                $timbres_emitidos = $timbres_emitidos + (($hasta - $desde) + 1);
                             }else{
                                 $hasta = $hasta_prev;
-                                $emitidos = $cantidad;
+                                $timbres_emitidos = $cantidad;
                             }
+
+                            $timbres_restantes = $timbres_restantes - $timbres_emitidos;
 
                             $cant_registro = ($hasta - $desde) + 1;
     
@@ -221,8 +260,13 @@ class EmisionUcdController extends Controller
                                 # code...
                                 /////UPDATE DEL TOTAL TIBRES EMITIDOS EN EMISION_PAPEL_ESTAMPILLAS (TABLE)
                                 $new_emitidos = $key->emitidos + $cant_registro;
-                                $update_emitidos = DB::table('emision_papel_estampillas')->where('id_lote_papel','=',$key->id_lote_papel)->update(['emitidos' => $new_emitidos]);
 
+                                if ($key->cantidad_timbres == $new_emitidos) {
+                                    $update_emitidos = DB::table('emision_papel_estampillas')->where('id_lote_papel','=',$key->id_lote_papel)->update(['emitidos' => $new_emitidos, 'estado' => 4]);
+                                }else{
+                                    $update_emitidos = DB::table('emision_papel_estampillas')->where('id_lote_papel','=',$key->id_lote_papel)->update(['emitidos' => $new_emitidos]);
+                                }
+                            
                             }else{
                                 /////eliminar registro de asignacion ucd estampillas
                                 $delete = DB::table('asignacion_ucd_estampillas')->where('id_asignacion_ucd', '=', $id_asignacion)->delete();
@@ -314,17 +358,125 @@ class EmisionUcdController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(string $id)
+    public function detalle(Request $request)
     {
-        //
+        $id_asignacion = $request->post('asignacion');
+        $tr = '';
+
+        $query = DB::table('asignacion_ucd_estampillas')->join('funcionarios', 'asignacion_ucd_estampillas.key_user', '=','funcionarios.id_funcionario')
+                                                        ->select('asignacion_ucd_estampillas.*','funcionarios.nombre','funcionarios.cargo')
+                                                        ->where('asignacion_ucd_estampillas.id_asignacion_ucd','=',$id_asignacion)
+                                                        ->first();
+        
+        $query_2 = DB::table('inventario_estampillas')->join('ucd_denominacions', 'inventario_estampillas.key_denominacion', '=','ucd_denominacions.id')
+                                                    ->select('inventario_estampillas.*','ucd_denominacions.denominacion')
+                                                    ->where('inventario_estampillas.key_asignacion_ucd', '=', $id_asignacion)->get();
+        foreach ($query_2 as $key) {
+            $tr .= '<tr>
+                        <td>
+                            <span class="text-navy fs-6 fw-bold">'.$key->denominacion.' UCD</span>
+                        </td>
+                        <td class="text-muted fw-bold">#'.$key->key_lote_papel.'</td>
+                        <td>'.$key->desde.'</td>
+                        <td>'.$key->hasta.'</td>
+                        <td class="text-muted">'.$key->cantidad_timbres.' und.</td>
+                    </tr>';
+        }
+        
+        $hora = date("h:i A",strtotime($query->hora));
+
+        $html = '<div class="modal-header p-2 pt-3 d-flex justify-content-center">
+                    <div class="text-center">
+                        <i class="bx bx-detail fs-2 text-muted me-2"></i>
+                        <h1 class="modal-title fs-5 fw-bold text-navy">Detalle | <span class="text-muted"> Asignación UCD</span></h1>
+                    </div>
+                </div>
+                <div class="modal-body px-5 py-3" style="font-size:13px">
+                    <div class="d-flex justify-content-center">
+                        <table class="table w-75 ">
+                            <tbody>
+                                <tr>
+                                    <th>ID</th>
+                                    <td class="text-secondary" colspan="2">'.$query->id_asignacion_ucd.'</td>
+                                </tr>
+                                <tr>
+                                    <th>Fecha - Hora</th>
+                                    <td colspan="2">'.$query->fecha.' - '.$hora.'</td>
+                                </tr>
+                                <tr>
+                                    <th>Emitido Por:</th>
+                                    <td colspan="2">
+                                        <div class="d-flex flex-column text-muted">
+                                            <span class="">
+                                                USER
+                                                <span class="badge bg-primary-subtle text-primary-emphasis ms-2">'.$query->cargo.'</span>
+                                            </span>
+                                            <span class="text-navy fw-bold">'.$query->nombre.'</span>  
+                                        </div>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                        
+
+                    <div class="text-navy fw-bold fs-5 mb-3 text-center">Correlativo</div>
+
+                    <table class="table text-center">
+                        <tr>
+                            <th>UCD</th>
+                            <th>ID Lote Papel</th>
+                            <th>Desde</th>
+                            <th>Hasta</th>
+                            <th>Cantidad Est.</th>
+                        </tr>
+                        '.$tr.'
+                    </table>
+
+                    <div class="d-flex justify-content-center my-2">
+                        <button type="button" class="btn btn-secondary btn-sm" data-bs-dismiss="modal">Salir</button>
+                    </div>
+                </div>';
+
+        return response($html);
+
     }
 
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit(string $id)
+    public function delete(Request $request)
     {
-        //
+        $id_asignacion = $request->post('asignacion');
+        $borrar = [];
+
+        $q1 = DB::table('inventario_estampillas')->select('key_lote_papel','cantidad_timbres')->where('key_asignacion_ucd', '=', $id_asignacion)->get();
+        foreach ($q1 as $key) {
+
+            $array = array(
+                'key_lote_papel' => $key->key_lote_papel,
+                'cantidad' => $key->cantidad_timbres,
+            );
+
+            $a = (object) $array;
+            array_push($borrar,$a);
+        }
+
+        $delete = DB::table('asignacion_ucd_estampillas')->where('id_asignacion_ucd', '=', $id_asignacion)->delete();
+
+        if ($delete) {
+            foreach ($borrar as $key) {
+                $c2 = DB::table('emision_papel_estampillas')->select('emitidos')->where('id_lote_papel', '=', $key->key_lote_papel)->first();
+                $new_emitidos = $c2->emitidos - $key->cantidad;
+                $update = DB::table('emision_papel_estampillas')->where('id_lote_papel', '=', $key->key_lote_papel)->update(['emitidos' => $new_emitidos]);
+            }
+
+            ///////////INCLUIR BITACORA
+            return response()->json(['success' => true]);
+        }else{
+            return response()->json(['success' => false]);
+        }
+
     }
 
     /**

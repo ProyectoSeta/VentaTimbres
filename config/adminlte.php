@@ -348,15 +348,15 @@ return [
         ],
         ['header' => 'Estampillas'],
         [
-            'text'        => 'Emisión UCD',
+            'text'        => 'Asignación UCD | Inventario',
             'route'         => 'emision_ucd',
             'icon'       => 'fas fa-angle-right pe-2',   
         ],
-        [
-            'text'        => 'Inventario',
-            'route'         => '',
-            'icon'       => 'fas fa-angle-right pe-2',   
-        ],
+        // [
+        //     'text'        => 'Inventario',
+        //     'route'         => '',
+        //     'icon'       => 'fas fa-angle-right pe-2',   
+        // ],
         
         ['header' => 'Asignaciones'],
         [

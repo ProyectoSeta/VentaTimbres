@@ -33,7 +33,7 @@
             padding-right: 17px;
             padding-left: 17px;
         }
-        #ucd_title{
+        .ucd_title{
             font-size: 18px;
             font-weight: bold;
             color: #022040;
@@ -87,31 +87,27 @@
             previstas para su venta.
         </p>
 
-        
 
-        @foreach ($correlativo as $c)
-            <table class="table_detalle">
-                @if ($c->salto == true)
-                    <tr id="tr_ucd">
-                        <th colspan="3" id="ucd_title">{{$c->ucd}} UCD</th>
-                    </tr>
-                    <tr id="tr_cantidad">
-                        <th colspan="3" id="cant_title">Total: 50 Estampillas</th>
-                    </tr>
+        <table>
+            <thead>
+                <tr>
+                    <th>UCD</th>
+                    <th>Desde</th>
+                    <th>Hasta</th>
+                    <th>Cant. Timbres</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach ($correlativo as $c)
                     <tr>
-                        <th>#</th>
-                        <th>Desde</th>
-                        <th>Hasta</th>
-                    </tr>
-                @else
-                    <tr>
-                        <td>{{$c->numero}}</td>
+                        <td class="ucd_title">{{$c->ucd}} UCD</td>
                         <td>{{$c->desde}}</td>
                         <td>{{$c->hasta}}</td>
+                        <td>{{$c->cantidad}} und.</td>
                     </tr>
-                @endif
-            </table>
-        @endforeach
+                @endforeach
+            </tbody>
+        </table>
 
 
         <div id="content_firma">

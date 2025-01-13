@@ -84,5 +84,10 @@ class ClasificacionSeeder extends Seeder
         DB::table('clasificacions')->insert([
             'nombre_clf' => 'En Proceso',
         ]);
+
+
+        DB::table('clasificacions')->insert([
+            'nombre_clf' => 'Recibido',
+        ]);
     }
 }

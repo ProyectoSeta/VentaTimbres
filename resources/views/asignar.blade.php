@@ -206,10 +206,7 @@
     <div class="modal fade" id="modal_asignado_estampillas" tabindex="-1" data-bs-backdrop="static" data-bs-keyboard="false" aria-labelledby="exampleModalLabel" aria-hidden="true">
         <div class="modal-dialog">
             <div class="modal-content" id="content_asignado_estampillas">
-                <div class="my-5 py-5 d-flex flex-column text-center">
-                    <i class='bx bx-loader-alt bx-spin fs-1 mb-3' style='color:#0077e2'  ></i>
-                    <span class="text-muted">Cargando, por favor espere un momento...</span>
-                </div>
+                
             </div>  <!-- cierra modal-content -->
         </div>  <!-- cierra modal-dialog -->
     </div>
@@ -295,13 +292,13 @@
 
 <script type="text/javascript">
     $(document).ready(function () {
-        ///////////////////////////////////////AGREGAR CAMPOS A OTRO(S) PAGO
-        var maxFieldTramite = 9; //Input fields increment limitation
-            var c = 1; //Initial field counter is 1
+        ///////////////////////////////////////AGREGAR CAMPOS A OTRO(S) DENOMINACIONES
+        var maxFieldTramite = 5; //Input fields increment limitation
+        var c = 2; //Initial field counter is 1
 
             $(document).on('click', '.add_button', function(e){ //Once add button is clicked
+                e.preventDefault();
                 if(c < maxFieldTramite){ //Check maximum number of input fields
-                    c++; //Increment field counter
 
                     $.ajax({
                         headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') },
@@ -311,16 +308,14 @@
                             // console.log(response);
                             $('#conten_detalle_asignar_estampillas').append('<div class="row">'+
                                             '<div class="col-5">'+
-                                                '<label for="denominacion_'+c+'" class="form-label">Denominación: <span class="text-danger">*</span></label>'+
                                                 '<select class="form-select form-select-sm denominacion" id="denominacion_'+c+'" i="'+c+'" name="emitir['+c+'][denominacion]">'+
                                                     response+
                                                 '</select>'+
                                             '</div>'+
                                             '<div class="col-5">'+
-                                                '<label for="cantidad_'+c+'" class="form-label">Cant. Estampillas:</label>'+
                                                 '<input type="number" class="form-control form-control-sm" i="'+c+'" id="cantidad_'+c+'" name="emitir['+c+'][cantidad]">'+
                                             '</div>'+
-                                            '<div class="col-2 pt-4">'+
+                                            '<div class="col-2">'+
                                                 '<a  href="javascript:void(0);" class="btn remove_button" >'+
                                                     '<i class="bx bx-x fs-4"></i>'+
                                                 '</a>'+
@@ -330,7 +325,8 @@
                         error: function() {
                         }
                     });
-
+                    
+                    c++; //Increment field counter
                     
                 }
             });

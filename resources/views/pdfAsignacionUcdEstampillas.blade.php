@@ -11,100 +11,72 @@
 
         /* ESTAMPILLAS */
         /* .margen_interno{
-            padding-left: 75px;
-            padding-right: 75px;  
+            padding-left: 7px;
+            padding-right: 7px;  
         } */
 
         .row {
-        display: flex;
-        flex-wrap: wrap;
+            display: flex;
+            flex-wrap: wrap;
+            width:100%;
+            font-size: 5px;
         }
 
-        .col-8 {
-        flex: 0 0 66.66666667%;
-        max-width: 66.66666667%;
-        font-size: 6px;
-        }
-
-        .col-4 {
-        flex: 0 0 33.33333333%;
-        max-width: 33.33333333%;
-        text-align: center;
-        }
-
-        .table {
-        border-collapse: collapse;
-        font-size: 12.5px;
-        }
-
-        .table-borderless th, .table-borderless td {
-        border: none;
-        }
-
-        .border-bottom {
-        border-bottom: 1px solid #dee2e6;
+        .col-7 {
+            flex: 0 0 60%;
+            max-width: 60%;
         }
 
         .mb-3 {
-        margin-bottom: 1rem;
+        margin-bottom: 1rem !important;
+        }
+
+        .border-bottom {
+        border-bottom: 1px solid #dee2e6 !important;
+        }
+
+        .mt-1 {
+        margin-top: 0.25rem !important;
+        }
+
+        .col-5 {
+            flex: 0 0 20%;
+            max-width: 20%;
+            text-align: center;
         }
 
         .fw-bold {
-        font-weight: bold;
-        }
-
-        .mb-0 {
-        margin-bottom: 0;
+        font-weight: bold !important;
         }
 
         .pb-0 {
-        padding-bottom: 0;
+        padding-bottom: 0 !important;
         }
-
-      
+            
 
 
     </style>
 </head>
 <body>
-    <div class="margen_interno">
+    <div class="">
         <div class="row">
-            <div class="col-8">
-                <table class="table table-borderless" style="font-size:12.5px;">
-                    <tr>
-                        <th>Nombre del Solicitante</th>
-                    </tr>
-                    <tr class="border-bottom">
-                        <td></td>
-                    </tr>
-                    <tr>
-                        <th>Nro. Identificación</th>
-                    </tr>
-                    <tr class="border-bottom">
-                        <td></td>
-                    </tr>
-                    <tr>
-                        <th>Concepto</th>
-                    </tr>
-                    <tr class="border-bottom">
-                        <td></td>
-                    </tr>
-                    <tr>
-                        <th>Fecha</th>
-                    </tr>
-                    <tr class="border-bottom">
-                        <td></td>
-                    </tr>
-                </table>
-            </div>
-            <div class="col-4 text-center ">
-                <div class="mb-3">
-                    <h2 class="fw-bold mb-0 pb-0">1 UCD</h2>
-                    <span>Unidad de cuenta Dinámica</span>
-                </div>
+            <div class="col-7">
+                <div class="mb-3">Nombre del Solicitante</div>
+                <div class="border-bottom"></div>
+                
+                <div class="mb-3">Nro. Identificación</div>
+                <div class="border-bottom"></div>
 
-                <div class="">
-                    <img src="" alt="">
+                <div class="mb-3">Concepto</div>
+                <div class="border-bottom"></div>
+
+                <div class="mb-3">Fecha</div>
+                <div class="border-bottom"></div>
+            </div>
+            <div class="col-4 text-center">
+                <div class="mb-3">
+                    <h4 class="fw-bold mb-0 pb-0">1 UCD</h4>
+                    <span>Unidad de cuenta Dinámica</span>
                 </div>
 
             </div>

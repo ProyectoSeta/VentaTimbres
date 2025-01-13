@@ -17,7 +17,7 @@
     <div class="container rounded-4 p-3" style="background-color:#ffff;">
         <div class="row mb-3">
             <div class="col-md-6">
-               <h3 class="text-navy titulo fw-bold fs-3">Emision de Denominaciones UCD</h3> 
+               <h3 class="text-navy titulo fw-bold fs-3">Asignación de Denominaciones UCD</h3> 
                <h4 class="titulo text-muted fs-3">Estampillas</h4>
             </div>
             
@@ -65,10 +65,14 @@
         <div class="d-flex justify-content-center my-4 mt-5">    
             <button type="button" class="btn bg-navy rounded-pill px-3 btn-sm fw-bold d-flex align-items-center" id="btn_emitir_ucd_estampillas" data-bs-toggle="modal" data-bs-target="#modal_emitir_ucd_estampillas">
                 <i class='bx bx-plus fw-bold fs-6 pe-2'></i>
-                <span>Emitir UCD Estampillas</span>
+                <span>Asignar UCD Estampillas</span>
             </button>
         </div>
 
+
+        <div class="text-cente mb-3 mt-5">
+            <h3 class=" fs-4 fw-bold titulo text-muted" style="color: #004cbd">Historial de asignaciones</h3>
+        </div>
 
         <div class="table-responsive" style="font-size:12.7px">
             <table id="emisiones_ucd" class="table text-center border-light-subtle" style="font-size:12.7px">
@@ -76,13 +80,38 @@
                     <th>#</th>
                     <th>Fecha</th>
                     <th>Hora</th>
-                    <th>Denominación</th>
-                    <th>Cantidad</th>
+                    <th>User</th>
                     <th>Detalle</th>  <!-- fecha entrega, emitidos en ucd, user -->
                     <th>Opción</th>  
                 </thead>
                 <tbody id="" class="border-light-subtle"> 
-                        
+                    @foreach ($query_asignaciones as $emi)
+                        <tr>
+                            <td>{{$emi->id_asignacion_ucd}}</td>
+                            <td>{{$emi->fecha}}</td>
+                            <td>{{$emi->hora}}</td>
+                            <td>
+                                <span class="">
+                                    <span class="text-navy fw-bold">{{$emi->nombre}}</span> 
+                                    <span class="badge bg-primary-subtle text-primary-emphasis ms-2">{{$emi->cargo}}</span>
+                                </span>
+                            </td>
+                            <td>
+                                <a href="#" class="detalle_asignacion_ucd" asignacion="{{$emi->id_asignacion_ucd}}" data-bs-toggle="modal" data-bs-target="#modal_detalle_asignacion_ucd">Ver</a> 
+                            </td>
+                            <td>
+                                @if ($emi->ultimo == true)
+                                    <span class="badge delete_asignacion_ucd" style="background-color: #ed0000;" role="button" asignacion="{{$emi->id_asignacion_ucd}}">
+                                        <i class="bx bx-trash-alt fs-6"></i>
+                                    </span> 
+                                @else
+                                    <span class="badge" style="background-color: #ed00008c;">
+                                        <i class="bx bx-trash-alt fs-6"></i>
+                                    </span> 
+                                @endif
+                            </td>
+                        </tr>
+                    @endforeach
                 </tbody> 
             </table>
         </div>
@@ -90,8 +119,7 @@
 
 
 
-
-        
+    
 
         
 
@@ -128,6 +156,18 @@
     <div class="modal fade" id="modal_correlativo_ucd_estampillas" tabindex="-1" data-bs-backdrop="static" data-bs-keyboard="false" aria-hidden="true">
         <div class="modal-dialog">
             <div class="modal-content" id="content_correlativo_ucd_estampillas">
+                <div class="my-5 py-5 d-flex flex-column text-center">
+                    <i class='bx bx-loader-alt bx-spin fs-1 mb-3' style='color:#0077e2'  ></i>
+                    <span class="text-muted">Cargando, por favor espere un momento...</span>
+                </div>
+            </div>  <!-- cierra modal-content -->
+        </div>  <!-- cierra modal-dialog -->
+    </div>
+
+    <!-- ************ DETALLES ASIGNACIONES UCD ************** -->
+    <div class="modal fade" id="modal_detalle_asignacion_ucd" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content" id="content_detalle_asignacion_ucd">
                 <div class="my-5 py-5 d-flex flex-column text-center">
                     <i class='bx bx-loader-alt bx-spin fs-1 mb-3' style='color:#0077e2'  ></i>
                     <span class="text-muted">Cargando, por favor espere un momento...</span>
@@ -279,10 +319,62 @@
         });
 
 
+        /////////////////////////// VER DETALLES ASIGNACION UCD
+        $(document).on('click','.detalle_asignacion_ucd', function(e) {
+            e.preventDefault();
+            var asignacion = $(this).attr('asignacion');
+            
+            $.ajax({
+                headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') },
+                type: 'POST',
+                url: '{{route("emision_ucd.detalle")}}',
+                data: {asignacion:asignacion},
+                success: function(response) {
+                    console.log(response);
+                    $('#content_detalle_asignacion_ucd').html(response);
+                },
+                error: function() {
+                }
+            });
+        });
+
+
+        /////////////////////////// ELIMINAR ASIGNACIO UCD
+        $(document).on('click','.delete_asignacion_ucd', function(e) {
+            e.preventDefault();
+            var asignacion = $(this).attr('asignacion');
+            
+            if (confirm('¿Desea eliminar la Asignación de UCD #'+asignacion+'?')){
+                $.ajax({
+                    headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') },
+                    type: 'POST',
+                    url: '{{route("emision_ucd.delete") }}',
+                    data: {asignacion:asignacion},
+                    success: function(response) {
+                        // console.log(response);
+                        if (response.success) {
+                            alert('LA ASIGNACIÓN ID '+asignacion+' SE HA ELIMINADO CORRECTAMENTE.');
+                            window.location.href = "{{ route('emision_ucd')}}";
+                        }else{
+                            alert('Disculpe, ha ocurrido un error.');
+                        }  
+                    },
+                    error: function() {
+                    }
+                });
+            }
+        });
+
+
     });
 
     function emitirEstampillasUcd(){
         var formData = new FormData(document.getElementById("form_emitir_estampillas_ucd"));
+        $('#content_emitir_ucd_estampillas').html('<div class="my-5 py-5 d-flex flex-column text-center">'+
+                                                            '<i class="bx bx-loader-alt bx-spin fs-1 mb-3" style="color:#0077e2"  ></i>'+
+                                                            '<span class="text-muted">Cargando, por favor espere un momento...</span>'+
+                                                        '</div>');
+
         $.ajax({
             headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') },
             url:'{{route("emision_ucd.emitir_denominacion") }}',
@@ -294,10 +386,7 @@
             data: formData,
             success: function(response){
                 console.log(response);
-                $('#content_emitir_ucd_estampillas').html('<div class="my-5 py-5 d-flex flex-column text-center">'+
-                                                            '<i class="bx bx-loader-alt bx-spin fs-1 mb-3" style="color:#0077e2"  ></i>'+
-                                                            '<span class="text-muted">Cargando, por favor espere un momento...</span>'+
-                                                        '</div>');
+                
                 if (response.success) {
                     $('#modal_emitir_ucd_estampillas').modal('hide');
                     $('#modal_correlativo_ucd_estampillas').modal('show');
