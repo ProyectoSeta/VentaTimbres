@@ -15,6 +15,44 @@
 @section('content')
     
     <div class="container rounded-4 p-3 px-0" style="background-color:#ffff;">
+        <div class="row mb-5">
+            <div class="col-lg-4 pe-5">
+                <div class="text-center">
+                    <h4 class="fw-bold titulo text-nay " style="color: #004cbd"><span class="text-muted">Lote | </span>TFE 14 </h4>
+                </div>
+                <div class="">
+                    <div class="row">
+                        <div class="col-lg -8 d-flex flex-column">
+                            <div class=" fs-5 text-navy fw-bold" >Disponible en Inventario</div>
+                            <div class="text-secondary" style="font-size:13px">Para asignar a Taquilla</div>
+                        </div>
+                        <div class="col-lg -4">
+                            <div class="fs-4 text-primary fw-bold bg-primary-subtle text-center rounded-4  px-2">{{$total_f14}} <span class="fs-5">Und.</span></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-8">
+                <div class="row gap-1 mb-5 mt-3">
+                    @foreach ($deno as $de)
+                        <div class="col border py-2 px-3 rounded-3">
+                            <div class="row">
+                                <div class="col-md-5">
+                                    <div class=" fs-5 text-navy fw-bold" >{{$de->denominacion}} UCD</div>
+                                    <div class="text-secondary" style="font-size:13px">En Inv.</div>
+                                </div>
+                                <div class="col-md-7 d-flex align-items-center">
+                                    <div class="fs-5 fw-bold bg-dark-subtle text-center rounded-3 px-3">{{$de->total_timbres}} <span class="fs-6">Und.</span></div>
+                                </div>
+                            </div>
+                        </div>
+                    @endforeach
+                </div>
+            </div>
+        </div>
+        
+
+
         <div class="d-flex justify-content-between align-items-center mb-4">
             <h3 class="mb-3 text-navy titulo fw-bold">Asignación de Timbres <span class="text-secondary fs-4">| Taquillas</span></h3>
             <div class="mb-3">
@@ -32,10 +70,10 @@
             <table id="asignados_forma14" class="table text-center border-light-subtle" style="font-size:12.7px">
                 <thead>
                     <th>#</th>
-                    <th>Asignado a</th>
+                    <th>Asignado a (Taquilla)</th>
+                    <th>Ubicación</th>
                     <th>Fecha</th>
-                    <th>Cantidad</th>
-                    <th>Detalle</th>
+                    <th>Detalles</th>
                     <th>Constancia</th>
                     <!-- <th>¿Recibido?</th>  -->
                 </thead>
@@ -45,10 +83,11 @@
                             <td>{{$tfe->id_asignacion}}</td>
                             <td>
                                 <a href="#" class="taquilla" taquilla="{{$tfe->key_taquilla}}" data-bs-toggle="modal" data-bs-target="#modal_info_taquilla">Taquilla ID {{$tfe->key_taquilla}} </a>
-                                <span class="text-muted ms-2">({{$tfe->sede}})</span>
+                            </td>
+                            <td>
+                                <span class="fw-bold text-navy titulo">{{$tfe->sede}}</span>
                             </td>
                             <td class="text-muted">{{$tfe->fecha}}</td>
-                            <td>{{$tfe->cantidad}} Rollos</td>
                             <td>
                                 <a href="#" class="detalle_asignacion_rollos" vista="asignacion" asignacion="{{$tfe->id_asignacion}}" data-bs-toggle="modal" data-bs-target="#modal_asignado_forma14">Ver</a>
                             </td>
@@ -71,9 +110,10 @@
             <table id="asignados_estampillas" class="table text-center border-light-subtle" style="font-size:12.7px">
                 <thead>
                     <th>#</th>
-                    <th>Asignado a</th>
+                    <th>Asignado a (Taquilla)</th>
+                    <th>Ubicación</th>
                     <th>Fecha</th>
-                    <th>Detalle</th>
+                    <th>Detalles</th>
                     <th>Constancia</th>
                     <!-- <th>¿Recibido?</th>  -->
                 </thead>
@@ -83,7 +123,9 @@
                             <td>{{$estampillas->id_asignacion}}</td>
                             <td>
                                 <a href="#" class="taquilla" taquilla="{{$estampillas->key_taquilla}}" data-bs-toggle="modal" data-bs-target="#modal_info_taquilla">Taquilla ID {{$estampillas->key_taquilla}}</a>
-                                <span class="text-muted ms-2"> ({{$estampillas->sede}})</span>
+                            </td>
+                            <td>
+                                <span class="fw-bold text-navy titulo">{{$estampillas->sede}}</span>
                             </td>
                             <td class="text-muted">{{$estampillas->fecha}}</td>
                             <td>
@@ -191,7 +233,7 @@
 
 
     <!-- ************  CORRELATIVO ROLLOS ASIGNADOS ************** -->
-    <div class="modal fade" id="modal_asignado_forma14" tabindex="-1" data-bs-backdrop="static" data-bs-keyboard="false" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal fade" id="modal_asignado_forma14" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
         <div class="modal-dialog">
             <div class="modal-content" id="content_asignado_forma14">
                 <div class="my-5 py-5 d-flex flex-column text-center">
@@ -203,10 +245,13 @@
     </div>
 
     <!-- ************  CORRELATIVO ESTAMPILLAS ASIGNADAS ************** -->
-    <div class="modal fade" id="modal_asignado_estampillas" tabindex="-1" data-bs-backdrop="static" data-bs-keyboard="false" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal fade" id="modal_asignado_estampillas" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
         <div class="modal-dialog">
             <div class="modal-content" id="content_asignado_estampillas">
-                
+                <div class="my-5 py-5 d-flex flex-column text-center">
+                    <i class='bx bx-loader-alt bx-spin fs-1 mb-3' style='color:#0077e2'  ></i>
+                    <span class="text-muted">Cargando, por favor espere un momento...</span>
+                </div>
             </div>  <!-- cierra modal-content -->
         </div>  <!-- cierra modal-dialog -->
     </div>
@@ -215,7 +260,10 @@
     <div class="modal" id="modal_info_taquilla" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
         <div class="modal-dialog modal-sm">
             <div class="modal-content" id="html_info_taquilla">
-                
+                <div class="my-5 py-5 d-flex flex-column text-center">
+                    <i class='bx bx-loader-alt bx-spin fs-1 mb-3' style='color:#0077e2'  ></i>
+                    <span class="text-muted">Cargando, por favor espere un momento...</span>
+                </div>
             </div>  <!-- cierra modal-content -->
         </div>  <!-- cierra modal-dialog -->
     </div>

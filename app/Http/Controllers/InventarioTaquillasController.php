@@ -25,8 +25,10 @@ class InventarioTaquillasController extends Controller
 
         foreach ($query_1 as $q1) {
             $s++;
-
+            $t2 = DB::table('taquillas')->selectRaw("count(*) as total")->where('key_sede','=', $q1->id_sede)->first();
             if ($s == $t1->total) {
+                
+
                 ////ultima sede
                 $array = array(
                     'salto' => true,
@@ -35,7 +37,8 @@ class InventarioTaquillasController extends Controller
                     'id_taquilla' => '',
                     'cantidad_tfe' => '',
                     'cantidad_estampillas' => '',
-                    'taquillero' => ''
+                    'taquillero' => '',
+                    'cant_taquillas' => $t2->total
                 );
                 $a = (object) $array;
                 array_push($taquillas,$a);
@@ -43,7 +46,7 @@ class InventarioTaquillasController extends Controller
                 $query = DB::table('taquillas')->join('funcionarios', 'taquillas.key_funcionario', '=','funcionarios.id_funcionario')
                                                 ->select('funcionarios.nombre','taquillas.id_taquilla')
                                                 ->where('taquillas.key_sede','=', $q1->id_sede)->get();
-                $t2 = DB::table('taquillas')->selectRaw("count(*) as total")->where('key_sede','=', $q1->id_sede)->first();
+                
 
                 $t = 0;
                 foreach ($query as $key) {
@@ -59,7 +62,8 @@ class InventarioTaquillasController extends Controller
                                    'id_taquilla' => $key->id_taquilla,
                                    'cantidad_tfe' => $c1->cantidad_tfe,
                                    'cantidad_estampillas' => $c1->cantidad_estampillas,
-                                   'taquillero' => $key->nombre
+                                   'taquillero' => $key->nombre,
+                                   'cant_taquillas' => $t2->total
                                );
                         $a = (object) $array;
                         array_push($taquillas,$a);
@@ -72,7 +76,8 @@ class InventarioTaquillasController extends Controller
                                     'id_taquilla' => '',
                                     'cantidad_tfe' => '',
                                     'cantidad_estampillas' => '',
-                                    'taquillero' => ''
+                                    'taquillero' => '',
+                                    'cant_taquillas' => $t2->total
                                 );
                         $a = (object) $array;
                         array_push($taquillas,$a);
@@ -86,7 +91,8 @@ class InventarioTaquillasController extends Controller
                                     'id_taquilla' => $key->id_taquilla,
                                     'cantidad_tfe' => $c1->cantidad_tfe,
                                     'cantidad_estampillas' => $c1->cantidad_estampillas,
-                                    'taquillero' => $key->nombre
+                                    'taquillero' => $key->nombre,
+                                    'cant_taquillas' => $t2->total
                                 );
                         $a = (object) $array;
                         array_push($taquillas,$a);
@@ -102,7 +108,8 @@ class InventarioTaquillasController extends Controller
                         'id_taquilla' => '',
                         'cantidad_tfe' => '',
                         'cantidad_estampillas' => '',
-                        'taquillero' => ''
+                        'taquillero' => '',
+                        'cant_taquillas' => $t2->total
                 );
                 $a = (object) $array;
                 array_push($taquillas,$a);
@@ -120,7 +127,8 @@ class InventarioTaquillasController extends Controller
                                 'id_taquilla' => $key->id_taquilla,
                                 'cantidad_tfe' => $c1->cantidad_tfe,
                                 'cantidad_estampillas' => $c1->cantidad_estampillas,
-                                'taquillero' => $key->nombre
+                                'taquillero' => $key->nombre,
+                                'cant_taquillas' => $t2->total
                             );
                     $a = (object) $array;
                     array_push($taquillas,$a);
@@ -148,14 +156,14 @@ class InventarioTaquillasController extends Controller
         $c1 = DB::table('ucd_denominacions')->select('id','denominacion')->where('estampillas','=','true')->get();
         foreach ($c1 as $key) {
             $total = 0;
-            $consulta = DB::table('detalle_estampillas')->select('cantidad','vendido')
+            $consulta = DB::table('detalle_asignacion_estampillas')->select('cantidad_timbres','vendido')
                                                         ->where('key_denominacion','=',$key->id)
                                                         ->where('key_taquilla','=',$taquilla)
                                                         ->where('condicion','!=',8)
                                                         ->where('condicion','!=',7)
                                                         ->get();
             foreach ($consulta as $detalle) {
-                $disponible = $detalle->cantidad - $detalle->vendido;
+                $disponible = $detalle->cantidad_timbres - $detalle->vendido;
                 $total = $total + $disponible;
                 
             }

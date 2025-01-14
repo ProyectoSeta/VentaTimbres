@@ -25,10 +25,15 @@ return new class extends Migration
             $table->integer('desde');
             $table->integer('hasta');
 
+            $table->integer('key_lote_papel')->unsigned();
+            $table->foreign('key_lote_papel')->references('id_lote_papel')->on('emision_papel_tfes')->onDelete('cascade');
+
             $table->integer('vendido');
 
             $table->integer('condicion')->unsigned(); ///////RESERVA - EN USO - VENDIDO
             $table->foreign('condicion')->references('id_clasificacion')->on('clasificacions')->onDelete('cascade');
+
+
  
         });
     }

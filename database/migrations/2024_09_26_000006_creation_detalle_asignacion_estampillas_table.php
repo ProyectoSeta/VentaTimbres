@@ -33,7 +33,7 @@ return new class extends Migration
 
             $table->integer('vendido');
 
-            $table->integer('condicion')->unsigned(); ///////RESERVA - EN USO - VENDIDO
+            $table->integer('condicion')->unsigned()->nullable(); ///////RESERVA - EN USO - VENDIDO
             $table->foreign('condicion')->references('id_clasificacion')->on('clasificacions')->onDelete('cascade');
  
         });

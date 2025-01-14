@@ -288,7 +288,7 @@ class EmisionUcdController extends Controller
                                 <td><span class="fw-bold text-navy fs-6">'.$c3->denominacion.' UCD</span></td>
                                 <td>'.$desde.'</td>
                                 <td>'.$hasta.'</td>
-                                <td>'.$cantidad.'</td>
+                                <td class="text-muted">'.$cantidad.' und.</td>
                             </tr>';
                 }
 

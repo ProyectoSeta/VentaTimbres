@@ -71,19 +71,19 @@
             <table class="table_rollos" id="tabla">
                 <thead class="">
                     <tr>
-                        <th>ID Emision Lote</th>
+                        <th>#</th>
                         <th>Desde</th>
                         <th>Hasta</th>
-                        <th>Cant. Timbres Fiscales</th>
+                        <th>Cant. Timbres</th>
                     </tr>
                 </thead>
                 <tbody>
-                    @foreach ($correlativo as $c)
+                    @foreach ($query as $c)
                         <tr>
-                            <td>{{$c->id}}</td>
+                            <td>#</td>
                             <td>{{$c->desde}}</td>
                             <td>{{$c->hasta}}</td>
-                            <td>{{$c->cant_timbres}} und.</td>
+                            <td>{{$c->cantidad_timbres}} und.</td>
                         </tr>
                     @endforeach
                 </tbody>

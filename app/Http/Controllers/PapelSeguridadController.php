@@ -17,16 +17,17 @@ class PapelSeguridadController extends Controller
      */
     public function index()
     {
+        // FORMA 14 
         $query_tfes = [];
-        $total = DB::table('emision_papel_tfes')->selectRaw("count(*) as total")->where('estado', '=', 18)->first();
-        $contador = 0;
+        $total_tfe = DB::table('emision_papel_tfes')->selectRaw("count(*) as total")->where('estado', '=', 18)->first();
+        $contador_1 = 0;
         $query_1 = DB::table('emision_papel_tfes')->where('estado', '=', 18)->get();
 
         foreach ($query_1 as $c) {
-            $contador++;
+            $contador_1++;
             $ultimo = false;
 
-            if ($contador == $total->total) {
+            if ($contador_1 == $total_tfe->total) {
                 $ultimo = true;
             }
 
@@ -42,13 +43,13 @@ class PapelSeguridadController extends Controller
 
             $a = (object) $array;
             array_push($query_tfes,$a);
-            
         }
 
 
-        
+
+        // ESTAMPILLAS
         $query_estampillas = [];
-        $total = DB::table('emision_papel_estampillas')->selectRaw("count(*) as total")->where('estado', '=', 18)->first();
+        $total_est = DB::table('emision_papel_estampillas')->selectRaw("count(*) as total")->where('estado', '=', 18)->first();
         $contador = 0;
         $query_2 = DB::table('emision_papel_estampillas')->where('estado', '=', 18)->get();
 
@@ -56,7 +57,7 @@ class PapelSeguridadController extends Controller
             $contador++;
             $ultimo = false;
 
-            if ($contador == $total->total) {
+            if ($contador == $total_est->total) {
                 $ultimo = true;
             }
 
@@ -78,7 +79,7 @@ class PapelSeguridadController extends Controller
 
         
         
-        return view('emision_papel', compact('query_tfes','query_estampillas'));
+        return view('emision_papel', compact('query_tfes','query_estampillas','total_tfe','total_est'));
     }
 
 

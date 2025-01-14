@@ -31,6 +31,43 @@
                     <div class="row align-items-md-stretch">
                 @else
                     @if ($taquilla->fin == false)
+                        @if ($taquilla->cant_taquillas == 1)
+                        <div class="col-lg-12 mb-5">
+                            <div class="border h-100 rounded-4 d-flex justify-content-between px-3 py-3">
+                                <!-- titulo -->
+                                <div class="">
+                                    <div class="text-navy d-flex justify-content-betwee flex-column">
+                                        <h2 class="fw-bold titulo">Taquilla</h2>
+                                        <h2 class="fw-bold text-primary titulo">ID 00{{$taquilla->id_taquilla}}</h2>
+                                    </div>
+
+                                    <div class="d-flex justify-content-between ">
+                                        <span class="fs-6 me-1">Taquillero</span>
+                                        <span class="fs-6 fw-bold text-navy">{{$taquilla->taquillero}}</span>
+                                    </div>
+                                </div>
+                                <!-- inventario -->
+                                <div class="d-flex">
+                                    <div class="row d-flex justify-content-center  mb-0">
+                                        <div class="col-sm-6 text-center">
+                                            <h5 class="fw-bold">TFE 14</h5>
+                                            <div class="border rounded-4 p-3 detalle_timbres">
+                                                <h3 class="text-navy fw-bold">{{$taquilla->cantidad_tfe}}</h3>
+                                                <span style="font-size:13px">Unidades</span>
+                                            </div>
+                                        </div>
+                                        <div class="col-sm-6 text-center">
+                                        <h5 class="fw-bold">Estampillas</h5>
+                                            <div class="border rounded-4 p-3 detalle_timbres" role="button" taquilla="{{$taquilla->id_taquilla}}" data-bs-toggle="modal" data-bs-target="#modal_detalle_timbres">
+                                                <h3 class="text-navy fw-bold">{{$taquilla->cantidad_estampillas}}</h3>
+                                                <span style="font-size:13px">Unidades</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div><!-- cierra inventario -->
+                            </div><!-- cierra border -->
+                        </div>  
+                        @else
                         <div class="col-lg-6 mb-5">
                             <div class="border h-100 rounded-4 d-flex justify-content-between px-3 py-3">
                                 <!-- titulo -->
@@ -66,6 +103,7 @@
                                 </div><!-- cierra inventario -->
                             </div><!-- cierra border -->
                         </div>
+                        @endif
                     @else
                         </div>
                     @endif

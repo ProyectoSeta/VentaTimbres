@@ -60,10 +60,14 @@
 
         <ul class="nav nav-pills mb-4 d-flex justify-content-center" id="pills-tab" role="tablist">
             <li class="nav-item" role="presentation">
-                <button class="nav-link active" id="pills-f14-tab" data-bs-toggle="pill" data-bs-target="#pills-f14" type="button" role="tab" aria-controls="pills-f14" aria-selected="true">Forma 14</button>
+                <button class="nav-link active" id="pills-f14-tab" data-bs-toggle="pill" data-bs-target="#pills-f14" type="button" role="tab" aria-controls="pills-f14" aria-selected="true">
+                    Forma 14
+                </button>
             </li>
             <li class="nav-item" role="presentation">
-                <button class="nav-link" id="pills-estampillas-tab" data-bs-toggle="pill" data-bs-target="#pills-estampillas" type="button" role="tab" aria-controls="pills-estampillas" aria-selected="false">Estampillas</button>
+                <button class="nav-link" id="pills-estampillas-tab" data-bs-toggle="pill" data-bs-target="#pills-estampillas" type="button" role="tab" aria-controls="pills-estampillas" aria-selected="false">
+                    Estampillas
+                </button>
             </li>
         </ul>
 

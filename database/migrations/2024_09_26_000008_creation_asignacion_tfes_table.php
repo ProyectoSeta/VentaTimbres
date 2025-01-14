@@ -22,18 +22,11 @@ return new class extends Migration
             $table->integer('key_taquilla')->unsigned();
             $table->foreign('key_taquilla')->references('id_taquilla')->on('taquillas')->onDelete('cascade');
 
-            $table->integer('key_lote_papel')->unsigned();
-            $table->foreign('key_lote_papel')->references('id_lote_papel')->on('emision_papel_tfes')->onDelete('cascade');
-
-            $table->integer('cantidad_timbres');
-            
-            $table->integer('desde');
-            $table->integer('hasta');
-
             $table->integer('condicion')->unsigned(); ///////SIN RECIBIR - RECIBIDO
             $table->foreign('condicion')->references('id_clasificacion')->on('clasificacions')->onDelete('cascade');
 
             $table->date('fecha_recibido')->nullable();
+
  
         });
     }

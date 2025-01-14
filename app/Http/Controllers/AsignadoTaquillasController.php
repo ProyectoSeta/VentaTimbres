@@ -36,38 +36,31 @@ class AsignadoTaquillasController extends Controller
     public function modal_estampillas(Request $request)
     {
         $asignacion = $request->post('asignacion'); 
-        $tables = '';
+        $tr = '';
 
         $query = DB::table('detalle_asignacion_estampillas')->where('key_asignacion','=', $asignacion)->get(); 
         foreach ($query as $q1) {
-            $tr = '';
-
-            $query_2 = DB::table('detalle_estampillas')->where('key_denominacion','=', $q1->key_denominacion)->where('key_asignacion','=', $asignacion)->get(); 
-            foreach ($query_2 as $q2) {
-                $tr .= '<tr>
-                            <td>'.$q2->key_tira.'</td>
-                            <td>'.$q2->desde.'</td>
-                            <td>'.$q2->hasta.'</td>
-                        </tr>';
-            }
-
             $consulta = DB::table('ucd_denominacions')->select('denominacion')->where('id','=',$q1->key_denominacion)->first();
-            $tables .= '<div class="d-flex justify-content-between my-2">
-                            <p class="fw-bold text-navy fs-5 text-cente my-0">'.$consulta->denominacion.' UCD</p>
-                            <p class="fw-bold text-muted fs-6 text-cente my-0">Timbres: '.$q1->cantidad.' und.</p>
-                        </div>
 
-                        <div class="">
-                            <table class="table text-center">
-                                <tr>
-                                    <th>ID Tira</th>
-                                    <th>Desde</th>
-                                    <th>Hasta</th>
-                                </tr>
-                                '.$tr.'
-                            </table>
-                        </div>';
+            $tr .= '<tr>
+                        <td><span class="fw-bold text-navy fs-6">'.$consulta->denominacion.' UCD</span></td>
+                        <td>'.$q1->desde.'</td>
+                        <td>'.$q1->hasta.'</td>
+                        <td class="text-muted">'.$q1->cantidad_timbres.' und.</td>
+                    </tr>';           
         }
+
+        $table = '<div class="">
+                        <table class="table text-center">
+                            <tr>
+                                <th>UCD</th>
+                                <th>Desde</th>
+                                <th>Hasta</th>
+                                <th>Cant. Timbres</th>
+                            </tr>
+                            '.$tr.'
+                        </table>
+                    </div>';
 
         $html = '<div class="modal-header p-2 pt-3 d-flex justify-content-center">
                     <div class="text-center">
@@ -79,9 +72,9 @@ class AsignadoTaquillasController extends Controller
                 </div>
                 <div class="modal-body px-5 py-3" style="font-size:13px">
                     <p class="text-center fw-bold text-muted fs-5 mb-2">Correlativo</p>
-                    <p class="text-muted text-justify"><span class="fw-bold">IMPORTANTE:</span> La Asignación se realizó según la cantidad individual de Estampillas, no por Tiras de Estampillas.</p>
+                    <p class="text-muted text-justify"><span class="fw-bold">IMPORTANTE:</span> La Asignación se realiza según la cantidad individual de Estampillas.</p>
                     
-                    '.$tables.'
+                    '.$table.'
                     
                     <form id="form_recibido_estampillas" method="post" onsubmit="event.preventDefault(); recibidoEstampillas()">
                         <input type="hidden" name="asignacion" value="'.$asignacion.'"> 
@@ -111,9 +104,9 @@ class AsignadoTaquillasController extends Controller
         $c2 = DB::table('taquillas')->select('id_taquilla')->where('key_funcionario','=',$c1->key_sujeto)->first();
 
         $total_estampillas = 0;
-        $query = DB::table('detalle_asignacion_estampillas')->select('cantidad')->where('key_asignacion','=',$asignacion)->get();
+        $query = DB::table('detalle_asignacion_estampillas')->select('cantidad_timbres')->where('key_asignacion','=',$asignacion)->get();
         foreach ($query as $value) {
-            $total_estampillas = $total_estampillas + $value->cantidad;
+            $total_estampillas = $total_estampillas + $value->cantidad_timbres;
         }
 
         $consulta = DB::table('inventario_taquillas')->select('cantidad_estampillas')->where('key_taquilla','=',$c2->id_taquilla)->first();
@@ -121,9 +114,9 @@ class AsignadoTaquillasController extends Controller
 
         $new_cant = $actual_inv + $total_estampillas;
 
-        $update = DB::table('asignacion_estampillas')->where('id_asignacion','=',$asignacion)->update(['fecha_recibido' => $hoy]);
+        $update = DB::table('asignacion_estampillas')->where('id_asignacion','=',$asignacion)->update(['condicion' => 19,'fecha_recibido' => $hoy]);
         $update_inv = DB::table('inventario_taquillas')->where('key_taquilla','=',$c2->id_taquilla)->update(['cantidad_estampillas' => $new_cant]);
-        $update_condicion = DB::table('detalle_estampillas')->where('key_asignacion','=',$asignacion)->update(['condicion' => 4]);
+        $update_condicion = DB::table('detalle_asignacion_estampillas')->where('key_asignacion','=',$asignacion)->update(['condicion' => 4]);
 
         if ($update && $update_inv && $update_condicion) {
             /////bitacora
@@ -144,13 +137,17 @@ class AsignadoTaquillasController extends Controller
 
         $query = DB::table('asignacion_tfes')->where('id_asignacion','=',$asignacion)->first();
 
-        $q2 = DB::table('inventario_tfes')->where('key_asignacion','=',$asignacion)->first();
+        $q2 = DB::table('inventario_tfes')->where('key_asignacion','=',$asignacion)->get();
+        foreach ($q2 as $key) {
+            $tr = '<tr>
+                        <td>#</td>
+                        <td>'.$key->desde.'</td>
+                        <td>'.$key->hasta.'</td>
+                        <td class="text-muted">'.$key->cantidad_timbres.' und.</td>
+                    </tr>';
+        }
         
-        $tr = '<tr>
-                    <td>'.$q2->key_emision.'</td>
-                    <td>'.$q2->desde.'</td>
-                    <td>'.$q2->hasta.'</td>
-                </tr>';
+        
         
 
         $html = '<div class="modal-header p-2 pt-3 d-flex justify-content-center">
@@ -168,9 +165,10 @@ class AsignadoTaquillasController extends Controller
                     <div class="">
                         <table class="table text-center">
                             <tr>
-                                <th>ID Emisión Lote</th>
+                                <th>#</th>
                                 <th>Desde</th>
                                 <th>Hasta</th>
+                                <th>Cant. Timbres</th>
                             </tr>
                             '.$tr.'
                         </table>
@@ -206,15 +204,18 @@ class AsignadoTaquillasController extends Controller
         $c2 = DB::table('taquillas')->select('id_taquilla')->where('key_funcionario','=',$c1->key_sujeto)->first();
 
         $total_timbres = 0;
-        $query = DB::table('inventario_tfes')->select('cantidad')->where('key_asignacion','=',$asignacion)->first();
-        $total_timbres = $total_timbres + $query->cantidad;
+        $query = DB::table('inventario_tfes')->select('cantidad_timbres')->where('key_asignacion','=',$asignacion)->get();
+        foreach ($query as $key) {
+            $total_timbres = $total_timbres + $key->cantidad_timbres;
+        }
+        
 
         $consulta = DB::table('inventario_taquillas')->select('cantidad_tfe')->where('key_taquilla','=',$c2->id_taquilla)->first();
         $actual_inv = $consulta->cantidad_tfe;
 
         $new_cant = $actual_inv + $total_timbres;
 
-        $update = DB::table('asignacion_tfes')->where('id_asignacion','=',$asignacion)->update(['fecha_recibido' => $hoy]);
+        $update = DB::table('asignacion_tfes')->where('id_asignacion','=',$asignacion)->update(['condicion' => 19,'fecha_recibido' => $hoy]);
         $update_inv = DB::table('inventario_taquillas')->where('key_taquilla','=',$c2->id_taquilla)->update(['cantidad_tfe' => $new_cant]);
         $update_condicion = DB::table('inventario_tfes')->where('key_asignacion','=',$asignacion)->update(['condicion' => 4]);
 
