@@ -121,6 +121,37 @@ class VentaController extends Controller
 
 
 
+    public function alicuota(Request $request){
+        $tramite = $request->post('tramite');
+        $condicion_sujeto = $request->post('condicion_sujeto');
+        $metros = $request->post('value');
+
+        $query = DB::table('tramites')->where('id_tramite','=', $tramite)->first();
+        if ($query) {
+            switch ($query->alicuota) {
+                case 7:
+                    // UCD
+                    if ($condicion_sujeto == 10 || $condicion_sujeto == 11) {
+                        //////juridico (firma personal - empresa)
+                        return response()->json(['success' => true, 'valor' => $query->juridico, 'alicuota' => $query->alicuota]);
+                    }else{
+                        ////natural
+                        return response()->json(['success' => true, 'valor' => $query->natural, 'alicuota' => $query->alicuota]);
+                    }
+                case 8:
+                    // PORCENTAJE
+                    return response()->json(['success' => true, 'valor' => $query->porcentaje, 'alicuota' => $query->alicuota]);
+                case 13:
+                    // METRADO
+                    return response()->json(['success' => true, 'valor' => 0, 'alicuota' => $query->alicuota]);
+            }
+        }else{
+            return response()->json(['success' => false]);
+        }
+    }
+
+
+
     public function total(Request $request)
     {
         $tramites = $request->post('tramites');

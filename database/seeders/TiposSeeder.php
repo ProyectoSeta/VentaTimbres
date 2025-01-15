@@ -58,5 +58,10 @@ class TiposSeeder extends Seeder
         DB::table('tipos')->insert([
             'nombre_tipo' => 'Ente Gubernamental',
         ]);
+
+        //////////ALICUOTAS PT.2
+        DB::table('tipos')->insert([
+            'nombre_tipo' => 'Metrado',
+        ]);
     }
 }

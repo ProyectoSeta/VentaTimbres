@@ -95,6 +95,7 @@
                                     <div class="col-sm-2">
                                         <label class="form-label" for="ucd_tramite">UCD</label><span class="text-danger">*</span>
                                         <input type="text" class="form-control form-control-sm ucd_tramite" id="ucd_tramite_1" nro="1" disabled required>
+                                        <input type="hidden" class="alicuota" id="alicuota_1" nro="1">
                                     </div>
                                     <div class="col-sm-2">
                                         <label class="form-label" for="forma">Timbre</label><span class="text-danger">*</span>
@@ -129,6 +130,38 @@
                                 </div>
                             </div>
                         </div>
+
+
+                        <!-- Capital o Monto de la operación -->
+                        <div class="mx-3 mt-4 d-none" id="content_capital">
+                            <p class="text-muted my-0 pb-2">*Ingrese el Capital o Monto total de la Operación.</p>
+                            <div class="row d-flex align-items-center">
+                                <div class="col-md-6 d-flex align-items-end justify-content-center">
+                                    <div class="">
+                                        <p class="fs-4 fw-bold mb-0 me-4 p_porcentaje">
+                                            
+                                        </p>
+                                    </div>
+                                    <div class="pb-1 me-4"> de</div>
+                                    <div class="">
+                                        <label class="form-label" for="monto">Monto (Bs.):</label><span class="text-danger">*</span>
+                                        <div class="d-flex align-items-center">
+                                            <input type="number" id="monto" class="form-control form-control-sm me-2" name="monto">
+                                            <span class="fw-bold">Bs.</span>
+                                        </div>
+                                    </div>
+                                    
+                                </div>
+
+                                <div class="col-md-6 text-center pt-4" id="size">
+                                    <p class="fs-4 fw-bold mb-0 pct_monto">0,00 Bs.</p>
+                                    <p class="text-muted fw-bold fs-6"><span class="p_porcentaje"></span> del monto total.</p>
+                                </div>
+                            </div>
+                        </div>
+
+
+
                     </div>
 
 
@@ -798,44 +831,100 @@
                 if (value == '') {
                     $('#ucd_tramite_'+nro).val('0');
                 }else{
-                    if (ente == 4) {
-                        $('#content_tamaño').removeClass('d-none');
-                        if (metros != 0) {
-                            $.ajax({
-                                headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') },
-                                type: 'POST',
-                                url: '{{route("venta.metros") }}',
-                                data: {value:metros,tramite:value},
-                                success: function(response) {
-                                    console.log(response)
-                                    $('#ucd_tramite_'+nro).val(response);
 
-                                    forma(nro,response);
-                                    calcular();
-                                },
-                                error: function() {
+
+                    $.ajax({
+                        headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') },
+                        type: 'POST',
+                        url: '{{route("venta.alicuota") }}',
+                        data: {tramite:value,condicion_sujeto:condicion_sujeto,metros:metros},
+                        success: function(response) {
+                            console.log(response);
+
+                            if (response.success) {
+                                switch(response.alicuota) {
+                                    case 7:
+                                        /// UCD
+                                        $('#ucd_tramite_'+nro).val(response.valor);
+                                        forma(nro,response.valor);
+                                        
+                                        break;
+                                    case 8:
+                                        /// PORCENTAJE
+                                        $('#content_capital').removeClass('d-none');
+                                        $('.p_porcentaje').html(response.valor+'%');
+
+                                        break;
+                                    case 13:
+                                        /// METRADO
+                                        $('#content_tamaño').removeClass('d-none');
+                                        
+                                        break;
+                                    // default:
+                                    //     console.log("Acción no reconocida.");
+                                    //     // Aquí puedes manejar cualquier otro caso no especificado
+                                    //     break;
                                 }
-                            });
-                        }
-                    }else{
-                        $.ajax({
-                            headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') },
-                            type: 'POST',
-                            url: '{{route("venta.ucd_tramite") }}',
-                            data: {value:value,condicion_sujeto:condicion_sujeto,metros:metros},
-                            success: function(response) {
-                                if (response.success) {
-                                    $('#ucd_tramite_'+nro).val(response.valor);
+                            }else{
 
-                                    forma(nro,response.valor);
-                                }else{
-                                    ////alert
-                                }   
-                            },
-                            error: function() {
                             }
-                        });
-                    }
+
+                            
+
+
+
+
+
+
+
+                            // $('#ucd_tramite_'+nro).val(response);
+
+                            // forma(nro,response);
+                            // calcular();
+                        },
+                        error: function() {
+                        }
+                    });
+
+
+                    // if (ente == 4) {
+                    //     $('#content_tamaño').removeClass('d-none');
+                    //     if (metros != 0) {
+                    //         $.ajax({
+                    //             headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') },
+                    //             type: 'POST',
+                    //             url: '{{route("venta.metros") }}',
+                    //             data: {value:metros,tramite:value},
+                    //             success: function(response) {
+                    //                 console.log(response)
+                    //                 $('#ucd_tramite_'+nro).val(response);
+
+                    //                 forma(nro,response);
+                    //                 calcular();
+                    //             },
+                    //             error: function() {
+                    //             }
+                    //         });
+                    //     }
+                    // }else{
+                    //     $.ajax({
+                    //         headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') },
+                    //         type: 'POST',
+                    //         url: '{{route("venta.ucd_tramite") }}',
+                    //         data: {value:value,condicion_sujeto:condicion_sujeto,metros:metros},
+                    //         success: function(response) {
+                    //             if (response.success) {
+                    //                 $('#ucd_tramite_'+nro).val(response.valor);
+
+                    //                 forma(nro,response.valor);
+                    //             }else{
+                    //                 ////alert
+                    //             }   
+                    //         },
+                    //         error: function() {
+                    //         }
+                    //     });
+                    // }
                 }
             });
 
@@ -870,12 +959,13 @@
             $(document).on('keyup','#metros', function(e) {
                 e.preventDefault(); 
                 var value = $(this).val();
+                var condicion_sujeto =  $('#condicion_sujeto').val();
 
                 $(".tramite").each(function(e){
                     var tramite = $(this).val();
                     var nro = $(this).attr('nro');
 
-                    if (tramite == 9) {
+                    // if (tramite == 9) {
                         $.ajax({
                             headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') },
                             type: 'POST',
@@ -905,7 +995,7 @@
                             error: function() {
                             }
                         });
-                    }
+                    // }
                     
                 });
             });
@@ -1098,7 +1188,7 @@
             ///////////////////////////  ADD CAMPO FORMA(S)
             $('#forma_'+nro+' option').remove();
 
-            if (ucd < 14) {
+            if (ucd < 6) {
                 $('#forma_'+nro).append('<option>Seleccione</option>'+
                             '<option value="3">TFE-14</option>'+
                             '<option value="4">Estampilla</option>');

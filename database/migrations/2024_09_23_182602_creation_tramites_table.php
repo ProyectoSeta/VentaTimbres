@@ -22,12 +22,14 @@ return new class extends Migration
             $table->integer('alicuota')->unsigned(); ///////UCD - PORCENTAJE
             $table->foreign('alicuota')->references('id_tipo')->on('tipos')->onDelete('cascade');
 
-            $table->float('natural');
-            $table->float('juridico');
+            $table->float('natural')->nullable();
+            $table->float('juridico')->nullable();
 
             $table->float('small')->nullable();
             $table->float('medium')->nullable();
             $table->float('large')->nullable();
+
+            $table->float('porcentaje')->nullable();
 
             
 
