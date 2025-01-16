@@ -92,10 +92,9 @@
                                                 @endforeach
                                         </select>
                                     </div>
-                                    <div class="col-sm-2">
+                                    <div class="col-sm-2" id="div_ucd_1">
                                         <label class="form-label" for="ucd_tramite">UCD</label><span class="text-danger">*</span>
                                         <input type="text" class="form-control form-control-sm ucd_tramite" id="ucd_tramite_1" nro="1" disabled required>
-                                        <input type="hidden" class="alicuota" id="alicuota_1" nro="1">
                                     </div>
                                     <div class="col-sm-2">
                                         <label class="form-label" for="forma">Timbre</label><span class="text-danger">*</span>
@@ -114,18 +113,24 @@
                         </div>
 
                         <!-- tamaño de empresa -->
-                        <div class="mx-3 mt-4 d-none" id="content_tamaño">
+                        <div class="mx-3 mt-4 d-none border p-3 rounded-3" style="background:#f4f7f9;" id="content_tamaño">
                             <p class="text-muted my-0 pb-0">*Ingrese el tamaño de la Empresa.</p>
-                            <div class="d-flex align-items-center justify-content-evenly">
-                                <div class="">
-                                    <label class="form-label" for="">Tamaño de la empresa (Mts2):</label><span class="text-danger">*</span>
-                                    <div class="d-flex align-items-center">
-                                        <input type="number" id="metros" class="form-control form-control-sm me-2" name="metros">
-                                        <span class="fw-bold">Mts2</span>
+                            <div class="row d-flex align-items-center">
+                                <div class="col-md-6 d-flex justify-content-center align-items-end">
+                                    <div class="">
+                                        <label class="form-label" for="metros">Tamaño de la empresa (Mts2):</label><span class="text-danger">*</span>
+                                        <div class="d-flex align-items-center">
+                                            <input type="number" id="metros" class="form-control form-control-sm me-2" name="metros">
+                                            <span class="fw-bold">Mts2</span>
+                                        </div>
+                                    </div>
+                                    <!-- btn calcular -->
+                                    <div class="ms-3">
+                                        <button type="button" class="btn btn-secondary btn-sm" id="btn_calcular_metrado">Calcular</button>
                                     </div>
                                 </div>
 
-                                <div class="text-center pt-4" id="size">
+                                <div class="col-md-6 text-center pt-4" id="size">
                                     
                                 </div>
                             </div>
@@ -133,8 +138,8 @@
 
 
                         <!-- Capital o Monto de la operación -->
-                        <div class="mx-3 mt-4 d-none" id="content_capital">
-                            <p class="text-muted my-0 pb-2">*Ingrese el Capital o Monto total de la Operación.</p>
+                        <div class="mx-3 mt-4 d-none border p-3 rounded-3" style="background:#f4f7f9;" id="content_capital">
+                            <p class="text-muted my-0 pb-0">*Ingrese el Capital o Monto total de la Operación.</p>
                             <div class="row d-flex align-items-center">
                                 <div class="col-md-6 d-flex align-items-end justify-content-center">
                                     <div class="">
@@ -144,17 +149,20 @@
                                     </div>
                                     <div class="pb-1 me-4"> de</div>
                                     <div class="">
-                                        <label class="form-label" for="monto">Monto (Bs.):</label><span class="text-danger">*</span>
+                                        <label class="form-label" for="capital">Monto (Bs.):</label><span class="text-danger">*</span>
                                         <div class="d-flex align-items-center">
-                                            <input type="number" id="monto" class="form-control form-control-sm me-2" name="monto">
+                                            <input type="number" id="capital" class="form-control form-control-sm me-2" name="capital">
                                             <span class="fw-bold">Bs.</span>
                                         </div>
                                     </div>
-                                    
+                                    <!-- btn calcular -->
+                                    <div class="ms-3">
+                                        <button type="button" class="btn btn-secondary btn-sm" id="btn_calcular_porcentaje">Calcular</button>
+                                    </div>
                                 </div>
 
                                 <div class="col-md-6 text-center pt-4" id="size">
-                                    <p class="fs-4 fw-bold mb-0 pct_monto">0,00 Bs.</p>
+                                    <p class="fs-4 fw-bold mb-0" id="pct_monto">0,00 Bs.</p>
                                     <p class="text-muted fw-bold fs-6"><span class="p_porcentaje"></span> del monto total.</p>
                                 </div>
                             </div>
@@ -175,6 +183,7 @@
                                         <label class="form-label" for="metodo">Metodo de Pago</label><span class="text-danger">*</span>
                                         <select class="form-select form-select-sm metodo" aria-label="Small select example" i="1" name="pago[1][metodo]" disabled>
                                             <option value="5">Punto</option>
+                                            <option value="6">Efectivo Bs.</option>
                                         </select>
                                     </div>
                                     <div class="col-sm-3">
@@ -583,7 +592,7 @@
                                                             '@endforeach'+
                                                     '</select>'+
                                                 '</div>'+
-                                                '<div class="col-sm-2">'+
+                                                '<div class="col-sm-2" id="div_ucd_'+c+'">'+
                                                     '<label class="form-label" for="ucd_tramite">UCD</label><span class="text-danger">*</span>'+
                                                     '<input type="text" class="form-control form-control-sm ucd_tramite" id="ucd_tramite_'+c+'" nro="'+c+'" disabled>'+
                                                 '</div>'+
@@ -823,6 +832,7 @@
                 var condicion_sujeto =  $('#condicion_sujeto').val();
                 var ente =  $('#ente_'+nro).val();
                 var metros = $('#metros').val();
+                var capital = $('#capital').val();
 
                 $('#ucd_tramite_'+nro).val('');
                 $('#forma_'+nro+' option').remove();
@@ -831,13 +841,11 @@
                 if (value == '') {
                     $('#ucd_tramite_'+nro).val('0');
                 }else{
-
-
                     $.ajax({
                         headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') },
                         type: 'POST',
                         url: '{{route("venta.alicuota") }}',
-                        data: {tramite:value,condicion_sujeto:condicion_sujeto,metros:metros},
+                        data: {tramite:value,condicion_sujeto:condicion_sujeto,metros:metros,capital:capital},
                         success: function(response) {
                             console.log(response);
 
@@ -847,12 +855,16 @@
                                         /// UCD
                                         $('#ucd_tramite_'+nro).val(response.valor);
                                         forma(nro,response.valor);
+                                        calcular();
                                         
                                         break;
                                     case 8:
                                         /// PORCENTAJE
+                                        $('#capital').val('0');
+                                        $('#pct_monto').html('0,00 Bs.');
+
                                         $('#content_capital').removeClass('d-none');
-                                        $('.p_porcentaje').html(response.valor+'%');
+                                        $('.p_porcentaje').html(response.porcentaje+'%');
 
                                         break;
                                     case 13:
@@ -860,71 +872,19 @@
                                         $('#content_tamaño').removeClass('d-none');
                                         
                                         break;
-                                    // default:
-                                    //     console.log("Acción no reconocida.");
-                                    //     // Aquí puedes manejar cualquier otro caso no especificado
-                                    //     break;
+                                    default:
+                                        alert('Disculpe, a ocurrido un error. Vuelva a intentarlo.');
+                                        break;
                                 }
                             }else{
 
                             }
-
                             
-
-
-
-
-
-
-
-                            // $('#ucd_tramite_'+nro).val(response);
-
-                            // forma(nro,response);
-                            // calcular();
                         },
                         error: function() {
                         }
                     });
 
-
-                    // if (ente == 4) {
-                    //     $('#content_tamaño').removeClass('d-none');
-                    //     if (metros != 0) {
-                    //         $.ajax({
-                    //             headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') },
-                    //             type: 'POST',
-                    //             url: '{{route("venta.metros") }}',
-                    //             data: {value:metros,tramite:value},
-                    //             success: function(response) {
-                    //                 console.log(response)
-                    //                 $('#ucd_tramite_'+nro).val(response);
-
-                    //                 forma(nro,response);
-                    //                 calcular();
-                    //             },
-                    //             error: function() {
-                    //             }
-                    //         });
-                    //     }
-                    // }else{
-                    //     $.ajax({
-                    //         headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') },
-                    //         type: 'POST',
-                    //         url: '{{route("venta.ucd_tramite") }}',
-                    //         data: {value:value,condicion_sujeto:condicion_sujeto,metros:metros},
-                    //         success: function(response) {
-                    //             if (response.success) {
-                    //                 $('#ucd_tramite_'+nro).val(response.valor);
-
-                    //                 forma(nro,response.valor);
-                    //             }else{
-                    //                 ////alert
-                    //             }   
-                    //         },
-                    //         error: function() {
-                    //         }
-                    //     });
-                    // }
                 }
             });
 
@@ -955,50 +915,45 @@
             });
 
 
-            //////////////////////////// VALOR DEL TRAMITE SEGUN EL TAMAÑO
-            $(document).on('keyup','#metros', function(e) {
-                e.preventDefault(); 
-                var value = $(this).val();
+            //////////////////////////// VALOR DEL TRAMITE SEGUN EL METRADO Y EL PORCENTAJE
+            // METRADO
+            $(document).on('click','#btn_calcular_metrado', function(e) {
+                e.preventDefault();
                 var condicion_sujeto =  $('#condicion_sujeto').val();
+                var metros =  $('#metros').val();
+                var capital =  $('#capital').val();
 
                 $(".tramite").each(function(e){
                     var tramite = $(this).val();
                     var nro = $(this).attr('nro');
 
-                    // if (tramite == 9) {
-                        $.ajax({
-                            headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') },
-                            type: 'POST',
-                            url: '{{route("venta.metros") }}',
-                            data: {value:value,tramite:tramite},
-                            success: function(response) {
-                                // console.log(response)
-                                $('#ucd_tramite_'+nro).val(response);
+                    var varios_metrado = 0;
 
-                                forma(nro,response);
-
-                                if (value > 0 && value <= 150) {
-                                    $('#size').html('<p class="fs-4 fw-bold mb-0">Pequeña</p>'+
-                                                    '<p class="text-secondary">*Hasta 150 mts2.</p>');
-                                }else if(value > 150 && value < 400){
-                                    $('#size').html('<p class="fs-4 fw-bold mb-0">Mediana</p>'+
-                                                    '<p class="text-secondary">*Desde 151, Hasta 399 mts2.</p>');
-                                }else if(value >= 400){
-                                    $('#size').html('<p class="fs-4 fw-bold mb-0">Grande</p>'+
-                                                    '<p class="text-secondary">*Mayor a 400 mts2.</p>');
-                                }else if(value == 0){
-                                    $('#size').html('');
-                                }
-
-                                calcular();
-                            },
-                            error: function() {
-                            }
-                        });
-                    // }
+                    cal_misc(tramite,condicion_sujeto, metros,capital,nro,varios_metrado);
                     
                 });
             });
+
+
+            // PORCENTAJE       
+            $(document).on('click','#btn_calcular_porcentaje', function(e) {
+                e.preventDefault();
+                var condicion_sujeto =  $('#condicion_sujeto').val();
+                var metros =  $('#metros').val();
+                var capital =  $('#capital').val();
+
+                $(".tramite").each(function(e){
+                    var tramite = $(this).val();
+                    var nro = $(this).attr('nro');
+
+                    cal_misc(tramite,condicion_sujeto, metros,capital,nro);
+                    
+                    
+                });
+            });
+
+
+            
 
 
             //////////////////////////// CALCULAR DEBITO
@@ -1047,20 +1002,20 @@
             });
             
 
-            // //////////////////////////// DESABILITAR CAMPO NO COMPROBANTE
-            // $(document).on('change','.metodo', function(e) {
-            //     e.preventDefault(); 
-            //     var value = $(this).val();
-            //     var i = $(this).attr('i');
-            //     console.log(value+'/'+i);
-            //     if (value == '6') {
-            //         $('#comprobante_'+i).attr('disabled', true);
-            //         $('#comprobante_'+i).val('');
-            //     }else{
-            //         $('#comprobante_'+i).attr('disabled', false);
-            //     }
+            //////////////////////////// DESABILITAR CAMPO NO COMPROBANTE
+            $(document).on('change','.metodo', function(e) {
+                e.preventDefault(); 
+                var value = $(this).val();
+                var i = $(this).attr('i');
+                console.log(value+'/'+i);
+                if (value == '6') {
+                    $('#comprobante_'+i).attr('disabled', true);
+                    $('#comprobante_'+i).val('');
+                }else{
+                    $('#comprobante_'+i).attr('disabled', false);
+                }
                
-            // });
+            });
 
 
             //////////////////////////// CONDICIÓN SUJETO
@@ -1154,15 +1109,16 @@
             });
 
             var metros = $('#metros').val();
+            var capital = $('#capital').val();
             var condicion_sujeto =  $('#condicion_sujeto').val();
 
             $.ajax({
                 headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') },
                 type: 'POST',
                 url: '{{route("venta.total") }}',
-                data: {tramites:tramites,metros:metros,condicion_sujeto:condicion_sujeto},
+                data: {tramites:tramites,metros:metros,condicion_sujeto:condicion_sujeto,capital:capital},
                 success: function(response) {
-                    // console.log(response);
+                    console.log(response);
                     $('#ucd').html(response.ucd);
                     $('#bolivares').html(response.bolivares);
                     $('#diferencia').html(response.bolivares);
@@ -1196,6 +1152,73 @@
                 $('#forma_'+nro).append('<option>Seleccione</option>'+
                             '<option value="3">TFE-14</option>');
             }
+
+        }
+
+
+        //////////////// CALCULO METRADO Y PORCENTAJE
+        function cal_misc(tramite,condicion_sujeto, metros,capital,nro){
+            $.ajax({
+                headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') },
+                type: 'POST',
+                url: '{{route("venta.alicuota") }}',
+                data: {tramite:tramite,condicion_sujeto:condicion_sujeto,metros:metros,capital:capital},
+                success: function(response) {
+                    console.log(response);
+
+                    if (response.success) {
+                        switch(response.alicuota) {
+                            case 7:
+                                /// UCD
+                                $('#ucd_tramite_'+nro).val(response.valor);
+                                forma(nro,response.valor);
+                                calcular();
+                                
+                                break;
+                            case 8:
+                                /// PORCENTAJE
+                                $('#div_ucd_'+nro).html('<label class="form-label" for="ucd_tramite">Bs.</label><span class="text-danger">*</span>'+
+                                    '<input type="text" class="form-control form-control-sm ucd_tramite" id="ucd_tramite_'+nro+'" nro="'+nro+'" value="'+response.valor_format+'" disabled required>');
+                                $('#pct_monto').html(response.valor_format+' Bs.');
+
+                                forma(nro,response.valor);
+                                calcular();
+
+                                break;
+                            case 13:
+                                /// METRADO
+                                $('#content_tamaño').removeClass('d-none');
+
+                                if (response.size == 'small') {
+                                    $('#size').html('<p class="fs-4 fw-bold mb-0">Pequeña</p>'+
+                                                    '<p class="text-secondary">*Hasta 150 mts2.</p>');
+                                }else if(response.size == 'medium'){
+                                    $('#size').html('<p class="fs-4 fw-bold mb-0">Mediana</p>'+
+                                                    '<p class="text-secondary">*Desde 151, Hasta 399 mts2.</p>');
+                                }else if(response.size == 'large'){
+                                    $('#size').html('<p class="fs-4 fw-bold mb-0">Grande</p>'+
+                                                    '<p class="text-secondary">*Mayor a 400 mts2.</p>');
+                                }else{
+                                    $('#size').html('');
+                                }
+
+                                $('#ucd_tramite_'+nro).val(response.valor);
+                                forma(nro,response.valor);
+                                calcular();
+                                
+                                break;
+                            default:
+                                alert('Disculpe, a ocurrido un error. Vuelva a intentarlo.');
+                                break;
+                        }
+                    }else{
+
+                    }
+                    
+                },
+                error: function() {
+                }
+            });
 
         }
 

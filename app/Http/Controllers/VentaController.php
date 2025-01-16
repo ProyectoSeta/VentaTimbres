@@ -95,36 +95,37 @@ class VentaController extends Controller
 
 
 
-    public function metros(Request $request){
-        $tramite = $request->post('tramite');
-        $metros = $request->post('value');
+    // public function metros(Request $request){
+    //     $tramite = $request->post('tramite');
+    //     $metros = $request->post('value');
 
-        if ($metros == '' || $metros == 0) {
-            return response('0');
-        }else{
-            if ($metros <= 150) {
-                ////pequeña
-                $query = DB::table('tramites')->select('small')->where('id_tramite','=', $tramite)->first();
-                return response($query->small);
-            }elseif ($metros > 150 && $metros < 400) {
-                /////mediana
-                $query = DB::table('tramites')->select('medium')->where('id_tramite','=', $tramite)->first();
-                return response($query->medium);
-            }elseif ($metros >= 400) {
-                /////grande
-                $query = DB::table('tramites')->select('large')->where('id_tramite','=', $tramite)->first();
-                return response($query->large);
-            }
-        }
+    //     if ($metros == '' || $metros == 0) {
+    //         return response('0');
+    //     }else{
+    //         if ($metros <= 150) {
+    //             ////pequeña
+    //             $query = DB::table('tramites')->select('small')->where('id_tramite','=', $tramite)->first();
+    //             return response($query->small);
+    //         }elseif ($metros > 150 && $metros < 400) {
+    //             /////mediana
+    //             $query = DB::table('tramites')->select('medium')->where('id_tramite','=', $tramite)->first();
+    //             return response($query->medium);
+    //         }elseif ($metros >= 400) {
+    //             /////grande
+    //             $query = DB::table('tramites')->select('large')->where('id_tramite','=', $tramite)->first();
+    //             return response($query->large);
+    //         }
+    //     }
         
-    }
+    // }
 
 
 
     public function alicuota(Request $request){
         $tramite = $request->post('tramite');
         $condicion_sujeto = $request->post('condicion_sujeto');
-        $metros = $request->post('value');
+        $metros = $request->post('metros');
+        $capital = $request->post('capital');
 
         $query = DB::table('tramites')->where('id_tramite','=', $tramite)->first();
         if ($query) {
@@ -140,10 +141,37 @@ class VentaController extends Controller
                     }
                 case 8:
                     // PORCENTAJE
-                    return response()->json(['success' => true, 'valor' => $query->porcentaje, 'alicuota' => $query->alicuota]);
+                    if (!empty($capital)){
+                        $monto_porcentaje = ($capital * $query->porcentaje) / 100;
+                        $monto_format = number_format($monto_porcentaje, 2, ',', '.');
+                        return response()->json(['success' => true, 'valor' => $monto_porcentaje, 'valor_format' => $monto_format, 'alicuota' => $query->alicuota, 'porcentaje' => $query->porcentaje]);
+                    }else{
+                        return response()->json(['success' => true, 'valor' => 0, 'alicuota' => $query->alicuota, 'porcentaje' => $query->porcentaje]);
+                    }
+                    
                 case 13:
                     // METRADO
-                    return response()->json(['success' => true, 'valor' => 0, 'alicuota' => $query->alicuota]);
+                    if (!empty($metros)) {
+                        // hay metros
+                        if ($metros == '' || $metros == 0) {
+                            return response()->json(['success' => true, 'valor' => 0, 'alicuota' => $query->alicuota]);
+                        }else{
+                            if ($metros <= 150) {
+                                ////pequeña
+                                return response()->json(['success' => true, 'valor' => $query->small, 'alicuota' => $query->alicuota, 'size' => 'small']);
+                            }elseif ($metros > 150 && $metros < 400) {
+                                /////mediana
+                                return response()->json(['success' => true, 'valor' => $query->medium, 'alicuota' => $query->alicuota, 'size' => 'medium']);
+                            }elseif ($metros >= 400) {
+                                /////grande
+                                return response()->json(['success' => true, 'valor' => $query->large, 'alicuota' => $query->alicuota, 'size' => 'large']);
+                            }
+                        }
+                    }else{
+                        // no hay metros
+                        return response()->json(['success' => true, 'valor' => 0, 'alicuota' => $query->alicuota]);
+                    }
+                    
             }
         }else{
             return response()->json(['success' => false]);
@@ -156,53 +184,72 @@ class VentaController extends Controller
     {
         $tramites = $request->post('tramites');
         $metros = $request->post('metros');
+        $capital = $request->post('capital');
         $condicion_sujeto = $request->post('condicion_sujeto');
 
         $ucd =  DB::table('ucds')->select('valor')->orderBy('id', 'desc')->first();
         $valor_ucd = $ucd->valor;
         $total_ucd = 0; 
-
-        
-        
+        $total_bolivares = 0;
 
         foreach ($tramites as $tramite) {
-            if ($tramite != '') {
-                if ($tramite == 9) {
-                    
-                    if ($metros > 0 && $metros <= 150) {
-                        ////pequeña
-                        $consulta = DB::table('tramites')->select('small')->where('id_tramite','=', $tramite)->first();
-                        $ucd_tramite = $consulta->small;
-                    }elseif ($metros > 150 && $metros < 400) {
-                        /////mediana
-                        $consulta = DB::table('tramites')->select('medium')->where('id_tramite','=', $tramite)->first();
-                        $ucd_tramite = $consulta->medium;
-                    }elseif ($metros >= 400) {
-                        /////grande
-                        $consulta = DB::table('tramites')->select('large')->where('id_tramite','=', $tramite)->first();
-                        $ucd_tramite = $consulta->large;
-                    }elseif ($metros == 0 || $metros == '') {
-                        $ucd_tramite = 0;
-                    }                    
-
-                    $total_ucd = $total_ucd + $ucd_tramite;
-
-                }else{
-                    if ($condicion_sujeto == 10 || $condicion_sujeto == 11) {
-                        //////juridico (firma personal - empresa)
-                        $consulta = DB::table('tramites')->select('juridico')->where('id_tramite','=', $tramite)->first();
-                        $ucd_tramite = $consulta->juridico;
-                    }else{
-                        ////natural
-                        $consulta = DB::table('tramites')->select('natural')->where('id_tramite','=', $tramite)->first();
-                        $ucd_tramite = $consulta->natural;
-                    }
-                    $total_ucd = $total_ucd + $ucd_tramite;
+            if ($tramite != '') { 
+                $query = DB::table('tramites')->where('id_tramite','=', $tramite)->first();
+                switch ($query->alicuota) {
+                    case 7:
+                        // UCD
+                        if ($condicion_sujeto == 10 || $condicion_sujeto == 11) {
+                            //////juridico (firma personal - empresa)
+                            $ucd_tramite = $query->juridico;
+                        }else{
+                            ////natural
+                            $ucd_tramite = $query->natural;
+                        }
+                        $total_ucd = $total_ucd + $ucd_tramite;
+                        break;
+                    case 8:
+                        // PORCENTAJE
+                        
+                        if (!empty($capital)) {
+                            // hay capital
+                            $bs_tramite = ($capital * $query->porcentaje) / 100;
+                            
+                        }else{
+                            // no hay capital
+                            $bs_tramite = 0;
+                        } 
+                        $total_bolivares = $total_bolivares + $bs_tramite;
+                        break;
+                    case 13:
+                        // METRADO
+                        if (!empty($metros)) {
+                            // hay metros
+                            if ($metros == '' || $metros == 0) {
+                                $ucd_tramite = 0;
+                            }else{
+                                if ($metros <= 150) {
+                                    ////pequeña
+                                    $ucd_tramite = $query->small;
+                                }elseif ($metros > 150 && $metros < 400) {
+                                    /////mediana
+                                    $ucd_tramite = $query->medium;
+                                }elseif ($metros >= 400) {
+                                    /////grande
+                                    $ucd_tramite = $query->large;
+                                }
+                            }
+                        }else{
+                            // no hay metros
+                            $ucd_tramite = 0;
+                        } 
+                        $total_ucd = $total_ucd + $ucd_tramite;
+                        break;
+                         
                 }
             }
         }
 
-        $total_bolivares = $total_ucd * $valor_ucd;
+        $total_bolivares = $total_bolivares + ($total_ucd * $valor_ucd);
         $total_bolivares_format = number_format($total_bolivares, 2, ',', '.');
 
         return response()->json(['success' => true, 'ucd' => $total_ucd, 'bolivares' => $total_bolivares_format]);
@@ -236,38 +283,58 @@ class VentaController extends Controller
         $tramites = $request->post('tramites');
 
         foreach ($tramites as $tramite) {
-            if ($tramite != '') {
-                if ($tramite == 9) { /////permiso bomberos (9)
-                    
-                    if ($metros > 0 && $metros <= 150) {
-                        ////pequeña
-                        $consulta = DB::table('tramites')->select('small')->where('id_tramite','=', $tramite)->first();
-                        $ucd_tramite = $consulta->small;
-                    }elseif ($metros > 150 && $metros < 400) {
-                        /////mediana
-                        $consulta = DB::table('tramites')->select('medium')->where('id_tramite','=', $tramite)->first();
-                        $ucd_tramite = $consulta->medium;
-                    }elseif ($metros >= 400) {
-                        /////grande
-                        $consulta = DB::table('tramites')->select('large')->where('id_tramite','=', $tramite)->first();
-                        $ucd_tramite = $consulta->large;
-                    }elseif ($metros == 0 || $metros == '') {
-                        $ucd_tramite = 0;
-                    }                    
-
-                    $total_ucd = $total_ucd + $ucd_tramite;
-
-                }else{
-                    if ($condicion_sujeto == 10 || $condicion_sujeto == 11) {
-                        //////juridico (firma personal - empresa)
-                        $consulta = DB::table('tramites')->select('juridico')->where('id_tramite','=', $tramite)->first();
-                        $ucd_tramite = $consulta->juridico;
-                    }else{
-                        ////natural
-                        $consulta = DB::table('tramites')->select('natural')->where('id_tramite','=', $tramite)->first();
-                        $ucd_tramite = $consulta->natural;
-                    }
-                    $total_ucd = $total_ucd + $ucd_tramite;
+            if ($tramite != '') { 
+                $query = DB::table('tramites')->where('id_tramite','=', $tramite)->first();
+                switch ($query->alicuota) {
+                    case 7:
+                        // UCD
+                        if ($condicion_sujeto == 10 || $condicion_sujeto == 11) {
+                            //////juridico (firma personal - empresa)
+                            $ucd_tramite = $query->juridico;
+                        }else{
+                            ////natural
+                            $ucd_tramite = $query->natural;
+                        }
+                        $total_ucd = $total_ucd + $ucd_tramite;
+                        break;
+                    case 8:
+                        // PORCENTAJE
+                        
+                        if (!empty($capital)) {
+                            // hay capital
+                            $bs_tramite = ($capital * $query->porcentaje) / 100;
+                            
+                        }else{
+                            // no hay capital
+                            $bs_tramite = 0;
+                        } 
+                        $total_bolivares = $total_bolivares + $bs_tramite;
+                        break;
+                    case 13:
+                        // METRADO
+                        if (!empty($metros)) {
+                            // hay metros
+                            if ($metros == '' || $metros == 0) {
+                                $ucd_tramite = 0;
+                            }else{
+                                if ($metros <= 150) {
+                                    ////pequeña
+                                    $ucd_tramite = $query->small;
+                                }elseif ($metros > 150 && $metros < 400) {
+                                    /////mediana
+                                    $ucd_tramite = $query->medium;
+                                }elseif ($metros >= 400) {
+                                    /////grande
+                                    $ucd_tramite = $query->large;
+                                }
+                            }
+                        }else{
+                            // no hay metros
+                            $ucd_tramite = 0;
+                        } 
+                        $total_ucd = $total_ucd + $ucd_tramite;
+                        break;
+                         
                 }
             }
         }
