@@ -93,7 +93,8 @@ Route::post('/venta/venta', [App\Http\Controllers\VentaController::class, 'venta
 
 
 
-
+//////////////////////  EXENCIONES
+Route::get('/exenciones', [App\Http\Controllers\ExencionesController::class, 'index'])->name('exenciones');
 
 
 

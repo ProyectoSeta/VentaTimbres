@@ -270,6 +270,7 @@ class VentaController extends Controller
         $total_ucd = 0; 
         $vuelto = 0;
         $diferencia = 0;
+        $total_bolivares = 0;
 
         if ($otro_debito != '') {
             $debito = $value + $otro_debito;

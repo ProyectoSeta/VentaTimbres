@@ -370,6 +370,22 @@ return [
             'icon'       => 'fas fa-angle-right pe-2',  
         ],
 
+        ['header' => 'Exenciones'],
+        [
+            'text'        => 'Nueva',
+            'route'         => 'exenciones',
+            'icon'       => 'fas fa-angle-right pe-2', 
+        ],
+        [
+            'text'        => 'Historial',
+            'route'         => '',
+            'icon'       => 'fas fa-angle-right pe-2',  
+        ],
+        [
+            'text'        => 'Asignadas',
+            'route'         => '',
+            'icon'       => 'fas fa-angle-right pe-2',  
+        ],
 
         // ['header' => 'Emisión'],
         // [
