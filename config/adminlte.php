@@ -389,7 +389,7 @@ return [
 
         // ['header' => 'Emisión'],
         // [
-        //     'text'        => 'Rollos TFE 14',
+    //     'text'        => 'Rollos TFE 14',
         //     'route'         => 'emision_rollos',
         //     'icon'       => 'fas fa-angle-right pe-2',   
         // ],

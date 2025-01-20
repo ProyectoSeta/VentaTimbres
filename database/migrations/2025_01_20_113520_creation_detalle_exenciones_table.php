@@ -10,12 +10,13 @@ return new class extends Migration
      * Run the migrations.
      */
     public function up(): void
+    
     {
-        Schema::create('detalle_ventas', function (Blueprint $table) {
+        Schema::create('detalle_exenciones', function (Blueprint $table) {
             $table->increments('correlativo');
 
-            $table->integer('key_venta')->unsigned();
-            $table->foreign('key_venta')->references('id_venta')->on('ventas')->onDelete('cascade');
+            $table->integer('key_exencion')->unsigned();
+            $table->foreign('key_exencion')->references('id_exencion')->on('exenciones')->onDelete('cascade');
 
             $table->integer('key_tramite')->unsigned();
             $table->foreign('key_tramite')->references('id_tramite')->on('tramites')->onDelete('cascade');
