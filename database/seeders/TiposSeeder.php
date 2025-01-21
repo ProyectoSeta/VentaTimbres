@@ -63,5 +63,24 @@ class TiposSeeder extends Seeder
         DB::table('tipos')->insert([
             'nombre_tipo' => 'Metrado',
         ]);
+
+
+        ////////// TIPO PAGO (EXENCIONES)
+        DB::table('tipos')->insert([
+            'nombre_tipo' => 'Obra',
+        ]);
+        DB::table('tipos')->insert([
+            'nombre_tipo' => 'Bien',
+        ]);
+        DB::table('tipos')->insert([
+            'nombre_tipo' => 'Servicio',
+        ]);
+        DB::table('tipos')->insert([
+            'nombre_tipo' => 'Suministros',
+        ]);
+        DB::table('tipos')->insert([
+            'nombre_tipo' => 'Deposito',
+        ]);
+
     }
 }

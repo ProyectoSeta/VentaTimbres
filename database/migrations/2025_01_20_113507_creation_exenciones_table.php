@@ -22,7 +22,7 @@ return new class extends Migration
 
             $table->date('fecha');
 
-            $table->integer('key_taquilla')->unsigned();
+            $table->integer('key_taquilla')->unsigned()->nullable();
             $table->foreign('key_taquilla')->references('id_taquilla')->on('taquillas')->onDelete('cascade');
 
             $table->integer('porcentaje_exencion');
@@ -34,6 +34,17 @@ return new class extends Migration
             $table->foreign('tipo_pago')->references('id_tipo')->on('tipos')->onDelete('cascade');
 
             $table->string('doc_pago');
+
+            $table->string('direccion');
+            $table->string('tlf_movil');
+            $table->string('tlf_second')->nullable();
+
+
+            $table->integer('key_ucd')->unsigned();
+            $table->foreign('key_ucd')->references('id')->on('ucds')->onDelete('cascade');
+
+            $table->integer('total_ucd')->nullable();
+
 
             $table->integer('estado')->unsigned(); /////    EN PROCESO - EMITIDO - RECIBIDO - ENTREGADO
             $table->foreign('estado')->references('id_clasificacion')->on('clasificacions')->onDelete('cascade');
