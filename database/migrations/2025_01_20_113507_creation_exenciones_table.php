@@ -33,15 +33,13 @@ return new class extends Migration
             $table->integer('tipo_pago')->unsigned();  //// OBRA - BIEN - SERVICIO - SUMINISTROS - DEPOSITO 
             $table->foreign('tipo_pago')->references('id_tipo')->on('tipos')->onDelete('cascade');
 
-            $table->string('doc_pago');
+            $table->string('doc_pago')->nullable();
 
             $table->string('direccion');
             $table->string('tlf_movil');
             $table->string('tlf_second')->nullable();
 
-
-            $table->integer('key_ucd')->unsigned();
-            $table->foreign('key_ucd')->references('id')->on('ucds')->onDelete('cascade');
+            $table->datetime('fecha_asig_taquilla')->nullable();
 
             $table->integer('total_ucd')->nullable();
 

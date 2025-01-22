@@ -377,6 +377,11 @@ return [
             'icon'       => 'fas fa-angle-right pe-2', 
         ],
         [
+            'text'        => 'Asignar taquillero',
+            'route'         => '',
+            'icon'       => 'fas fa-angle-right pe-2', 
+        ],
+        [
             'text'        => 'Historial',
             'route'         => '',
             'icon'       => 'fas fa-angle-right pe-2',  

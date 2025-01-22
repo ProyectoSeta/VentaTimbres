@@ -95,7 +95,10 @@ Route::post('/venta/venta', [App\Http\Controllers\VentaController::class, 'venta
 
 //////////////////////  EXENCIONES
 Route::get('/exenciones', [App\Http\Controllers\ExencionesController::class, 'index'])->name('exenciones');
-
+Route::post('/exenciones/modal_new', [App\Http\Controllers\ExencionesController::class, 'modal_new'])->name('exenciones.modal_new');
+Route::post('/exenciones/tramites', [App\Http\Controllers\ExencionesController::class, 'tramites'])->name('exenciones.tramites');
+Route::post('/exenciones/total', [App\Http\Controllers\ExencionesController::class, 'total'])->name('exenciones.total');
+Route::post('/exenciones/nueva', [App\Http\Controllers\ExencionesController::class, 'nueva'])->name('exenciones.nueva');
 
 
 

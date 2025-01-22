@@ -27,7 +27,7 @@ return new class extends Migration
             $table->integer('cantidad');
 
             $table->float('metros')->nullable();
-            $table->float('capital')->nullable();
+            // $table->float('capital')->nullable();
         });
     }
 

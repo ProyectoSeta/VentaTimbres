@@ -126,169 +126,7 @@
     <div class="modal fade" id="modal_new_exencion" tabindex="-1" aria-hidden="true">
         <div class="modal-dialog modal-lg">
             <div class="modal-content" id="content_new_exencion">
-            <div class="modal-header p-2 pt-3 d-flex justify-content-center">
-                    <div class="text-center">
-                        <i class="bx bx-plus-circle fs-2 text-muted me-2"></i>
-                        <h1 class="modal-title fs-5 fw-bold text-navy">Nueva Exención</h1>
-                    </div>
-                </div> 
-                <div class="modal-body px-5 py-3" style="font-size:13px">
-                    <form id="form_new_exencion" method="post" onsubmit="event.preventDefault(); newExencion()">
-                        <!-- *************   DATOS CONTRIBUYENTE   ************* -->
-                        <div class="text-navy text-center fw-bold fs-6 mb-3">Datos del Contribuyente</div>
-                        <div class="row">
-                            <div class="col-md-3">
-                                <label class="form-label" for="condicion_sujeto">Condición</label><span class="text-danger">*</span>
-                                <select class="form-select form-select-sm" id="condicion_sujeto" aria-label="Small select example" name="condicion_sujeto">
-                                    <option>Seleccione</option>
-                                    <option value="9">Natural</option>
-                                    <option value="10">Firma Personal</option>
-                                    <option value="11">Ente</option>
-                                </select>
-                            </div>
-                            <!-- ci o rif -->
-                            <div class="col-md-5">
-                                <label class="form-label" for="identidad_condicion">C.I / R.I.F</label><span class="text-danger">*</span>
-                                <div class="row">
-                                    <div class="col-5">
-                                        <select class="form-select form-select-sm" id="identidad_condicion" aria-label="Small select example" name="identidad_condicion">
-                                            <option>Seleccione</option>
-                                        </select>
-                                    </div>
-                                    <!-- <div class="col-1">-</div> -->
-                                    <div class="col-7">
-                                        <input type="number" id="identidad_nro" class="form-control form-control-sm" name="identidad_nro" required >
-                                        <p class="text-end text-muted fw-bold mb-0" style="font-size:12px;">Ejemplo: 7521004</p>
-                                    </div>
-                                </div>
-                            </div>
-                            <!-- nombre o razon -->
-                            <div class="col-md-4">
-                                <label class="form-label" for="nombre">Nombre / Razon Social</label><span class="text-danger">*</span>
-                                <input type="text" id="nombre" class="form-control form-control-sm" name="nombre" disabled required>
-                            </div>
-                        </div>
-
-                        <div class="d-flex justify-content-center mt-3 mb-3 d-none" id="btns_add_contribuyente">
-                            <button type="button" class="btn btn-secondary btn-sm me-3" id="btn_cancel_add_c">Cancelar</button>
-                            <button type="button" class="btn btn-success btn-sm" id="btn_add_contribuyente">Registrar</button>
-                        </div>
-                        
-                        <!-- direccion y telefonos -->
-                        <div class="row mt-3">
-                            <div class="col-md-6">
-                                <label class="form-label" for="direccion">Dirección</label><span class="text-danger">*</span>
-                                <input type="text" id="direccion" class="form-control form-control-sm" name="direccion" required >
-                            </div>
-                            <div class="col-md-3">
-                                <label class="form-label" for="tlf_movil">Teléfono móvil</label><span class="text-danger">*</span>
-                                <input type="number" id="tlf_movil" class="form-control form-control-sm" name="tlf_movil" required >
-                                <p class="text-end text-muted fw-bold mb-0" style="font-size:12px;">Ejemplo: 04120038547</p>
-                            </div>
-                            <div class="col-md-3">
-                                <label class="form-label" for="tlf_second">Teléfono secundario</label>
-                                <input type="number" id="tlf_second" class="form-control form-control-sm" name="tlf_second">
-                                <p class="text-end text-muted fw-bold mb-0" style="font-size:12px;">Ejemplo: 04120038547</p>
-                            </div>
-                        </div>
-
-
-
-                        <!-- *************   TRAMITE   ************* -->
-                        <div class="text-navy text-center fw-bold fs-6 mt-5 mb-2">Tramite(s)</div>
-                        <div class="d-flex flex-column tramites">
-                            <div class="d-flex justify-content-center">
-                                <div class="row  w-100">
-                                    <div class="col-sm-3">
-                                        <label class="form-label" for="ente">Ente</label><span class="text-danger">*</span>
-                                        <select class="form-select form-select-sm ente" nro="1" id="ente_1" disabled>
-                                            
-                                        </select>
-                                    </div>
-                                    <div class="col-sm-4">
-                                        <label class="form-label" for="tramite">Tramite</label><span class="text-danger">*</span>
-                                        <select class="form-select form-select-sm tramite" name="tramite[1][tramite]" nro="1" id="tramite_1" disabled>
-                                            <option value="">Seleccione el tramite </option>
-                                                
-                                        </select>
-                                    </div>
-                                    <div class="col-sm-2" id="div_ucd_1">
-                                        <label class="form-label" for="ucd_tramite">UCD</label><span class="text-danger">*</span>
-                                        <input type="text" class="form-control form-control-sm ucd_tramite" id="ucd_tramite_1" nro="1" disabled required>
-                                    </div>
-                                    <div class="col-sm-2">
-                                        <label class="form-label" for="forma">Timbre</label><span class="text-danger">*</span>
-                                        <select class="form-select form-select-sm forma" nro="1" name="tramite[1][forma]"id="forma_1" required>
-                                            <option value="">Seleccione</option>
-                                        </select>
-                                    </div>
-                                    <div class="col-sm-1 pt-4">
-                                        <a  href="javascript:void(0);" class="btn add_button_tramite disabled border-0">
-                                            <i class="bx bx-plus fs-4" style="color:#038ae4"></i>
-                                        </a>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-
-
-
-                        <!-- *************   DATOS DE LA EXENCION   ************* -->
-                        <div class="text-navy text-center fw-bold fs-6 mt-5 mb-2">Datos de la Exención</div>
-                        <div class="row">
-                            <div class="col-md-8">
-                                <div class="row">
-                                    <div class="col-6">
-                                        <label for="solicitud_doc" class="form-label">Solicitud (Documento)</label><span class="text-danger">*</span>
-                                        <input class="form-control form-control-sm" id="solicitud_doc" type="file" name="solicitud_doc" required>
-                                    </div>
-                                    <div class="col-6">
-                                        <label for="aprobacion_doc" class="form-label">Aprobación (Documento)</label><span class="text-danger">*</span>
-                                        <input class="form-control form-control-sm" id="aprobacion_doc" type="file" name="aprobacion_doc" required>
-                                    </div>
-                                </div>
-                                <div class="row mt-3">
-                                    <div class="col-6">
-                                        <label class="form-label" for="porcentaje">Porcentaje (1-90%)</label><span class="text-danger">*</span>
-                                        <input type="text" class="form-control form-control-sm " id="porcentaje" name="porcentaje" required>
-                                    </div>
-                                    <div class="col-6">
-                                        <label class="form-label" for="tipo_forma">Tipo de Pago</label><span class="text-danger">*</span>
-                                        <select class="form-select form-select-sm" name="tipo_forma" id="tipo_forma" required>
-                                            <option value="">Deposito</option>
-                                            <option value="">Obra</option>
-                                            <option value="">Bien</option>
-                                            <option value="">Servicio</option>
-                                            <option value="">Suministros</option>
-                                        </select>
-                                    </div>
-                                </div>
-                            </div>
-                            <!-- total -->
-                            <div class="col-md-4 px-4 fw-bold titulo">
-                                <div class="text-center fs-6 mb-3 text-muted">TOTAL</div>
-                                <table class="table table-borderless fs-5">
-                                    <tr>
-                                        <th>UCD</th>
-                                        <td class="text-end text-navy">500</td>
-                                    </tr>
-                                    <tr>
-                                        <th>Bs.</th>
-                                        <td class="text-end text-navy">2.045.000,02</td>
-                                    </tr>
-                                </table>
-                            </div>
-                        </div>                  
-
-                       
-
-                        <div class="d-flex justify-content-center mt-4 mb-3">
-                            <button type="button" class="btn btn-secondary btn-sm me-2" data-bs-dismiss="modal">Cancelar</button>
-                            <button type="submit" class="btn btn-success btn-sm">Emitir</button>
-                        </div>
-                    </form>
-                    
-                </div>
+            
             </div>  <!-- cierra modal-content -->
         </div>  <!-- cierra modal-dialog -->
     </div>
@@ -356,17 +194,22 @@
             $(document).on('click', '.add_button_tramite', function(e){ //Once add button is clicked
                 if(c < maxFieldTramite){ //Check maximum number of input fields
                     c++; //Increment field counter
-                    $('.tramites').append('<div class="d-flex justify-content-center ">'+
+                    $.ajax({
+                        headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') },
+                        type: 'POST',
+                        url: '{{route("exenciones.tramites") }}',
+                        success: function(response) {
+                            $('.tramites').append('<div class="d-flex justify-content-center ">'+
                                         '<div class="row w-100 mt-2">'+
                                             '<div class="col-sm-3">'+
                                                 '<select class="form-select form-select-sm ente" nro="'+c+'" id="ente_'+c+'">'+
-                                                
+                                                    response.entes+
                                                 '</select>'+
                                             '</div>'+
                                             '<div class="col-sm-4">'+
                                                 '<select class="form-select form-select-sm tramite" name="tramite['+c+'][tramite]" nro="'+c+'" id="tramite_'+c+'" required>'+
                                                     '<option value="">Seleccione el tramite </option>'+
-                                                        
+                                                    response.tramites+
                                                 '</select>'+
                                             '</div>'+
                                             '<div class="col-sm-2" id="div_ucd_'+c+'">'+
@@ -384,6 +227,10 @@
                                             '</div>'+
                                         '</div>'+
                                     '</div>'); // Add field html
+                        },
+                        error: function() {
+                        }
+                    });
                 }
             });
 
@@ -434,7 +281,6 @@
 
         });
 
-
         //////////////////////////// BUSCAR CONTRIBUYENTE
         $(document).on('keyup','#identidad_nro', function(e) {
             e.preventDefault(); 
@@ -459,14 +305,23 @@
                         $('.tramite').attr('disabled', false);
                         $('.forma').attr('disabled', false);
 
-                        $('.metodo').attr('disabled', false);
-                        $('.comprobante').attr('disabled', false);
-                        $('.debitado').attr('disabled', false);
-
                         $('.add_button_tramite').removeClass('disabled');
                         $('.add_button').removeClass('disabled');
 
-                        $('#btn_submit_venta').attr('disabled', false);
+                        $('#direccion').attr('disabled', false);
+                        $('#tlf_movil').attr('disabled', false);
+                        $('#tlf_second').attr('disabled', false);
+
+                        $('#metros').attr('disabled', false);
+                        $('#btn_calcular_metrado').removeClass('disabled');
+
+                        $('#solicitud_doc').attr('disabled', false);
+                        $('#aprobacion_doc').attr('disabled', false);
+                        $('#porcentaje').attr('disabled', false);
+                        $('#tipo_pago').attr('disabled', false);
+
+
+                        $('#btn_submit_exencion').removeClass('disabled');
 
                     }else{
                         $('#btns_add_contribuyente').removeClass('d-none');
@@ -477,14 +332,28 @@
                         $('.tramite').attr('disabled', true);
                         $('.forma').attr('disabled', true);
 
-                        $('.metodo').attr('disabled', true);
-                        $('.comprobante').attr('disabled', true);
-                        $('.debitado').attr('disabled', true);
-
                         $('.add_button_tramite').addClass('disabled');
                         $('.add_button').addClass('disabled');
 
-                        $('#btn_submit_venta').attr('disabled', true);
+                        $('#direccion').attr('disabled', true);
+                        $('#tlf_movil').attr('disabled', true);
+                        $('#tlf_second').attr('disabled', true);
+
+                        $('#metros').attr('disabled', true);
+                        $('#btn_calcular_metrado').addClass('disabled');
+
+                        $('#solicitud_doc').attr('disabled', true);
+                        $('#aprobacion_doc').attr('disabled', true);
+                        $('#porcentaje').attr('disabled', true);
+                        $('#tipo_pago').attr('disabled', true);
+
+                        $('#sub_total').html('0');
+                        $('#exencion').html('0');
+                        $('#total').html('0');
+
+                        $('#html_porcentaje').html('%');
+
+                        $('#btn_submit_exencion').addClass('disabled');
                     }
                 },
                 error: function() {
@@ -505,14 +374,29 @@
             $('.tramite').attr('disabled', true);
             $('.forma').attr('disabled', true);
 
-            $('.metodo').attr('disabled', true);
-            $('.comprobante').attr('disabled', true);
-            $('.debitado').attr('disabled', true);
-
             $('.add_button_tramite').addClass('disabled');
             $('.add_button').addClass('disabled');
 
-            $('#btn_submit_venta').attr('disabled', true);
+            $('#direccion').attr('disabled', true);
+            $('#tlf_movil').attr('disabled', true);
+            $('#tlf_second').attr('disabled', true);
+
+            $('#metros').attr('disabled', true);
+            $('#btn_calcular_metrado').addClass('disabled');
+
+            $('#solicitud_doc').attr('disabled', true);
+            $('#aprobacion_doc').attr('disabled', true);
+            $('#porcentaje').attr('disabled', true);
+            $('#tipo_pago').attr('disabled', true);
+
+            $('#sub_total').html('0');
+            $('#exencion').html('0');
+            $('#total').html('0');
+
+            $('#html_porcentaje').html('%');
+
+
+            $('#btn_submit_exencion').addClass('disabled');
         });
 
         /////////////////////////// BTN REGISTRO CONTRIBUYENTE
@@ -564,7 +448,6 @@
             });
         });
 
-
         /////////////////////////// BTN CANCELAR REGISTRO CONTRIBUYENTE
         $(document).on('click','#btn_cancel_add_c', function(e) {
             e.preventDefault();
@@ -575,10 +458,200 @@
             $('#identidad_nro').val('');
         });
 
+
+
+        /////////////////////////// MODAL NEW EXENCIÓN
+        $(document).on('click','#new_exencion', function(e) {
+            e.preventDefault();
+
+            $.ajax({
+                headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') },
+                type: 'POST',
+                url: '{{route("exenciones.modal_new") }}',
+                success: function(response) {
+                    // console.log(response);
+                    $('#content_new_exencion').html(response);
+                },
+                error: function() {
+                }
+            });
+        });
+
+
+        /////////////////////////// VALOR DEL TRAMITE SEGUN EL METRADO Y EL PORCENTAJE
+        // METRADO
+        $(document).on('click','#btn_calcular_metrado', function(e) {
+            e.preventDefault();
+            var condicion_sujeto =  $('#condicion_sujeto').val();
+            var metros =  $('#metros').val();
+            var capital =  0;
+
+            $(".tramite").each(function(e){
+                var tramite = $(this).val();
+                var nro = $(this).attr('nro');
+
+                var varios_metrado = 0;
+
+                cal_misc(tramite,condicion_sujeto, metros,capital,nro,varios_metrado);
+                
+            });
+        });
+
+
+
+        /////////////////////////
+        $(document).on('keyup','#porcentaje', function(e) {
+            calcular();
+        });
+
        
 
           
     });
+
+
+    ///////////////// ADD CAMPO FORMA 
+    function forma(nro,ucd) {
+        // console.log(nro+'/'+ucd);
+        ///////////////////////////  ADD CAMPO FORMA(S)
+        $('#forma_'+nro+' option').remove();
+
+        if (ucd < 6) {
+            $('#forma_'+nro).append('<option>Seleccione</option>'+
+                        '<option value="3">TFE-14</option>'+
+                        '<option value="4">Estampilla</option>');
+        }else{
+            $('#forma_'+nro).append('<option>Seleccione</option>'+
+                        '<option value="3">TFE-14</option>');
+        }
+
+    }
+
+
+    //////////////// CALCULO METRADO Y PORCENTAJE
+    function cal_misc(tramite,condicion_sujeto, metros,capital,nro){
+        $.ajax({
+            headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') },
+            type: 'POST',
+            url: '{{route("venta.alicuota") }}',
+            data: {tramite:tramite,condicion_sujeto:condicion_sujeto,metros:metros,capital:capital},
+            success: function(response) {
+                console.log(response);
+
+                if (response.success) {
+                    switch(response.alicuota) {
+                        case 13:
+                            /// METRADO
+                            $('#content_tamaño').removeClass('d-none');
+
+                            if (response.size == 'small') {
+                                $('#size').html('<p class="fs-4 fw-bold mb-0">Pequeña</p>'+
+                                                '<p class="text-secondary">*Hasta 150 mts2.</p>');
+                            }else if(response.size == 'medium'){
+                                $('#size').html('<p class="fs-4 fw-bold mb-0">Mediana</p>'+
+                                                '<p class="text-secondary">*Desde 151, Hasta 399 mts2.</p>');
+                            }else if(response.size == 'large'){
+                                $('#size').html('<p class="fs-4 fw-bold mb-0">Grande</p>'+
+                                                '<p class="text-secondary">*Mayor a 400 mts2.</p>');
+                            }else{
+                                $('#size').html('');
+                            }
+
+                            $('#ucd_tramite_'+nro).val(response.valor);
+                            forma(nro,response.valor);
+                            calcular();
+                            
+                            break;
+                        default:
+                            alert('Disculpe, a ocurrido un error. Vuelva a intentarlo.');
+                            break;
+                    }
+                }else{
+
+                }
+                
+            },
+            error: function() {
+            }
+        });
+
+    }
+
+
+    ////////////////// CALCULAR TOTAL
+     function calcular(){
+        var tramites = [];
+        $('.tramite').each(function(){
+            var t = $(this).val();
+            tramites.push(t);
+        });
+
+        var metros = $('#metros').val();
+        var porcentaje = $('#porcentaje').val();
+        // var condicion_sujeto =  $('#condicion_sujeto').val();
+
+        $.ajax({
+            headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') },
+            type: 'POST',
+            url: '{{route("exenciones.total") }}',
+            data: {tramites:tramites,metros:metros,porcentaje:porcentaje},
+            success: function(response) {
+                console.log(response);
+                $('#sub_total').html(response.sub_total+' UCD');
+                $('#exencion').html(response.exencion+' UCD');
+                $('#total').html(response.total+' UCD');
+
+                $('#html_porcentaje').html(porcentaje+'%');
+
+                // $('.debitado').val('');
+                // $('.comprobante').val('');
+
+                // $('#debitado').html('0.00');
+                // $('#vuelto').html('0.00');
+                
+            },
+            error: function() {
+            }
+        });
+
+        // console.log(tramites);
+    }
+
+
+
+    //////////////// NUEVA EXENCION
+    function newExencion(){
+        var formData = new FormData(document.getElementById("form_new_exencion"));
+        // console.log("alo");
+        $.ajax({
+            headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') },
+            url:'{{route("exenciones.nueva") }}',
+            type:'POST',
+            contentType:false,
+            cache:false,
+            processData:false,
+            async: true,
+            data: formData,
+            success: function(response){
+                console.log(response);
+                // if (response.success) {
+                //     $('#modal_venta_realizada').modal('show');
+                //     $('#content_venta_realizada').html(response.html);
+                // }else{
+                //     if (response.nota) {
+                //         alert(response.nota);
+                //     }else{
+                //         alert('Disculpe, ha ocurrido un error');
+                //     }
+                // }
+                    
+            },
+            error: function(error){
+                
+            }
+        });
+    }
+
 
 
     
