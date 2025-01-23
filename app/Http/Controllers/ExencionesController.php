@@ -15,26 +15,13 @@ class ExencionesController extends Controller
      */
     public function index()
     {
-        $option_tramites = '';
-        $option_entes = '';
-        $entes = [];
+        $proceso = DB::table('exenciones')->join('contribuyentes', 'exenciones.key_contribuyente', '=','contribuyentes.id_contribuyente')
+                                            ->select('exenciones.*','contribuyentes.nombre_razon','contribuyentes.identidad_condicion','contribuyentes.identidad_nro')
+                                            ->where('exenciones.estado','=',18)->get();
 
-        $tramites = DB::table('tramites')->where('alicuota','=',13)->get();
-        foreach ($tramites as $key) {
-            $option_tramites .= '<option value="'.$key->id_tramite.'">'.$key->tramite.'</option>';
 
-            if (array_search($key->key_ente,$entes) == false) {
-                
-                array_push($entes,$key->key_ente);
-            }
-        }
 
-        foreach ($entes as $ente) {
-            $c2 = DB::table('entes')->where('id_ente','=',$ente)->first();
-            $option_entes .= '<option value="'.$c2->id_ente.'">'.$c2->ente.'</option>';
-        }
-
-        return view('exenciones',compact('tramites','c2'));
+        return view('exenciones',compact('proceso'));
     }
 
     /**
@@ -216,11 +203,11 @@ class ExencionesController extends Controller
                                         <div class="col-6">
                                             <label class="form-label" for="tipo_pago">Tipo de Pago</label><span class="text-danger">*</span>
                                             <select class="form-select form-select-sm" name="tipo_pago" id="tipo_pago" required disabled>
-                                                <option value="">Deposito</option>
-                                                <option value="">Obra</option>
-                                                <option value="">Bien</option>
-                                                <option value="">Servicio</option>
-                                                <option value="">Suministros</option>
+                                                <option value="18">Deposito</option>
+                                                <option value="14">Obra</option>
+                                                <option value="15">Bien</option>
+                                                <option value="16">Servicio</option>
+                                                <option value="17">Suministros</option>
                                             </select>
                                         </div>
                                     </div>
@@ -350,7 +337,11 @@ class ExencionesController extends Controller
     public function nueva(Request $request)
     {
         $tramites = $request->post('tramite');
-        
+        $user = auth()->id();
+
+        $total_ucd = 0;
+        $year = date("Y");
+
         ///////////////////////////////////// CONTRIBUYENTE
             $condicion_sujeto = $request->post('condicion_sujeto');
             $identidad_condicion = $request->post('identidad_condicion');
@@ -383,15 +374,196 @@ class ExencionesController extends Controller
             }
 
         ////////////////////////////////// INSERT
+        $direccion = $request->post('direccion');
+        $tlf_movil = $request->post('tlf_movil');
+        $tlf_second = $request->post('tlf_second');
+        $metros = $request->post('metros');
+        $solicitud_doc = $request->file('solicitud_doc');
+        $aprobacion_doc = $request->file('aprobacion_doc');
+        $porcentaje = $request->post('porcentaje');
+        $tipo_pago = $request->post('tipo_pago');
+
+        $insert_exencion = DB::table('exenciones')->insert(['key_user' => $user,
+                                                            'key_contribuyente' => $id_contribuyente,
+                                                            'porcentaje_exencion' => $porcentaje,
+                                                            'tipo_pago' => $tipo_pago,
+                                                            'direccion' => $direccion,
+                                                            'tlf_movil' => $tlf_movil,
+                                                            'tlf_second' => $tlf_second,
+                                                            'total_ucd' => 0,
+                                                            'estado' => 18
+                                                        ]); 
+        if ($insert_exencion) {
+            $id_exencion = DB::table('exenciones')->max('id_exencion');
+
+            ///////////CREAR CARPETA DEL AÑO SI NO EXISTE
+            /////////// Solicitudes
+            if (!is_dir('../public/assets/Exenciones/Solicitudes/'.$year)){   ////no existe la carpeta del año
+                mkdir('../public/assets/Exenciones/Solicitudes/'.$year, 0777);
+            }
+            /////////// Aprobaciones
+            if (!is_dir('../public/assets/Exenciones/Aprobaciones/'.$year)){   ////no existe la carpeta del año
+                mkdir('../public/assets/Exenciones/Aprobaciones/'.$year, 0777);
+            }
+            /////////// Pagos
+            if (!is_dir('../public/assets/Exenciones/Pagos/'.$year)){   ////no existe la carpeta del año
+                mkdir('../public/assets/Exenciones/Pagos/'.$year, 0777);
+            }
+            
+
+            // GUARDAR DOC SOLICITUD
+            $nombre_doc  = 'SOLICITUD_E'.$id_exencion.'.'.$solicitud_doc->getClientOriginalExtension();
+            $ruta          = public_path('assets/Exenciones/Solicitudes/'.$year.'/'.$nombre_doc);
+            $ruta_n        = 'assets/Exenciones/Solicitudes/'.$year.'/'.$nombre_doc;
+
+            if(copy($solicitud_doc->getRealPath(),$ruta)){
+                // GUARDAR DOC APROBACION
+                $nombre_doc_2  = 'SOLICITUD_E'.$id_exencion.'.'.$aprobacion_doc->getClientOriginalExtension();
+                $ruta_2          = public_path('assets/Exenciones/Aprobaciones/'.$year.'/'.$nombre_doc_2);
+                $ruta_n_2        = 'assets/Exenciones/Aprobaciones/'.$year.'/'.$nombre_doc_2;
+
+                if(copy($aprobacion_doc->getRealPath(),$ruta_2)){
+                    $update_docs = DB::table('exenciones')->where('id_exencion', '=', $id_exencion)->update(['doc_solicitud' => $ruta_n,'doc_aprobacion' => $ruta_n_2]);
+                    if ($update_docs) {
+                        //////////////////////////// TRUE RESPONSE
+                    }else{
+                        //////delete exencion
+                        $delete = DB::table('exenciones')->where('id_exencion', '=', $id_exencion)->delete();
+                        return response()->json(['success' => false]);
+                    }
+                }else{
+                    //////delete exencion
+                    $delete = DB::table('exenciones')->where('id_exencion', '=', $id_exencion)->delete();
+                    return response()->json(['success' => false]);
+                }
+            }else{
+                //////delete exencion
+                $delete = DB::table('exenciones')->where('id_exencion', '=', $id_exencion)->delete();
+                return response()->json(['success' => false]);
+            }
+
+
+
+
+            /////////////////////////////////////////// INSERT DETALLE EXENCION
+            foreach ($tramites as $tramite) {
+                ///// INSERT DETALLE
+                $insert_detalle = DB::table('detalle_exenciones')->insert(['key_exencion' => $id_exencion,
+                                                                            'key_tramite' => $tramite['tramite'],
+                                                                            'forma' => $tramite['forma'],
+                                                                            'cantidad' => 1 ,
+                                                                            'metros' => $metros,
+                                                                        ]);
+                if ($insert_detalle) {
+                    // SUMA TOTAL UCD
+                    if ($tramite['tramite'] != '') { 
+                        $query = DB::table('tramites')->where('id_tramite','=', $tramite['tramite'])->first();
+                        $ucd_tramite = 0;
+                        switch ($query->alicuota) {
+                            case 13:
+                                // METRADO
+                                if (!empty($metros)) {
+                                    // hay metros
+                                    if ($metros == '' || $metros == 0) {
+                                        $ucd_tramite = 0;
+                                    }else{
+                                        if ($metros <= 150) {
+                                            ////pequeña
+                                            $ucd_tramite = $query->small;
+                                        }elseif ($metros > 150 && $metros < 400) {
+                                            /////mediana
+                                            $ucd_tramite = $query->medium;
+                                        }elseif ($metros >= 400) {
+                                            /////grande
+                                            $ucd_tramite = $query->large;
+                                        }
+                                    }
+                                }else{
+                                    // no hay metros
+                                    $ucd_tramite = 0;
+                                } 
+                                $total_ucd = $total_ucd + $ucd_tramite;
+                            break;
+                                
+                        }
+                    }
+                }else{
+                    // delete exencion
+                    $delete = DB::table('exenciones')->where('id_exencion', '=', $id_exencion)->delete();
+                    return response()->json(['success' => false]);
+                }
+            } /// cierra foreach
+
+            // UPDATE EXENCION
+            $update_exencion = DB::table('exenciones')->where('id_exencion', '=', $id_exencion)->update(['total_ucd' => $total_ucd]);
+            if ($update_exencion) {
+                return response()->json(['success' => true]);
+            }else{
+                //////delete exencion
+                $delete = DB::table('exenciones')->where('id_exencion', '=', $id_exencion)->delete();
+                return response()->json(['success' => false]);
+            }
+
+        }else{
+            return response()->json(['success' => false]); 
+        }
+        
 
     }
 
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit(string $id)
+    public function sujeto(Request $request)
     {
-        //
+        $sujeto = $request->post('sujeto');
+        $exencion = $request->post('exencion');
+
+        $c1 = DB::table('contribuyentes')->join('tipos', 'contribuyentes.condicion_sujeto', '=','tipos.id_tipo')
+                                        ->select('contribuyentes.*','tipos.nombre_tipo')
+                                        ->where('contribuyentes.id_contribuyente','=',$sujeto)->first();
+
+        $c2 = DB::table('exenciones')->select('direccion','tlf_movil','tlf_second')->where('id_exencion','=',$exencion)->first();
+
+        $html = '<div class="modal-header p-2 pt-3 d-flex justify-content-center">
+                    <div class="text-center">
+                        <i class="bx bx-user-circle fs-1 text-secondary" ></i>
+                        <h1 class="modal-title fs-5 text-navy fw-bold" id="" >'.$c1->nombre_razon.'</h1>
+                        <h5 class="modal-title text-muted" id="" style="font-size:14px">Contribuyente</h5>
+                    </div>
+                </div>
+                <div class="modal-body" style="font-size:15px;">
+                    <h6 class="text-muted text-center" style="font-size:14px;">Datos del Sujeto pasivo</h6>
+                    <table class="table" style="font-size:14px">
+                        <tr>
+                            <th>R.I.F.</th>
+                            <td>'.$c1->identidad_condicion.'-'.$c1->identidad_nro.'</td>
+                        </tr>
+                        <tr>
+                            <th>Razón Social</th>
+                            <td>'.$c1->nombre_razon.' <span class="badge bg-secondary-subtle text-secondary-emphasis ms-2">'.$c1->nombre_tipo.'</span></td>
+                        </tr>
+                        <tr>
+                            <th>Dirección</th>
+                            <td>'.$c2->direccion.'</td>
+                        </tr>
+                        <tr>
+                            <th>Teléfono móvil</th>
+                            <td>'.$c2->tlf_movil.'</td>
+                        </tr>
+                        <tr>
+                            <th>Teléfono secundario</th>
+                            <td>'.$c2->tlf_second.'</td>
+                        </tr>
+                    </table>
+
+                    <div class="d-flex justify-content-center my-2 mt-3">
+                        <button type="button" class="btn btn-secondary btn-sm" data-bs-dismiss="modal">Cerrar</button>
+                    </div>
+                </div>';
+
+        return response($html);
+
     }
 
     /**

@@ -36,10 +36,10 @@
                 <a class="nav-link active" id="list-proceso-list" data-bs-toggle="list" href="#list-proceso" role="tab" aria-controls="list-proceso">
                     <div class="d-flex gap-1 py-1 pe-3">
                         <div class="d-flex align-items-end flex-between-center">
-                            <i class='bx bxl-telegram fs-2'></i>
+                            <i class='bx bx-loader fs-2'></i>
                         </div>
                         <div class="ms-2">
-                            <h6 class="mb-1 text-700 text-nowrap text-secondary" style="font-size:13px">Por imprimir en Taquilla</h6>
+                            <h6 class="mb-1 text-700 text-nowrap text-secondary" style="font-size:13px">Asignando a Taquilla</h6>
                             <h6 class="mb-0 lh-1 fw-bold text-secondary-emphasis">En Proceso</h6>
                         </div>
                     </div>
@@ -49,10 +49,10 @@
                 <a class="nav-link" id="list-emitidos-list" data-bs-toggle="list" href="#list-emitidos" role="tab" aria-controls="list-emitidos">
                     <div class="d-flex gap-1 py-1 pe-3">
                         <div class="d-flex align-items-end flex-between-center">
-                            <i class='bx bx-loader fs-2'></i>
+                            <i class='bx bx-receipt fs-2'></i> 
                         </div>
                         <div class="ms-2">
-                            <h6 class="mb-1 text-700 text-nowrap text-secondary" style="font-size:13px">Retirar de taquilla</h6>
+                            <h6 class="mb-1 text-700 text-nowrap text-secondary" style="font-size:13px">Retirar de Taquilla</h6>
                             <h6 class="mb-0 lh-1 fw-bold text-secondary-emphasis">Emitidos</h6>
                         </div>
                     </div>
@@ -83,7 +83,59 @@
         <div class="tab-content py-3" id="nav-tabContent">
             <!-- CONTENIDO: EXENCIONES EN PROCESO  -->
             <div class="tab-pane fade show active" id="list-enviar" role="tabpanel" aria-labelledby="list-enviar-list">
-               
+               <div class="table-response" style="font-size:12.7px">
+                    <table id="proceso_exenciones" class="table align-middle border-light-subtle text-center " style="font-size:12.7px">
+                        <thead class="bg-primary border-light-subtle">
+                                <tr>
+                                    <th scope="col">#</th>
+                                    <th scope="col">Fecha</th>
+                                    <th scope="col">Contribuyente</th>
+                                    <th scope="col">Total UCD</th>
+                                    <th scope="col">Exención (%)</th>
+                                    <th scope="col">Detalles</th>
+                                    <th scope="col">Taquillero</th>
+                                    <!-- <th scope="col">Opcion</th> -->
+                                </tr>
+                        </thead>
+                        <tbody>
+                            @foreach ($proceso as $process)
+                                <tr>
+                                    <td>{{$process->id_exencion}}</td>
+                                    <td><span class="text-muted fst-italic">{{$process->fecha}}</span></td>
+                                    <td>
+                                        <a class="info_sujeto_exencion d-flex flex-column" role="button" exencion="{{$process->id_exencion}}" sujeto="{{$process->key_contribuyente}}" data-bs-toggle="modal" data-bs-target="#modal_info_sujeto_exencion">
+                                            <span>{{$process->nombre_razon}}</span>
+                                            <span>{{$process->identidad_condicion}}-{{$process->identidad_nro}}</span>
+                                        </a>
+                                    </td>
+                                    <td>
+                                        <span class="text-navy fw-bold">{{$process->total_ucd}} UCD</span>                                    
+                                    </td>
+                                    <td>
+                                        <span class="badge bg-primary-subtle border border-primary-subtle text-primary-emphasis rounded-pill" style="font-size:12.7px">{{$process->porcentaje_exencion}}%</span>
+                                    </td>
+                                    <td>
+                                        <a class="detalle_solicitud" exencion="" data-bs-toggle="modal" data-bs-target="#modal_detalles_exencion">Ver</a>
+                                    </td>
+                                    <td>
+                                        <span class="text-secondary fst-italic" title="En espera de la asignación de Taquillero">
+                                            @if ($process->key_taquilla == NULL)
+                                                Sin Asignar
+                                            @else
+                                                
+                                            @endif
+                                        </span>
+                                    </td>
+                                    <!-- <td>
+                                        <button class="btn btn-sm btn-primary asignado_taquilla d-inline-flex align-items-center" exencion="" type="button" data-bs-toggle="modal" data-bs-target="#modal_taquillero_asignado_exencion">
+                                            <i class='bx bxs-chevron-right'></i>
+                                        </button>
+                                    </td> -->
+                                </tr>
+                            @endforeach
+                        </tbody>
+                    </table>
+               </div>
             </div>
 
 
@@ -126,7 +178,22 @@
     <div class="modal fade" id="modal_new_exencion" tabindex="-1" aria-hidden="true">
         <div class="modal-dialog modal-lg">
             <div class="modal-content" id="content_new_exencion">
-            
+                <div class="my-5 py-5 d-flex flex-column text-center">
+                    <i class='bx bx-loader-alt bx-spin fs-1 mb-3' style='color:#0077e2'  ></i>
+                    <span class="text-muted">Cargando, por favor espere un momento...</span>
+                </div>
+            </div>  <!-- cierra modal-content -->
+        </div>  <!-- cierra modal-dialog -->
+    </div>
+
+    <!-- INFO CONTRIBUYENTE EXENCIONES -->
+    <div class="modal fade" id="modal_info_sujeto_exencion" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content" id="content_info_sujeto_exencion">
+                <div class="my-5 py-5 d-flex flex-column text-center">
+                    <i class='bx bx-loader-alt bx-spin fs-1 mb-3' style='color:#0077e2'  ></i>
+                    <span class="text-muted">Cargando, por favor espere un momento...</span>
+                </div>
             </div>  <!-- cierra modal-content -->
         </div>  <!-- cierra modal-dialog -->
     </div>
@@ -163,7 +230,7 @@
    
     <script type="text/javascript">
         $(document).ready(function () {
-            $('#asignados_forma14').DataTable(
+            $('#proceso_exenciones').DataTable(
                 {
                     // "order": [[ 0, "desc" ]],
                     "language": {
@@ -424,15 +491,23 @@
                         $('.tramite').attr('disabled', false);
                         $('.forma').attr('disabled', false);
 
-                        $('.metodo').attr('disabled', false);
-                        $('.comprobante').attr('disabled', false);
-                        $('.debitado').attr('disabled', false);
-
                         $('.add_button_tramite').removeClass('disabled');
                         $('.add_button').removeClass('disabled');
 
-                        $('#btn_submit_venta').attr('disabled', false);
+                        $('#direccion').attr('disabled', false);
+                        $('#tlf_movil').attr('disabled', false);
+                        $('#tlf_second').attr('disabled', false);
 
+                        $('#metros').attr('disabled', false);
+                        $('#btn_calcular_metrado').removeClass('disabled');
+
+                        $('#solicitud_doc').attr('disabled', false);
+                        $('#aprobacion_doc').attr('disabled', false);
+                        $('#porcentaje').attr('disabled', false);
+                        $('#tipo_pago').attr('disabled', false);
+
+
+                        $('#btn_submit_exencion').removeClass('disabled');
 
                     }else{
                         if (response.nota) {
@@ -499,9 +574,30 @@
 
 
 
-        /////////////////////////
+        ///////////////////////// CALCULAR EL TOTAL SEGUN EL PORCENTAJE DE EXENCION
         $(document).on('keyup','#porcentaje', function(e) {
             calcular();
+        });
+
+
+         /////////////////////// MODAL INFO SUJETO EXENCION
+         $(document).on('click','.info_sujeto_exencion', function(e) {
+            e.preventDefault();
+            var sujeto = $(this).attr('sujeto');
+            var exencion = $(this).attr('exencion');
+
+            $.ajax({
+                headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') },
+                type: 'POST',
+                url: '{{route("exenciones.sujeto") }}',
+                data: {sujeto:sujeto,exencion:exencion},
+                success: function(response) {
+                    console.log(response);
+                    $('#content_info_sujeto_exencion').html(response);
+                },
+                error: function() {
+                }
+            });
         });
 
        
@@ -634,16 +730,16 @@
             data: formData,
             success: function(response){
                 console.log(response);
-                // if (response.success) {
-                //     $('#modal_venta_realizada').modal('show');
-                //     $('#content_venta_realizada').html(response.html);
-                // }else{
-                //     if (response.nota) {
-                //         alert(response.nota);
-                //     }else{
-                //         alert('Disculpe, ha ocurrido un error');
-                //     }
-                // }
+                if (response.success) {
+                    alert('LA EXENCIÓN SE HA REGISTRADO EXITOSAMENTE.');
+                    window.location.href = "{{ route('exenciones')}}";
+                }else{
+                    if (response.nota) {
+                        alert(response.nota);
+                    }else{
+                        alert('Disculpe, ha ocurrido un error. Vuelva a intentarlo.');
+                    }
+                }
                     
             },
             error: function(error){

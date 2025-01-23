@@ -27,8 +27,8 @@ return new class extends Migration
 
             $table->integer('porcentaje_exencion');
 
-            $table->string('doc_solicitud'); 
-            $table->string('doc_aprobacion');
+            $table->string('doc_solicitud')->nullable(); 
+            $table->string('doc_aprobacion')->nullable();
 
             $table->integer('tipo_pago')->unsigned();  //// OBRA - BIEN - SERVICIO - SUMINISTROS - DEPOSITO 
             $table->foreign('tipo_pago')->references('id_tipo')->on('tipos')->onDelete('cascade');

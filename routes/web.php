@@ -99,6 +99,7 @@ Route::post('/exenciones/modal_new', [App\Http\Controllers\ExencionesController:
 Route::post('/exenciones/tramites', [App\Http\Controllers\ExencionesController::class, 'tramites'])->name('exenciones.tramites');
 Route::post('/exenciones/total', [App\Http\Controllers\ExencionesController::class, 'total'])->name('exenciones.total');
 Route::post('/exenciones/nueva', [App\Http\Controllers\ExencionesController::class, 'nueva'])->name('exenciones.nueva');
+Route::post('/exenciones/sujeto', [App\Http\Controllers\ExencionesController::class, 'sujeto'])->name('exenciones.sujeto');
 
 
 
