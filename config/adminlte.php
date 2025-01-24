@@ -378,7 +378,7 @@ return [
         ],
         [
             'text'        => 'Asignar taquillero',
-            'route'         => '',
+            'route'         => 'asignar_taquillero',
             'icon'       => 'fas fa-angle-right pe-2', 
         ],
         [

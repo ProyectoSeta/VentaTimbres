@@ -101,6 +101,9 @@ Route::post('/exenciones/total', [App\Http\Controllers\ExencionesController::cla
 Route::post('/exenciones/nueva', [App\Http\Controllers\ExencionesController::class, 'nueva'])->name('exenciones.nueva');
 Route::post('/exenciones/sujeto', [App\Http\Controllers\ExencionesController::class, 'sujeto'])->name('exenciones.sujeto');
 
+//////////////////////  EXENCIONES (ASIGNAR TAQUILLERO)
+Route::get('/asignar_taquillero', [App\Http\Controllers\AsignacionTaquilleroController::class, 'index'])->name('asignar_taquillero');
+
 
 
 
