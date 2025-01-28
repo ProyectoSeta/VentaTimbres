@@ -1144,7 +1144,7 @@
             ///////////////////////////  ADD CAMPO FORMA(S)
             $('#forma_'+nro+' option').remove();
 
-            if (ucd < 6) {
+            if (ucd < 11) {
                 $('#forma_'+nro).append('<option>Seleccione</option>'+
                             '<option value="3">TFE-14</option>'+
                             '<option value="4">Estampilla</option>');

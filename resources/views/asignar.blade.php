@@ -552,7 +552,7 @@
             async: true,
             data: formData,
             success: function(response){
-                console.log(response);
+                // console.log(response);
                 if (response.success) {
                     $('#modal_asignar_timbres').modal('hide');
                     $('#modal_asignado_forma14').modal('show');
@@ -587,7 +587,7 @@
             async: true,
             data: formData,
             success: function(response){
-                console.log(response);
+                // console.log(response);
                 if (response.success) {
                     $('#modal_asignar_timbres').modal('hide');
                     $('#modal_asignado_estampillas').modal('show');

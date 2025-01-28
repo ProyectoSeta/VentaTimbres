@@ -40,6 +40,7 @@ return new class extends Migration
             $table->string('tlf_second')->nullable();
 
             $table->datetime('fecha_asig_taquilla')->nullable();
+            $table->datetime('fecha_impresion')->nullable();
 
             $table->integer('total_ucd')->nullable();
 

@@ -103,6 +103,8 @@ Route::post('/exenciones/sujeto', [App\Http\Controllers\ExencionesController::cl
 
 //////////////////////  EXENCIONES (ASIGNAR TAQUILLERO)
 Route::get('/asignar_taquillero', [App\Http\Controllers\AsignacionTaquilleroController::class, 'index'])->name('asignar_taquillero');
+Route::post('/asignar_taquillero/asignar', [App\Http\Controllers\AsignacionTaquilleroController::class, 'asignar'])->name('asignar_taquillero.asignar');
+Route::post('/asignar_taquillero/info_taquillero', [App\Http\Controllers\AsignacionTaquilleroController::class, 'info_taquillero'])->name('asignar_taquillero.info_taquillero');
 
 
 

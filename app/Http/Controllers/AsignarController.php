@@ -103,7 +103,8 @@ class AsignarController extends Controller
         $taquillas =  DB::table('taquillas')
                         ->join('funcionarios', 'taquillas.key_funcionario', '=', 'funcionarios.id_funcionario')
                         ->select('taquillas.*','funcionarios.nombre')
-                        ->where('taquillas.key_sede','=', $sede)->get();
+                        ->where('taquillas.key_sede','=', $sede)
+                        ->where('taquillas.estado','=', 16)->get();
         if ($taquillas) {
             $options .= '<option>Seleccionar</option>';
             foreach ($taquillas as $taquilla) {
