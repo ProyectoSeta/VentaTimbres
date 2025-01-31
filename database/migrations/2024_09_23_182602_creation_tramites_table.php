@@ -19,7 +19,7 @@ return new class extends Migration
             $table->integer('key_ente')->unsigned();
             $table->foreign('key_ente')->references('id_ente')->on('entes')->onDelete('cascade');
 
-            $table->integer('alicuota')->unsigned(); ///////UCD - PORCENTAJE
+            $table->integer('alicuota')->unsigned(); ///////UCD - PORCENTAJE - METRADO
             $table->foreign('alicuota')->references('id_tipo')->on('tipos')->onDelete('cascade');
 
             $table->float('natural')->nullable();

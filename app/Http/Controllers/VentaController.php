@@ -436,10 +436,10 @@ class VentaController extends Controller
 
 
                 if ($ucd == 10) {
-                    $consulta_ucd = DB::table('ucd_denominacions')->select('id')->where('denominacion','=',5)->first();
+                    $consulta_ucd = DB::table('ucd_denominacions')->select('id')->where('denominacion','=',5)->where('alicuota','=',7)->first();
                     $key_denominacion = $consulta_ucd->id;
                 }else{
-                    $consulta_ucd = DB::table('ucd_denominacions')->select('id')->where('denominacion','=', $ucd)->first();
+                    $consulta_ucd = DB::table('ucd_denominacions')->select('id')->where('denominacion','=', $ucd)->where('alicuota','=',7)->first();
                     $key_denominacion = $consulta_ucd->id;
                 }
 
@@ -616,11 +616,11 @@ class VentaController extends Controller
 
                                 ///////DENOMINACION E IDENTIFICADOR DE DENOMINACION
                                 if ($ucd_tramite == 10) {
-                                    $q5 = DB::table('ucd_denominacions')->select('id','identificador')->where('denominacion','=','5')->first();
+                                    $q5 = DB::table('ucd_denominacions')->select('id','identificador')->where('denominacion','=','5')->where('alicuota','=',7)->first();
                                     $key_deno = $q5->id; 
                                     $identificador_ucd = $q5->identificador;
                                 }else{
-                                    $q5 = DB::table('ucd_denominacions')->select('id','identificador')->where('denominacion','=',$ucd_tramite)->first();
+                                    $q5 = DB::table('ucd_denominacions')->select('id','identificador')->where('denominacion','=',$ucd_tramite)->where('alicuota','=',7)->first();
                                     $key_deno = $q5->id;
                                     $identificador_ucd = $q5->identificador;
                                 }
@@ -734,6 +734,10 @@ class VentaController extends Controller
                                                                 </div>
                                                             </div>
                                                         </div>';
+                                        /////////ACTUALIZAR NRO TIMBRES VENDIDOS (DETALLE_ASIGNACION_TIMBRES)
+                                        $c_vendido = DB::table('inventario_tfes')->select('vendido')->where('correlativo','=',$key_inventario)->first();
+                                        $new_vendido = $c_vendido->vendido + 1;
+                                        $update_vendido = DB::table('inventario_tfes')->where('correlativo','=',$key_inventario)->update(['vendido' => $new_vendido]);
                                     }else{
                                         // delete venta
                                         return response()->json(['success' => false]);
@@ -747,10 +751,288 @@ class VentaController extends Controller
 
                             case 8:
                                 // PORCENTAJE
+                                $alicuota = 8;
+
+                                $capital = $request->post('capital');
+
+                                $consulta = DB::table('tramites')->select('porcentaje')->where('id_tramite','=', $key_tramite)->first();
+                                $porcentaje = $consulta->porcentaje;
+
+                                $cons_ident = DB::table('ucd_denominacions')->select('identificador')->where('denominacion','=', $porcentaje)->where('alicuota','=', 8)->first();
+                                $identificador_ali =$cons_ident->identificador;
+
+                                $total_bs_capital = ($capital * $porcentaje) / 100;
+
+                                $i2 = DB::table('detalle_ventas')->insert(['key_venta' => $id_venta, 
+                                                                            'key_tramite' => $key_tramite, 
+                                                                            'forma' => $tramite['forma'],
+                                                                            'cantidad' => 1,
+                                                                            'metros' => null,
+                                                                            'capital' => $capital]); 
+                                if ($i2){
+                                    $id_detalle_venta = DB::table('detalle_ventas')->max('correlativo');
+
+                                    $c5 = DB::table('detalle_venta_tfes')->select('key_inventario_tfe','nro_timbre','key_lote_papel')
+                                                                                ->where('key_taquilla','=',$id_taquilla)
+                                                                                ->orderBy('correlativo', 'desc')->first();
+                                    if ($c5) {
+                                        $nro_hipotetico = $c5->nro_timbre +1;
+
+                                        $c6 = DB::table('inventario_tfes')->select('hasta')->where('correlativo','=',$c5->key_inventario_tfe)->first();
+
+                                        if ($nro_hipotetico > $c6->hasta) {
+                                            $c7 = DB::table('inventario_tfes')->select('desde','correlativo','key_lote_papel')
+                                                                                ->where('key_taquilla','=',$id_taquilla)
+                                                                                ->where('condicion','=',4)
+                                                                                ->first();
+                                            if ($c7) {
+                                                $nro_timbre = $c7->desde;
+                                                $key_inventario = $c7->correlativo;
+                                                $key_lote = $c7->key_lote_papel;
+                                                $update_2 = DB::table('inventario_tfes')->where('correlativo','=',$c7->correlativo)->update(['condicion' => 3]);
+                                            }else{
+                                                // delete venta
+                                                return response()->json(['success' => false, 'nota'=> '']);
+                                            }
+                                        }else{
+                                            $nro_timbre = $nro_hipotetico;
+                                            $key_inventario = $c5->key_inventario_tfe;
+                                            $key_lote = $c5->key_lote_papel;
+                                            if ($nro_hipotetico == $c6->hasta) {
+                                                $update_1 = DB::table('inventario_tfes')->where('correlativo','=',$c5->key_inventario_tfe)->update(['condicion' => 7]);
+                                            }
+                                        }
+                                    }else{
+                                        /////no hay registro, primer timbre
+                                        $c8 = DB::table('inventario_tfes')->select('desde','correlativo')
+                                                                            ->where('key_taquilla','=',$id_taquilla)
+                                                                            ->where('condicion','=',4)
+                                                                            ->first();
+                                        if ($c8) {
+                                            $nro_timbre = $c8->desde;
+                                            $key_inventario = $c8->correlativo;
+                                            $key_lote = $c5->key_lote_papel;
+                                            $update_3 = DB::table('inventario_tfes')->where('correlativo','=',$c8->correlativo)->update(['condicion' => 3]);
+                                        }else{
+                                            // delete venta
+                                            return response()->json(['success' => false, 'nota'=> 'No hay TFE Forma 14 disponibles en taquilla.']);
+                                        }
+                                    }
+
+                                    // SERIAL
+                                    $length = 6;
+                                    $formato_nro = substr(str_repeat(0, $length).$nro_timbre, - $length);
+
+                                    $serial = $identificador_ali.''.$identificador_forma.''.$formato_nro;
+
+                                    // QR
+                                    $url = 'https://tfe14.tributosaragua.com.ve/?id='.$nro_timbre.'?lp='.$key_lote; 
+                                    QrCode::format('png')->size(180)->eye('circle')->generate($url, public_path('assets/qrForma14/qrcode_TFE'.$nro_timbre.'.png'));
+
+
+                                    // insert detalle_venta_estampilla
+                                    $i3 = DB::table('detalle_venta_tfes')->insert(['key_venta' => $id_venta, 
+                                                                                    'key_taquilla' => $id_taquilla,  
+                                                                                    'key_detalle_venta' => $id_detalle_venta, 
+                                                                                    'key_denominacion' => null,
+                                                                                    'bolivares' => $total_bs_capital,
+                                                                                    'nro_timbre' => $nro_timbre,
+                                                                                    'key_inventario_tfe' => $key_inventario,
+                                                                                    'serial' => $serial,
+                                                                                    'qr' => 'assets/qrForma14/qrcode_TFE'.$nro_timbre.'.png']); 
+                                    if ($i3){
+                                        $cant_tfe = $cant_tfe + 1;
+                                        $cant_ucd_tfe = $cant_ucd_tfe;
+
+                                        $row_timbres .= '<div class="border mb-4 rounded-3">
+                                                            <div class="d-flex justify-content-between px-3 py-2 align-items-center">
+                                                                <!-- DATOS -->
+                                                                <div class="">
+                                                                    <div class="text-danger fw-bold fs-4" id="">A-'.$formato_nro.'<span class="text-muted ms-2">TFE-14</span></div> 
+                                                                    <table class="table table-borderless table-sm">
+                                                                        <tr>
+                                                                            <th>Ente:</th>
+                                                                            <td>'.$consulta_tramite->ente.'</td>
+                                                                        </tr>
+                                                                        <tr>
+                                                                            <th>Tramite:</th>
+                                                                            <td>'.$consulta_tramite->tramite.'</td>
+                                                                        </tr>
+                                                                    </table>
+                                                                </div>
+                                                                <!-- UCD -->
+                                                                <div class="">
+                                                                    <div class="text-center titulo fw-bold fs-3">'.$total_bs_capital.' Bs.</div>
+                                                                </div>
+                                                                <!-- QR -->
+                                                                <div class="text-center">
+                                                                    <img src="'.asset('assets/qrForma14/qrcode_TFE'.$nro_timbre.'.png').'" class="img-fluid" alt="" width="110px">
+                                                                </div>
+                                                            </div>
+                                                        </div>';
+                                        /////////ACTUALIZAR NRO TIMBRES VENDIDOS (DETALLE_ASIGNACION_TIMBRES)
+                                        $c_vendido = DB::table('inventario_tfes')->select('vendido')->where('correlativo','=',$key_inventario)->first();
+                                        $new_vendido = $c_vendido->vendido + 1;
+                                        $update_vendido = DB::table('inventario_tfes')->where('correlativo','=',$key_inventario)->update(['vendido' => $new_vendido]);
+                                    }else{
+                                        // delete venta
+                                        return response()->json(['success' => false]);
+                                    }
+
+                                }else{
+                                    //// eliminar venta
+                                    return response()->json(['success' => false]);
+                                }
+
                                 break;
                             
                             case 13:
                                 // METRADO
+                                $alicuota = 13;
+                                $metros = $request->post('metros');
+
+                                if ($metros > 0 && $metros <= 150) {
+                                    ////pequeña
+                                    $consulta = DB::table('tramites')->select('small')->where('id_tramite','=', $key_tramite)->first();
+                                    $ucd_tramite = $consulta->small;
+                                }elseif ($metros > 150 && $metros < 400) {
+                                    /////mediana
+                                    $consulta = DB::table('tramites')->select('medium')->where('id_tramite','=', $key_tramite)->first();
+                                    $ucd_tramite = $consulta->medium;
+                                }elseif ($metros >= 400) {
+                                    /////grande
+                                    $consulta = DB::table('tramites')->select('large')->where('id_tramite','=', $key_tramite)->first();
+                                    $ucd_tramite = $consulta->large;
+                                }    
+                                
+                                ///////DENOMINACION E IDENTIFICADOR DE DENOMINACION
+                                $q5 = DB::table('ucd_denominacions')->select('id','identificador')->where('denominacion','=',$ucd_tramite)->where('alicuota','=',7)->first();
+                                $key_deno = $q5->id;
+                                $identificador_ucd = $q5->identificador;
+            
+                                $total_ucd = $total_ucd + $ucd_tramite;
+
+
+                                $i2 = DB::table('detalle_ventas')->insert(['key_venta' => $id_venta, 
+                                                                    'key_tramite' => $key_tramite, 
+                                                                    'forma' => $tramite['forma'],
+                                                                    'cantidad' => 1,
+                                                                    'metros' => $metros,
+                                                                    'capital' => null]); 
+                                if ($i2){
+                                    $id_detalle_venta = DB::table('detalle_ventas')->max('correlativo');
+
+                                    $c5 = DB::table('detalle_venta_tfes')->select('key_inventario_tfe','nro_timbre','key_lote_papel')
+                                                                                ->where('key_taquilla','=',$id_taquilla)
+                                                                                ->orderBy('correlativo', 'desc')->first();
+                                    if ($c5) {
+                                        $nro_hipotetico = $c5->nro_timbre +1;
+
+                                        $c6 = DB::table('inventario_tfes')->select('hasta')->where('correlativo','=',$c5->key_inventario_tfe)->first();
+
+                                        if ($nro_hipotetico > $c6->hasta) {
+                                            $c7 = DB::table('inventario_tfes')->select('desde','correlativo','key_lote_papel')
+                                                                                ->where('key_taquilla','=',$id_taquilla)
+                                                                                ->where('condicion','=',4)
+                                                                                ->first();
+                                            if ($c7) {
+                                                $nro_timbre = $c7->desde;
+                                                $key_inventario = $c7->correlativo;
+                                                $key_lote = $c7->key_lote_papel;
+                                                $update_2 = DB::table('inventario_tfes')->where('correlativo','=',$c7->correlativo)->update(['condicion' => 3]);
+                                            }else{
+                                                // delete venta
+                                                return response()->json(['success' => false, 'nota'=> '']);
+                                            }
+                                        }else{
+                                            $nro_timbre = $nro_hipotetico;
+                                            $key_inventario = $c5->key_inventario_tfe;
+                                            $key_lote = $c5->key_lote_papel;
+                                            if ($nro_hipotetico == $c6->hasta) {
+                                                $update_1 = DB::table('inventario_tfes')->where('correlativo','=',$c5->key_inventario_tfe)->update(['condicion' => 7]);
+                                            }
+                                        }
+                                    }else{
+                                        /////no hay registro, primer timbre
+                                        $c8 = DB::table('inventario_tfes')->select('desde','correlativo')
+                                                                            ->where('key_taquilla','=',$id_taquilla)
+                                                                            ->where('condicion','=',4)
+                                                                            ->first();
+                                        if ($c8) {
+                                            $nro_timbre = $c8->desde;
+                                            $key_inventario = $c8->correlativo;
+                                            $key_lote = $c5->key_lote_papel;
+                                            $update_3 = DB::table('inventario_tfes')->where('correlativo','=',$c8->correlativo)->update(['condicion' => 3]);
+                                        }else{
+                                            // delete venta
+                                            return response()->json(['success' => false, 'nota'=> 'No hay TFE Forma 14 disponibles en taquilla.']);
+                                        }
+                                    }
+
+                                    // SERIAL
+                                    $length = 6;
+                                    $formato_nro = substr(str_repeat(0, $length).$nro_timbre, - $length);
+
+                                    $serial = $identificador_ucd.''.$identificador_forma.''.$formato_nro;
+
+                                    // QR
+                                    $url = 'https://tfe14.tributosaragua.com.ve/?id='.$nro_timbre.'?lp='.$key_lote; 
+                                    QrCode::format('png')->size(180)->eye('circle')->generate($url, public_path('assets/qrForma14/qrcode_TFE'.$nro_timbre.'.png'));
+
+
+                                    // insert detalle_venta_estampilla
+                                    $i3 = DB::table('detalle_venta_tfes')->insert(['key_venta' => $id_venta, 
+                                                                                    'key_taquilla' => $id_taquilla,  
+                                                                                    'key_detalle_venta' => $id_detalle_venta, 
+                                                                                    'key_denominacion' => $key_deno,
+                                                                                    'bolivares' => null,
+                                                                                    'nro_timbre' => $nro_timbre,
+                                                                                    'key_inventario_tfe' => $key_inventario,
+                                                                                    'serial' => $serial,
+                                                                                    'qr' => 'assets/qrForma14/qrcode_TFE'.$nro_timbre.'.png']); 
+                                    if ($i3){
+                                        $cant_tfe = $cant_tfe + 1;
+                                        $cant_ucd_tfe = $cant_ucd_tfe + $ucd_tramite;
+
+                                        $row_timbres .= '<div class="border mb-4 rounded-3">
+                                                            <div class="d-flex justify-content-between px-3 py-2 align-items-center">
+                                                                <!-- DATOS -->
+                                                                <div class="">
+                                                                    <div class="text-danger fw-bold fs-4" id="">A-'.$formato_nro.'<span class="text-muted ms-2">TFE-14</span></div> 
+                                                                    <table class="table table-borderless table-sm">
+                                                                        <tr>
+                                                                            <th>Ente:</th>
+                                                                            <td>'.$consulta_tramite->ente.'</td>
+                                                                        </tr>
+                                                                        <tr>
+                                                                            <th>Tramite:</th>
+                                                                            <td>'.$consulta_tramite->tramite.'</td>
+                                                                        </tr>
+                                                                    </table>
+                                                                </div>
+                                                                <!-- UCD -->
+                                                                <div class="">
+                                                                    <div class="text-center titulo fw-bold fs-3">'.$ucd_tramite.' UCD</div>
+                                                                </div>
+                                                                <!-- QR -->
+                                                                <div class="text-center">
+                                                                    <img src="'.asset('assets/qrForma14/qrcode_TFE'.$nro_timbre.'.png').'" class="img-fluid" alt="" width="110px">
+                                                                </div>
+                                                            </div>
+                                                        </div>';
+                                        /////////ACTUALIZAR NRO TIMBRES VENDIDOS (DETALLE_ASIGNACION_TIMBRES)
+                                        $c_vendido = DB::table('inventario_tfes')->select('vendido')->where('correlativo','=',$key_inventario)->first();
+                                        $new_vendido = $c_vendido->vendido + 1;
+                                        $update_vendido = DB::table('inventario_tfes')->where('correlativo','=',$key_inventario)->update(['vendido' => $new_vendido]);
+                                    }else{
+                                        // delete venta
+                                        return response()->json(['success' => false]);
+                                    }
+                                }else{
+                                    //// eliminar venta
+                                    return response()->json(['success' => false]);
+                                }
+
                                 break;
                                     
                             default:
@@ -760,18 +1042,6 @@ class VentaController extends Controller
                         }
 
                         
-
-                    
-
-
-
-
-
-
-
-
-
-
 
 
 
@@ -803,11 +1073,11 @@ class VentaController extends Controller
 
                         ///////DENOMINACION E IDENTIFICADOR DE DENOMINACION
                         if ($ucd_tramite == 10) {
-                            $q5 = DB::table('ucd_denominacions')->select('id','identificador')->where('denominacion','=','5')->first();
+                            $q5 = DB::table('ucd_denominacions')->select('id','identificador')->where('denominacion','=','5')->where('alicuota','=',7)->first();
                             $key_deno = $q5->id; 
                             $identificador_ucd = $q5->identificador;
                         }else{
-                            $q5 = DB::table('ucd_denominacions')->select('id','identificador')->where('denominacion','=',$ucd_tramite)->first();
+                            $q5 = DB::table('ucd_denominacions')->select('id','identificador')->where('denominacion','=',$ucd_tramite)->where('alicuota','=',7)->first();
                             $key_deno = $q5->id;
                             $identificador_ucd = $q5->identificador;
                         }
