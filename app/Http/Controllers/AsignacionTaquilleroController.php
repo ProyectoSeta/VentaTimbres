@@ -37,10 +37,11 @@ class AsignacionTaquilleroController extends Controller
                         'key_taquilla' => $key->key_taquilla,
                         'porcentaje_exencion' => $key->porcentaje_exencion,
                         'fecha_asig_taquilla' => $key->fecha_asig_taquilla,
-                        'fecha_impreso' => $key->fecha_impreso,
+                        'fecha_impreso' => $key->fecha_impresion,
                         'nombre_razon' => $key->nombre_razon,
                         'identidad_condicion' => $key->identidad_condicion,
                         'identidad_nro' => $key->identidad_nro,
+                        'total_ucd' => $key->total_ucd,
                         'nombre_taquillero' => $c1->nombre,
                         'key_funcionario' => $key->key_funcionario
                     );

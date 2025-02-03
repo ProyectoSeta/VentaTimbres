@@ -14,7 +14,7 @@
     <div class="container rounded-4 p-3 px-0" style="background-color:#ffff;">
         
         <div class="d-flex justify-content-between align-items-center mb-4">
-            <h3 class="mb-3 text-navy titulo fw-bold">Asignar Taquilleros <span class="text-secondary fs-4">| Exenciones</span></h3>
+            <h3 class="mb-3 text-navy titulo fw-bold">Exenciones pendientes <span class="text-secondary fs-4">| Asignar Taquilleros</span></h3>
         </div>
 
 
@@ -79,7 +79,7 @@
         <!-- ASIGNADOS -->
 
         <div class="d-flex justify-content-between align-items-center mb-4 mt-5">
-            <h3 class="mb-3 text-muted titulo fw-bold">Asignados <span class="text-secondary fs-4">| Historial</span></h3>
+            <h3 class="mb-3 text-muted titulo fw-bold">Historial <span class="text-secondary fs-4">| Asignaciones</span></h3>
         </div>
 
         <div class="table-response" style="font-size:12.7px">
@@ -109,7 +109,7 @@
                                 </a>
                             </td>
                             <td>
-                                <span class="text-navy fw-bold">{{$process->total_ucd}} UCD</span>                                    
+                                <span class="text-navy fw-bold">{{$asignado->total_ucd}} UCD</span>                                    
                             </td>
                             <td>
                                 <span class="badge bg-primary-subtle border border-primary-subtle text-primary-emphasis rounded-pill" style="font-size:12.7px">{{$asignado->porcentaje_exencion}}%</span>

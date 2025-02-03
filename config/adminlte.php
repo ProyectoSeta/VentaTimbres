@@ -387,8 +387,8 @@ return [
             'icon'       => 'fas fa-angle-right pe-2',  
         ],
         [
-            'text'        => 'Asignadas',
-            'route'         => '',
+            'text'        => 'Asignado',
+            'route'         => 'asignado',
             'icon'       => 'fas fa-angle-right pe-2',  
         ],
 
