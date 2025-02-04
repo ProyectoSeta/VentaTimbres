@@ -776,7 +776,7 @@
                     url: '{{route("venta.add_contribuyente") }}',
                     data: {condicion:condicion,nro:nro,nombre:nombre,condicion_sujeto:condicion_sujeto},
                     success: function(response) {
-                        console.log(response);
+                        // console.log(response);
                         if (response.success) {
                             $('#nombre').attr('disabled', true);
                             $('#btns_add_contribuyente').addClass('d-none');
@@ -847,7 +847,7 @@
                         url: '{{route("venta.alicuota") }}',
                         data: {tramite:value,condicion_sujeto:condicion_sujeto,metros:metros,capital:capital},
                         success: function(response) {
-                            console.log(response);
+                            // console.log(response);
 
                             if (response.success) {
                                 switch(response.alicuota) {
@@ -1083,7 +1083,7 @@
                     url: '{{route("venta.disponibilidad") }}',
                     data: {array:array},
                     success: function(response) {
-                        console.log(response);
+                        // console.log(response);
                         if (response.success) {
                             
                         }else{
@@ -1118,7 +1118,7 @@
                 url: '{{route("venta.total") }}',
                 data: {tramites:tramites,metros:metros,condicion_sujeto:condicion_sujeto,capital:capital},
                 success: function(response) {
-                    console.log(response);
+                    // console.log(response);
                     $('#ucd').html(response.ucd);
                     $('#bolivares').html(response.bolivares);
                     $('#diferencia').html(response.bolivares);
@@ -1164,7 +1164,7 @@
                 url: '{{route("venta.alicuota") }}',
                 data: {tramite:tramite,condicion_sujeto:condicion_sujeto,metros:metros,capital:capital},
                 success: function(response) {
-                    console.log(response);
+                    // console.log(response);
 
                     if (response.success) {
                         switch(response.alicuota) {
