@@ -109,6 +109,7 @@ Route::post('/asignar_taquillero/info_taquillero', [App\Http\Controllers\Asignac
 //////////////////////  EXENCIONES (ASIGNADO A TAQUILLA)
 Route::get('/asignado', [App\Http\Controllers\AsignadosController::class, 'index'])->name('asignado');
 Route::post('/asignado/modal', [App\Http\Controllers\AsignadosController::class, 'modal'])->name('asignado.modal');
+Route::post('/asignado/venta', [App\Http\Controllers\AsignadosController::class, 'venta'])->name('asignado.venta');
 
 
 

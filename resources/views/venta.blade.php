@@ -841,14 +841,21 @@
                 if (value == '') {
                     $('#ucd_tramite_'+nro).val('0');
                 }else{
+
+                    var tramites = [];
+                    $('.tramite').each(function(){
+                        var t = $(this).val();
+                        tramites.push(t);
+                    });
+
+
                     $.ajax({
                         headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') },
                         type: 'POST',
                         url: '{{route("venta.alicuota") }}',
-                        data: {tramite:value,condicion_sujeto:condicion_sujeto,metros:metros,capital:capital},
+                        data: {tramites:tramites,tramite:value,condicion_sujeto:condicion_sujeto,metros:metros,capital:capital},
                         success: function(response) {
                             // console.log(response);
-
                             if (response.success) {
                                 switch(response.alicuota) {
                                     case 7:
@@ -875,6 +882,14 @@
                                     default:
                                         alert('Disculpe, a ocurrido un error. Vuelva a intentarlo.');
                                         break;
+                                }
+
+                                if (response.porcentaje > 1) {
+                                    
+                                }
+
+                                if (response.metrado > 1) {
+                                    
                                 }
                             }else{
 

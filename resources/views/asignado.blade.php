@@ -94,10 +94,19 @@
         </div>  <!-- cierra modal-dialog -->
     </div>
 
+    <!-- DETALLE VENTA EXENCION -->
+    <div class="modal fade" id="modal_venta_realizada" tabindex="-1" data-bs-backdrop="static" data-bs-keyboard="false" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-xl">
+            <div class="modal-content" id="content_venta_realizada">
+                
+            </div>  <!-- cierra modal-content -->
+        </div>  <!-- cierra modal-dialog -->
+    </div>
+
     
 
 
-
+    
 
 
 <!--************************************************-->
@@ -176,7 +185,40 @@
 
 
     
+    //////////////// VENTA DE TIMBRES
+    function impresionExencion(){
+        var formData = new FormData(document.getElementById("form_impresion_exencion"));
+        // console.log("alo");
+        $.ajax({
+            headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') },
+            url:'{{route("asignado.venta") }}',
+            type:'POST',
+            contentType:false,
+            cache:false,
+            processData:false,
+            async: true,
+            data: formData,
+            success: function(response){
+                console.log(response);
+                if (response.success) {
+                    $('#modal_asignado_exencion').modal('hide');
 
+                    $('#modal_venta_realizada').modal('show');
+                    $('#content_venta_realizada').html(response.html);
+                }else{
+                    if (response.nota) {
+                        alert(response.nota);
+                    }else{
+                        alert('Disculpe, ha ocurrido un error');
+                    }
+                }
+                    
+            },
+            error: function(error){
+                
+            }
+        });
+    }
 
     
 
