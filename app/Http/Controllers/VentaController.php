@@ -134,15 +134,15 @@ class VentaController extends Controller
         foreach ($tramites as $key) {
             $q1 = DB::table('tramites')->select('alicuota')->where('id_tramite','=', $key)->first();
             // PORCENTAJE
-            if ($q1->alicuota == 8) {
+           
+            if ($q1->alicuota == '8') {
                 $no_ali_porcentaje = $no_ali_porcentaje + 1;
             }
             // METRADO
-            if ($q1->alicuota == 13) {
+            if ($q1->alicuota == '13') {
                 $no_ali_metros = $no_ali_metros + 1;
             }
         }
-
 
 
 
@@ -156,7 +156,7 @@ class VentaController extends Controller
                         return response()->json(['success' => true, 'valor' => $query->juridico, 'alicuota' => $query->alicuota]);
                     }else{
                         ////natural
-                        return response()->json(['success' => true, 'valor' => $query->natural, 'alicuota' => $query->alicuota]);
+                        return response()->json(['success' => true, 'valor' => $query->natural, 'alicuota' => $query->alicuota, 'no_porcentaje' => $no_ali_porcentaje, 'no_metrado' => $no_ali_metros]);
                     }
                 case 8:
                     // PORCENTAJE
@@ -165,7 +165,7 @@ class VentaController extends Controller
                         $monto_format = number_format($monto_porcentaje, 2, ',', '.');
                         return response()->json(['success' => true, 'valor' => $monto_porcentaje, 'valor_format' => $monto_format, 'alicuota' => $query->alicuota, 'porcentaje' => $query->porcentaje]);
                     }else{
-                        return response()->json(['success' => true, 'valor' => 0, 'alicuota' => $query->alicuota, 'porcentaje' => $query->porcentaje]);
+                        return response()->json(['success' => true, 'valor' => 0, 'alicuota' => $query->alicuota, 'porcentaje' => $query->porcentaje, 'no_porcentaje' => $no_ali_porcentaje, 'no_metrado' => $no_ali_metros]);
                     }
                     
                 case 13:
@@ -188,7 +188,7 @@ class VentaController extends Controller
                         }
                     }else{
                         // no hay metros
-                        return response()->json(['success' => true, 'valor' => 0, 'alicuota' => $query->alicuota, 'porcentaje' => $no_ali_porcentaje, 'metrado' => $no_ali_metros]);
+                        return response()->json(['success' => true, 'valor' => 0, 'alicuota' => $query->alicuota, 'no_porcentaje' => $no_ali_porcentaje, 'no_metrado' => $no_ali_metros]);
                     }
                     
             }

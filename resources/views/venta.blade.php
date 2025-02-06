@@ -847,6 +847,7 @@
                         var t = $(this).val();
                         tramites.push(t);
                     });
+                    console.log(tramites);
 
 
                     $.ajax({
@@ -855,7 +856,7 @@
                         url: '{{route("venta.alicuota") }}',
                         data: {tramites:tramites,tramite:value,condicion_sujeto:condicion_sujeto,metros:metros,capital:capital},
                         success: function(response) {
-                            // console.log(response);
+                            console.log(response);
                             if (response.success) {
                                 switch(response.alicuota) {
                                     case 7:
@@ -883,9 +884,10 @@
                                         alert('Disculpe, a ocurrido un error. Vuelva a intentarlo.');
                                         break;
                                 }
-
-                                if (response.porcentaje > 1) {
-                                    
+                                console.log(response.no_porcentaje);
+                                if (response.no_porcentaje > 1) {
+                                    alert('No puede seleccionar mas de un tramite con porcentaje.');
+                                    $("#tramite_"+nro+" option[value='']").attr("selected",true);
                                 }
 
                                 if (response.metrado > 1) {
