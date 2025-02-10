@@ -15,13 +15,26 @@ class ExencionesController extends Controller
      */
     public function index()
     {
+        // EN PROCESO
         $proceso = DB::table('exenciones')->join('contribuyentes', 'exenciones.key_contribuyente', '=','contribuyentes.id_contribuyente')
                                             ->select('exenciones.*','contribuyentes.nombre_razon','contribuyentes.identidad_condicion','contribuyentes.identidad_nro')
                                             ->where('exenciones.estado','=',18)->get();
+        $count_proceso = DB::table('exenciones')->selectRaw("count(*) as total")->where('estado','=',18)->first();
+        
+        // EMITIDOS
+        $emitidos = DB::table('exenciones')->join('contribuyentes', 'exenciones.key_contribuyente', '=','contribuyentes.id_contribuyente')
+                                            ->select('exenciones.*','contribuyentes.nombre_razon','contribuyentes.identidad_condicion','contribuyentes.identidad_nro')
+                                            ->where('exenciones.estado','=',20)->get();
+        $count_emitidos = DB::table('exenciones')->selectRaw("count(*) as total")->where('estado','=',20)->first();
+    
+        // RECIBIDOS
+        $recibidos = DB::table('exenciones')->join('contribuyentes', 'exenciones.key_contribuyente', '=','contribuyentes.id_contribuyente')
+                                            ->select('exenciones.*','contribuyentes.nombre_razon','contribuyentes.identidad_condicion','contribuyentes.identidad_nro')
+                                            ->where('exenciones.estado','=',19)->get();
+        $count_recibidos = DB::table('exenciones')->selectRaw("count(*) as total")->where('estado','=',19)->first();
 
 
-
-        return view('exenciones',compact('proceso'));
+        return view('exenciones',compact('proceso','count_proceso','emitidos','count_emitidos','recibidos','count_recibidos'));
     }
 
     /**

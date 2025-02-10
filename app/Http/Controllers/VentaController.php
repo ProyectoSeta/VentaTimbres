@@ -129,22 +129,26 @@ class VentaController extends Controller
         
         $no_ali_metros = 0;
         $no_ali_porcentaje = 0;
- 
+
         $tramites = $request->post('tramites');
-        foreach ($tramites as $key) {
-            $q1 = DB::table('tramites')->select('alicuota')->where('id_tramite','=', $key)->first();
-            // PORCENTAJE
-           
-            if ($q1->alicuota == '8') {
-                $no_ali_porcentaje = $no_ali_porcentaje + 1;
-            }
-            // METRADO
-            if ($q1->alicuota == '13') {
-                $no_ali_metros = $no_ali_metros + 1;
+
+        if (isset($tramites)) {
+            foreach ($tramites as $key) {
+                if ($key != '') {
+                    $q1 = DB::table('tramites')->select('alicuota')->where('id_tramite','=', $key)->first();
+                    // PORCENTAJE
+                    if ($q1->alicuota == '8') {
+                        $no_ali_porcentaje = $no_ali_porcentaje + 1;
+                    }
+                    // METRADO
+                    else if ($q1->alicuota == '13') {
+                        $no_ali_metros = $no_ali_metros + 1;
+                    }
+                }
             }
         }
-
-
+ 
+    
 
         $query = DB::table('tramites')->where('id_tramite','=', $tramite)->first();
         if ($query) {
@@ -177,13 +181,13 @@ class VentaController extends Controller
                         }else{
                             if ($metros <= 150) {
                                 ////pequeña
-                                return response()->json(['success' => true, 'valor' => $query->small, 'alicuota' => $query->alicuota, 'size' => 'small']);
+                                return response()->json(['success' => true, 'valor' => $query->small, 'alicuota' => $query->alicuota, 'size' => 'small', 'no_porcentaje' => $no_ali_porcentaje, 'no_metrado' => $no_ali_metros]);
                             }elseif ($metros > 150 && $metros < 400) {
                                 /////mediana
-                                return response()->json(['success' => true, 'valor' => $query->medium, 'alicuota' => $query->alicuota, 'size' => 'medium']);
+                                return response()->json(['success' => true, 'valor' => $query->medium, 'alicuota' => $query->alicuota, 'size' => 'medium', 'no_porcentaje' => $no_ali_porcentaje, 'no_metrado' => $no_ali_metros]);
                             }elseif ($metros >= 400) {
                                 /////grande
-                                return response()->json(['success' => true, 'valor' => $query->large, 'alicuota' => $query->alicuota, 'size' => 'large']);
+                                return response()->json(['success' => true, 'valor' => $query->large, 'alicuota' => $query->alicuota, 'size' => 'large', 'no_porcentaje' => $no_ali_porcentaje, 'no_metrado' => $no_ali_metros]);
                             }
                         }
                     }else{

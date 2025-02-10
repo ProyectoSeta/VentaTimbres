@@ -847,7 +847,7 @@
                         var t = $(this).val();
                         tramites.push(t);
                     });
-                    console.log(tramites);
+                    console.log('--');
 
 
                     $.ajax({
@@ -858,41 +858,49 @@
                         success: function(response) {
                             console.log(response);
                             if (response.success) {
-                                switch(response.alicuota) {
-                                    case 7:
-                                        /// UCD
-                                        $('#ucd_tramite_'+nro).val(response.valor);
-                                        forma(nro,response.valor);
-                                        calcular();
-                                        
-                                        break;
-                                    case 8:
-                                        /// PORCENTAJE
-                                        $('#capital').val('0');
-                                        $('#pct_monto').html('0,00 Bs.');
+                                
+                                console.log(response.no_metrado);
+                                if (response.no_porcentaje > 1 || response.no_metrado > 1) {
+                                    alert('Solo se puede escoger un tramite relacionado con los metros y el porcentaje de la gestión, por venta.');
+                                    // $("#tramite_"+nro+" option[value='']").attr("selected",true);
+                                    $('#tramite_'+nro)[0].selectedIndex = 0;
+                                }else{
+                                    switch(response.alicuota) {
+                                        case 7:
+                                            /// UCD
+                                            $('#ucd_tramite_'+nro).val(response.valor);
+                                            forma(nro,response.valor);
+                                            calcular();
+                                            
+                                            break;
+                                        case 8:
+                                            /// PORCENTAJE
+                                            $('#capital').val('0');
+                                            $('#pct_monto').html('0,00 Bs.');
 
-                                        $('#content_capital').removeClass('d-none');
-                                        $('.p_porcentaje').html(response.porcentaje+'%');
+                                            $('#content_capital').removeClass('d-none');
+                                            $('.p_porcentaje').html(response.porcentaje+'%');
 
-                                        break;
-                                    case 13:
-                                        /// METRADO
-                                        $('#content_tamaño').removeClass('d-none');
-                                        
-                                        break;
-                                    default:
-                                        alert('Disculpe, a ocurrido un error. Vuelva a intentarlo.');
-                                        break;
-                                }
-                                console.log(response.no_porcentaje);
-                                if (response.no_porcentaje > 1) {
-                                    alert('No puede seleccionar mas de un tramite con porcentaje.');
-                                    $("#tramite_"+nro+" option[value='']").attr("selected",true);
+                                            break;
+                                        case 13:
+                                            /// METRADO
+                                            $('#content_tamaño').removeClass('d-none');
+                                            
+                                            break;
+                                        default:
+                                            alert('Disculpe, a ocurrido un error. Vuelva a intentarlo.');
+                                            break;
+                                    }
                                 }
 
-                                if (response.metrado > 1) {
-                                    
+                                //////////////////////  AGREGAR CLASE D-NONE SI ELCASO LO AMERITA
+                                if (response.no_porcentaje == 0) {
+                                    $('#content_capital').addClass('d-none');
+                                }else if(response.no_metrado == 0){
+                                    $('#content_tamaño').addClass('d-none');
                                 }
+
+                                
                             }else{
 
                             }

@@ -40,7 +40,11 @@
                         </div>
                         <div class="ms-2">
                             <h6 class="mb-1 text-700 text-nowrap text-secondary" style="font-size:13px">Asignando a Taquilla</h6>
-                            <h6 class="mb-0 lh-1 fw-bold text-secondary-emphasis">En Proceso</h6>
+                            <h6 class="mb-0 lh-1 fw-bold text-secondary-emphasis">En Proceso 
+                                @if ($count_proceso->total != 0)
+                                    <span class="badge text-bg-primary ms-2">{{$count_proceso->total}}</span>
+                                @endif
+                            </h6>
                         </div>
                     </div>
                 </a>
@@ -53,7 +57,11 @@
                         </div>
                         <div class="ms-2">
                             <h6 class="mb-1 text-700 text-nowrap text-secondary" style="font-size:13px">Retirar de Taquilla</h6>
-                            <h6 class="mb-0 lh-1 fw-bold text-secondary-emphasis">Emitidos</h6>
+                            <h6 class="mb-0 lh-1 fw-bold text-secondary-emphasis">Emitidos
+                                @if ($count_emitidos->total != 0)
+                                    <span class="badge text-bg-primary ms-2">{{$count_emitidos->total}}</span>
+                                @endif
+                            </h6>
                         </div>
                     </div>
                 </a>
@@ -66,7 +74,11 @@
                         </div>
                         <div class="ms-2">
                             <h6 class="mb-1 text-700 text-nowrap text-secondary" style="font-size:13px">Para entregar al Contribuyente</h6>
-                            <h6 class="mb-0 lh-1 fw-bold text-secondary-emphasis">Recibidos</h6>
+                            <h6 class="mb-0 lh-1 fw-bold text-secondary-emphasis">Recibidos
+                                @if ($count_recibidos->total != 0)
+                                    <span class="badge text-bg-primary ms-2">{{$count_recibidos->total}}</span>
+                                @endif
+                            </h6>
                         </div>
                     </div>
                 </a>
@@ -83,17 +95,18 @@
         <div class="tab-content py-3" id="nav-tabContent">
             <!-- CONTENIDO: EXENCIONES EN PROCESO  -->
             <div class="tab-pane fade show active" id="list-enviar" role="tabpanel" aria-labelledby="list-enviar-list">
-               <div class="table-response" style="font-size:12.7px">
+                <div class="table-response" style="font-size:12.7px">
                     <table id="proceso_exenciones" class="table align-middle border-light-subtle text-center " style="font-size:12.7px">
                         <thead class="bg-primary border-light-subtle">
                                 <tr>
                                     <th scope="col">#</th>
-                                    <th scope="col">Fecha</th>
+                                    <th scope="col">Fecha Emisión</th>
                                     <th scope="col">Contribuyente</th>
                                     <th scope="col">Total UCD</th>
                                     <th scope="col">Exención (%)</th>
                                     <th scope="col">Detalles</th>
                                     <th scope="col">Taquillero</th>
+                                    <th scope="col">Estado</th>
                                     <!-- <th scope="col">Opcion</th> -->
                                 </tr>
                         </thead>
@@ -118,19 +131,29 @@
                                         <a class="detalle_solicitud" exencion="" data-bs-toggle="modal" data-bs-target="#modal_detalles_exencion">Ver</a>
                                     </td>
                                     <td>
-                                        <span class="text-secondary fst-italic" title="En espera de la asignación de Taquillero">
-                                            @if ($process->key_taquilla == NULL)
-                                                Sin Asignar
-                                            @else
-                                                
-                                            @endif
-                                        </span>
+                                        @if ($process->key_taquilla == NULL)
+                                            <span class="text-secondary fst-italic" title="En espera de la asignación de Taquillero">Sin Asignar</span>
+                                        @else
+                                            <a href="#" class="taquilla" taquilla="{{$process->key_taquilla}}" data-bs-toggle="modal" data-bs-target="#modal_info_taquilla">Taquilla ID {{$process->key_taquilla}} </a>
+                                        @endif
                                     </td>
-                                    <!-- <td>
-                                        <button class="btn btn-sm btn-primary asignado_taquilla d-inline-flex align-items-center" exencion="" type="button" data-bs-toggle="modal" data-bs-target="#modal_taquillero_asignado_exencion">
-                                            <i class='bx bxs-chevron-right'></i>
-                                        </button>
-                                    </td> -->
+                                    <td>
+                                        @if ($process->key_taquilla == NULL)
+                                            <span class="badge bg-dark-subtle border border-dark-subtle text-dark-emphasis rounded-pill" style="font-size:12.7px">
+                                                <div class="d-flex align-items-center">
+                                                    <i class='bx bx-time-five me-1 fs-6'></i> 
+                                                    <span>En espera </span>
+                                                </div>
+                                            </span>
+                                        @else
+                                            <span class="badge bg-info-subtle border border-info-subtle text-info-emphasis rounded-pill" style="font-size:12.7px">
+                                                <div class="d-flex align-items-center">
+                                                    <i class='bx bx-user-check me-1 fs-6' ></i>    
+                                                    <span>Taquillero Asignado</span>
+                                                </div>
+                                            </span>
+                                        @endif
+                                    </td>
                                 </tr>
                             @endforeach
                         </tbody>
@@ -140,8 +163,56 @@
 
 
             <!-- CONTENIDO: TIMBRE(S) DE EXENCIONES EMITIDOS-->
-            <div class="tab-pane fade" id="list-enviados" role="tabpanel" aria-labelledby="list-enviados-list">
-                
+            <div class="tab-pane fade" id="list-emitidos" role="tabpanel" aria-labelledby="list-emitidos-list">
+                <div class="table-response" style="font-size:12.7px">
+                    <table id="emitidos_exenciones" class="table align-middle border-light-subtle text-center " style="font-size:12.7px">
+                        <thead class="bg-primary border-light-subtle">
+                                <tr>
+                                    <th scope="col">#</th>
+                                    <th scope="col">Fecha Emision</th>
+                                    <th scope="col">Contribuyente</th>
+                                    <th scope="col">Total UCD</th>
+                                    <th scope="col">Exención (%)</th>
+                                    <th scope="col">Detalles</th>
+                                    <th scope="col">Taquillero</th>
+                                    <th scope="col">Fecha Impresión</th>                                    
+                                </tr>
+                        </thead>
+                        <tbody>
+                            @foreach ($emitidos as $emitido)
+                                <tr>
+                                    <td>{{$emitido->id_exencion}}</td>
+                                    <td><span class="text-muted fst-italic">{{$emitido->fecha}}</span></td>
+                                    <td>
+                                        <a class="info_sujeto_exencion d-flex flex-column" role="button" exencion="{{$emitido->id_exencion}}" sujeto="{{$emitido->key_contribuyente}}" data-bs-toggle="modal" data-bs-target="#modal_info_sujeto_exencion">
+                                            <span>{{$emitido->nombre_razon}}</span>
+                                            <span>{{$emitido->identidad_condicion}}-{{$emitido->identidad_nro}}</span>
+                                        </a>
+                                    </td>
+                                    <td>
+                                        <span class="text-navy fw-bold">{{$emitido->total_ucd}} UCD</span>                                    
+                                    </td>
+                                    <td>
+                                        <span class="badge bg-primary-subtle border border-primary-subtle text-primary-emphasis rounded-pill" style="font-size:12.7px">{{$emitido->porcentaje_exencion}}%</span>
+                                    </td>
+                                    <td>
+                                        <a class="detalle_solicitud" exencion="" data-bs-toggle="modal" data-bs-target="#modal_detalles_exencion">Ver</a>
+                                    </td>
+                                    <td>
+                                        <a href="#" class="taquilla" taquilla="{{$emitido->key_taquilla}}" data-bs-toggle="modal" data-bs-target="#modal_info_taquilla">Taquilla ID {{$emitido->key_taquilla}} </a>
+                                    </td>
+                                    <td>
+                                        <span class="text-muted fst-italic">
+                                            @php
+                                                echo date("Y-m-d h:i A",strtotime($emitido->fecha_impresion)); 
+                                            @endphp
+                                        </span>
+                                    </td>
+                                </tr>
+                            @endforeach
+                        </tbody>
+                    </table>
+                </div>
             </div>
 
 
@@ -198,6 +269,18 @@
         </div>  <!-- cierra modal-dialog -->
     </div>
 
+    <!-- ********* INFO SUJETO ******** -->
+    <div class="modal" id="modal_info_taquilla" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-sm">
+            <div class="modal-content" id="html_info_taquilla">
+                <div class="my-5 py-5 d-flex flex-column text-center">
+                    <i class='bx bx-loader-alt bx-spin fs-1 mb-3' style='color:#0077e2'  ></i>
+                    <span class="text-muted">Cargando, por favor espere un momento...</span>
+                </div>
+            </div>  <!-- cierra modal-content -->
+        </div>  <!-- cierra modal-dialog -->
+    </div>
+
 
 
 
@@ -231,6 +314,43 @@
     <script type="text/javascript">
         $(document).ready(function () {
             $('#proceso_exenciones').DataTable(
+                {
+                    // "order": [[ 0, "desc" ]],
+                    "language": {
+                        "lengthMenu": " Mostrar  _MENU_  Registros por página",
+                        "zeroRecords": "No se encontraron registros",
+                        "info": "Mostrando página _PAGE_ de _PAGES_",
+                        "infoEmpty": "No se encuentran Registros",
+                        "infoFiltered": "(filtered from _MAX_ total records)",
+                        'search':"Buscar",
+                        'paginate':{
+                            'next':'Siguiente',
+                            'previous':'Anterior'
+                        }
+                    }
+                }
+            );
+
+            $('#emitidos_exenciones').DataTable(
+                {
+                    // "order": [[ 0, "desc" ]],
+                    "language": {
+                        "lengthMenu": " Mostrar  _MENU_  Registros por página",
+                        "zeroRecords": "No se encontraron registros",
+                        "info": "Mostrando página _PAGE_ de _PAGES_",
+                        "infoEmpty": "No se encuentran Registros",
+                        "infoFiltered": "(filtered from _MAX_ total records)",
+                        'search':"Buscar",
+                        'paginate':{
+                            'next':'Siguiente',
+                            'previous':'Anterior'
+                        }
+                    }
+                }
+            );
+
+
+            $('#recibidos_exenciones').DataTable(
                 {
                     // "order": [[ 0, "desc" ]],
                     "language": {
@@ -594,6 +714,24 @@
                 success: function(response) {
                     console.log(response);
                     $('#content_info_sujeto_exencion').html(response);
+                },
+                error: function() {
+                }
+            });
+        });
+
+        ///////////////////////////  INFO TAQUILLA
+        $(document).on('click','.taquilla', function(e) {
+            e.preventDefault(); 
+            var taquilla = $(this).attr('taquilla');
+
+            $.ajax({
+                headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') },
+                type: 'POST',
+                url: '{{route("asignar.info_taquilla") }}',
+                data: {taquilla:taquilla},
+                success: function(response) {
+                    $('#html_info_taquilla').html(response);                 
                 },
                 error: function() {
                 }

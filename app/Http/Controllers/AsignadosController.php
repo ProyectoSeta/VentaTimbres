@@ -494,7 +494,8 @@ class AsignadosController extends Controller
                                 </div>';
                             
                             // UPDATE CONDICION EXENCION 
-                            $update_con = DB::table('exenciones')->where('id_exencion','=',$id_exencion)->update(['estado' => 20]);
+                            $fecha_impresion = date('Y-m-d h:m:s');
+                            $update_con = DB::table('exenciones')->where('id_exencion','=',$id_exencion)->update(['fecha_impresion' => $fecha_impresion,'estado' => 20]);
 
                             return response()->json(['success' => true, 'html' => $html]);
 
