@@ -100,6 +100,10 @@ Route::post('/exenciones/tramites', [App\Http\Controllers\ExencionesController::
 Route::post('/exenciones/total', [App\Http\Controllers\ExencionesController::class, 'total'])->name('exenciones.total');
 Route::post('/exenciones/nueva', [App\Http\Controllers\ExencionesController::class, 'nueva'])->name('exenciones.nueva');
 Route::post('/exenciones/sujeto', [App\Http\Controllers\ExencionesController::class, 'sujeto'])->name('exenciones.sujeto');
+Route::post('/exenciones/modal_recibido', [App\Http\Controllers\ExencionesController::class, 'modal_recibido'])->name('exenciones.modal_recibido');
+Route::post('/exenciones/recibido', [App\Http\Controllers\ExencionesController::class, 'recibido'])->name('exenciones.recibido');
+Route::post('/exenciones/modal_entregado', [App\Http\Controllers\ExencionesController::class, 'modal_entregado'])->name('exenciones.modal_entregado');
+Route::post('/exenciones/entregado', [App\Http\Controllers\ExencionesController::class, 'entregado'])->name('exenciones.entregado');
 
 //////////////////////  EXENCIONES (ASIGNAR TAQUILLERO)
 Route::get('/asignar_taquillero', [App\Http\Controllers\AsignacionTaquilleroController::class, 'index'])->name('asignar_taquillero');

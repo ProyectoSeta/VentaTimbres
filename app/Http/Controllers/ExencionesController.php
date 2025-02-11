@@ -33,8 +33,10 @@ class ExencionesController extends Controller
                                             ->where('exenciones.estado','=',19)->get();
         $count_recibidos = DB::table('exenciones')->selectRaw("count(*) as total")->where('estado','=',19)->first();
 
+        $count_pendientes = DB::table('exenciones')->selectRaw("count(*) as total")->where('estado','=',21)->first();
 
-        return view('exenciones',compact('proceso','count_proceso','emitidos','count_emitidos','recibidos','count_recibidos'));
+
+        return view('exenciones',compact('proceso','count_proceso','emitidos','count_emitidos','recibidos','count_recibidos','count_pendientes'));
     }
 
     /**
@@ -545,9 +547,9 @@ class ExencionesController extends Controller
                         <h5 class="modal-title text-muted" id="" style="font-size:14px">Contribuyente</h5>
                     </div>
                 </div>
-                <div class="modal-body" style="font-size:15px;">
-                    <h6 class="text-muted text-center" style="font-size:14px;">Datos del Sujeto pasivo</h6>
-                    <table class="table" style="font-size:14px">
+                <div class="modal-body" style="font-size:13px;">
+                    <h6 class="text-muted text-center" style="font-size:13px;">Datos del Sujeto pasivo</h6>
+                    <table class="table text-center" style="font-size:14px">
                         <tr>
                             <th>R.I.F.</th>
                             <td>'.$c1->identidad_condicion.'-'.$c1->identidad_nro.'</td>
@@ -582,9 +584,202 @@ class ExencionesController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, string $id)
+    public function modal_recibido(Request $request)
     {
-        //
+        $exencion = $request->post('exencion');
+        $tr_tramites = '';
+        $cant = 0;
+
+        $q1 = DB::table('exenciones')->join('contribuyentes', 'exenciones.key_contribuyente', '=','contribuyentes.id_contribuyente')
+                                            ->select('exenciones.*','contribuyentes.nombre_razon','contribuyentes.identidad_condicion','contribuyentes.identidad_nro')
+                                            ->where('exenciones.id_exencion','=',$exencion)->first();
+
+        $q2 = DB::table('detalle_exenciones')->join('tramites', 'detalle_exenciones.key_tramite', '=','tramites.id_tramite')
+                                    ->select('detalle_exenciones.*','tramites.*')
+                                    ->where('detalle_exenciones.key_exencion','=',$exencion)->get();
+        foreach ($q2 as $key) {
+            switch ($key->alicuota) {
+                case 13:
+                    // METRADO
+                    if ($key->metros <= 150) {
+                        ////pequeña
+                        $ucd = $key->small;
+                    }elseif ($key->metros > 150 && $key->metros < 400) {
+                        /////mediana
+                        $ucd = $key->medium;
+                    }elseif ($key->metros >= 400) {
+                        /////grande
+                        $ucd = $key->large;
+                    } 
+                    $cant++;
+                break;
+            }
+
+            $tr_tramites .= '<tr>
+                                <td width="60%" class="fst-italic text-muted">'.$key->tramite.'</td>
+                                <td class="fw-semibold">'.$ucd.' UCD</td>
+                            </tr>';
+        }   
+        
+        $html = '<div class="modal-header p-2 pt-3 d-flex justify-content-center">
+                    <div class="text-center">
+                        <i class="bx bx-archive fs-1 text-secondary" ></i>
+                        <h1 class="modal-title fs-5 text-navy fw-bold">Exencion Recibida</h1>
+                        <h5 class="modal-title text-muted" id="" style="font-size:14px">Timbre entregado a <span class="fw-bold">Jurídico</span></h5>
+                    </div>
+                </div>
+                <div class="modal-body" style="font-size:13px">
+                    <div class="px-3">
+                        <table class="table">
+                            <tr>
+                                <th>ID Exención</th>
+                                <td>'.$exencion.'</td>
+                            </tr>
+                            <tr>
+                                <th>Contribuyente</th>
+                                <td>
+                                    <div class="d-flex flex-column">
+                                        <span class="text-navy fw-semibold">'.$q1->nombre_razon.'</span>
+                                        <span class="text-muted">'.$q1->identidad_condicion.'-'.$q1->identidad_nro.'</span>
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <th>Cant. Timbres</th>
+                                <td>'.$cant.' und. (TFE-14)</td>
+                            </tr>
+                            <tr>
+                                <th>Tramite(s)</th>
+                                <td>
+                                    <table class="table table-sm table-borderless">
+                                        '.$tr_tramites.'
+                                    </table>
+                                </td>
+                            </tr>
+                        </table>
+                    </div>
+
+                    <div class="d-flex justify-content-center mt-3 mb-3">
+                        <button type="button" class="btn btn-secondary btn-sm me-2" data-bs-dismiss="modal">Cancelar</button>
+                        <button type="submit" class="btn btn-success btn-sm" exencion="'.$exencion.'" id="btn_exencion_recibida">Aceptar</button>
+                    </div>
+                </div>';
+
+        return response($html);
+    }
+
+
+    public function recibido(Request $request){
+        $exencion = $request->post('exencion');
+
+        ////UPDATE ESTADO
+        $update = DB::table('exenciones')->where('id_exencion', '=', $exencion)->update(['estado' => 19]);
+        if ($update) {
+            // BITACORA: EXENCION (TIMBRE) ID RECIBIDO EN JURIDICO
+            return response()->json(['success' => true]);
+        }else{
+            //////delete exencion
+            return response()->json(['success' => false]);
+        }
+    }
+
+
+
+    public function modal_entregado(Request $request){
+        $exencion = $request->post('exencion');
+        $tr_tramites = '';
+        $cant = 0;
+
+        $q1 = DB::table('exenciones')->join('contribuyentes', 'exenciones.key_contribuyente', '=','contribuyentes.id_contribuyente')
+                                            ->select('exenciones.*','contribuyentes.nombre_razon','contribuyentes.identidad_condicion','contribuyentes.identidad_nro')
+                                            ->where('exenciones.id_exencion','=',$exencion)->first();
+
+        $q2 = DB::table('detalle_exenciones')->join('tramites', 'detalle_exenciones.key_tramite', '=','tramites.id_tramite')
+                                    ->select('detalle_exenciones.*','tramites.*')
+                                    ->where('detalle_exenciones.key_exencion','=',$exencion)->get();
+        foreach ($q2 as $key) {
+            switch ($key->alicuota) {
+                case 13:
+                    // METRADO
+                    if ($key->metros <= 150) {
+                        ////pequeña
+                        $ucd = $key->small;
+                    }elseif ($key->metros > 150 && $key->metros < 400) {
+                        /////mediana
+                        $ucd = $key->medium;
+                    }elseif ($key->metros >= 400) {
+                        /////grande
+                        $ucd = $key->large;
+                    } 
+                    $cant++;
+                break;
+            }
+
+            $tr_tramites .= '<tr>
+                                <td width="60%" class="fst-italic text-muted">'.$key->tramite.'</td>
+                                <td class="fw-semibold">'.$ucd.' UCD</td>
+                            </tr>';
+        }   
+
+        $html = '<div class="modal-header p-2 pt-3 d-flex justify-content-center">
+                    <div class="text-center">
+                        <i class="bx bx-archive fs-1 text-secondary" ></i>
+                        <h1 class="modal-title fs-5 text-navy fw-bold">Exencion Entregada</h1>
+                        <h5 class="modal-title text-muted" id="" style="font-size:14px">Timbre entregado al <span class="fw-bold">Contribuyente</span></h5>
+                    </div>
+                </div>
+                <div class="modal-body" style="font-size:13px">
+                    <div class="px-3">
+                        <table class="table">
+                            <tr>
+                                <th>ID Exención</th>
+                                <td>'.$exencion.'</td>
+                            </tr>
+                            <tr>
+                                <th>Contribuyente</th>
+                                <td>
+                                    <div class="d-flex flex-column">
+                                        <span class="text-navy fw-semibold">'.$q1->nombre_razon.'</span>
+                                        <span class="text-muted">'.$q1->identidad_condicion.'-'.$q1->identidad_nro.'</span>
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <th>Cant. Timbres</th>
+                                <td>'.$cant.' und. (TFE-14)</td>
+                            </tr>
+                            <tr>
+                                <th>Tramite(s)</th>
+                                <td>
+                                    <table class="table table-sm table-borderless">
+                                        '.$tr_tramites.'
+                                    </table>
+                                </td>
+                            </tr>
+                        </table>
+                    </div>
+
+                    <div class="d-flex justify-content-center mt-3 mb-3">
+                        <button type="button" class="btn btn-secondary btn-sm me-2" data-bs-dismiss="modal">Cancelar</button>
+                        <button type="submit" class="btn btn-success btn-sm" exencion="'.$exencion.'" id="btn_exencion_entregada">Aceptar</button>
+                    </div>
+                </div>';
+
+        return response($html);
+    }
+
+    public function entregado(Request $request){
+        $exencion = $request->post('exencion');
+
+        ////UPDATE ESTADO
+        $update = DB::table('exenciones')->where('id_exencion', '=', $exencion)->update(['estado' => 21]);
+        if ($update) {
+            // BITACORA: EXENCION (TIMBRE) ID RECIBIDO EN JURIDICO
+            return response()->json(['success' => true]);
+        }else{
+            //////delete exencion
+            return response()->json(['success' => false]);
+        }
     }
 
     /**

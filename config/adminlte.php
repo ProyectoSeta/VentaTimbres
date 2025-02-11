@@ -372,7 +372,7 @@ return [
 
         ['header' => 'Exenciones'],
         [
-            'text'        => 'Nueva',
+            'text'        => 'Nueva | Casos abiertos',
             'route'         => 'exenciones',
             'icon'       => 'fas fa-angle-right pe-2', 
         ],

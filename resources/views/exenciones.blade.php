@@ -83,6 +83,23 @@
                     </div>
                 </a>
             </li>
+            <li class="nav-item">
+                <a class="nav-link" id="list-pendientes-list" data-bs-toggle="list" href="#list-pendientes" role="tab" aria-controls="list-pendientes">
+                    <div class="d-flex gap-1 py-1 pe-3">
+                        <div class="d-flex align-items-end flex-between-center">
+                            <i class='bx bx-error-circle fs-2 text-warning'></i>
+                        </div>
+                        <div class="ms-2">
+                            <h6 class="mb-1 text-700 text-nowrap text-secondary" style="font-size:13px">Por verificar forma de Pago</h6>
+                            <h6 class="mb-0 lh-1 fw-bold text-secondary-emphasis">Pendientes
+                                @if ($count_pendientes->total != 0)
+                                    <span class="badge text-bg-primary ms-2">{{$count_pendientes->total}}</span>
+                                @endif
+                            </h6>
+                        </div>
+                    </div>
+                </a>
+            </li>
         </ul>
 
 
@@ -94,7 +111,7 @@
         <!-- contenido - nav - option -->
         <div class="tab-content py-3" id="nav-tabContent">
             <!-- CONTENIDO: EXENCIONES EN PROCESO  -->
-            <div class="tab-pane fade show active" id="list-enviar" role="tabpanel" aria-labelledby="list-enviar-list">
+            <div class="tab-pane fade show active" id="list-proceso" role="tabpanel" aria-labelledby="list-proceso-list">
                 <div class="table-response" style="font-size:12.7px">
                     <table id="proceso_exenciones" class="table align-middle border-light-subtle text-center " style="font-size:12.7px">
                         <thead class="bg-primary border-light-subtle">
@@ -175,7 +192,8 @@
                                     <th scope="col">Exención (%)</th>
                                     <th scope="col">Detalles</th>
                                     <th scope="col">Taquillero</th>
-                                    <th scope="col">Fecha Impresión</th>                                    
+                                    <th scope="col">Fecha Impresión</th>   
+                                    <th scope="col">Opción</th>                             
                                 </tr>
                         </thead>
                         <tbody>
@@ -208,6 +226,11 @@
                                             @endphp
                                         </span>
                                     </td>
+                                    <td>
+                                        <button class="btn btn-sm btn-primary exencion_recibida d-inline-flex align-items-center" exencion="{{$emitido->id_exencion}}" type="button" data-bs-toggle="modal" data-bs-target="#modal_exencion_recibida">
+                                           <i class='bx bxs-chevron-right'></i>
+                                        </button>
+                                    </td>
                                 </tr>
                             @endforeach
                         </tbody>
@@ -218,7 +241,61 @@
 
             <!-- CONTENIDO: TIMBRE(S) DE EXENCIONES RECIBIDOS -->
             <div class="tab-pane fade" id="list-recibidos" role="tabpanel" aria-labelledby="list-recibidos-list">
-                
+                <div class="table-response" style="font-size:12.7px">
+                    <table id="recibidos_exenciones" class="table align-middle border-light-subtle text-center " style="font-size:12.7px">
+                        <thead class="bg-primary border-light-subtle">
+                                <tr>
+                                    <th scope="col">#</th>
+                                    <th scope="col">Fecha Emision</th>
+                                    <th scope="col">Contribuyente</th>
+                                    <th scope="col">Total UCD</th>
+                                    <th scope="col">Exención (%)</th>
+                                    <th scope="col">Detalles</th>
+                                    <th scope="col">Taquillero</th>
+                                    <th scope="col">Fecha Impresión</th>   
+                                    <th scope="col">Opción</th>                                     
+                                </tr>
+                        </thead>
+                        <tbody>
+                            @foreach ($recibidos as $recibido)
+                                <tr>
+                                    <td>{{$recibido->id_exencion}}</td>
+                                    <td><span class="text-muted fst-italic">{{$recibido->fecha}}</span></td>
+                                    <td>
+                                        <a class="info_sujeto_exencion d-flex flex-column" role="button" exencion="{{$recibido->id_exencion}}" sujeto="{{$recibido->key_contribuyente}}" data-bs-toggle="modal" data-bs-target="#modal_info_sujeto_exencion">
+                                            <span>{{$recibido->nombre_razon}}</span>
+                                            <span>{{$recibido->identidad_condicion}}-{{$recibido->identidad_nro}}</span>
+                                        </a>
+                                    </td>
+                                    <td>
+                                        <span class="text-navy fw-bold">{{$recibido->total_ucd}} UCD</span>                                    
+                                    </td>
+                                    <td>
+                                        <span class="badge bg-primary-subtle border border-primary-subtle text-primary-emphasis rounded-pill" style="font-size:12.7px">{{$recibido->porcentaje_exencion}}%</span>
+                                    </td>
+                                    <td>
+                                        <a class="detalle_solicitud" exencion="" data-bs-toggle="modal" data-bs-target="#modal_detalles_exencion">Ver</a>
+                                    </td>
+                                    <td>
+                                        <a href="#" class="taquilla" taquilla="{{$recibido->key_taquilla}}" data-bs-toggle="modal" data-bs-target="#modal_info_taquilla">Taquilla ID {{$recibido->key_taquilla}} </a>
+                                    </td>
+                                    <td>
+                                        <span class="text-muted fst-italic">
+                                            @php
+                                                echo date("Y-m-d h:i A",strtotime($recibido->fecha_impresion)); 
+                                            @endphp
+                                        </span>
+                                    </td>
+                                    <td>
+                                        <button class="btn btn-sm btn-success timbre_entregado d-inline-flex align-items-center" exencion="{{$recibido->id_exencion}}" type="button" data-bs-toggle="modal" data-bs-target="#modal_timbre_entregado">
+                                            <i class='bx bx-check'></i>
+                                        </button>
+                                    </td>
+                                </tr>
+                            @endforeach
+                        </tbody>
+                    </table>
+                </div>
             </div>
         </div>
 
@@ -273,6 +350,30 @@
     <div class="modal" id="modal_info_taquilla" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
         <div class="modal-dialog modal-sm">
             <div class="modal-content" id="html_info_taquilla">
+                <div class="my-5 py-5 d-flex flex-column text-center">
+                    <i class='bx bx-loader-alt bx-spin fs-1 mb-3' style='color:#0077e2'  ></i>
+                    <span class="text-muted">Cargando, por favor espere un momento...</span>
+                </div>
+            </div>  <!-- cierra modal-content -->
+        </div>  <!-- cierra modal-dialog -->
+    </div>
+
+    <!-- ********* EXENCION RECIBIDA ******** -->
+    <div class="modal" id="modal_exencion_recibida" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content" id="content_exencion_recibida">
+                <div class="my-5 py-5 d-flex flex-column text-center">
+                    <i class='bx bx-loader-alt bx-spin fs-1 mb-3' style='color:#0077e2'  ></i>
+                    <span class="text-muted">Cargando, por favor espere un momento...</span>
+                </div>
+            </div>  <!-- cierra modal-content -->
+        </div>  <!-- cierra modal-dialog -->
+    </div>
+
+    <!-- ********* TIMBRE ENTREGADO (EXENCION) ******** -->
+    <div class="modal" id="modal_timbre_entregado" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content" id="content_timbre_entregado">
                 <div class="my-5 py-5 d-flex flex-column text-center">
                     <i class='bx bx-loader-alt bx-spin fs-1 mb-3' style='color:#0077e2'  ></i>
                     <span class="text-muted">Cargando, por favor espere un momento...</span>
@@ -738,6 +839,93 @@
             });
         });
 
+
+        /////////////////////////// MODAL EXENCION RECIBIDA (JURIDICO)
+        $(document).on('click','.exencion_recibida', function(e) {
+            e.preventDefault(); 
+            var exencion = $(this).attr('exencion');
+
+            $.ajax({
+                headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') },
+                type: 'POST',
+                url: '{{route("exenciones.modal_recibido") }}',
+                data: {exencion:exencion},
+                success: function(response) {
+                    // console.log(response);
+                    $('#content_exencion_recibida').html(response);          
+                },
+                error: function() {
+                }
+            });
+        });
+
+        /////////////////////////// EXENCION RECIBIDA (JURIDICO)
+        $(document).on('click','#btn_exencion_recibida', function(e) {
+            e.preventDefault(); 
+            var exencion = $(this).attr('exencion');
+
+            $.ajax({
+                headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') },
+                type: 'POST',
+                url: '{{route("exenciones.recibido") }}',
+                data: {exencion:exencion},
+                success: function(response) {
+                    console.log(response);
+                    if (response.success) {
+                        alert('ACTUALIZACIÓN DE ESTADO EXITOSO.');
+                        window.location.href = "{{ route('exenciones')}}";
+                    }else{
+                        alert('Disculpe, ha ocurrido un error. Vuelva a intentarlo.');
+                    }     
+                },
+                error: function() {
+                }
+            });
+        });
+
+
+        /////////////////////////// MODAL EXENCION ENTREGADA (CONTRIBUYENTE)
+        $(document).on('click','.timbre_entregado', function(e) {
+            e.preventDefault(); 
+            var exencion = $(this).attr('exencion');
+
+            $.ajax({
+                headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') },
+                type: 'POST',
+                url: '{{route("exenciones.modal_entregado") }}',
+                data: {exencion:exencion},
+                success: function(response) {
+                    // console.log(response);
+                    $('#content_timbre_entregado').html(response);          
+                },
+                error: function() {
+                }
+            });
+        });
+
+        /////////////////////////// EXENCION ENTREGADA (CONTRIBUYENTE)
+        $(document).on('click','#btn_exencion_entregada', function(e) {
+            e.preventDefault(); 
+            var exencion = $(this).attr('exencion');
+
+            $.ajax({
+                headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') },
+                type: 'POST',
+                url: '{{route("exenciones.entregado") }}',
+                data: {exencion:exencion},
+                success: function(response) {
+                    console.log(response);
+                    if (response.success) {
+                        alert('ACTUALIZACIÓN DE ESTADO EXITOSO.');
+                        window.location.href = "{{ route('exenciones')}}";
+                    }else{
+                        alert('Disculpe, ha ocurrido un error. Vuelva a intentarlo.');
+                    }     
+                },
+                error: function() {
+                }
+            });
+        });
        
 
           
