@@ -33,10 +33,14 @@ class ExencionesController extends Controller
                                             ->where('exenciones.estado','=',19)->get();
         $count_recibidos = DB::table('exenciones')->selectRaw("count(*) as total")->where('estado','=',19)->first();
 
+        // PENDIENTES POR VERIFICACION DE PAGO
+        $pendientes = DB::table('exenciones')->join('contribuyentes', 'exenciones.key_contribuyente', '=','contribuyentes.id_contribuyente')
+                                            ->select('exenciones.*','contribuyentes.nombre_razon','contribuyentes.identidad_condicion','contribuyentes.identidad_nro')
+                                            ->where('exenciones.estado','=',21)->get();
         $count_pendientes = DB::table('exenciones')->selectRaw("count(*) as total")->where('estado','=',21)->first();
 
 
-        return view('exenciones',compact('proceso','count_proceso','emitidos','count_emitidos','recibidos','count_recibidos','count_pendientes'));
+        return view('exenciones',compact('proceso','count_proceso','emitidos','count_emitidos','recibidos','count_recibidos','pendientes','count_pendientes'));
     }
 
     /**

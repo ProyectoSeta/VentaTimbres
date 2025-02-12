@@ -71,11 +71,21 @@ class AsignadoTaquillasController extends Controller
                     </div>
                 </div>
                 <div class="modal-body px-5 py-3" style="font-size:13px">
+                    <p class="mb-2 text-justify"><span class="fw-bold">NOTA</span>: Tomar en cuenta las siguientes prevenciones <span class="text-danger fw-bold">(Obligatorias)</span>, antes de dar click en "Aceptar".
+                        <ul>
+                            <li>La Asignación se realizá según la cantidad individual de Estampillas.</li>
+                            <li>Verificar que la cantidad y el correlativo de los Timbres coincida con lo entregado.</li>
+                            <li>Firmar la "Constancia de entrega".</li>
+                        </ul>
+                    </p>
+
                     <p class="text-center fw-bold text-muted fs-5 mb-2">Correlativo</p>
-                    <p class="text-muted text-justify"><span class="fw-bold">IMPORTANTE:</span> La Asignación se realiza según la cantidad individual de Estampillas.</p>
                     
                     '.$table.'
                     
+                    <p class="my-4 text-justify"><span class="fw-bold">IMPORTANTE</span>: Al <span class="fw-bold">ACEPTAR</span> los Timbres Fiscales como recibidos, acepta que ha recibido 
+                    personalmente la cantidad de timbres especificada, según el correlativo detallado. Y además, firmado la <span class="fw-bold">"Contancia de Entrega"</span>.</p>
+
                     <form id="form_recibido_estampillas" method="post" onsubmit="event.preventDefault(); recibidoEstampillas()">
                         <input type="hidden" name="asignacion" value="'.$asignacion.'"> 
                         <div class="d-flex justify-content-center mb-3">
@@ -159,6 +169,12 @@ class AsignadoTaquillasController extends Controller
                     </div>
                 </div>
                 <div class="modal-body px-5 py-3" style="font-size:13px">
+                    <p class="mb-2 text-justify"><span class="fw-bold">NOTA</span>: Tomar en cuenta las siguientes prevenciones <span class="text-danger fw-bold">(Obligatorias)</span>, antes de dar click en "Aceptar".
+                        <ul>
+                            <li>Verificar que la cantidad y el correlativo de los Timbres coincida con lo entregado.</li>
+                            <li>Firmar la "Constancia de entrega".</li>
+                        </ul>
+                    </p>
                     
                     <p class="text-center fw-bold text-muted fs-5  mb-2">Correlativo</p>
                     
@@ -173,6 +189,10 @@ class AsignadoTaquillasController extends Controller
                             '.$tr.'
                         </table>
                     </div>
+
+                    <p class="my-4 text-justify"><span class="fw-bold">IMPORTANTE</span>: Al <span class="fw-bold">ACEPTAR</span> los Timbres Fiscales como recibidos, acepta que ha recibido 
+                    personalmente la cantidad de timbres especificada, según el correlativo detallado. Y además, firmado la <span class="fw-bold">"Contancia de Entrega"</span>.</p>
+
                     <form id="form_recibido_forma14" method="post" onsubmit="event.preventDefault(); recibidoForma14()">
                         <input type="hidden" name="asignacion" value="'.$asignacion.'"> 
                         <div class="d-flex justify-content-center mb-3">

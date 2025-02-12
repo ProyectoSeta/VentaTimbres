@@ -382,7 +382,7 @@ return [
             'icon'       => 'fas fa-angle-right pe-2', 
         ],
         [
-            'text'        => 'Historial',
+            'text'        => 'Historial Solventes',
             'route'         => '',
             'icon'       => 'fas fa-angle-right pe-2',  
         ],

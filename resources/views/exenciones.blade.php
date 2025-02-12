@@ -90,7 +90,7 @@
                             <i class='bx bx-error-circle fs-2 text-warning'></i>
                         </div>
                         <div class="ms-2">
-                            <h6 class="mb-1 text-700 text-nowrap text-secondary" style="font-size:13px">Por verificar forma de Pago</h6>
+                            <h6 class="mb-1 text-700 text-nowrap text-secondary" style="font-size:13px">Por verificación de Pago</h6>
                             <h6 class="mb-0 lh-1 fw-bold text-secondary-emphasis">Pendientes
                                 @if ($count_pendientes->total != 0)
                                     <span class="badge text-bg-primary ms-2">{{$count_pendientes->total}}</span>
@@ -222,7 +222,7 @@
                                     <td>
                                         <span class="text-muted fst-italic">
                                             @php
-                                                echo date("Y-m-d h:i A",strtotime($emitido->fecha_impresion)); 
+                                                echo date("d-m-Y h:i A",strtotime($emitido->fecha_impresion)); 
                                             @endphp
                                         </span>
                                     </td>
@@ -282,13 +282,73 @@
                                     <td>
                                         <span class="text-muted fst-italic">
                                             @php
-                                                echo date("Y-m-d h:i A",strtotime($recibido->fecha_impresion)); 
+                                                echo date("d-m-Y h:i A",strtotime($recibido->fecha_impresion)); 
                                             @endphp
                                         </span>
                                     </td>
                                     <td>
                                         <button class="btn btn-sm btn-success timbre_entregado d-inline-flex align-items-center" exencion="{{$recibido->id_exencion}}" type="button" data-bs-toggle="modal" data-bs-target="#modal_timbre_entregado">
                                             <i class='bx bx-check'></i>
+                                        </button>
+                                    </td>
+                                </tr>
+                            @endforeach
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+
+            <!-- CONTENIDO: TIMBRE(S) DE EXENCIONES RECIBIDOS -->
+            <div class="tab-pane fade" id="list-pendientes" role="tabpanel" aria-labelledby="list-pendientes-list">
+                <div class="table-response" style="font-size:12.7px">
+                    <table id="pendientes_exenciones" class="table align-middle border-light-subtle text-center " style="font-size:12.7px">
+                        <thead class="bg-primary border-light-subtle">
+                                <tr>
+                                    <th scope="col">#</th>
+                                    <th scope="col">Fecha Emision</th>
+                                    <th scope="col">Contribuyente</th>
+                                    <th scope="col">Total UCD</th>
+                                    <th scope="col">Exención (%)</th>
+                                    <th scope="col">Detalles</th>
+                                    <th scope="col">Taquillero</th>
+                                    <th scope="col">Entregado el</th>   
+                                    <th scope="col">Verificar Pago</th>                                     
+                                </tr>
+                        </thead>
+                        <tbody>
+                            @foreach ($pendientes as $pendiente)
+                                <tr>
+                                    <td>{{$pendiente->id_exencion}}</td>
+                                    <td><span class="text-muted fst-italic">{{$pendiente->fecha}}</span></td>
+                                    <td>
+                                        <a class="info_sujeto_exencion d-flex flex-column" role="button" exencion="{{$pendiente->id_exencion}}" sujeto="{{$pendiente->key_contribuyente}}" data-bs-toggle="modal" data-bs-target="#modal_info_sujeto_exencion">
+                                            <span>{{$pendiente->nombre_razon}}</span>
+                                            <span>{{$pendiente->identidad_condicion}}-{{$pendiente->identidad_nro}}</span>
+                                        </a>
+                                    </td>
+                                    <td>
+                                        <span class="text-navy fw-bold">{{$pendiente->total_ucd}} UCD</span>                                    
+                                    </td>
+                                    <td>
+                                        <span class="badge bg-primary-subtle border border-primary-subtle text-primary-emphasis rounded-pill" style="font-size:12.7px">{{$pendiente->porcentaje_exencion}}%</span>
+                                    </td>
+                                    <td>
+                                        <a class="detalle_solicitud" exencion="" data-bs-toggle="modal" data-bs-target="#modal_detalles_exencion">Ver</a>
+                                    </td>
+                                    <td>
+                                        <a href="#" class="taquilla" taquilla="{{$pendiente->key_taquilla}}" data-bs-toggle="modal" data-bs-target="#modal_info_taquilla">Taquilla ID {{$pendiente->key_taquilla}} </a>
+                                    </td>
+                                    <td>
+                                        <span class="text-muted fst-italic">
+                                            @php
+                                                echo date("d-m-Y h:i A",strtotime($pendiente->fecha_impresion)); 
+                                            @endphp
+                                        </span>
+                                    </td>
+                                    <td>
+                                        <button class="btn btn-sm btn-success verificar_pago d-inline-flex align-items-center" exencion="{{$pendiente->id_exencion}}" type="button" data-bs-toggle="modal" data-bs-target="#modal_verificar_pago">
+                                            <i class='bx bx-receipt'></i>
                                         </button>
                                     </td>
                                 </tr>
@@ -382,6 +442,31 @@
         </div>  <!-- cierra modal-dialog -->
     </div>
 
+    <!-- ********* VERIFICAR PAGO ******** -->
+    <div class="modal" id="modal_verificar_pago" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content" id="content_verificar_pago">
+                <div class="modal-header p-2 pt-3 d-flex justify-content-center">
+                    <div class="text-center">
+                        <!-- <i class="bx bx-archive" ></i> -->
+                        <i class='bx bx-receipt fs-1 text-secondary'></i>
+                        <h1 class="modal-title fs-5 text-navy fw-bold">Verificación de Pago</h1>
+                        <h5 class="modal-title text-muted" id="" style="font-size:14px">Timbre entregado a <span class="fw-bold">Jurídico</span></h5>
+                    </div>
+                </div>
+                <div class="modal-body" style="font-size:13px">
+                    <form action="">
+                        
+                        <div class="d-flex justify-content-center mt-3 mb-3">
+                            <button type="button" class="btn btn-secondary btn-sm me-2" data-bs-dismiss="modal">Cancelar</button>
+                            <button type="submit" class="btn btn-success btn-sm" exencion="'.$exencion.'" id="btn_exencion_recibida">Aceptar</button>
+                        </div> 
+                    </form>
+                </div>
+            </div>  <!-- cierra modal-content -->
+        </div>  <!-- cierra modal-dialog -->
+    </div>
+
 
 
 
@@ -419,7 +504,7 @@
                     // "order": [[ 0, "desc" ]],
                     "language": {
                         "lengthMenu": " Mostrar  _MENU_  Registros por página",
-                        "zeroRecords": "No se encontraron registros",
+                        "zeroRecords": "No hay Exenciones En Proceso.",
                         "info": "Mostrando página _PAGE_ de _PAGES_",
                         "infoEmpty": "No se encuentran Registros",
                         "infoFiltered": "(filtered from _MAX_ total records)",
@@ -452,6 +537,24 @@
 
 
             $('#recibidos_exenciones').DataTable(
+                {
+                    // "order": [[ 0, "desc" ]],
+                    "language": {
+                        "lengthMenu": " Mostrar  _MENU_  Registros por página",
+                        "zeroRecords": "No se encontraron registros",
+                        "info": "Mostrando página _PAGE_ de _PAGES_",
+                        "infoEmpty": "No se encuentran Registros",
+                        "infoFiltered": "(filtered from _MAX_ total records)",
+                        'search':"Buscar",
+                        'paginate':{
+                            'next':'Siguiente',
+                            'previous':'Anterior'
+                        }
+                    }
+                }
+            );
+
+            $('#pendientes_exenciones').DataTable(
                 {
                     // "order": [[ 0, "desc" ]],
                     "language": {

@@ -26,7 +26,7 @@
                             <th scope="col">Asignado</th>
                             <th scope="col">Contribuyente</th>
                             <th scope="col">Total UCD</th>
-                            <th scope="col">Exención (%)</th>
+                            <!-- <th scope="col">Exención (%)</th> -->
                             <th scope="col">Imprimir</th>
                         </tr>
                 </thead>
@@ -44,9 +44,9 @@
                             <td>
                                 <span class="text-navy fw-bold">{{$key->total_ucd}} UCD</span>                                    
                             </td>
-                            <td>
+                            <!-- <td>
                                 <span class="badge bg-primary-subtle border border-primary-subtle text-primary-emphasis rounded-pill" style="font-size:12.7px">{{$key->porcentaje_exencion}}%</span>
-                            </td>
+                            </td> -->
                             <td>
                                 <button class="btn btn-sm btn-secondary asignado_taquilla d-inline-flex align-items-center" exencion="{{$key->id_exencion}}" type="button" data-bs-toggle="modal" data-bs-target="#modal_asignado_exencion">
                                     <i class='bx bx-printer fs-6' ></i>

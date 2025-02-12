@@ -97,5 +97,8 @@ class ClasificacionSeeder extends Seeder
         DB::table('clasificacions')->insert([
             'nombre_clf' => 'Entregado',
         ]);
+        DB::table('clasificacions')->insert([
+            'nombre_clf' => 'Solvente',
+        ]);
     }
 }

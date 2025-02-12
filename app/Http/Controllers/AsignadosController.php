@@ -16,10 +16,15 @@ class AsignadosController extends Controller
      */
     public function index()
     {
+        $user = auth()->id();
+
+        $c1 = DB::table('users')->select('key_sujeto')->where('id','=',$user)->first();
+        $c2 = DB::table('taquillas')->select('id_taquilla')->where('key_funcionario','=',$c1->key_sujeto)->first();
+
         $query = DB::table('exenciones')->join('contribuyentes', 'exenciones.key_contribuyente', '=','contribuyentes.id_contribuyente')
         ->select('exenciones.*','contribuyentes.nombre_razon','contribuyentes.identidad_condicion','contribuyentes.identidad_nro')
         ->where('exenciones.estado','=',18)
-        ->where('exenciones.key_taquilla','!=',null)->get();
+        ->where('exenciones.key_taquilla','=',$c2->id_taquilla)->get();
 
         return view('asignado', compact('query'));
     }

@@ -41,11 +41,12 @@ return new class extends Migration
 
             $table->datetime('fecha_asig_taquilla')->nullable();
             $table->datetime('fecha_impresion')->nullable();
+            $table->datetime('fecha_entrega')->nullable();
 
             $table->integer('total_ucd')->nullable();
 
 
-            $table->integer('estado')->unsigned(); /////    EN PROCESO - EMITIDO - RECIBIDO - ENTREGADO
+            $table->integer('estado')->unsigned(); /////    EN PROCESO - EMITIDO - RECIBIDO - ENTREGADO - SOLVENTE
             $table->foreign('estado')->references('id_clasificacion')->on('clasificacions')->onDelete('cascade');
 
 
