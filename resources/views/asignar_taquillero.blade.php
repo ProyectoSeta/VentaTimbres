@@ -25,7 +25,7 @@
                             <th scope="col">#</th>
                             <th scope="col">Fecha emisión</th>
                             <th scope="col">Contribuyente</th>
-                            <th scope="col">Total UCD</th>
+                            <th scope="col">Total U.C.D.</th>
                             <th scope="col">Exención (%)</th>
                             <th scope="col">Detalles</th>
                             <th scope="col">Taquillero</th>
@@ -44,7 +44,7 @@
                                 </a>
                             </td>
                             <td>
-                                <span class="text-navy fw-bold">{{$process->total_ucd}} UCD</span>                                    
+                                <span class="text-navy fw-bold">{{$process->total_ucd}} U.C.D.</span>                                    
                             </td>
                             <td>
                                 <span class="badge bg-primary-subtle border border-primary-subtle text-primary-emphasis rounded-pill" style="font-size:12.7px">{{$process->porcentaje_exencion}}%</span>
@@ -89,7 +89,7 @@
                             <th scope="col">#</th>
                             <th scope="col">Fecha emisión</th>
                             <th scope="col">Contribuyente</th>
-                            <th scope="col">Total UCD</th>
+                            <th scope="col">Total U.C.D.</th>
                             <th scope="col">Exención (%)</th>
                             <th scope="col">Detalles</th>
                             <th scope="col">Asignado (fecha)</th>
@@ -109,7 +109,7 @@
                                 </a>
                             </td>
                             <td>
-                                <span class="text-navy fw-bold">{{$asignado->total_ucd}} UCD</span>                                    
+                                <span class="text-navy fw-bold">{{$asignado->total_ucd}} U.C.D.</span>                                    
                             </td>
                             <td>
                                 <span class="badge bg-primary-subtle border border-primary-subtle text-primary-emphasis rounded-pill" style="font-size:12.7px">{{$asignado->porcentaje_exencion}}%</span>

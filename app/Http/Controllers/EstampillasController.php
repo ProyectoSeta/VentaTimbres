@@ -393,7 +393,7 @@ class EstampillasController extends Controller
                         </div>
                     </div>
                     <div class="modal-body px-5 py-3" style="font-size:13px">
-                        <p class="text-secondary">*NOTA: Cada tira emitida trae un total de 160 Trimbres Fiscales.</p>
+                        <p class="text-justify">*NOTA: Cada tira emitida trae un total de 160 Trimbres Fiscales.</p>
                     
                         '.$tables.'
                         

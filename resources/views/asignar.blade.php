@@ -38,7 +38,7 @@
                         <div class="col border py-2 px-3 rounded-3">
                             <div class="row">
                                 <div class="col-md-5">
-                                    <div class=" fs-5 text-navy fw-bold" >{{$de->denominacion}} UCD</div>
+                                    <div class=" fs-5 text-navy fw-bold" >{{$de->denominacion}} U.C.D.</div>
                                     <div class="text-secondary" style="font-size:13px">En Inv.</div>
                                 </div>
                                 <div class="col-md-7 d-flex align-items-center">

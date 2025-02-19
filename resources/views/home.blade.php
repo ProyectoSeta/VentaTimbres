@@ -16,7 +16,7 @@
                 <h3 class="fw-normal text-muted mb-3 titulo">Venta de Timbres Fiscales</h3>
                 <div class="d-flex gap-3 justify-content-center fw-normal titulo" style="font-size:12.7px">
                     @if ($apertura_admin == false)
-                        <p class="text-muted titulo fs-5">Disculpe, el usuario administrador no ha aperturado esta Taquilla todavia. Ante cualquier duda, 
+                        <p class="text-muted titulo fs-5">Disculpe, el usuario Coordinador no ha aperturado esta Taquilla todavia. Ante cualquier duda, 
                             comuniquese con su Supervisor.</p>
                     @elseif ($apertura_admin == true && $apertura_taquillero == false)
                         <button type="button" class="btn btn-s btn-primary py-1" data-bs-toggle="modal" data-bs-target="#modal_apertura_taquilla">Aperturar Taquilla</button>

@@ -10,7 +10,7 @@
             <div class="w-50">
                 <div class="d-flex bg-navy rounded-4">
                     <div class="bg-primary rounded-start-4 py-2 px-3 fs-6 fw-bold">
-                        <span>UCD Hoy   </span>
+                        <span>U.C.D. Hoy   </span>
                     </div>
                     <div class="py-2 px-3 fs-6 fw-bold text-end">
                         <span>{{$ucd}} bs. (EUR)</span>
@@ -56,7 +56,7 @@
                                 </div>
                                 <!-- nombre o razon -->
                                 <div class="col-sm-4">
-                                    <label class="form-label" for="nombre">Nombre / Razon Social</label><span class="text-danger">*</span>
+                                    <label class="form-label" for="nombre">Nombre / Razón Social</label><span class="text-danger">*</span>
                                     <input type="text" id="nombre" class="form-control form-control-sm" name="nombre" disabled required>
                                 </div>
                             </div>
@@ -93,7 +93,7 @@
                                         </select>
                                     </div>
                                     <div class="col-sm-2" id="div_ucd_1">
-                                        <label class="form-label" for="ucd_tramite">UCD</label><span class="text-danger">*</span>
+                                        <label class="form-label" for="ucd_tramite">U.C.D.</label><span class="text-danger">*</span>
                                         <input type="text" class="form-control form-control-sm ucd_tramite" id="ucd_tramite_1" nro="1" disabled required>
                                     </div>
                                     <div class="col-sm-2">
@@ -163,7 +163,7 @@
 
                                 <div class="col-md-6 text-center pt-4" id="size">
                                     <p class="fs-4 fw-bold mb-0" id="pct_monto">0,00 Bs.</p>
-                                    <p class="text-muted fw-bold fs-6"><span class="p_porcentaje"></span> del monto total.</p>
+                                    <p class="text-muted fw-bold fs-6"><span class="p_porcentaje"></span>del monto total.</p>
                                 </div>
                             </div>
                         </div>
@@ -222,7 +222,7 @@
                         <div class="bg-light rounded-3 px-3 py-2 mb-2">
                             <div class="d-flex justify-content-between align-items-center">
                                 <p class="d-flex flex-column titulo mb-0">
-                                    <span class="fs-3 fw-bold text-navy">UCD</span>
+                                    <span class="fs-3 fw-bold text-navy">U.C.D.</span>
                                     <span class="fw-bold text-muted" style="font-size:13px">Unidad de Cuenta Dinámica</span>
                                 </p>
                                 <span class="fs-2 text-navy fw-bold" id="ucd">0 </span>

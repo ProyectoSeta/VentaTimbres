@@ -23,7 +23,7 @@
 					<!-- Card body -->
 					<div class="card-footer border-0 bg-transparent pt-4 pb-2">
 						<h6 class="mb-3 titulo fw-bold text-navy fs-4">Nueva Sede</h6>
-                        <p class="text-muted">Haz click y crea una nueva sede de la institución.</p>
+                        <p class="text-muted">Haz clic y crea una nueva sede de la institución.</p>
 						<!-- <a href="#" class="btn btn-sm btn-secondary">Crear</a> -->
 					</div>
 				</div>
@@ -32,27 +32,6 @@
                 </div> -->
 			</div>
 
-            <!-- NUEVO TAQUILLERO -->
-            <div class="col-sm-6 col-lg-4 mb-4">
-				<div class="card text-center rounded-4 p-4 pb-0 position-relative car_trasit shadow-none" role="button" data-bs-toggle="modal" data-bs-target="#modal_nuevo_taquillero">
-                    <!--  -->
-                    <div class="position-absolute top-0 start-50 translate-middle">
-                        <span class="badge bg-info rounded-circle p-3">
-                            <i class='bx bx-user-circle fs-1'></i>
-                        </span>
-                    </div>
-
-					<!-- Card body -->
-					<div class="card-footer border-0 bg-transparent pt-4 pb-2">
-						<h6 class="mb-3 titulo fw-bold text-navy fs-4">Nuevo Taquillero</h6>
-                        <p class="text-muted">Haz click y crea una nueva sede de la institución.</p>
-						<!-- <a href="#" class="btn btn-sm btn-secondary">Crear</a> -->
-					</div>
-				</div>
-                <!-- <div class="text-center">
-                    <button type="button" class="btn btn-secondary btn-sm">Ver Taquilleros</button>
-                </div> -->
-			</div>
 
             <!-- NUEVA TAQUILLA -->
             <div class="col-sm-6 col-lg-4 mb-4" id="new_taquilla">
@@ -67,12 +46,34 @@
 					<!-- Card body -->
 					<div class="card-footer border-0 bg-transparent pt-4 pb-2">
 						<h6 class="mb-3 titulo fw-bold text-navy fs-4">Nueva Taquilla</h6>
-                        <p class="text-muted">Haz click y crea una nueva sede de la institución.</p>
+                        <p class="text-muted">Haz clic y crea una nueva taquilla de la institución.</p>
 						<!-- <a href="#" class="btn btn-sm btn-secondary">Crear</a> -->
 					</div>
 				</div>
                 <!-- <div class="text-center">
                     <button type="button" class="btn btn-secondary btn-sm">Ver Taquillas</button>
+                </div> -->
+			</div>
+
+              <!-- NUEVO TAQUILLERO -->
+              <div class="col-sm-6 col-lg-4 mb-4">
+				<div class="card text-center rounded-4 p-4 pb-0 position-relative car_trasit shadow-none" role="button" data-bs-toggle="modal" data-bs-target="#modal_nuevo_taquillero">
+                    <!--  -->
+                    <div class="position-absolute top-0 start-50 translate-middle">
+                        <span class="badge bg-info rounded-circle p-3">
+                            <i class='bx bx-user-circle fs-1'></i>
+                        </span>
+                    </div>
+
+					<!-- Card body -->
+					<div class="card-footer border-0 bg-transparent pt-4 pb-2">
+						<h6 class="mb-3 titulo fw-bold text-navy fs-4">Nuevo Taquillero</h6>
+                        <p class="text-muted">Haz clic y crea un nuevo taquillero de la institución.</p>
+						<!-- <a href="#" class="btn btn-sm btn-secondary">Crear</a> -->
+					</div>
+				</div>
+                <!-- <div class="text-center">
+                    <button type="button" class="btn btn-secondary btn-sm">Ver Taquilleros</button>
                 </div> -->
 			</div>
 		</div>
@@ -302,7 +303,7 @@
                     <div class="text-center">
                         <i class='bx bx-edit fs-2 text-muted me-2'></i>
                         <h1 class="modal-title fs-5 fw-bold text-navy">Actualizar clave</h1>
-                        <span>Clave de Taquilla <span class="text-secondary">| Apertura y cierre.</span></span>
+                        <span>Clave de Taquilla <span class="text-secondary">| Apertura y Cierre.</span></span>
                     </div>
                 </div> 
                 <div class="modal-body px-5 py-3" style="font-size:13px">

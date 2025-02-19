@@ -119,7 +119,7 @@
                                     <th scope="col">#</th>
                                     <th scope="col">Fecha Emisión</th>
                                     <th scope="col">Contribuyente</th>
-                                    <th scope="col">Total UCD</th>
+                                    <th scope="col">Total U.C.D.</th>
                                     <th scope="col">Exención (%)</th>
                                     <th scope="col">Detalles</th>
                                     <th scope="col">Taquillero</th>
@@ -139,7 +139,7 @@
                                         </a>
                                     </td>
                                     <td>
-                                        <span class="text-navy fw-bold">{{$process->total_ucd}} UCD</span>                                    
+                                        <span class="text-navy fw-bold">{{$process->total_ucd}} U.C.D.</span>                                    
                                     </td>
                                     <td>
                                         <span class="badge bg-primary-subtle border border-primary-subtle text-primary-emphasis rounded-pill" style="font-size:12.7px">{{$process->porcentaje_exencion}}%</span>
@@ -188,7 +188,7 @@
                                     <th scope="col">#</th>
                                     <th scope="col">Fecha Emision</th>
                                     <th scope="col">Contribuyente</th>
-                                    <th scope="col">Total UCD</th>
+                                    <th scope="col">Total U.C.D.</th>
                                     <th scope="col">Exención (%)</th>
                                     <th scope="col">Detalles</th>
                                     <th scope="col">Taquillero</th>
@@ -208,7 +208,7 @@
                                         </a>
                                     </td>
                                     <td>
-                                        <span class="text-navy fw-bold">{{$emitido->total_ucd}} UCD</span>                                    
+                                        <span class="text-navy fw-bold">{{$emitido->total_ucd}} U.C.D.</span>                                    
                                     </td>
                                     <td>
                                         <span class="badge bg-primary-subtle border border-primary-subtle text-primary-emphasis rounded-pill" style="font-size:12.7px">{{$emitido->porcentaje_exencion}}%</span>
@@ -248,7 +248,7 @@
                                     <th scope="col">#</th>
                                     <th scope="col">Fecha Emision</th>
                                     <th scope="col">Contribuyente</th>
-                                    <th scope="col">Total UCD</th>
+                                    <th scope="col">Total U.C.D.</th>
                                     <th scope="col">Exención (%)</th>
                                     <th scope="col">Detalles</th>
                                     <th scope="col">Taquillero</th>
@@ -268,7 +268,7 @@
                                         </a>
                                     </td>
                                     <td>
-                                        <span class="text-navy fw-bold">{{$recibido->total_ucd}} UCD</span>                                    
+                                        <span class="text-navy fw-bold">{{$recibido->total_ucd}} U.C.D.</span>                                    
                                     </td>
                                     <td>
                                         <span class="badge bg-primary-subtle border border-primary-subtle text-primary-emphasis rounded-pill" style="font-size:12.7px">{{$recibido->porcentaje_exencion}}%</span>
@@ -308,7 +308,7 @@
                                     <th scope="col">#</th>
                                     <th scope="col">Fecha Emision</th>
                                     <th scope="col">Contribuyente</th>
-                                    <th scope="col">Total UCD</th>
+                                    <th scope="col">Total U.C.D.</th>
                                     <th scope="col">Exención (%)</th>
                                     <th scope="col">Detalles</th>
                                     <th scope="col">Taquillero</th>

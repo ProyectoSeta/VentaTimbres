@@ -123,8 +123,8 @@ class EmisionUcdController extends Controller
         $html = '<div class="modal-header p-2 pt-3 d-flex justify-content-center">
                     <div class="text-center">
                         <i class="bx bx-plus-circle fs-2 text-muted me-2"></i>
-                        <h1 class="modal-title fs-5 fw-bold text-navy">Asignación de UCD</h1>
-                        <span>Estampillas | Denominaciones UCD </span>
+                        <h1 class="modal-title fs-5 fw-bold text-navy">Emisión por U.C.D.</h1>
+                        <span>Estampillas | Denominaciones U.C.D. </span>
                     </div>
                 </div>
                 <div class="modal-body px-5 py-3" style="font-size:13px">
@@ -132,8 +132,8 @@ class EmisionUcdController extends Controller
                         <div class="d-flex justify-content-center">
                             <div class="row bg-body-secondary p-2 rounded-3">
                                 <div class="col-lg-8 d-flex flex-column">
-                                    <div class="fs-6 text-navy fw-bold" >Disponible en Inventario</div>
-                                    <div class="text-secondary">Para emitir denominaciones UCD</div>
+                                    <div class="fs-6 text-navy fw-bold" >Papel de Seguridad Disponible en Inventario</div>
+                                    <div class="text-secondary">Para emitir denominaciones U.C.D.</div>
                                 </div>
                                 <div class="col-lg-4 d-flex align-items-center">
                                     <div class="fw-bold fs-6" style="color: #004cbd">'.$total_estampillas.' und.</div>
@@ -143,7 +143,7 @@ class EmisionUcdController extends Controller
 
                         <div class="text-center fs-6 text-muted fw-bold titulo my-3">Emisión</div>
 
-                        <p class="text-muted">NOTA: Solo se puede realizar por emisión, dos (2) denominaciones UCD para Estampillas.</p>
+                        <p class="text-justify">NOTA: Solo se puede realizar dos (2) denominaciones de U.C.D. para Estampillas por emisión.</p>
                         
                         <div id="row_emision_ucd">
                             <div class="row">
@@ -296,12 +296,11 @@ class EmisionUcdController extends Controller
                             <div class="text-center">
                                 <i class="bx bxs-collection fs-2 text-muted me-2"></i>
                                 <h1 class="modal-title fs-5 fw-bold text-navy">Correlativo | Estampillas</h1>
-                                <span>Denominaciones UCD </span>
+                                <span>Denominaciones U.C.D. </span>
                             </div>
                         </div>
                         <div class="modal-body px-5 py-3" style="font-size:13px">
-                            <p class="text-muted ">NOTA: Tener en cuenta que la secuencia "Desde" y "Hasta" corresponden 
-                                al correlativo de papel impreso en el Papel de Seguridad para las Estampillas.</p>
+                            <p class="text-justify" >NOTA: Se debe tener en cuenta que la secuencia "Desde" y "Hasta" corresponden al correlativo de papel impreso en el Papel de Seguridad para las Estampillas.</p>
                             <table class="table text-center">
                                 <thead>
                                     <tr>
@@ -388,7 +387,7 @@ class EmisionUcdController extends Controller
         $html = '<div class="modal-header p-2 pt-3 d-flex justify-content-center">
                     <div class="text-center">
                         <i class="bx bx-detail fs-2 text-muted me-2"></i>
-                        <h1 class="modal-title fs-5 fw-bold text-navy">Detalle | <span class="text-muted"> Asignación UCD</span></h1>
+                        <h1 class="modal-title fs-5 fw-bold text-navy">Detalle | <span class="text-muted"> Asignación U.C.D.</span></h1>
                     </div>
                 </div>
                 <div class="modal-body px-5 py-3" style="font-size:13px">
@@ -424,7 +423,7 @@ class EmisionUcdController extends Controller
 
                     <table class="table text-center">
                         <tr>
-                            <th>UCD</th>
+                            <th>U.C.D.</th>
                             <th>ID Lote Papel</th>
                             <th>Desde</th>
                             <th>Hasta</th>

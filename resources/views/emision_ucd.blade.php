@@ -17,7 +17,7 @@
     <div class="container rounded-4 p-3" style="background-color:#ffff;">
         <div class="row mb-3">
             <div class="col-md-6">
-               <h3 class="text-navy titulo fw-bold fs-3">Asignación de Denominaciones UCD</h3> 
+               <h3 class="text-navy titulo fw-bold fs-3">Asignación de Denominaciones U.C.D.</h3> 
                <h4 class="titulo text-muted fs-3">Estampillas</h4>
             </div>
             
@@ -29,7 +29,7 @@
                     <div class="row">
                         <div class="col-lg -8 d-flex flex-column">
                             <div class=" fs-4 text-navy fw-bold" >Disponible en Inventario</div>
-                            <div class="text-secondary">Para emitir denominaciones UCD</div>
+                            <div class="text-secondary">Para emitir denominaciones U.C.D.</div>
                         </div>
                         <div class="col-lg -4">
                             <div class="fs-2 text-primary fw-bold bg-primary-subtle text-center rounded-4  px-2">{{$total_estampillas}} <span class="fs-5">Und.</span></div>
@@ -50,7 +50,7 @@
                 <div class="col border py-2 px-3 rounded-3">
                     <div class="row">
                         <div class="col-md-5">
-                            <div class=" fs-4 text-navy fw-bold" >{{$de->denominacion}} UCD</div>
+                            <div class=" fs-4 text-navy fw-bold" >{{$de->denominacion}} U.C.D.</div>
                             <div class="text-secondary">En Inventario</div>
                         </div>
                         <div class="col-md-7 d-flex align-items-center">
@@ -65,7 +65,7 @@
         <div class="d-flex justify-content-center my-4 mt-5">    
             <button type="button" class="btn bg-navy rounded-pill px-3 btn-sm fw-bold d-flex align-items-center" id="btn_emitir_ucd_estampillas" data-bs-toggle="modal" data-bs-target="#modal_emitir_ucd_estampillas">
                 <i class='bx bx-plus fw-bold fs-6 pe-2'></i>
-                <span>Asignar UCD Estampillas</span>
+                <span>Emisión Estampillas U.C.D. </span>
             </button>
         </div>
 

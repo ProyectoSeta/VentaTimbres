@@ -156,7 +156,7 @@ class ExencionesController extends Controller
                                             </select>
                                         </div>
                                         <div class="col-sm-2" id="div_ucd_1">
-                                            <label class="form-label" for="ucd_tramite">UCD</label><span class="text-danger">*</span>
+                                            <label class="form-label" for="ucd_tramite">U.C.D.</label><span class="text-danger">*</span>
                                             <input type="text" class="form-control form-control-sm ucd_tramite" id="ucd_tramite_1" nro="1" disabled required>
                                         </div>
                                         <div class="col-sm-2">

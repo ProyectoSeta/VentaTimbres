@@ -907,7 +907,7 @@ class AsignarController extends Controller
                 <div class="modal-body px-5 py-3" style="font-size:13px">
                     '.$datos.'
                     <p class="text-center fw-bold text-muted fs-5 mb-2">Correlativo</p>
-                    <p class="text-muted text-justify"><span class="fw-bold">IMPORTANTE:</span> La Asignación se realiza según la cantidad individual de Estampillas.</p>
+                    <p class="text-muted text-justify"><span class="fw-bold">IMPORTANTE:</span> La asignación se realizará según la cantidad individual de Estampillas.</p>
                     '.$tables.'
                     <div class="d-flex justify-content-center mb-3">
                        '.$button.'

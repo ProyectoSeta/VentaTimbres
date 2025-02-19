@@ -53,7 +53,7 @@ class AsignadoTaquillasController extends Controller
         $table = '<div class="">
                         <table class="table text-center">
                             <tr>
-                                <th>UCD</th>
+                                <th>U.C.D.</th>
                                 <th>Desde</th>
                                 <th>Hasta</th>
                                 <th>Cant. Timbres</th>
@@ -66,16 +66,16 @@ class AsignadoTaquillasController extends Controller
                     <div class="text-center">
                         <i class="bx bx-check-circle fs-2 text-muted me-2"></i>
                         <h1 class="modal-title fs-5 fw-bold text-navy">Estampillas | Asignadas</h1>
-                        <span class="text-muted fw-bold">Timbre móvil - </span> 
+                        <span class="text-muted fw-bold">Timbre Móvil - </span> 
                         <span class="text-navy fw-bold">Asignación ID '.$asignacion.'</span>
                     </div>
                 </div>
                 <div class="modal-body px-5 py-3" style="font-size:13px">
-                    <p class="mb-2 text-justify"><span class="fw-bold">NOTA</span>: Tomar en cuenta las siguientes prevenciones <span class="text-danger fw-bold">(Obligatorias)</span>, antes de dar click en "Aceptar".
-                        <ul>
-                            <li>La Asignación se realizá según la cantidad individual de Estampillas.</li>
-                            <li>Verificar que la cantidad y el correlativo de los Timbres coincida con lo entregado.</li>
-                            <li>Firmar la "Constancia de entrega".</li>
+                    <p class="mb-2 text-justify"><span class="fw-bold">NOTA</span>: Se debe tomar en cuenta las siguientes recomendaciones <span class="text-danger fw-bold">(Obligatorias)</span>, antes de dar clic en "Aceptar".
+                        <ul class="text-justify">
+                            <li>La asignación se realizará según la cantidad individual de Estampillas.</li>
+                            <li>Se debe verificar que la cantidad y el correlativo de los Timbres coincidan con lo entregado.</li>
+                            <li>Se debe firmar la "Constancia de entrega".</li>
                         </ul>
                     </p>
 
@@ -83,8 +83,7 @@ class AsignadoTaquillasController extends Controller
                     
                     '.$table.'
                     
-                    <p class="my-4 text-justify"><span class="fw-bold">IMPORTANTE</span>: Al <span class="fw-bold">ACEPTAR</span> los Timbres Fiscales como recibidos, acepta que ha recibido 
-                    personalmente la cantidad de timbres especificada, según el correlativo detallado. Y además, firmado la <span class="fw-bold">"Contancia de Entrega"</span>.</p>
+                    <p class="my-4 text-justify"><span class="fw-bold">IMPORTANTE</span>: Al <span class="fw-bold">ACEPTAR</span> los Timbres Fiscales como recibidos, acepta que ha recibido personalmente la cantidad de timbres especificada, según el correlativo detallado. Y haber firmado la <span class="fw-bold">"Constancia de Entrega"</span>.</p>
 
                     <form id="form_recibido_estampillas" method="post" onsubmit="event.preventDefault(); recibidoEstampillas()">
                         <input type="hidden" name="asignacion" value="'.$asignacion.'"> 
@@ -169,10 +168,10 @@ class AsignadoTaquillasController extends Controller
                     </div>
                 </div>
                 <div class="modal-body px-5 py-3" style="font-size:13px">
-                    <p class="mb-2 text-justify"><span class="fw-bold">NOTA</span>: Tomar en cuenta las siguientes prevenciones <span class="text-danger fw-bold">(Obligatorias)</span>, antes de dar click en "Aceptar".
+                    <p class="mb-2 text-justify"><span class="fw-bold">NOTA</span>: Se debe tomar en cuenta las siguientes recomendaciones<span class="text-danger fw-bold"> (Obligatorias)</span>, antes de dar clic en "Aceptar".
                         <ul>
-                            <li>Verificar que la cantidad y el correlativo de los Timbres coincida con lo entregado.</li>
-                            <li>Firmar la "Constancia de entrega".</li>
+                            <li>Se debe verificar que la cantidad y el correlativo de los Timbres coincida con lo entregado.</li>
+                            <li>Se debe firmar la "Constancia de entrega".</li>
                         </ul>
                     </p>
                     
@@ -190,8 +189,7 @@ class AsignadoTaquillasController extends Controller
                         </table>
                     </div>
 
-                    <p class="my-4 text-justify"><span class="fw-bold">IMPORTANTE</span>: Al <span class="fw-bold">ACEPTAR</span> los Timbres Fiscales como recibidos, acepta que ha recibido 
-                    personalmente la cantidad de timbres especificada, según el correlativo detallado. Y además, firmado la <span class="fw-bold">"Contancia de Entrega"</span>.</p>
+                    <p class="my-4 text-justify"><span class="fw-bold">IMPORTANTE</span>: Al <span class="fw-bold">ACEPTAR</span> los Timbres Fiscales como recibidos, acepta que ha recibido personalmente la cantidad de timbres especificada, según el correlativo detallado. Y haber firmado la <span class="fw-bold">"Constancia de Entrega"</span>.</p>
 
                     <form id="form_recibido_forma14" method="post" onsubmit="event.preventDefault(); recibidoForma14()">
                         <input type="hidden" name="asignacion" value="'.$asignacion.'"> 

@@ -118,9 +118,7 @@ class PapelSeguridadController extends Controller
                     </div>
                 </div> 
                 <div class="modal-body px-5 py-3" style="font-size:13px">
-                    <p class="text-muted">*NOTA: Si el total de timbres fiscales a emitir 
-                        es diferente al esperado o se ha cambiado el numero de timbres a producirse por emisión, 
-                        dirigirse al modulo configuraciones (Papel de Seguridad) para cambiar el numero total de timbres fiscales.
+                    <p class="text-justify">*NOTA: Sí el total de Timbres Fiscales a emitir es diferente al esperado o se ha cambiado la cantidad de timbres a producirse por emisión, ingrese al módulo Configuraciones (Papel de Seguridad) para cambiar el número total de Timbres Fiscales por emisión.  
                     </p>
                     
                     <div class="fw-bold text-center">
@@ -223,11 +221,11 @@ class PapelSeguridadController extends Controller
                             <div class="text-center">
                                 <i class="bx bx-collection fs-2 text-muted me-2"></i>
                                 <h1 class="modal-title fs-5 fw-bold text-navy">Correlativo | <span class="text-muted">Emisión Papel de Seguridad</span></h1>
-                                <h1 class="fs-6 fw-bold text-muted">TFE 14</h1>
+                                <h1 class="fs-6 fw-bold text-muted">TFE-14</h1>
                             </div>
                         </div>
                         <div class="modal-body px-5 py-3" style="font-size:13px">
-                            <p class="text-secondary">*NOTA: El lote en emisión tiene un total de '.$cant_timbres_lote.' Trimbres Fiscales TFE-14.</p>
+                            <p class="text-justify">*NOTA: El lote en emisión tiene un total de '.$cant_timbres_lote.' Trimbres Fiscales TFE-14.</p>
                         
                             <div class="">
                                 <table class="table text-center">
@@ -341,7 +339,7 @@ class PapelSeguridadController extends Controller
                     <div class="text-center">
                         <i class="bx bx-detail fs-1 text-secondary"></i>
                         <h1 class="modal-title fs-5 fw-bold text-navy" id="">Detalles del Lote | <span class="text_muted">Papel de Seguridad</span></h1>
-                        <h5 class="fs-6 fw-bold text-muted">TFE 14</h5>
+                        <h5 class="fs-6 fw-bold text-muted">TFE-14</h5>
                     </div>
                 </div>
                 <div class="modal-body" style="font-size:13px;">
@@ -459,14 +457,12 @@ class PapelSeguridadController extends Controller
                     </div>
                 </div> 
                 <div class="modal-body px-5 py-3" style="font-size:13px">
-                    <p class="text-muted">*NOTA: Si el total de timbres fiscales a emitir 
-                        es diferente al esperado o se ha cambiado el numero de timbres a producirse por emisión, 
-                        dirigirse al modulo configuraciones (Papel de Seguridad) para cambiar el numero total de timbres fiscales.
+                    <p class="text-justify">*NOTA: Si el total de Papel de Seguridad para Estampillas a emitir es diferente al esperado o se ha cambiado la cantidad a producirse por emisión, ingrese al módulo configuraciones (Papel de Seguridad) para cambiar el número total de Papel de Seguridad para Estampillas por emisión. 
                     </p>
                     
                     <div class="fw-bold text-center">
-                        <p class="text-navy m-0">Total de Timbres a Emitir</p>
-                        <p class="fs-5 titulo fw-semibold text-muted">1000 Timbres Estampillas | Papel de Seguridad</p>
+                        <p class="text-navy m-0">Total a Emitir</p>
+                        <p class="fs-5 titulo fw-semibold text-muted">Papel de Seguridad | 1000 Estampillas</p>
                     </div>
                     
 
@@ -566,7 +562,7 @@ class PapelSeguridadController extends Controller
                             </div>
                         </div>
                         <div class="modal-body px-5 py-3" style="font-size:13px">
-                            <p class="text-secondary">*NOTA: El lote en emisión tiene un total de '.$cant_timbres_lote.' Estampillas.</p>
+                            <p class="text-justify">*NOTA: El lote en emisión tiene un total de '.$cant_timbres_lote.' Estampillas.</p>
                         
                             <div class="">
                                 <table class="table text-center">
@@ -723,7 +719,7 @@ class PapelSeguridadController extends Controller
                                 </td>
                             </tr>
                             <tr class="table-primary">
-                                <th>Cantidad de Timbres Fiscales</th>
+                                <th>Cantidad de Papel para Estampillas</th>
                                 <td class="text-navy fw-bold" colspan="2">'.$query->cantidad_timbres.' und.</td>
                             </tr>
                             <tr>

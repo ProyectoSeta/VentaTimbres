@@ -81,7 +81,7 @@ class SedeTaquillaController extends Controller
                             </div>
                         </div>
                         
-                        <p class="text-mute mt-4 mb-1"><span class="fw-bold">NOTA:</span> Esta clave será utilizada por el taquillero, para aperturar y cerrar la taquilla diariamente.</p>
+                        <p class="text-justify mt-4 mb-1"><span class="fw-bold">NOTA:</span> Esta clave será utilizada por el taquillero para aperturar y cerrar la taquilla diariamente.</p>
                         
                         <div class="row d-flex align-items-center mt-3">
                             <div class="col-3">
