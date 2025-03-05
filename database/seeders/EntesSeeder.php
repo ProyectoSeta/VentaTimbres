@@ -18,7 +18,7 @@ class EntesSeeder extends Seeder
         ]);
 
         DB::table('entes')->insert([
-            'ente' => 'Alcaldía',
+            'ente' => 'Municipal o Alcaldías',
         ]);
 
         DB::table('entes')->insert([
@@ -28,5 +28,14 @@ class EntesSeeder extends Seeder
         DB::table('entes')->insert([
             'ente' => 'Bomberos',
         ]);
+
+        DB::table('entes')->insert([
+            'ente' => 'Prefecturas',
+        ]);
+
+        DB::table('entes')->insert([
+            'ente' => 'Habitabilidad Sanitaria',
+        ]);
+
     }
 }

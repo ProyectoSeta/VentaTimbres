@@ -148,7 +148,7 @@ class ExencionesController extends Controller
                                                 '.$option_entes.'
                                             </select>
                                         </div>
-                                        <div class="col-sm-4">
+                                        <div class="col-sm-6">
                                             <label class="form-label" for="tramite">Tramite</label><span class="text-danger">*</span>
                                             <select class="form-select form-select-sm tramite" name="tramite[1][tramite]" nro="1" id="tramite_1" disabled>
                                                 <option value="">Seleccione el tramite </option>
@@ -158,12 +158,6 @@ class ExencionesController extends Controller
                                         <div class="col-sm-2" id="div_ucd_1">
                                             <label class="form-label" for="ucd_tramite">U.C.D.</label><span class="text-danger">*</span>
                                             <input type="text" class="form-control form-control-sm ucd_tramite" id="ucd_tramite_1" nro="1" disabled required>
-                                        </div>
-                                        <div class="col-sm-2">
-                                            <label class="form-label" for="forma">Timbre</label><span class="text-danger">*</span>
-                                            <select class="form-select form-select-sm forma" nro="1" name="tramite[1][forma]"id="forma_1" required disabled>
-                                                <option value="">Seleccione</option>
-                                            </select>
                                         </div>
                                         <div class="col-sm-1 pt-4">
                                             <a  href="javascript:void(0);" class="btn add_button_tramite disabled border-0">
@@ -469,7 +463,7 @@ class ExencionesController extends Controller
                 ///// INSERT DETALLE
                 $insert_detalle = DB::table('detalle_exenciones')->insert(['key_exencion' => $id_exencion,
                                                                             'key_tramite' => $tramite['tramite'],
-                                                                            'forma' => $tramite['forma'],
+                                                                            'forma' => 3,
                                                                             'cantidad' => 1 ,
                                                                             'metros' => $metros,
                                                                         ]);
