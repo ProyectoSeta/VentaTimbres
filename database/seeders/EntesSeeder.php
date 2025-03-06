@@ -37,5 +37,9 @@ class EntesSeeder extends Seeder
             'ente' => 'Habitabilidad Sanitaria',
         ]);
 
+        DB::table('entes')->insert([
+            'ente' => 'SENIAT',
+        ]);
+
     }
 }
