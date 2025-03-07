@@ -5,19 +5,7 @@
 
 @section('content')
     <div class="mx-3">
-        <div class="d-flex justify-content-center align-items-center mt-3 pb-3" style="font-size:14px">
-            <!-- UCD HOY -->
-            <div class="w-50">
-                <div class="d-flex bg-navy rounded-4">
-                    <div class="bg-primary rounded-start-4 py-2 px-3 fs-6 fw-bold">
-                        <span>U.C.D. Hoy   </span>
-                    </div>
-                    <div class="py-2 px-3 fs-6 fw-bold text-end">
-                        <span>{{$ucd}} bs. (EUR)</span>
-                    </div> 
-                </div>
-            </div>
-        </div>
+        
 
 
         <div class="row">
@@ -35,7 +23,7 @@
                                         <option>Seleccione</option>
                                         <option value="9">Natural</option>
                                         <option value="10">Firma Personal</option>
-                                        <option value="11">Ente</option>
+                                        <option value="11">Empresa o Ente</option>
                                     </select>
                                 </div>
                                 <!-- ci o rif -->
@@ -109,6 +97,14 @@
                                         </a>
                                     </div>
                                 </div>
+                            </div>
+                        </div>
+
+                        <!-- Folios -->
+                        <div class="mx-3 mt-4 d-non border p-3 rounded-3 w-50" style="background:#f4f7f9;" id="content_folios">
+                            <div class="d-flex align-items-center">
+                                <label class="form-label" for="folios"><span class="text-danger">*</span>Ingrese el número de Folios:</label>
+                                <input type="number" id="folios" class="form-control form-control-sm w-50 ms-2 tramite" name="folios" required>
                             </div>
                         </div>
 
@@ -216,6 +212,19 @@
             </div>
             <!-- ******************************* -->
             <div class="col-xl-4 pb-3 px-3">
+                <div class="d-flex justify-content-center align-items-center mt-3 pb-3" style="font-size:14px">
+                    <!-- UCD HOY -->
+                    <div class="">
+                        <div class="d-flex bg-navy rounded-4">
+                            <div class="bg-primary rounded-start-4 py-2 px-3 fs-6 fw-bold">
+                                <span>U.C.D. Hoy   </span>
+                            </div>
+                            <div class="py-2 px-3 fs-6 fw-bold text-end">
+                                <span>{{$ucd}} bs. ({{$moneda}})</span>
+                            </div> 
+                        </div>
+                    </div>
+                </div>
                 <div class="">
                     <h5 class="titulo fw-bold text-success fs-4 mt-4 mb-3">Total a Pagar</h5>
                     <div class="d-flex flex-column">
@@ -565,6 +574,8 @@
 
     <script type="text/javascript">
         $(document).ready(function () {
+            // $('.tramite').select2();
+
             ///////////////////////////////////////AGREGAR CAMPOS A OTRO(S) TRAMITES
                 var maxFieldTramite = 3; //Input fields increment limitation
                 var c = 1; //Initial field counter is 1
@@ -629,7 +640,7 @@
                         if (u == 1) {
                             $('#content_tamaño').addClass('d-none');
                         }
-                        console.log(u);
+                        // console.log(u);
                     }
 
 
@@ -847,7 +858,6 @@
                         var t = $(this).val();
                         tramites.push(t);
                     });
-                    console.log('--');
 
 
                     $.ajax({
@@ -856,10 +866,8 @@
                         url: '{{route("venta.alicuota") }}',
                         data: {tramites:tramites,tramite:value,condicion_sujeto:condicion_sujeto,metros:metros,capital:capital},
                         success: function(response) {
-                            console.log(response);
+                            // console.log(response);
                             if (response.success) {
-                                
-                                console.log(response.no_metrado);
                                 if (response.no_porcentaje > 1 || response.no_metrado > 1) {
                                     alert('Solo se puede escoger un tramite relacionado con los metros y el porcentaje de la gestión, por venta.');
                                     // $("#tramite_"+nro+" option[value='']").attr("selected",true);
@@ -893,7 +901,7 @@
                                     }
                                 }
 
-                                //////////////////////  AGREGAR CLASE D-NONE SI ELCASO LO AMERITA
+                                //////////////////////  AGREGAR CLASE D-NONE SI EL CASO LO AMERITA
                                 if (response.no_porcentaje == 0) {
                                     $('#content_capital').addClass('d-none');
                                 }else if(response.no_metrado == 0){
@@ -1202,14 +1210,21 @@
                                 break;
                             case 8:
                                 /// PORCENTAJE
-                                $('#div_ucd_'+nro).html('<label class="form-label" for="ucd_tramite">Bs.</label><span class="text-danger">*</span>'+
-                                    '<input type="text" class="form-control form-control-sm ucd_tramite" id="ucd_tramite_'+nro+'" nro="'+nro+'" value="'+response.valor_format+'" disabled required>');
-                                $('#pct_monto').html(response.valor_format+' Bs.');
-
+                                if (response.valor_format == undefined) {
+                                    $('#div_ucd_'+nro).html('<label class="form-label" for="ucd_tramite">Bs.</label><span class="text-danger">*</span>'+
+                                        '<input type="text" class="form-control form-control-sm ucd_tramite" id="ucd_tramite_'+nro+'" nro="'+nro+'" value="0" disabled required>');
+                                    $('#pct_monto').html('0 Bs.');
+                                }else{
+                                   $('#div_ucd_'+nro).html('<label class="form-label" for="ucd_tramite">Bs.</label><span class="text-danger">*</span>'+
+                                        '<input type="text" class="form-control form-control-sm ucd_tramite" id="ucd_tramite_'+nro+'" nro="'+nro+'" value="'+response.valor_format+'" disabled required>');
+                                    $('#pct_monto').html(response.valor_format+' Bs.');
+                                }
+                                
                                 forma(nro,response.valor);
                                 calcular();
 
-                                break;
+                                break; 
+                                
                             case 13:
                                 /// METRADO
                                 $('#content_tamaño').removeClass('d-none');

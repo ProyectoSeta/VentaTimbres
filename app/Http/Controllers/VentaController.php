@@ -17,9 +17,10 @@ class VentaController extends Controller
     {
         $entes = DB::table('entes')->select('id_ente','ente')->get();
         $tramites = DB::table('tramites')->select('id_tramite','tramite')->where('key_ente','=',1)->get();
-        $q1 =  DB::table('ucds')->select('valor')->orderBy('id', 'desc')->first();
+        $q1 =  DB::table('ucds')->select('valor','moneda')->orderBy('id', 'desc')->first();
         $ucd = $q1->valor;
-        return view('venta', compact('entes','tramites','ucd'));
+        $moneda = $q1->moneda;
+        return view('venta', compact('entes','tramites','ucd','moneda'));
     }
 
     /**
