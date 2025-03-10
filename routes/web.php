@@ -80,6 +80,7 @@ Route::post('/venta/tramites', [App\Http\Controllers\VentaController::class, 'tr
 Route::post('/venta/metros', [App\Http\Controllers\VentaController::class, 'metros'])->name('venta.metros');
 Route::post('/venta/alicuota', [App\Http\Controllers\VentaController::class, 'alicuota'])->name('venta.alicuota');
 Route::post('/venta/disponibilidad', [App\Http\Controllers\VentaController::class, 'disponibilidad'])->name('venta.disponibilidad');
+Route::post('/venta/folios', [App\Http\Controllers\VentaController::class, 'folios'])->name('venta.folios');
 
 Route::post('/venta/total', [App\Http\Controllers\VentaController::class, 'total'])->name('venta.total');
 Route::post('/venta/debitado', [App\Http\Controllers\VentaController::class, 'debitado'])->name('venta.debitado');

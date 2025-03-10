@@ -8,14 +8,14 @@
         
 
 
-        <div class="row">
+        <div class="row mt-3">
             <div class="col-xl-8 pe-5" id="">
                 <form id="form_venta" method="post" onsubmit="event.preventDefault(); venta()">
                     <!-- *************** DATOS CONTRIBUYENTE ******************-->
-                    <div class="mb-2" style="font-size:13px">
+                    <div class="mb-3 border rounded-3 p-2 py-3" style="font-size:13px">
                         <div class="d-flex justify-content-center">
                             <div class="row w-100">
-                                <h5 class="titulo fw-bold text-navy my-3">Contribuyente | <span class="text-secondary fs-6">Datos</span></h5>
+                                <h5 class="titulo fw-bold text-navy mb-3">Contribuyente | <span class="text-secondary fs-6">Datos</span></h5>
                                 <!-- Tipo Contribuyente -->
                                 <div class="col-sm-3">
                                     <label class="form-label" for="condicion_sujeto">Condición</label><span class="text-danger">*</span>
@@ -57,11 +57,11 @@
                     </div>
 
                     <!-- **************** DATOS TRAMITE **************** -->
-                    <div class="mb-4" style="font-size:13px">
+                    <div class="mb-3 border rounded-3 p-2 py-3" style="font-size:13px">
                         <div class="d-flex flex-column tramites">
                             <div class="d-flex justify-content-center">
                                 <div class="row w-100">
-                                    <h5 class="titulo fw-bold text-navy my-3">Tramite | <span class="text-secondary fs-6">Datos</span></h5>
+                                    <h5 class="titulo fw-bold text-navy mb-3">Tramite | <span class="text-secondary fs-6">Datos</span></h5>
                                     <div class="col-sm-3">
                                         <label class="form-label" for="ente">Ente</label><span class="text-danger">*</span>
                                         <select class="form-select form-select-sm ente" nro="1" id="ente_1" disabled>
@@ -83,6 +83,7 @@
                                     <div class="col-sm-2" id="div_ucd_1">
                                         <label class="form-label" for="ucd_tramite">U.C.D.</label><span class="text-danger">*</span>
                                         <input type="text" class="form-control form-control-sm ucd_tramite" id="ucd_tramite_1" nro="1" disabled required>
+                                        <span class="text-end text-muted d-none" id="html_folios">+ <span class="fw-bold text-navy" id="ucd_folios">3 UCD</span> (Folios)</span>
                                     </div>
                                     <div class="col-sm-2">
                                         <label class="form-label" for="forma">Timbre</label><span class="text-danger">*</span>
@@ -101,10 +102,11 @@
                         </div>
 
                         <!-- Folios -->
-                        <div class="mx-3 mt-4 d-non border p-3 rounded-3 w-50" style="background:#f4f7f9;" id="content_folios">
+                        <div class="mx-3 mt-4 d-none border p-3 rounded-3 w-50" style="background:#f4f7f9;" id="content_folios">
+                            <div class="text-muted mb-2">*NOTA: El anexo de cada folio tiene un valor de 1 UCD.</div>
                             <div class="d-flex align-items-center">
-                                <label class="form-label" for="folios"><span class="text-danger">*</span>Ingrese el número de Folios:</label>
-                                <input type="number" id="folios" class="form-control form-control-sm w-50 ms-2 tramite" name="folios" required>
+                                <label class="form-label" for="folios">Ingrese el número de Folios:</label>
+                                <input type="number" id="folios" class="form-control form-control-sm w-50 ms-2" name="folios" required>
                             </div>
                         </div>
 
@@ -170,11 +172,11 @@
 
 
                     <!-- ************************ PAGO *****************************-->
-                    <div class="mb-2" style="font-size:13px">
+                    <div class="mb-3 border rounded-3 p-2 py-3" style="font-size:13px">
                         <div class="d-flex flex-column pago_timbre">
                             <div class="d-flex justify-content-center" >
                                 <div class="row w-100">
-                                    <h5 class="titulo fw-bold text-navy my-3">Pago | <span class="text-secondary fs-6">Timbre Fiscal</span></h5>
+                                    <h5 class="titulo fw-bold text-navy mb-3">Pago | <span class="text-secondary fs-6">Timbre Fiscal</span></h5>
                                     <div class="col-sm-4">
                                         <label class="form-label" for="metodo">Metodo de Pago</label><span class="text-danger">*</span>
                                         <select class="form-select form-select-sm metodo" aria-label="Small select example" i="1" name="pago[1][metodo]" disabled>
@@ -833,6 +835,34 @@
                 $('#identidad_nro').val('');
             });
 
+            //////////////////////////// TRAMITE: PROTOCOLIZACIÓN
+            $(document).on('change','.tramite', function(e) {
+                var value = $(this).val();
+                if (value == 1) {
+                    $('#content_folios').removeClass('d-none');
+                }
+            });
+
+            $(document).on('keyup','#folios', function(e) {
+                var value = $(this).val();
+
+                $('#html_folios').removeClass('d-none');
+
+                $.ajax({
+                    headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') },
+                    type: 'POST',
+                    url: '{{route("venta.folios") }}',
+                    data: {value:value},
+                    success: function(response) {
+                        console.log(response);
+                        $('#ucd_folios').html(response+' UCD');
+                        calcular();
+                    },
+                    error: function() {
+                    }
+                });
+            });
+
 
             //////////////////////////// VALOR DEL TRAMITE SELECCIONADO
             $(document).on('change','.tramite', function(e) {
@@ -854,9 +884,15 @@
                 }else{
 
                     var tramites = [];
+                    var condicion_folios = 0;
                     $('.tramite').each(function(){
                         var t = $(this).val();
                         tramites.push(t);
+
+                        if (t == 1) {
+                            condicion_folios = 1;
+                        }
+
                     });
 
 
@@ -917,6 +953,11 @@
                         error: function() {
                         }
                     });
+
+                    if (condicion_folios == 0) {
+                        $('#content_folios').addClass('d-none');
+                        $('#html_folios').addClass('d-none');
+                    }
 
                 }
             });
@@ -1142,6 +1183,7 @@
             });
 
             var metros = $('#metros').val();
+            var folios = $('#folios').val();
             var capital = $('#capital').val();
             var condicion_sujeto =  $('#condicion_sujeto').val();
 
@@ -1149,9 +1191,9 @@
                 headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') },
                 type: 'POST',
                 url: '{{route("venta.total") }}',
-                data: {tramites:tramites,metros:metros,condicion_sujeto:condicion_sujeto,capital:capital},
+                data: {tramites:tramites,metros:metros,condicion_sujeto:condicion_sujeto,capital:capital,folios:folios},
                 success: function(response) {
-                    // console.log(response);
+                    console.log(response);
                     $('#ucd').html(response.ucd);
                     $('#bolivares').html(response.bolivares);
                     $('#diferencia').html(response.bolivares);

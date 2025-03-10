@@ -95,6 +95,15 @@ class VentaController extends Controller
     }
 
 
+    public function folios(Request $request){
+        $no_folios = $request->post('value');
+        $q1 = DB::table('tramites')->select('natural')->where('tramite','=', 'Folio')->first();
+
+        $total = $no_folios * $q1->natural;
+        return response($total);
+    }
+
+
 
     // public function metros(Request $request){
     //     $tramite = $request->post('tramite');
@@ -209,6 +218,7 @@ class VentaController extends Controller
         $tramites = $request->post('tramites');
         $metros = $request->post('metros');
         $capital = $request->post('capital');
+        
         $condicion_sujeto = $request->post('condicion_sujeto');
 
         $ucd =  DB::table('ucds')->select('valor')->orderBy('id', 'desc')->first();
@@ -272,6 +282,12 @@ class VentaController extends Controller
                 }
             }
         }
+
+        $folios = $request->post('folios');
+        
+        $q1 = DB::table('tramites')->select('natural')->where('tramite','=', 'Folio')->first();
+
+        $total_ucd = $total_ucd + ($folios * $q1->natural);
 
         $total_bolivares = $total_bolivares + ($total_ucd * $valor_ucd);
         $total_bolivares_format = number_format($total_bolivares, 2, ',', '.');
