@@ -660,6 +660,17 @@ class VentaController extends Controller
                                                 $ucd_tramite = $consulta->natural;
                                             }
 
+                                            /////////////////////////FOLIOS
+                                            $folios = $request->post('folios');
+                                            if ($key_tramite == 1) {
+                                                if ($folios != '' || $folios != 0) {
+                                                    $qf = DB::table('tramites')->select('natural')->where('tramite','=', 'Folio')->first();
+
+                                                    $ucd_tramite = $ucd_tramite + ($folios * $qf->natural);
+                                                }
+                                            }
+                                            
+
                                             ///////DENOMINACION E IDENTIFICADOR DE DENOMINACION
                                             if ($ucd_tramite == 10) {
                                                 $q5 = DB::table('ucd_denominacions')->select('id','identificador')->where('denominacion','=','5')->where('alicuota','=',7)->first();
@@ -672,13 +683,26 @@ class VentaController extends Controller
                                             }
 
                                             $total_ucd = $total_ucd + $ucd_tramite;
-
-                                            $i2 = DB::table('detalle_ventas')->insert(['key_venta' => $id_venta, 
+                                            if ($key_tramite == 1) {
+                                                if ($folios != '' || $folios != 0){
+                                                    $i2 = DB::table('detalle_ventas')->insert(['key_venta' => $id_venta, 
                                                                                 'key_tramite' => $key_tramite, 
                                                                                 'forma' => $tramite['forma'],
                                                                                 'cantidad' => 1,
                                                                                 'metros' => null,
-                                                                                'capital' => null]); 
+                                                                                'capital' => null,
+                                                                                'folios' => $folios]);
+                                                }
+                                            }else{
+                                                $i2 = DB::table('detalle_ventas')->insert(['key_venta' => $id_venta, 
+                                                                                'key_tramite' => $key_tramite, 
+                                                                                'forma' => $tramite['forma'],
+                                                                                'cantidad' => 1,
+                                                                                'metros' => null,
+                                                                                'capital' => null,
+                                                                                'folios' => null]);
+                                            }
+                                             
                                             if ($i2){
                                                 $id_detalle_venta = DB::table('detalle_ventas')->max('correlativo');
 
@@ -1118,6 +1142,18 @@ class VentaController extends Controller
                                         $ucd_tramite = $consulta->natural;
                                     }
 
+
+                                    /////////////////////////FOLIOS
+                                    $folios = $request->post('folios');
+                                    if ($key_tramite == 1) {
+                                        if ($folios != '' || $folios != 0) {
+                                            $qf = DB::table('tramites')->select('natural')->where('tramite','=', 'Folio')->first();
+
+                                            $ucd_tramite = $ucd_tramite + ($folios * $qf->natural);
+                                        }
+                                    }
+
+
                                     ///////DENOMINACION E IDENTIFICADOR DE DENOMINACION
                                     if ($ucd_tramite == 10) {
                                         $q5 = DB::table('ucd_denominacions')->select('id','identificador')->where('denominacion','=','5')->where('alicuota','=',7)->first();
@@ -1130,13 +1166,26 @@ class VentaController extends Controller
                                     }
 
                                     $total_ucd = $total_ucd + $ucd_tramite;
-
-                                    $i2 = DB::table('detalle_ventas')->insert(['key_venta' => $id_venta, 
+                                    if ($key_tramite == 1) {
+                                        if ($folios != '' || $folios != 0) {
+                                            $i2 = DB::table('detalle_ventas')->insert(['key_venta' => $id_venta, 
                                                                                 'key_tramite' => $key_tramite, 
                                                                                 'forma' => $tramite['forma'],
                                                                                 'cantidad' => 1,
                                                                                 'metros' => null,
-                                                                                'capital' => null]); 
+                                                                                'capital' => null,
+                                                                                'folios' => $folios]); 
+                                        }
+                                    }else{
+                                        $i2 = DB::table('detalle_ventas')->insert(['key_venta' => $id_venta, 
+                                                                                'key_tramite' => $key_tramite, 
+                                                                                'forma' => $tramite['forma'],
+                                                                                'cantidad' => 1,
+                                                                                'metros' => null,
+                                                                                'capital' => null,
+                                                                                'folios' => null]); 
+                                    }
+                                    
                                     if ($i2) {
                                         $id_detalle_venta = DB::table('detalle_ventas')->max('correlativo');
                                         ///////////////////////// BUSCAR CORRELATIVO
