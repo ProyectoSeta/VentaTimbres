@@ -26,49 +26,105 @@ class HomeController extends Controller
 
     public function index()
     {
-        $user = auth()->id();
-        $query = DB::table('users')->select('key_sujeto')->where('id','=',$user)->first();
-        $q2 = DB::table('taquillas')->select('id_taquilla')->where('key_funcionario','=',$query->key_sujeto)->first();
-
-        $id_taquilla = $q2->id_taquilla;
-        $hoy = date('Y-m-d');
-        $apertura_admin = false;
-        $apertura_taquillero = false;
-        $hora_apertura_admin = '';
-        $hora_apertura_taquillero = '';
-
-        $q3 = DB::table('apertura_taquillas')->select('apertura_admin','apertura_taquillero')
-                                            ->where('key_taquilla','=', $id_taquilla)
-                                            ->where('fecha','=', $hoy)->first();
-        if ($q3) {
-            //////hay registro, admin aperturo taquilla
-            if ($q3->apertura_taquillero == null) {
-                ///////taquillero no ha aperturado
-                $apertura_admin = true;
-                $apertura_taquillero = false;
-                $hora = date("h:i A",strtotime($q3->apertura_admin));
-                $hora_apertura_admin = $hora;
-
-            }else{
-                //////taquillero aperturo 
-                $apertura_admin = true;
-                $apertura_taquillero = true;
-                $hora_apertura_admin = date("h:i A",strtotime($q3->apertura_admin));
-                $hora_apertura_taquillero = date("h:i A",strtotime($q3->apertura_taquillero));
+        function encontrarCombinacionMinima(array $numeros, int $total): array {
+            $combinaciones = [];
+            $mejorCombinacion = null;
+        
+            function buscarCombinaciones(array $numeros, int $total, array $combinacionActual, int $indiceActual, array &$combinaciones): void {
+                if ($total === 0) {
+                    $combinaciones[] = $combinacionActual;
+                    return;
+                }
+        
+                if ($total < 0 || $indiceActual >= count($numeros)) {
+                    return;
+                }
+        
+                // Incluir el número actual
+                $nuevaCombinacion = $combinacionActual;
+                $nuevaCombinacion[] = $numeros[$indiceActual];
+                buscarCombinaciones($numeros, $total - $numeros[$indiceActual], $nuevaCombinacion, $indiceActual, $combinaciones);
+        
+                // Excluir el número actual
+                buscarCombinaciones($numeros, $total, $combinacionActual, $indiceActual + 1, $combinaciones);
             }
-            
-        }else{
-            /////no hay registro, admin no ha aperturado taquilla
-            $apertura_admin = false;
+        
+            buscarCombinaciones($numeros, $total, [], 0, $combinaciones);
+        
+            if (empty($combinaciones)) {
+                return []; // No se encontró ninguna combinación
+            }
+        
+            // Encontrar la combinación con la menor cantidad de dígitos
+            $longitudMinima = PHP_INT_MAX;
+            foreach ($combinaciones as $combinacion) {
+                if (count($combinacion) < $longitudMinima) {
+                    $longitudMinima = count($combinacion);
+                    $mejorCombinacion = $combinacion;
+                }
+            }
+        
+            return $mejorCombinacion;
+        }
+        
+        // Ejemplo de uso
+        $numeros = [3,5]; 
+        $total = 4;
+        
+        $resultado = encontrarCombinacionMinima($numeros, $total);
+        print_r($resultado);
+        
+        if (!empty($resultado)) {
+            echo "Combinación encontrada: " . implode(", ", $resultado) . PHP_EOL;
+        } else {
+            echo "No se encontró ninguna combinación." . PHP_EOL;
         }
 
+        
 
-        $dias = array("Domingo","Lunes","Martes","Miercoles","Jueves","Viernes","Sábado");
-        $meses = array("Enero","Febrero","Marzo","Abril","Mayo","Junio","Julio","Agosto","Septiembre","Octubre","Noviembre","Diciembre");   
+        // $user = auth()->id();
+        // $query = DB::table('users')->select('key_sujeto')->where('id','=',$user)->first();
+        // $q2 = DB::table('taquillas')->select('id_taquilla')->where('key_funcionario','=',$query->key_sujeto)->first();
 
-        $hoy_view = $dias[date('w')].", ".date('d')." de ".$meses[date('n')-1]. " ".date('Y');
+        // $id_taquilla = $q2->id_taquilla;
+        // $hoy = date('Y-m-d');
+        // $apertura_admin = false;
+        // $apertura_taquillero = false;
+        // $hora_apertura_admin = '';
+        // $hora_apertura_taquillero = '';
 
-        return view('home', compact('apertura_admin','apertura_taquillero','hora_apertura_admin','hora_apertura_taquillero','hoy_view'));
+        // $q3 = DB::table('apertura_taquillas')->select('apertura_admin','apertura_taquillero')
+        //                                     ->where('key_taquilla','=', $id_taquilla)
+        //                                     ->where('fecha','=', $hoy)->first();
+        // if ($q3) {
+        //     //////hay registro, admin aperturo taquilla
+        //     if ($q3->apertura_taquillero == null) {
+        //         ///////taquillero no ha aperturado
+        //         $apertura_admin = true;
+        //         $apertura_taquillero = false;
+        //         $hora = date("h:i A",strtotime($q3->apertura_admin));
+        //         $hora_apertura_admin = $hora;
+
+        //     }else{
+        //         //////taquillero aperturo 
+        //         $apertura_admin = true;
+        //         $apertura_taquillero = true;
+        //         $hora_apertura_admin = date("h:i A",strtotime($q3->apertura_admin));
+        //         $hora_apertura_taquillero = date("h:i A",strtotime($q3->apertura_taquillero));
+        //     }
+            
+        // }else{
+        //     /////no hay registro, admin no ha aperturado taquilla
+        //     $apertura_admin = false;
+        // }
+
+
+        // $dias = array("Domingo","Lunes","Martes","Miercoles","Jueves","Viernes","Sábado");
+        // $meses = array("Enero","Febrero","Marzo","Abril","Mayo","Junio","Julio","Agosto","Septiembre","Octubre","Noviembre","Diciembre");   
+
+        // $hoy_view = $dias[date('w')].", ".date('d')." de ".$meses[date('n')-1]. " ".date('Y');
+
+        // return view('home', compact('apertura_admin','apertura_taquillero','hora_apertura_admin','hora_apertura_taquillero','hoy_view'));
 
 
     }
