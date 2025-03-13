@@ -5,258 +5,258 @@
 
 @section('content')
     <div class="mx-3">
+        
 
-        <div class="row">
-            <!-- VENTA -->
-            <div class="col-lg-8">
-                <!-- UCD HOY -->
-                <div class="d-flex justify-content-center align-items-center mt-3 pb-3" style="font-size:14px">
-                    <div class="d-flex bg-navy rounded-4">
-                        <div class="bg-primary rounded-start-4 py-2 px-3 fs-6 fw-bold">
-                            <span>U.C.D. Hoy   </span>
+
+        <div class="row mt-3">
+            <div class="col-xl-8 pe-5" id="">
+                <form id="form_venta" method="post" onsubmit="event.preventDefault(); venta()">
+                    <!-- *************** DATOS CONTRIBUYENTE ******************-->
+                    <div class="mb-3 border rounded-3 p-2 py-3" style="font-size:13px">
+                        <div class="d-flex justify-content-center">
+                            <div class="row w-100">
+                                <h5 class="titulo fw-bold text-navy mb-3">Contribuyente | <span class="text-secondary fs-6">Datos</span></h5>
+                                <!-- Tipo Contribuyente -->
+                                <div class="col-sm-3">
+                                    <label class="form-label" for="condicion_sujeto">Condición</label><span class="text-danger">*</span>
+                                    <select class="form-select form-select-sm" id="condicion_sujeto" aria-label="Small select example" name="condicion_sujeto">
+                                        <option>Seleccione</option>
+                                        <option value="9">Natural</option>
+                                        <option value="10">Firma Personal</option>
+                                        <option value="11">Empresa o Ente</option>
+                                    </select>
+                                </div>
+                                <!-- ci o rif -->
+                                <div class="col-sm-5">
+                                    <label class="form-label" for="identidad_condicion">C.I / R.I.F</label><span class="text-danger">*</span>
+                                    <div class="row">
+                                        <div class="col-5">
+                                            <select class="form-select form-select-sm" id="identidad_condicion" aria-label="Small select example" name="identidad_condicion">
+                                                <option>Seleccione</option>
+                                            </select>
+                                        </div>
+                                        <!-- <div class="col-1">-</div> -->
+                                        <div class="col-7">
+                                            <input type="number" id="identidad_nro" class="form-control form-control-sm" name="identidad_nro" required >
+                                            <p class="text-end text-muted fw-bold mb-0" style="font-size:12px;">Ejemplo: 7521004</p>
+                                        </div>
+                                    </div>
+                                </div>
+                                <!-- nombre o razon -->
+                                <div class="col-sm-4">
+                                    <label class="form-label" for="nombre">Nombre / Razón Social</label><span class="text-danger">*</span>
+                                    <input type="text" id="nombre" class="form-control form-control-sm" name="nombre" disabled required>
+                                </div>
+                            </div>
                         </div>
-                        <div class="py-2 px-3 fs-6 fw-bold text-end">
-                            <span>{{$ucd}} bs. ({{$moneda}})</span>
-                        </div> 
+
+                        <div class="d-flex justify-content-center mt-3 mb-3 d-none" id="btns_add_contribuyente">
+                            <button type="button" class="btn btn-secondary btn-sm me-3" id="btn_cancel_add_c">Cancelar</button>
+                            <button type="button" class="btn btn-success btn-sm" id="btn_add_contribuyente">Registrar</button>
+                        </div>
+                    </div>
+
+                    <!-- **************** DATOS TRAMITE **************** -->
+                    <div class="mb-3 border rounded-3 p-2 py-3" style="font-size:13px">
+                        <div class="d-flex flex-column tramites">
+                            <div class="d-flex justify-content-center">
+                                <div class="row w-100">
+                                    <h5 class="titulo fw-bold text-navy mb-3">Tramite | <span class="text-secondary fs-6">Datos</span></h5>
+                                    <div class="col-sm-3">
+                                        <label class="form-label" for="ente">Ente</label><span class="text-danger">*</span>
+                                        <select class="form-select form-select-sm ente" nro="1" id="ente_1" disabled>
+                                            @foreach ($entes as $ente)
+                                                <option value="{{$ente->id_ente}}">{{$ente->ente}}</option>
+                                            @endforeach
+                                            
+                                        </select>
+                                    </div>
+                                    <div class="col-sm-4">
+                                        <label class="form-label" for="tramite">Tramite</label><span class="text-danger">*</span>
+                                        <select class="form-select form-select-sm tramite" name="tramite[1][tramite]" nro="1" id="tramite_1" disabled>
+                                            <option value="">Seleccione el tramite </option>
+                                                @foreach ($tramites as $tramite)
+                                                    <option value="{{$tramite->id_tramite}}">{{$tramite->tramite}}</option>
+                                                @endforeach
+                                        </select>
+                                    </div>
+                                    <div class="col-sm-2" id="div_ucd_1">
+                                        <label class="form-label" for="ucd_tramite">U.C.D.</label><span class="text-danger">*</span>
+                                        <input type="text" class="form-control form-control-sm ucd_tramite" id="ucd_tramite_1" nro="1" disabled required>
+                                        <span class="text-end text-muted d-none" id="html_folios">+ <span class="fw-bold text-navy" id="ucd_folios">3 UCD</span> (Folios)</span>
+                                    </div>
+                                    <div class="col-sm-2">
+                                        <label class="form-label" for="forma">Timbre</label><span class="text-danger">*</span>
+                                        <select class="form-select form-select-sm forma" nro="1" name="tramite[1][forma]"id="forma_1" required>
+                                            <option value="">Seleccione</option>
+                                        </select>
+                                        <p class="text-end my-0 text-muted" id="cant_timbre_1"></p>
+                                    </div>
+                                    <div class="col-sm-1 pt-4">
+                                        <a  href="javascript:void(0);" class="btn add_button_tramite disabled border-0">
+                                            <i class="bx bx-plus fs-4" style="color:#038ae4"></i>
+                                        </a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Folios -->
+                        <div class="mx-3 mt-4 d-none border p-3 rounded-3 w-50" style="background:#f4f7f9;" id="content_folios">
+                            <div class="text-muted mb-2">*NOTA: El anexo de cada folio tiene un valor de 1 UCD.</div>
+                            <div class="d-flex align-items-center">
+                                <label class="form-label" for="folios">Ingrese el número de Folios:</label>
+                                <input type="number" id="folios" class="form-control form-control-sm w-50 ms-2" name="folios" required>
+                            </div>
+                        </div>
+
+                        <!-- tamaño de empresa -->
+                        <div class="mx-3 mt-4 d-none border p-3 rounded-3" style="background:#f4f7f9;" id="content_tamaño">
+                            <p class="text-muted my-0 pb-0">*Ingrese el tamaño de la Empresa.</p>
+                            <div class="row d-flex align-items-center">
+                                <div class="col-md-6 d-flex justify-content-center align-items-end">
+                                    <div class="">
+                                        <label class="form-label" for="metros">Tamaño de la empresa (Mts2):</label><span class="text-danger">*</span>
+                                        <div class="d-flex align-items-center">
+                                            <input type="number" id="metros" class="form-control form-control-sm me-2" name="metros">
+                                            <span class="fw-bold">Mts2</span>
+                                        </div>
+                                    </div>
+                                    <!-- btn calcular -->
+                                    <div class="ms-3">
+                                        <button type="button" class="btn btn-secondary btn-sm" id="btn_calcular_metrado">Calcular</button>
+                                    </div>
+                                </div>
+
+                                <div class="col-md-6 text-center pt-4" id="size">
+                                    
+                                </div>
+                            </div>
+                        </div>
+
+
+                        <!-- Capital o Monto de la operación -->
+                        <div class="mx-3 mt-4 d-none border p-3 rounded-3" style="background:#f4f7f9;" id="content_capital">
+                            <p class="text-muted my-0 pb-0">*Ingrese el Capital o Monto total de la Operación.</p>
+                            <div class="row d-flex align-items-center">
+                                <div class="col-md-6 d-flex align-items-end justify-content-center">
+                                    <div class="">
+                                        <p class="fs-4 fw-bold mb-0 me-4 p_porcentaje">
+                                            
+                                        </p>
+                                    </div>
+                                    <div class="pb-1 me-4"> de</div>
+                                    <div class="">
+                                        <label class="form-label" for="capital">Monto (Bs.):</label><span class="text-danger">*</span>
+                                        <div class="d-flex align-items-center">
+                                            <input type="number" id="capital" class="form-control form-control-sm me-2" name="capital">
+                                            <span class="fw-bold">Bs.</span>
+                                        </div>
+                                    </div>
+                                    <!-- btn calcular -->
+                                    <div class="ms-3">
+                                        <button type="button" class="btn btn-secondary btn-sm" id="btn_calcular_porcentaje">Calcular</button>
+                                    </div>
+                                </div>
+
+                                <div class="col-md-6 text-center pt-4" id="size">
+                                    <p class="fs-4 fw-bold mb-0" id="pct_monto">0,00 Bs.</p>
+                                    <p class="text-muted fw-bold fs-6"><span class="p_porcentaje"></span>del monto total.</p>
+                                </div>
+                            </div>
+                        </div>
+
+
+
+                    </div>
+
+
+                    <!-- ************************ PAGO *****************************-->
+                    <div class="mb-3 border rounded-3 p-2 py-3" style="font-size:13px">
+                        <div class="d-flex flex-column pago_timbre">
+                            <div class="d-flex justify-content-center" >
+                                <div class="row w-100">
+                                    <h5 class="titulo fw-bold text-navy mb-3">Pago | <span class="text-secondary fs-6">Timbre Fiscal</span></h5>
+                                    <div class="col-sm-4">
+                                        <label class="form-label" for="metodo">Metodo de Pago</label><span class="text-danger">*</span>
+                                        <select class="form-select form-select-sm metodo" aria-label="Small select example" i="1" name="pago[1][metodo]" disabled>
+                                            <option value="5">Punto</option>
+                                            <option value="6">Efectivo Bs.</option>
+                                        </select>
+                                    </div>
+                                    <div class="col-sm-3">
+                                        <label class="form-label" for="comprobante">No. Comprobante</label><span class="text-danger">*</span>
+                                        <input type="number" class="form-control form-control-sm comprobante" name="pago[1][comprobante]" id="comprobante_1" disabled required>
+                                    </div>
+                                    <div class="col-sm-4">
+                                        <label class="form-label" for="debitado">Monto Debitado </label><span class="text-danger">*</span>
+                                        <input type="number" step="0.01" id="debitado_1" class="form-control form-control-sm debitado" name="pago[1][debitado]" disabled required>
+                                    </div>
+                                    <div class="col-sm-1 pt-4">
+                                        <a  href="javascript:void(0);" class="btn add_button disabled border-0" title="Agregar monto en Efectivo">
+                                            <i class="bx bx-plus fs-4" style="color:#038ae4"></i>
+                                        </a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                    </div>
+                    
+
+                    <p class="text-muted text-end fw-bold mt-3" style="font-size:13px"><span style="color:red">*</span> Campos requeridos.</p>
+
+                    <div class="d-flex justify-content-center mt-3 mb-3">
+                        <a class="btn btn-secondary btn-sm me-3" data-bs-toggle="modal" data-bs-target="#modal_venta_realizada" >Cancelar</a>
+                        <button type="submit" class="btn btn-success btn-sm" disabled id="btn_submit_venta">Realizar Venta</button>
+                    </div>
+                </form>
+            </div>
+            <!-- ******************************* -->
+            <div class="col-xl-4 pb-3 px-3">
+                <div class="d-flex justify-content-center align-items-center mt-3 pb-3" style="font-size:14px">
+                    <!-- UCD HOY -->
+                    <div class="">
+                        <div class="d-flex bg-navy rounded-4">
+                            <div class="bg-primary rounded-start-4 py-2 px-3 fs-6 fw-bold">
+                                <span>U.C.D. Hoy   </span>
+                            </div>
+                            <div class="py-2 px-3 fs-6 fw-bold text-end">
+                                <span>{{$ucd}} bs. ({{$moneda}})</span>
+                            </div> 
+                        </div>
                     </div>
                 </div>
-
-                <!-- TOTALES -->
-                
-                <div class="row d-flex align-items-end mb-2">
-                    <div class="col-lg-5 p-1">
-                        <div class="rounded-3 px-3 py-2" style="background:#d9e9ff">
+                <div class="">
+                    <h5 class="titulo fw-bold text-success fs-4 mt-4 mb-3">Total a Pagar</h5>
+                    <div class="d-flex flex-column">
+                        <div class="bg-light rounded-3 px-3 py-2 mb-2">
                             <div class="d-flex justify-content-between align-items-center">
                                 <p class="d-flex flex-column titulo mb-0">
-                                    <span class="fs-3 fw-bold text-navy pb-0 mb-0">U.C.D.</span>
+                                    <span class="fs-3 fw-bold text-navy">U.C.D.</span>
                                     <span class="fw-bold text-muted" style="font-size:13px">Unidad de Cuenta Dinámica</span>
                                 </p>
                                 <span class="fs-2 text-navy fw-bold" id="ucd">0 </span>
                             </div>
                         </div>
-                    </div>
-                    <div class="col-lg-7 p-1">
-                        <div class="bg-warning-subtle rounded-3 px-3 py-2">
+                        <div class="bg-light rounded-3 px-3 py-2">
                             <div class="d-flex justify-content-between align-items-center">
                                 <p class="d-flex flex-column titulo mb-0">
-                                    <span class="fs-3 fw-bold text-navy pb-0 mb-0">Bolivares</span>
-                                    <span class="fw-bold text-muted" style="font-size:13px">A pagar</span>
+                                    <span class="fs-3 fw-bold text-navy">Bolivares</span>
                                 </p>
                                 <span class="fs-2 text-navy fw-bold" id="bolivares">0,00</span>
                             </div>
                         </div>
                     </div>
                 </div>
-                
-
-                <!-- FORM -->
-                    <form id="form_venta" method="post" onsubmit="event.preventDefault(); venta()">
-                        <!-- DATOS CONTRIBUYENTE -->
-                        <div class="mb-3 border text-navy rounded-3 p-2 py-3" style="font-size:13px">
-                            <div class="d-flex justify-content-center">
-                                <div class="row w-100">
-                                    <!-- <h5 class="titulo fw-bold text-navy mb-3">Contribuyente | <span class="text-secondary fs-6">Datos</span></h5> -->
-                                    <!-- Tipo Contribuyente -->
-                                    <div class="col-sm-3">
-                                        <label class="form-label" for="condicion_sujeto">Condición</label><span class="text-danger">*</span>
-                                        <select class="form-select form-select-sm" id="condicion_sujeto" aria-label="Small select example" name="condicion_sujeto">
-                                            <option>Seleccione</option>
-                                            <option value="9">Natural</option>
-                                            <option value="10">Firma Personal</option>
-                                            <option value="11">Empresa o Ente</option>
-                                        </select>
-                                    </div>
-                                    <!-- ci o rif -->
-                                    <div class="col-sm-5">
-                                        <label class="form-label" for="identidad_condicion">C.I / R.I.F</label><span class="text-danger">*</span>
-                                        <div class="row">
-                                            <div class="col-5">
-                                                <select class="form-select form-select-sm" id="identidad_condicion" aria-label="Small select example" name="identidad_condicion">
-                                                    <option>Seleccione</option>
-                                                </select>
-                                            </div>
-                                            <!-- <div class="col-1">-</div> -->
-                                            <div class="col-7">
-                                                <input type="number" id="identidad_nro" class="form-control form-control-sm" name="identidad_nro" required >
-                                                <p class="text-end text-muted fw-bold mb-0" style="font-size:12px;">Ejemplo: 7521004</p>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <!-- nombre o razon -->
-                                    <div class="col-sm-4">
-                                        <label class="form-label" for="nombre">Nombre / Razón Social</label><span class="text-danger">*</span>
-                                        <input type="text" id="nombre" class="form-control form-control-sm" name="nombre" disabled required>
-                                    </div>
-                                </div>
-                            </div>
-
-                            <div class="d-flex justify-content-center mt-3 mb-3 d-none" id="btns_add_contribuyente">
-                                <button type="button" class="btn btn-secondary btn-sm me-3" id="btn_cancel_add_c">Cancelar</button>
-                                <button type="button" class="btn btn-success btn-sm" id="btn_add_contribuyente">Registrar</button>
-                            </div>
-                        </div>
-
-                        <!-- TRAMITES -->
-                        <h5 class="titulo fw-bold text-navy mb-3 ms-3">Tramite | <span class="text-secondary fs-6">Datos</span></h5>
-                        <div class="mb-3 border rounded-3 p-2 py-3" style="font-size:13px">
-                            <div class="d-flex flex-column tramites">
-                                <div class="d-flex justify-content-center pb-1">
-                                    <div class="row w-100">
-                                        <div class="col-sm-3">
-                                            <label class="form-label" for="ente">Ente</label><span class="text-danger">*</span>
-                                            <select class="form-select form-select-sm ente" nro="1" id="ente_1" disabled>
-                                                @foreach ($entes as $ente)
-                                                    <option value="{{$ente->id_ente}}">{{$ente->ente}}</option>
-                                                @endforeach
-                                                
-                                            </select>
-                                        </div>
-                                        <div class="col-sm-4">
-                                            <label class="form-label" for="tramite">Tramite</label><span class="text-danger">*</span>
-                                            <select class="form-select form-select-sm tramite" name="tramite[1][tramite]" nro="1" id="tramite_1" disabled>
-                                                <option value="">Seleccione el tramite </option>
-                                                    @foreach ($tramites as $tramite)
-                                                        <option value="{{$tramite->id_tramite}}">{{$tramite->tramite}}</option>
-                                                    @endforeach
-                                            </select>
-                                        </div>
-                                        <div class="col-sm-2" id="div_ucd_1">
-                                            <label class="form-label" for="ucd_tramite">U.C.D.</label><span class="text-danger">*</span>
-                                            <input type="text" class="form-control form-control-sm ucd_tramite" id="ucd_tramite_1" nro="1" disabled required>
-                                            <span class="text-end text-muted d-none" id="html_folios">+ <span class="fw-bold text-navy" id="ucd_folios">3 UCD</span> (Folios)</span>
-                                        </div>
-                                        <div class="col-sm-2">
-                                            <label class="form-label" for="forma">Forma</label><span class="text-danger">*</span>
-                                            <select class="form-select form-select-sm forma" nro="1" name="tramite[1][forma]"id="forma_1" required>
-                                                <option value="">Seleccione</option>
-                                            </select>
-                                            <input type="hidden" name="tramite[1][forma][detalle]">
-                                            <p class="text-end my-0 text-muted" id="cant_timbre_1"></p>
-                                        </div>
-                                        <div class="col-sm-1 pt-4">
-                                            <a  href="javascript:void(0);" class="btn add_button_tramite disabled border-0">
-                                                <i class="bx bx-plus fs-4" style="color:#038ae4"></i>
-                                            </a>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div> 
-                        </div>
-
-                        <!-- ADJUNTO -->
-                        <div class="d-flex flex-column align-items-center m-0 p-0">
-                            <!-- Folios -->
-                            <div class="w-50 mt-2 d-none border p-3 rounded-3" style="background:#f4f7f9; font-size:12.7px" id="content_folios">
-                                <div class="text-muted mb-2">*NOTA: El anexo de cada folio tiene un valor de 1 UCD.</div>
-                                <div class="d-flex align-items-center">
-                                    <label class="form-label" for="folios">Ingrese el número de Folios:</label>
-                                    <input type="number" id="folios" class="form-control form-control-sm w-50 ms-2" name="folios" required>
-                                </div>
-                            </div>
-
-                            <!-- tamaño de empresa -->
-                            <div class="w-75 mt-2 d-none border p-3 rounded-3" style="background:#f4f7f9; font-size:12.7px" id="content_tamaño">
-                                <p class="text-muted my-0 pb-0">*Ingrese el tamaño de la Empresa.</p>
-                                <div class="row d-flex align-items-center">
-                                    <div class="col-md-6 d-flex justify-content-center align-items-end">
-                                        <div class="">
-                                            <label class="form-label" for="metros">Tamaño de la empresa (Mts2):</label><span class="text-danger">*</span>
-                                            <div class="d-flex align-items-center">
-                                                <input type="number" id="metros" class="form-control form-control-sm me-2" name="metros">
-                                                <span class="fw-bold">Mts2</span>
-                                            </div>
-                                        </div>
-                                        <!-- btn calcular -->
-                                        <div class="ms-3">
-                                            <button type="button" class="btn btn-secondary btn-sm" id="btn_calcular_metrado">Calcular</button>
-                                        </div>
-                                    </div>
-
-                                    <div class="col-md-6 text-center pt-0" id="size">
-                                        
-                                    </div>
-                                </div>
-                            </div>
-
-                            <!-- Capital o Monto de la operación -->
-                            <div class="w-75 mt-2 d-none border p-3 rounded-3" style="background:#f4f7f9; font-size:12.7px" id="content_capital">
-                                <p class="text-muted my-0 pb-0">*Ingrese el Capital o Monto total de la Operación.</p>
-                                <div class="row d-flex align-items-center px-3">
-                                    <div class="col-md-6 d-flex align-items-end justify-content-center">
-                                        <div class="">
-                                            <p class="fs-4 fw-bold mb-0 me-4 p_porcentaje">
-                                                
-                                            </p>
-                                        </div>
-                                        <div class="pb-1 me-4"> de</div>
-                                        <div class="">
-                                            <label class="form-label" for="capital">Monto (Bs.):</label><span class="text-danger">*</span>
-                                            <div class="d-flex align-items-center">
-                                                <input type="number" id="capital" class="form-control form-control-sm me-2" name="capital">
-                                                <span class="fw-bold">Bs.</span>
-                                            </div>
-                                        </div>
-                                        <!-- btn calcular -->
-                                        <div class="ms-3">
-                                            <button type="button" class="btn btn-secondary btn-sm" id="btn_calcular_porcentaje">Calcular</button>
-                                        </div>
-                                    </div>
-
-                                    <div class="col-md-6 text-center pt-0" id="size">
-                                        <p class="fs-4 fw-bold mb-0" id="pct_monto">0,00 Bs.</p>
-                                        <p class="text-muted fw-bold fs-6"><span class="p_porcentaje"></span>del monto total.</p>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-
-                        <!-- PAGO -->
-                        <h5 class="titulo fw-bold text-navy mb-3 ms-3">Pago | <span class="text-secondary fs-6">Timbre Fiscal</span></h5>
-                        <div class="mb-3 border rounded-3 p-2 py-3" style="font-size:13px">
-                            <div class="d-flex flex-column pago_timbre">
-                                <div class="d-flex justify-content-center" >
-                                    <div class="row w-100">
-                                        <div class="col-sm-4">
-                                            <label class="form-label" for="metodo">Metodo de Pago</label><span class="text-danger">*</span>
-                                            <select class="form-select form-select-sm metodo" aria-label="Small select example" i="1" name="pago[1][metodo]" disabled>
-                                                <option value="5">Punto</option>
-                                                <option value="6">Efectivo Bs.</option>
-                                            </select>
-                                        </div>
-                                        <div class="col-sm-3">
-                                            <label class="form-label" for="comprobante">No. Comprobante</label><span class="text-danger">*</span>
-                                            <input type="number" class="form-control form-control-sm comprobante" name="pago[1][comprobante]" id="comprobante_1" disabled required>
-                                        </div>
-                                        <div class="col-sm-4">
-                                            <label class="form-label" for="debitado">Monto Debitado </label><span class="text-danger">*</span>
-                                            <input type="number" step="0.01" id="debitado_1" class="form-control form-control-sm debitado" name="pago[1][debitado]" disabled required>
-                                        </div>
-                                        <div class="col-sm-1 pt-4">
-                                            <a  href="javascript:void(0);" class="btn add_button disabled border-0" title="Agregar monto en Efectivo">
-                                                <i class="bx bx-plus fs-4" style="color:#038ae4"></i>
-                                            </a>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-
-                        <p class="text-muted text-end fw-bold mb-2 p-0" style="font-size:13px"><span style="color:red">*</span> Campos requeridos.</p>
-                       
-                    </form>
-                <!-- CIERRA FORM -->
-
-            </div>
-            <!-- DETALLES VENTA -->
-            <div class="col-lg-4">
-                <!-- DEBITO -->
-                <h5 class="titulo fw-bold text-success fs-4 mt-4 mb-3">Debito</h5>
+                <!--  -->
                 <div class="">
+                    <h5 class="titulo fw-bold text-success fs-4 mt-4 mb-3">Pagado</h5>
                     <div class="d-flex flex-column">
-                        <div class="bg-primary-subtle rounded-3 px-3 py-1 mb-2">
+                        <div class="bg-body-secondary rounded-3 px-3 py-1 mb-2">
                             <div class="d-flex justify-content-between align-items-center">
                                 <p class="d-flex flex-column titulo mb-0">
-                                    <span class="fs-4 fw-bold text-navy">Debitado</span>
+                                    <span class="fs-5 fw-bold text-navy">Debitado</span>
                                 </p>
                                 <span class="fs-4 text-navy fw-bold" id="debitado">0,00</span>
                             </div>
@@ -266,7 +266,7 @@
                                 <p class="d-flex flex-column titulo mb-0">
                                     <span class="fs-5 fw-bold text-navy">Diferencia</span>
                                 </p>
-                                <span class="fs-5 text-navy fw-bold" id="diferencia">0,00</span>
+                                <span class="fs-4 text-navy fw-bold" id="diferencia">0,00</span>
                             </div>
                         </div>
                         <div class="bg-body-secondary rounded-3 px-3 py-1">
@@ -274,55 +274,13 @@
                                 <p class="d-flex flex-column titulo mb-0">
                                     <span class="fs-5 fw-bold text-navy">Vuelto</span>
                                 </p>
-                                <span class="fs-5 text-navy fw-bold" id="vuelto">0,00</span>
+                                <span class="fs-4 text-navy fw-bold" id="vuelto">0,00</span>
                             </div>
                         </div>
                     </div>
                 </div>
-
-                <!-- DETALLE -->
-                <div class="border rounded-3 my-3" style="font-size:12px">
-                    <div class="d-flex flex-column text-center fw-semibold lh-sm my-2" style="font-size:12px">
-                        <span class="fw-bold">Servicio Tributario de Aragua (SETA)</span>
-                        <span>Detalle de la Venta</span>
-                        <span>Tramites | Formas</span>
-                    </div>
-
-                    <div class="container">
-                        <div class="" tramite="1">
-                            <div class="text-navy fw-bold my-2">Protocolización</div>
-                            <table class="table table-sm table-borderless text-center lh-sm">
-                                <!-- <tr>
-                                    <th>Forma</th>
-                                    <th>Cant.</th>
-                                    <th>UCD</th>
-                                </tr> -->
-                                <tr>
-                                    <td>Estampilla</td>
-                                    <td>1</td>
-                                    <td>5 UDC</td>
-                                </tr>
-                                <tr>
-                                    <td>Estampilla</td>
-                                    <td>1</td>
-                                    <td>2 UDC</td>
-                                </tr>
-                            </table>
-                        </div>
-                    </div>
-                </div>
-
-
-                <!-- BUTTONS -->
-                <div class="d-flex justify-content-center mt-3 mb-3">
-                    <button type="submit" class="btn btn-success btn-sm me-3" disabled id="btn_submit_venta">Realizar Venta</button>
-                    <a class="btn btn-secondary btn-sm" data-bs-toggle="modal" data-bs-target="#modal_venta_realizada" >Cancelar</a>
-                </div>
             </div>
         </div>
-
-
-        
 
 
 
@@ -630,6 +588,7 @@
                         $('.tramites').append('<div class="d-flex justify-content-center ">'+
                                             '<div class="row w-100 mt-2">'+
                                                 '<div class="col-sm-3">'+
+                                                    '<label class="form-label" for="ente">Ente</label><span class="text-danger">*</span>'+
                                                     '<select class="form-select form-select-sm ente" nro="'+c+'" id="ente_'+c+'">'+
                                                         '@foreach ($entes as $ente)'+
                                                             '<option value="{{$ente->id_ente}}">{{$ente->ente}}</option>'+
@@ -638,6 +597,7 @@
                                                     '</select>'+
                                                 '</div>'+
                                                 '<div class="col-sm-4">'+
+                                                    '<label class="form-label" for="tramite">Tramite</label><span class="text-danger">*</span>'+
                                                     '<select class="form-select form-select-sm tramite" name="tramite['+c+'][tramite]" nro="'+c+'" id="tramite_'+c+'" required>'+
                                                         '<option value="">Seleccione el tramite </option>'+
                                                             '@foreach ($tramites as $tramite)'+
@@ -646,15 +606,17 @@
                                                     '</select>'+
                                                 '</div>'+
                                                 '<div class="col-sm-2" id="div_ucd_'+c+'">'+
+                                                    '<label class="form-label" for="ucd_tramite">UCD</label><span class="text-danger">*</span>'+
                                                     '<input type="text" class="form-control form-control-sm ucd_tramite" id="ucd_tramite_'+c+'" nro="'+c+'" disabled>'+
                                                 '</div>'+
                                                 '<div class="col-sm-2">'+
+                                                    '<label class="form-label" for="forma">Timbre</label><span class="text-danger">*</span>'+
                                                     '<select class="form-select form-select-sm forma" nro="'+c+'" name="tramite['+c+'][forma]" id="forma_'+c+'" required>'+
                                                         '<option value="">Seleccione</option>'+
                                                     '</select>'+
                                                     '<p class="text-end my-0 text-muted" id="cant_timbre_'+c+'"></p>'+
                                                 '</div>'+
-                                                '<div class="col-sm-1">'+
+                                                '<div class="col-sm-1 pt-4">'+
                                                     '<a  href="javascript:void(0);" class="btn remove_button_tramite" nro="'+c+'">'+
                                                         '<i class="bx bx-x fs-4"></i>'+
                                                     '</a>'+
