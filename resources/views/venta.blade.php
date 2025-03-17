@@ -288,24 +288,44 @@
                         <span>Tramites | Formas</span>
                     </div>
 
-                    <div class="container">
+                    <div class="">
                         <div class="" tramite="1">
-                            <div class="text-navy fw-bold my-2">Protocolización</div>
+                            <div class="text-navy fw-bold mx-3"><span class="text-muted">Tramite:</span> Protocolización</div>
                             <table class="table table-sm table-borderless text-center lh-sm">
-                                <!-- <tr>
+                                <tr>
                                     <th>Forma</th>
                                     <th>Cant.</th>
                                     <th>UCD</th>
-                                </tr> -->
-                                <tr>
-                                    <td>Estampilla</td>
-                                    <td>1</td>
-                                    <td>5 UDC</td>
                                 </tr>
                                 <tr>
                                     <td>Estampilla</td>
                                     <td>1</td>
-                                    <td>2 UDC</td>
+                                    <th>5 UDC</th>
+                                </tr>
+                                <tr>
+                                    <td>Estampilla</td>
+                                    <td>1</td>
+                                    <th>2 UDC</th>
+                                </tr>
+                            </table>
+                        </div>
+                        <div class="" tramite="1">
+                            <div class="text-navy fw-bold mx-3"><span class="text-muted">Tramite:</span> Protocolización</div>
+                            <table class="table table-sm table-borderless text-center lh-sm">
+                                <tr>
+                                    <th>Forma</th>
+                                    <th>Cant.</th>
+                                    <th>UCD</th>
+                                </tr>
+                                <tr>
+                                    <td>Estampilla</td>
+                                    <td>1</td>
+                                    <th>5 UDC</th>
+                                </tr>
+                                <tr>
+                                    <td>Estampilla</td>
+                                    <td>1</td>
+                                    <th>2 UDC</th>
                                 </tr>
                             </table>
                         </div>
@@ -618,8 +638,6 @@
 
     <script type="text/javascript">
         $(document).ready(function () {
-            // $('.tramite').select2();
-
             ///////////////////////////////////////AGREGAR CAMPOS A OTRO(S) TRAMITES
                 var maxFieldTramite = 3; //Input fields increment limitation
                 var c = 1; //Initial field counter is 1
@@ -876,7 +894,7 @@
             //////////////////////////// TRAMITE: PROTOCOLIZACIÓN
             $(document).on('change','.tramite', function(e) {
                 var value = $(this).val();
-                if (value == 1) {
+                if (value == 1 || value == 2) {
                     $('#content_folios').removeClass('d-none');
                 }
             });
@@ -927,7 +945,7 @@
                         var t = $(this).val();
                         tramites.push(t);
 
-                        if (t == 1) {
+                        if (t == 1 || t == 2) {
                             condicion_folios = 1;
                         }
 
