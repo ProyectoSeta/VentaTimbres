@@ -26,59 +26,61 @@ class HomeController extends Controller
 
     public function index()
     {
-        function encontrarCombinacionMinima(array $numeros, int $total): array {
-            $combinaciones = [];
-            $mejorCombinacion = null;
+       
+
+        // function encontrarCombinacionMinima(array $numeros, int $total): array {
+        //     $combinaciones = [];
+        //     $mejorCombinacion = null;
         
-            function buscarCombinaciones(array $numeros, int $total, array $combinacionActual, int $indiceActual, array &$combinaciones): void {
-                if ($total === 0) {
-                    $combinaciones[] = $combinacionActual;
-                    return;
-                }
+        //     function buscarCombinaciones(array $numeros, int $total, array $combinacionActual, int $indiceActual, array &$combinaciones): void {
+        //         if ($total === 0) {
+        //             $combinaciones[] = $combinacionActual;
+        //             return;
+        //         }
         
-                if ($total < 0 || $indiceActual >= count($numeros)) {
-                    return;
-                }
+        //         if ($total < 0 || $indiceActual >= count($numeros)) {
+        //             return;
+        //         }
         
-                // Incluir el número actual
-                $nuevaCombinacion = $combinacionActual;
-                $nuevaCombinacion[] = $numeros[$indiceActual];
-                buscarCombinaciones($numeros, $total - $numeros[$indiceActual], $nuevaCombinacion, $indiceActual, $combinaciones);
+        //         // Incluir el número actual
+        //         $nuevaCombinacion = $combinacionActual;
+        //         $nuevaCombinacion[] = $numeros[$indiceActual];
+        //         buscarCombinaciones($numeros, $total - $numeros[$indiceActual], $nuevaCombinacion, $indiceActual, $combinaciones);
         
-                // Excluir el número actual
-                buscarCombinaciones($numeros, $total, $combinacionActual, $indiceActual + 1, $combinaciones);
-            }
+        //         // Excluir el número actual
+        //         buscarCombinaciones($numeros, $total, $combinacionActual, $indiceActual + 1, $combinaciones);
+        //     }
         
-            buscarCombinaciones($numeros, $total, [], 0, $combinaciones);
+        //     buscarCombinaciones($numeros, $total, [], 0, $combinaciones);
         
-            if (empty($combinaciones)) {
-                return []; // No se encontró ninguna combinación
-            }
+        //     if (empty($combinaciones)) {
+        //         return []; // No se encontró ninguna combinación
+        //     }
         
-            // Encontrar la combinación con la menor cantidad de dígitos
-            $longitudMinima = PHP_INT_MAX;
-            foreach ($combinaciones as $combinacion) {
-                if (count($combinacion) < $longitudMinima) {
-                    $longitudMinima = count($combinacion);
-                    $mejorCombinacion = $combinacion;
-                }
-            }
+        //     // Encontrar la combinación con la menor cantidad de dígitos
+        //     $longitudMinima = PHP_INT_MAX;
+        //     foreach ($combinaciones as $combinacion) {
+        //         if (count($combinacion) < $longitudMinima) {
+        //             $longitudMinima = count($combinacion);
+        //             $mejorCombinacion = $combinacion;
+        //         }
+        //     }
         
-            return $mejorCombinacion;
-        }
+        //     return $mejorCombinacion;
+        // }
         
-        // Ejemplo de uso
-        $numeros = [3,5]; 
-        $total = 4;
+        // // Ejemplo de uso
+        // $numeros = [3,5]; 
+        // $total = 9;
         
-        $resultado = encontrarCombinacionMinima($numeros, $total);
-        print_r($resultado);
+        // $resultado = encontrarCombinacionMinima($numeros, $total);
+        // print_r($resultado);
         
-        if (!empty($resultado)) {
-            echo "Combinación encontrada: " . implode(", ", $resultado) . PHP_EOL;
-        } else {
-            echo "No se encontró ninguna combinación." . PHP_EOL;
-        }
+        // if (!empty($resultado)) {
+        //     echo "Combinación encontrada: " . implode(", ", $resultado) . PHP_EOL;
+        // } else {
+        //     echo "No se encontró ninguna combinación." . PHP_EOL;
+        // }
 
         
 

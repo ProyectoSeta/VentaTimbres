@@ -2,7 +2,7 @@
 
 @section('title', 'Venta')
 
-
+@vite(['resources/sass/app.scss', 'resources/js/app.js'])
 @section('content')
     <div class="mx-3">
 
@@ -806,7 +806,7 @@
                     }
                 });
                 
-               
+            
             });
 
 
