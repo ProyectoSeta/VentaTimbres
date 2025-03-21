@@ -84,49 +84,55 @@ class HomeController extends Controller
 
         
 
-        // $user = auth()->id();
-        // $query = DB::table('users')->select('key_sujeto')->where('id','=',$user)->first();
-        // $q2 = DB::table('taquillas')->select('id_taquilla')->where('key_funcionario','=',$query->key_sujeto)->first();
+        $user = auth()->id();
+        $query = DB::table('users')->select('key_sujeto')->where('id','=',$user)->first();
+        $q2 = DB::table('taquillas')->select('id_taquilla')->where('key_funcionario','=',$query->key_sujeto)->first();
 
-        // $id_taquilla = $q2->id_taquilla;
-        // $hoy = date('Y-m-d');
-        // $apertura_admin = false;
-        // $apertura_taquillero = false;
-        // $hora_apertura_admin = '';
-        // $hora_apertura_taquillero = '';
+        $id_taquilla = $q2->id_taquilla;
+        $hoy = date('Y-m-d');
+        $apertura_admin = false;
+        $apertura_taquillero = false;
+        $cierre_taquilla = false;
+        $hora_apertura_admin = '';
+        $hora_apertura_taquillero = '';
+        $hora_cierre_taquilla = '';
 
-        // $q3 = DB::table('apertura_taquillas')->select('apertura_admin','apertura_taquillero')
-        //                                     ->where('key_taquilla','=', $id_taquilla)
-        //                                     ->where('fecha','=', $hoy)->first();
-        // if ($q3) {
-        //     //////hay registro, admin aperturo taquilla
-        //     if ($q3->apertura_taquillero == null) {
-        //         ///////taquillero no ha aperturado
-        //         $apertura_admin = true;
-        //         $apertura_taquillero = false;
-        //         $hora = date("h:i A",strtotime($q3->apertura_admin));
-        //         $hora_apertura_admin = $hora;
+        $q3 = DB::table('apertura_taquillas')->select('apertura_admin','apertura_taquillero','cierre_taquilla')
+                                            ->where('key_taquilla','=', $id_taquilla)
+                                            ->where('fecha','=', $hoy)->first();
+        if ($q3) {
+            //////hay registro, admin aperturo taquilla
+            if ($q3->apertura_taquillero == null) {
+                ///////taquillero no ha aperturado
+                $apertura_admin = true;
+                $apertura_taquillero = false;
+                $hora = date("h:i A",strtotime($q3->apertura_admin));
+                $hora_apertura_admin = $hora;
 
-        //     }else{
-        //         //////taquillero aperturo 
-        //         $apertura_admin = true;
-        //         $apertura_taquillero = true;
-        //         $hora_apertura_admin = date("h:i A",strtotime($q3->apertura_admin));
-        //         $hora_apertura_taquillero = date("h:i A",strtotime($q3->apertura_taquillero));
-        //     }
+            }else{
+                //////taquillero aperturo 
+                $apertura_admin = true;
+                $apertura_taquillero = true;
+                $hora_apertura_admin = date("h:i A",strtotime($q3->apertura_admin));
+                $hora_apertura_taquillero = date("h:i A",strtotime($q3->apertura_taquillero));
+            }
             
-        // }else{
-        //     /////no hay registro, admin no ha aperturado taquilla
-        //     $apertura_admin = false;
-        // }
+            if ($q3->cierre_taquilla != null) {
+                $cierre_taquilla = true;
+                $hora_cierre_taquilla = date("h:i A",strtotime($q3->cierre_taquilla));
+            }
+        }else{
+            /////no hay registro, admin no ha aperturado taquilla
+            $apertura_admin = false;
+        }
 
 
-        // $dias = array("Domingo","Lunes","Martes","Miercoles","Jueves","Viernes","Sábado");
-        // $meses = array("Enero","Febrero","Marzo","Abril","Mayo","Junio","Julio","Agosto","Septiembre","Octubre","Noviembre","Diciembre");   
+        $dias = array("Domingo","Lunes","Martes","Miercoles","Jueves","Viernes","Sábado");
+        $meses = array("Enero","Febrero","Marzo","Abril","Mayo","Junio","Julio","Agosto","Septiembre","Octubre","Noviembre","Diciembre");   
 
-        // $hoy_view = $dias[date('w')].", ".date('d')." de ".$meses[date('n')-1]. " ".date('Y');
+        $hoy_view = $dias[date('w')].", ".date('d')." de ".$meses[date('n')-1]. " ".date('Y');
 
-        // return view('home', compact('apertura_admin','apertura_taquillero','hora_apertura_admin','hora_apertura_taquillero','hoy_view'));
+        return view('home', compact('apertura_admin','apertura_taquillero','hora_apertura_admin','hora_apertura_taquillero','cierre_taquilla','hora_cierre_taquilla','hoy_view'));
 
 
     }
@@ -210,8 +216,6 @@ class HomeController extends Controller
 
 
 
-
-
     public function alert_boveda(){
         $user = auth()->id();
         $query = DB::table('users')->select('key_sujeto')->where('id','=',$user)->first();
@@ -267,8 +271,8 @@ class HomeController extends Controller
                         <p class="text-muted text-end"><span style="color:red">*</span> Campo requerido.</p>
 
                         <div class="d-flex justify-content-center mt-3 mb-3">
-                            <button type="button" class="btn btn-secondary btn-sm me-2" data-bs-dismiss="modal">Cancelar</button>
-                            <button type="submit" class="btn btn-success btn-sm">Aceptar</button>
+                            <button type="submit" class="btn btn-success btn-sm me-2">Aceptar</button>
+                            <button type="button" class="btn btn-secondary btn-sm" data-bs-dismiss="modal">Cancelar</button>
                         </div>
                     </form>
                 </div>';
@@ -288,28 +292,34 @@ class HomeController extends Controller
     public function ingreso_boveda(Request $request){
         $user = auth()->id();
         $query = DB::table('users')->select('key_sujeto')->where('id','=',$user)->first();
-        $q2 = DB::table('taquillas')->select('id_taquilla','clave')->where('key_funcionario','=',$query->key_sujeto)->first();
+        $q2 = DB::table('taquillas')->select('id_taquilla')->where('key_funcionario','=',$query->key_sujeto)->first();
 
         if ($q2) {
             $id_taquilla = $q2->id_taquilla;
             $monto = $request->post('monto');
 
-            $insert = DB::table('boveda_ingresos')->insert(['key_taquilla' => $id_taquilla,'monto' => $monto]); 
-            if ($insert) {
-                $id_ingreso = DB::table('boveda_ingresos')->max('correlativo');
+            $c1 = DB::table('efectivo_taquillas_temps')->select('efectivo')->where('key_taquilla','=',$id_taquilla)->first();
+            if ($c1->efectivo == 0 || $c1->efectivo < $monto) {
+                return response()->json(['success' => false, 'nota' => 'El monto a ingresar en la Bóveda difiere del monto total en taquilla.']);
+            }else{
+                $insert = DB::table('boveda_ingresos')->insert(['key_taquilla' => $id_taquilla,'monto' => $monto]); 
+                if ($insert) {
+                    $id_ingreso = DB::table('boveda_ingresos')->max('correlativo');
 
-                $c1 = DB::table('efectivo_taquillas_temps')->select('efectivo')->where('key_taquilla','=',$id_taquilla)->first();
-                $new_efectivo_temps = $c1->efectivo - $monto;
-                $update = DB::table('efectivo_taquillas_temps')->where('key_taquilla', '=', $id_taquilla)->update(['efectivo' => $new_efectivo_temps]);
-                if ($update) {
-                    return response()->json(['success' => true]);
+                    $new_efectivo_temps = $c1->efectivo - $monto;
+                    $update = DB::table('efectivo_taquillas_temps')->where('key_taquilla', '=', $id_taquilla)->update(['efectivo' => $new_efectivo_temps]);
+                    if ($update) {
+                        return response()->json(['success' => true]);
+                    }else{
+                        $delete = DB::table('boveda_ingresos')->where('correlativo', '=', $id_ingreso)->delete();
+                        return response()->json(['success' => false]);
+                    }
                 }else{
-                    $delete = DB::table('boveda_ingresos')->where('correlativo', '=', $id_ingreso)->delete();
                     return response()->json(['success' => false]);
                 }
-            }else{
-                return response()->json(['success' => false]);
             }
+
+            
         }else{
             ////no esta asignado a ninguna taquilla
             /////BITACORA 
@@ -326,7 +336,7 @@ class HomeController extends Controller
 
         $user = auth()->id();
         $query = DB::table('users')->select('key_sujeto')->where('id','=',$user)->first();
-        $q2 = DB::table('taquillas')->select('id_taquilla','clave')->where('key_funcionario','=',$query->key_sujeto)->first();
+        $q2 = DB::table('taquillas')->select('id_taquilla')->where('key_funcionario','=',$query->key_sujeto)->first();
 
         if ($q2) {
             $id_taquilla = $q2->id_taquilla;
@@ -383,6 +393,43 @@ class HomeController extends Controller
             ////no esta asignado a ninguna taquilla
             /////BITACORA 
             return response()->json(['success' => false]);
+        }
+    }
+
+
+    public function cierre_taquilla(Request $request){
+        $pass = $request->post('clave');
+
+        if ($pass == '' || $pass == null) {
+            return response()->json(['success' => false, 'nota' => 'Ingrese la clave de seguridad.']);
+        }else{
+            $hoy = date('Y-m-d');
+
+            $user = auth()->id();
+            $query = DB::table('users')->select('key_sujeto')->where('id','=',$user)->first();
+            $q2 = DB::table('taquillas')->select('id_taquilla','clave')->where('key_funcionario','=',$query->key_sujeto)->first();
+            if ($q2) {
+                /// usuario taquillero
+                $id_taquilla = $q2->id_taquilla;
+
+                if (Hash::check($pass, $q2->clave)) {
+                    $hora = date('H:i:s');
+                    $update = DB::table('apertura_taquillas')->where('key_taquilla', '=', $id_taquilla)
+                                                            ->where('fecha','=', $hoy)
+                                                            ->update(['cierre_taquilla' => $hora]);
+                    if ($update) {
+                        return response()->json(['success' => true]);
+                    }else{
+                        return response()->json(['success' => false]);
+                    }
+                }else{
+                    return response()->json(['success' => false, 'nota' => 'Disculpe, la contraseña ingresada no es válida.']);
+                }
+            }else{
+                ////no esta asignado a ninguna taquilla
+                /////BITACORA 
+                return response()->json(['success' => false, 'nota' => 'Disculpe, usted no se encuentra asociado a ninguna taquilla.']);
+            }
         }
     }
 

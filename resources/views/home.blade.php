@@ -14,19 +14,30 @@
             <div class="p-lg-5 mx-auto my-5">
                 <h1 class="display-5 text-navy fw-bold">FORMA 14 | Estampillas</h1>
                 <h3 class="fw-normal text-muted mb-3 titulo">Venta de Timbres Fiscales</h3>
-                <div class="d-flex gap-3 justify-content-center fw-normal titulo" style="font-size:12.7px">
-                    @if ($apertura_admin == false)
-                        <p class="text-muted titulo fs-5">Disculpe, el usuario Coordinador no ha aperturado esta Taquilla todavia. Ante cualquier duda, 
-                            comuniquese con su Supervisor.</p>
-                    @elseif ($apertura_admin == true && $apertura_taquillero == false)
-                        <button type="button" class="btn btn-s btn-primary py-1" data-bs-toggle="modal" data-bs-target="#modal_apertura_taquilla">Aperturar Taquilla</button>
-                    @elseif ($apertura_taquillero == true)
-                        <button type="button" class="btn btn-s btn-dark py-1" id="btn_historial_boveda" data-bs-toggle="offcanvas" data-bs-target="#historial_boveda" aria-controls="historial_boveda">Historial Bv.</button>
-                        <button type="button" class="btn btn-s btn-dark py-1" id="btn_boveda" data-bs-toggle="modal" data-bs-target="#modal_ingresar_boveda">Bóveda</button>
-                        <a href="{{ route('venta') }}" class="btn btn-s btn-success py-1">Vender</a>
-                        <button type="button" class="btn btn-s btn-secondary  py-1">Cierre</button>
-                    @endif               
-                </div>
+                @if ($cierre_taquilla == null)
+                    <div class="d-flex gap-3 justify-content-center fw-normal titulo" style="font-size:12.7px">
+                        @if ($apertura_admin == false)
+                            <p class="text-muted titulo fs-5">Disculpe, el usuario Coordinador no ha aperturado esta Taquilla todavia. Ante cualquier duda, 
+                                comuniquese con su Supervisor.</p>
+                        @elseif ($apertura_admin == true && $apertura_taquillero == false)
+                            <button type="button" class="btn btn-s btn-primary py-1" data-bs-toggle="modal" data-bs-target="#modal_apertura_taquilla">Aperturar Taquilla</button>
+                        @elseif ($apertura_taquillero == true)
+                            <button type="button" class="btn btn-s btn-dark py-1" id="btn_historial_boveda" data-bs-toggle="offcanvas" data-bs-target="#historial_boveda" aria-controls="historial_boveda">Historial Bv.</button>
+                            <button type="button" class="btn btn-s btn-dark py-1" id="btn_boveda" data-bs-toggle="modal" data-bs-target="#modal_ingresar_boveda">Bóveda</button>
+                            <a href="{{ route('venta') }}" class="btn btn-s btn-success py-1">Vender</a>
+                            <button type="button" class="btn btn-s btn-secondary  py-1" data-bs-toggle="modal" data-bs-target="#modal_cerrar_taquilla">Cierre</button>
+                        @endif               
+                    </div>
+                @else
+                     <div class="d-flex flex-column">
+                        <h3 class="text-danger titulo fs-3 mb-0 pb-0">Taquilla Cerrada.</h3>
+                        <span class="">Hora de Cierre: {{$hora_cierre_taquilla}}</span>
+                    </div>
+                    
+                    <a href="{{ route('arqueo') }}" class="btn btn-s btn-secondary mt-3">Arqueo</a>
+                @endif
+                   
+                
 
                 <div class="my-4">
                     @if ($apertura_admin == true && $apertura_taquillero == false)
@@ -163,6 +174,36 @@
         <div class="modal-dialog">
             <div class="modal-content" id="content_ingresar_boveda">
                 
+            </div>  <!-- cierra modal-content -->
+        </div>  <!-- cierra modal-dialog -->
+    </div>
+
+     <!-- ************ CERRAR TAQUILLA ************** -->
+     <div class="modal fade" id="modal_cerrar_taquilla" tabindex="-1" aria-hidden="true"  data-bs-backdrop="static" data-bs-keyboard="false">
+        <div class="modal-dialog">
+            <div class="modal-content" id="content_cerrar_taquilla">
+                <div class="modal-header p-2 pt-3 d-flex justify-content-center">
+                    <div class="text-center">
+                        <i class="bx bx-lock-alt fs-2 text-muted me-2"></i>
+                        <h1 class="modal-title fs-5 fw-bold text-navy">Cerrar Taquilla</h1>
+                    </div>
+                </div> 
+                <div class="modal-body px-5 py-3" style="font-size:13px">
+                    <form id="form_cerrar_taquilla" method="post" onsubmit="event.preventDefault(); cerrarTaquilla()">
+                        <p class="text-muted">IMPORTANTE: Si cierra la Taquilla, no podrá volver a aperturarla durante el día, sin la aprobacion del Coordinador.
+                             Asegurese de haber culminado todos los procesos.</p>    
+
+                        <label for="clave" class="form-label"><span class="text-danger">* </span>Ingrese la clave de seguridad de la Taquilla:</label>
+                        <input type="password" id="clave" class="form-control form-control-sm" name="clave" required>
+
+                        <p class="text-muted text-end"><span style="color:red">*</span> Campos requeridos.</p>
+
+                        <div class="d-flex justify-content-center mt-3 mb-3">
+                            <button type="submit" class="btn btn-dark btn-sm me-2">Cerrar Taquilla</button>
+                            <button type="button" class="btn btn-secondary btn-sm " data-bs-dismiss="modal">Cancelar</button>
+                        </div>
+                    </form>
+                </div>
             </div>  <!-- cierra modal-content -->
         </div>  <!-- cierra modal-dialog -->
     </div>
@@ -367,7 +408,12 @@
                             alert('INGRESO EXITOSO.');
                             window.location.href = "{{ route('home')}}";
                         }else{
-                            alert('Disculpe, ha ocurrido un error.');
+                            if (response.nota != '') {
+                                alert(response.nota);
+                            }else{
+                                alert('Disculpe, ha ocurrido un error.');
+                            }
+                            
                         }  
                     },
                     error: function(error){
@@ -375,6 +421,38 @@
                     }
                 });
         }
+
+        function cerrarTaquilla(){
+            var formData = new FormData(document.getElementById("form_cerrar_taquilla"));
+                $.ajax({
+                    headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') },
+                    url:'{{route("home.cierre_taquilla") }}',
+                    type:'POST',
+                    contentType:false,
+                    cache:false,
+                    processData:false,
+                    async: true,
+                    data: formData,
+                    success: function(response){
+                        console.log(response);
+                        if (response.success) {
+                            alert('CIERRE DE TAQUILLA EXITOSO.');
+                            window.location.href = "{{ route('home')}}";
+                        }else{
+                            if (response.nota != '') {
+                                alert(response.nota);
+                            }else{
+                                alert('Disculpe, ha ocurrido un error.');
+                            }
+                            
+                        }  
+                    },
+                    error: function(error){
+                        
+                    }
+                });
+        }
+
     </script>
   
 @stop

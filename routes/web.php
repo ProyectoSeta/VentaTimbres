@@ -33,6 +33,7 @@ Route::post('/home/alert_boveda', [App\Http\Controllers\HomeController::class, '
 Route::post('/home/modal_boveda', [App\Http\Controllers\HomeController::class, 'modal_boveda'])->name('home.modal_boveda');
 Route::post('/home/ingreso_boveda', [App\Http\Controllers\HomeController::class, 'ingreso_boveda'])->name('home.ingreso_boveda');
 Route::post('/home/historial_boveda', [App\Http\Controllers\HomeController::class, 'historial_boveda'])->name('home.historial_boveda');
+Route::post('/home/cierre_taquilla', [App\Http\Controllers\HomeController::class, 'cierre_taquilla'])->name('home.cierre_taquilla');
 
 
 ///////////////////// PAPEL DE SEGURIDAD
@@ -202,6 +203,8 @@ Route::post('/sede_taquilla/habilitar_taquilla', [App\Http\Controllers\SedeTaqui
 
 
 
+///////////////////// ARQUEO
+Route::get('/arqueo', [App\Http\Controllers\ArqueoTaquillaController::class, 'index'])->name('arqueo');
 
 
 // Route::post('/sede_taquilla/taquilleros', [App\Http\Controllers\SedeTaquillaController::class, 'taquilleros'])->name('sede_taquilla.taquilleros');

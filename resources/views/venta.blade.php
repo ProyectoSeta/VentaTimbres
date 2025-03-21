@@ -751,7 +751,7 @@
             ///////////////////////////////////////////////////////////////////
 
             //////////////////////////// BUSCAR CONTRIBUYENTE
-            $(document).on('keyup','#identidad_nro', function(e) {
+            $(document).on('keyup','#identidad_nro', function(e) {  
                 e.preventDefault(); 
                 var value = $(this).val();
                 var condicion = $('#identidad_condicion').val();
