@@ -10,7 +10,7 @@
             <!-- VENTA -->
             <div class="col-lg-8">
                 <!-- UCD HOY -->
-                <div class="d-flex justify-content-center align-items-center mt-3 pb-3" style="font-size:14px">
+                <!-- <div class="d-flex justify-content-center align-items-center mt-3 pb-3" style="font-size:14px">
                     <div class="d-flex bg-navy rounded-4">
                         <div class="bg-primary rounded-start-4 py-2 px-3 fs-6 fw-bold">
                             <span>U.C.D. Hoy   </span>
@@ -19,7 +19,7 @@
                             <span>{{$ucd}} bs. ({{$moneda}})</span>
                         </div> 
                     </div>
-                </div>
+                </div> -->
 
                 <!-- TOTALES -->
                 
@@ -67,23 +67,23 @@
                                         </select>
                                     </div>
                                     <!-- ci o rif -->
-                                    <div class="col-sm-5">
+                                    <div class="col-sm-4">
                                         <label class="form-label" for="identidad_condicion">C.I / R.I.F</label><span class="text-danger">*</span>
                                         <div class="row">
-                                            <div class="col-5">
+                                            <div class="col-4">
                                                 <select class="form-select form-select-sm" id="identidad_condicion" aria-label="Small select example" name="identidad_condicion">
                                                     <option>Seleccione</option>
                                                 </select>
                                             </div>
                                             <!-- <div class="col-1">-</div> -->
-                                            <div class="col-7">
-                                                <input type="number" id="identidad_nro" class="form-control form-control-sm" name="identidad_nro" required >
-                                                <p class="text-end text-muted fw-bold mb-0" style="font-size:12px;">Ejemplo: 7521004</p>
+                                            <div class="col-8">
+                                                <input type="number" id="identidad_nro" class="form-control form-control-sm" name="identidad_nro" required placeholder="Ejm: 7521004">
+                                                <!-- <p class="text-end text-muted fw-bold mb-0" style="font-size:12px;"></p> -->
                                             </div>
                                         </div>
                                     </div>
                                     <!-- nombre o razon -->
-                                    <div class="col-sm-4">
+                                    <div class="col-sm-5">
                                         <label class="form-label" for="nombre">Nombre / Razón Social</label><span class="text-danger">*</span>
                                         <input type="text" id="nombre" class="form-control form-control-sm" name="nombre" disabled required>
                                     </div>
@@ -250,15 +250,15 @@
             <!-- DETALLES VENTA -->
             <div class="col-lg-4">
                 <!-- DEBITO -->
-                <h5 class="titulo fw-bold text-success fs-4 mt-4 mb-3">Debito</h5>
+                <!-- <h5 class="titulo fw-bold text-success fs-4 mt-4 mb-3">Debito</h5> -->
                 <div class="">
                     <div class="d-flex flex-column">
                         <div class="bg-primary-subtle rounded-3 px-3 py-1 mb-2">
                             <div class="d-flex justify-content-between align-items-center">
                                 <p class="d-flex flex-column titulo mb-0">
-                                    <span class="fs-4 fw-bold text-navy">Debitado</span>
+                                    <span class="fs-5 fw-bold text-navy">Debitado</span>
                                 </p>
-                                <span class="fs-4 text-navy fw-bold" id="debitado">0,00</span>
+                                <span class="fs-5 text-navy fw-bold" id="debitado">0,00</span>
                             </div>
                         </div>
                         <div class="bg-body-secondary rounded-3 px-3 py-1 mb-2">
@@ -279,6 +279,7 @@
                         </div>
                     </div>
                 </div>
+                 
 
                 <!-- DETALLE -->
                 <div class="border rounded-3 my-3" style="font-size:12px">
@@ -288,47 +289,38 @@
                         <span>Tramites | Formas</span>
                     </div>
 
-                    <div class="">
-                        <div class="" tramite="1">
-                            <div class="text-navy fw-bold mx-3"><span class="text-muted">Tramite:</span> Protocolización</div>
-                            <table class="table table-sm table-borderless text-center lh-sm">
+                    <div class="mx-3">
+                        <table class="table table-sm table-borderles lh-sm"  style="font-size:12px">
+                            <thead class="text-center">
+                               <tr>
+                                    <th>Tramite</th>
+                                    <th>Detalle</th>
+                                    <th>Total UCD</th>
+                                </tr> 
+                            </thead>
+                            <tbody>
                                 <tr>
-                                    <th>Forma</th>
-                                    <th>Cant.</th>
-                                    <th>UCD</th>
+                                    <td>Protocolización</td>
+                                    <td>
+                                        <div class="d-flex flex-column lh-sm">
+                                            <span>TFE 14 (10 UCD)</span>
+                                        </div>
+                                    </td>
+                                    <th>10 UDC</th>
                                 </tr>
                                 <tr>
-                                    <td>Estampilla</td>
-                                    <td>1</td>
-                                    <th>5 UDC</th>
+                                    <td>Sellado de Libro</td>
+                                    <td>
+                                        <div class="d-flex flex-column lh-sm">
+                                            <span>Est (5 UCD)</span>
+                                            <span>Est (5 UCD)</span>
+                                        </div>
+                                    </td>
+                                    <th>10 UDC</th>
                                 </tr>
-                                <tr>
-                                    <td>Estampilla</td>
-                                    <td>1</td>
-                                    <th>2 UDC</th>
-                                </tr>
-                            </table>
-                        </div>
-                        <div class="" tramite="1">
-                            <div class="text-navy fw-bold mx-3"><span class="text-muted">Tramite:</span> Protocolización</div>
-                            <table class="table table-sm table-borderless text-center lh-sm">
-                                <tr>
-                                    <th>Forma</th>
-                                    <th>Cant.</th>
-                                    <th>UCD</th>
-                                </tr>
-                                <tr>
-                                    <td>Estampilla</td>
-                                    <td>1</td>
-                                    <th>5 UDC</th>
-                                </tr>
-                                <tr>
-                                    <td>Estampilla</td>
-                                    <td>1</td>
-                                    <th>2 UDC</th>
-                                </tr>
-                            </table>
-                        </div>
+                            </tbody>
+                            
+                        </table>
                     </div>
                 </div>
 

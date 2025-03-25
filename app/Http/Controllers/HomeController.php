@@ -26,61 +26,80 @@ class HomeController extends Controller
 
     public function index()
     {
-       
+        
 
-        // function encontrarCombinacionMinima(array $numeros, int $total): array {
-        //     $combinaciones = [];
-        //     $mejorCombinacion = null;
+
+
+
+        // function calcularCombinacionMinimaConLimite($arrayNumeros, $montoTotal, $limiteElementos = 5) {
+        //     $combinacion = [];
+            
+        //     // Ordenar los números en orden descendente
+        //     usort($arrayNumeros, function($a, $b) {
+        //         return $b['numero'] - $a['numero'];
+        //     });
         
-        //     function buscarCombinaciones(array $numeros, int $total, array $combinacionActual, int $indiceActual, array &$combinaciones): void {
-        //         if ($total === 0) {
-        //             $combinaciones[] = $combinacionActual;
-        //             return;
+        //     $elementosUsados = 0;
+        
+        //     foreach ($arrayNumeros as $item) {
+        //         $numero = $item['numero'];
+        //         $cantidadDisponible = $item['cantidad'];
+        
+        //         // Calcular cuántas veces podemos usar este número sin exceder el monto o el límite de elementos
+        //         $cantidadUsar = min(floor($montoTotal / $numero), $cantidadDisponible);
+        
+        //         // Ajustar la cantidad a usar si excede el límite de elementos
+        //         if ($cantidadUsar + $elementosUsados > $limiteElementos) {
+        //             $cantidadUsar = $limiteElementos - $elementosUsados;
         //         }
         
-        //         if ($total < 0 || $indiceActual >= count($numeros)) {
-        //             return;
+        //         if ($cantidadUsar > 0) {
+        //             $combinacion[] = [
+        //                 'numero' => $numero,
+        //                 'cantidad' => $cantidadUsar,
+        //             ];
+        //             $montoTotal -= $cantidadUsar * $numero;
+        //             $elementosUsados += $cantidadUsar;
         //         }
         
-        //         // Incluir el número actual
-        //         $nuevaCombinacion = $combinacionActual;
-        //         $nuevaCombinacion[] = $numeros[$indiceActual];
-        //         buscarCombinaciones($numeros, $total - $numeros[$indiceActual], $nuevaCombinacion, $indiceActual, $combinaciones);
-        
-        //         // Excluir el número actual
-        //         buscarCombinaciones($numeros, $total, $combinacionActual, $indiceActual + 1, $combinaciones);
-        //     }
-        
-        //     buscarCombinaciones($numeros, $total, [], 0, $combinaciones);
-        
-        //     if (empty($combinaciones)) {
-        //         return []; // No se encontró ninguna combinación
-        //     }
-        
-        //     // Encontrar la combinación con la menor cantidad de dígitos
-        //     $longitudMinima = PHP_INT_MAX;
-        //     foreach ($combinaciones as $combinacion) {
-        //         if (count($combinacion) < $longitudMinima) {
-        //             $longitudMinima = count($combinacion);
-        //             $mejorCombinacion = $combinacion;
+        //         // Si el monto total llega a 0 o alcanzamos el límite de elementos, terminamos
+        //         if ($montoTotal == 0 || $elementosUsados >= $limiteElementos) {
+        //             break;
         //         }
         //     }
         
-        //     return $mejorCombinacion;
+        //     // Verificar si el monto total pudo ser alcanzado
+        //     if ($montoTotal > 0) {
+        //         return null; // No se pudo lograr el monto exacto con los números disponibles y el límite de elementos
+        //     }
+        
+        //     return $combinacion;
         // }
         
-        // // Ejemplo de uso
-        // $numeros = [3,5]; 
-        // $total = 9;
         
-        // $resultado = encontrarCombinacionMinima($numeros, $total);
-        // print_r($resultado);
+
+        // $arrayNumeros = [
+        //     ['numero' => 5, 'cantidad' => 3],
+        //     ['numero' => 3, 'cantidad' => 5],
+        //     ['numero' => 2, 'cantidad' => 10],
+        //     ['numero' => 1, 'cantidad' => 0],
+        // ];
         
-        // if (!empty($resultado)) {
-        //     echo "Combinación encontrada: " . implode(", ", $resultado) . PHP_EOL;
+        // $montoTotal = 6;
+        
+        // $resultado = calcularCombinacionMinimaConLimite($arrayNumeros, $montoTotal);
+        
+        // if ($resultado) {
+        //     echo "Mejor combinación encontrada:\n";
+        //     foreach ($resultado as $item) {
+        //         echo "Número: {$item['numero']}, Cantidad: {$item['cantidad']}\n";
+        //     }
         // } else {
-        //     echo "No se encontró ninguna combinación." . PHP_EOL;
+        //     echo "No es posible alcanzar el monto total dentro del límite de elementos.\n";
         // }
+        
+
+        
 
         
 
