@@ -8,7 +8,7 @@
 
         <div class="row">
             <!-- VENTA -->
-            <div class="col-lg-8">
+            <div class="col-lg-9">
                 <!-- UCD HOY -->
                 <!-- <div class="d-flex justify-content-center align-items-center mt-3 pb-3" style="font-size:14px">
                     <div class="d-flex bg-navy rounded-4">
@@ -248,7 +248,7 @@
 
             </div>
             <!-- DETALLES VENTA -->
-            <div class="col-lg-4">
+            <div class="col-lg-3">
                 <!-- DEBITO -->
                 <!-- <h5 class="titulo fw-bold text-success fs-4 mt-4 mb-3">Debito</h5> -->
                 <div class="">
@@ -502,6 +502,88 @@
         </div>  <!-- cierra modal-dialog -->
     </div>
 
+    <div class="modal fade" id="modal_detalle_estampillas" tabindex="-1" data-bs-backdrop="static" data-bs-keyboard="false" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content" id="content_detalle_estampillas">
+                <div class="modal-header p-2 pt-3">
+                    <h1 class="modal-title fs-5 fw-bold text-muted">Detalle Estampillas</h1>
+                </div>
+                <div class="modal-body px-5" style="font-size:13px">
+
+                    <div class="row">
+                        <div class="col-sm-4">
+                            <div class="text-center text-muted titulo fs-6 mb-2">Inventario de Estampillas</div>
+                            <div class="d-flex flex-column">
+                                <div class="mb-2 border py-2 px-3 rounded-4">
+                                    <div class="d-flex flex-column align-items-center">
+                                        <div class="fs-6 titulo text-muted fw-bold">1 U.C.D.</div>
+                                        <div class="fw-bold bg-secondary-subtle text-center rounded-3 px-2">100 <span class="">Und.</span></div>
+                                    </div>
+                                </div>
+                                <div class="mb-2 border py-2 px-3 rounded-4">
+                                    <div class="d-flex flex-column align-items-center">
+                                        <div class="fs-6 titulo text-muted fw-bold">2 U.C.D.</div>
+                                        <div class="fw-bold bg-secondary-subtle text-center rounded-3 px-2">100 <span class="">Und.</span></div>
+                                    </div>
+                                </div>
+                                <div class="mb-2 border border-danger py-2 px-3 rounded-4">
+                                    <div class="d-flex flex-column align-items-center">
+                                        <div class="fs-6 titulo text-muted fw-bold">3 U.C.D.</div>
+                                        <div class="fw-bold bg-danger-subtle text-center rounded-3 px-2">0 <span class="">Und.</span></div>
+                                    </div>
+                                </div>
+                                <div class="mb-2 border py-2 px-3 rounded-4">
+                                    <div class="d-flex flex-column align-items-center">
+                                        <div class="fs-6 titulo text-muted fw-bold">5 U.C.D.</div>
+                                        <div class="fw-bold bg-secondary-subtle text-center rounded-3 px-2">100 <span class="">Und.</span></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-sm-8">
+                            <div class="titulo fw-bold fs-4 text-center"><span class="text-muted me-2">Total</span> 7 U.C.D.</div>
+                            <form action="">
+                                <p class="text-muted mt-2"><span class="text-danger">*</span> Ingrese las estampillas que se utilizaran para la venta.</p>
+                                <div id="content_detalle_est">
+                                    <div class="d-flex justify-content-center pb-1">
+                                        <div class="row">
+                                            <div class="col-5">
+                                                <label class="form-label" for="ucd_est">U.C.D.</label><span class="text-danger">*</span>
+                                                <select class="form-select form-select-sm ucd_est" aria-label="Small select example"id="ucd_est_1" nro="1" required>
+                                                    <option value="1">1 UCD</option>
+                                                    <option value="2">2 UCD</option>
+                                                    <option value="3">3 UCD</option>
+                                                    <option value="3">5 UCD</option>
+                                                </select>
+                                            </div>
+                                            <div class="col-5">
+                                                <label class="form-label" for="cant_est">Cantidad</label><span class="text-danger">*</span>
+                                                <input type="number" class="form-control form-control-sm cant_est" id="cant_est_1" nro="1"  required>
+                                            </div>
+                                            <div class="col-sm-1 pt-4">
+                                                <a  href="javascript:void(0);" class="btn add_button_estampilla border-0">
+                                                    <i class="bx bx-plus fs-4" style="color:#038ae4"></i>
+                                                </a>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="d-flex justify-content-center mt-3 mb-3">
+                                    <button type="submit" class="btn btn-success btn-sm me-3">Aceptar</button>
+                                    <button type="button" class="btn btn-secondary btn-sm" data-bs-dismiss="modal">Cancelar</button>
+                                </div> 
+                            </form>
+                        </div>
+                    </div>
+                    
+
+                    
+                </div>
+            </div>  <!-- cierra modal-content -->
+        </div>  <!-- cierra modal-dialog -->
+    </div>
+
     
 
     <!-- <div class="modal fade" id="modal_timbre_impreso" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
@@ -741,6 +823,37 @@
                     x--; //Decrement field counter
                 });
             ///////////////////////////////////////////////////////////////////
+
+            ///////////////////////////////////////AGREGAR CAMPOS A OTRO(S) ESTAMPILLAS
+                var maxFieldeEst = 3; //Input fields increment limitation
+                var h = 1; //Initial field counter is 1
+
+                $(document).on('click', '.add_button_estampilla', function(e){ //Once add button is clicked
+                    if(h < maxFieldeEst){ //Check maximum number of input fields
+                        h++; //Increment field counter
+                        $('#content_detalle_est').append('<div class="d-flex justify-content-center pb-1">'+
+                                        '<div class="row">'+
+                                            '<div class="col-5">'+
+                                                '<select class="form-select form-select-sm ucd_est" aria-label="Small select example"id="ucd_est_'+h+'" nro="'+h+'" required>'+
+                                                    '<option value="1">1 UCD</option>'+
+                                                    '<option value="2">2 UCD</option>'+
+                                                    '<option value="3">3 UCD</option>'+
+                                                    '<option value="3">5 UCD</option>'+
+                                                '</select>'+
+                                            '</div>'+
+                                            '<div class="col-5">'+
+                                                '<input type="number" class="form-control form-control-sm cant_est" id="cant_est_1" nro="1"  required>'+
+                                            '</div>'+
+                                            '<div class="col-sm-1">'+
+                                                '<a  href="javascript:void(0);" class="btn remove_button_estampillas" nro="'+h+'">'+
+                                                    '<i class="bx bx-x fs-4"></i>'+
+                                                '</a>'+
+                                            '</div>'+
+                                        '</div>'+
+                                    '</div>'); // Add field html
+                    }
+                });
+            //////////////////////////////////////////////////////////////////
 
             //////////////////////////// BUSCAR CONTRIBUYENTE
             $(document).on('keyup','#identidad_nro', function(e) {  
@@ -1029,6 +1142,26 @@
                     }
                 });
             });
+
+
+
+            ///////////////////////// FORMA ESTAMPILLAS
+            $(document).on('change','.forma', function(e) {
+                var value = $(this).val();
+                var nro =  $(this).attr('nro');
+
+                if (value == 4) {
+                    ////ESTAMPILLAS
+                    $('#modal_detalle_estampillas').modal('show');
+
+                }else{
+                    ////TFE14
+
+                }
+                
+            });
+    
+
 
 
             //////////////////////////// MONTO TOTAL

@@ -52,7 +52,50 @@ class TaquillasSedeer extends Seeder
         // ]);
 
 
+        ////////////// TABLA INVENTARIO TEMP TAQUILLAS ESTAMPILLAS Y TFE 14
+        // ESTAMPILLAS
+        DB::table('inv_est_taq_temps')->insert([
+            'key_taquilla' => 1,
+            '1_ucd' => 0,
+            '2_ucd' => 0,
+            '3_ucd' => 0,
+            '5_ucd' => 0,
+            'fecha' => '2025-03-10'
+        ]);
 
+        DB::table('inv_est_taq_temps')->insert([
+            'key_taquilla' => 2,
+            '1_ucd' => 0,
+            '2_ucd' => 0,
+            '3_ucd' => 0,
+            '5_ucd' => 0,
+            'fecha' => '2025-03-10'
+        ]);
+        DB::table('inv_est_taq_temps')->insert([
+            'key_taquilla' => 3,
+            '1_ucd' => 0,
+            '2_ucd' => 0,
+            '3_ucd' => 0,
+            '5_ucd' => 0,
+            'fecha' => '2025-03-10'
+        ]);
+
+        // TFE14
+        DB::table('inv_tfe_taq_temps')->insert([
+            'key_taquilla' => 1,
+            'cantidad' => 0,
+            'fecha' => '2025-03-10'
+        ]);
+        DB::table('inv_tfe_taq_temps')->insert([
+            'key_taquilla' => 2,
+            'cantidad' => 0,
+            'fecha' => '2025-03-10'
+        ]);
+        DB::table('inv_tfe_taq_temps')->insert([
+            'key_taquilla' => 3,
+            'cantidad' => 0,
+            'fecha' => '2025-03-10'
+        ]);
         
     }
 }
