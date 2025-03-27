@@ -177,12 +177,15 @@ class HomeController extends Controller
 
                 if (Hash::check($pass, $q2->clave)) {
                     $hora = date('H:i:s');
+
                     // ACTUALIZCION DEL INVENTARIO DE TAQUILLA (ESTAMPILLAS Y TFES)
                     $q3 = DB::table('ucd_denominacions')->select('denominacions')->where('estampillas','=','true')->get();
                     foreach ($q3 as $key) {
-                        $deno = $key->denominacions;
+                        $key_deno = $key->denominacions;
                         
                     }
+
+                    
 
 
 
