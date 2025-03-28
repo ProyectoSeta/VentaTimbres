@@ -1576,9 +1576,123 @@ class VentaController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, string $id)
+    public function estampillas(Request $request)
     {
-        //
+        $user = auth()->id();
+        $query = DB::table('users')->select('key_sujeto')->where('id','=',$user)->first();
+        $q2 = DB::table('taquillas')->select('id_taquilla','clave')->where('key_funcionario','=',$query->key_sujeto)->first();
+        if ($q2){
+            $id_taquilla = $q2->id_taquilla;
+
+            $tramite = $request->post('tramite');
+            $condicion_sujeto = $request->post('condicion_sujeto');
+
+            $total_ucd = '';
+            $options = 'option value="Seleccione">Seleccione</option>';
+
+            // PRECIO TRAMITE
+            $query = DB::table('tramites')->where('id_tramite','=', $tramite)->first();
+            if ($condicion_sujeto == 10 || $condicion_sujeto == 11) {
+                //////juridico (firma personal - empresa)
+            $total_ucd = $query->juridico;
+            }else{
+                ////natural
+                $total_ucd = $query->natural;
+            }
+
+            // CONSULTA INVENTARIO
+            $q1 = DB::table('inv_est_taq_temps')->where('key_taquilla','=', $id_taquilla)->first();
+            $html_inventario = '<div class="text-center text-muted titulo fs-6 mb-2">Inventario de Estampillas</div>
+                            <div class="d-flex flex-column">
+                                <div class="mb-2 border py-2 px-3 rounded-4">
+                                    <div class="d-flex flex-column align-items-center">
+                                        <div class="fs-6 titulo text-muted fw-bold">1 U.C.D.</div>
+                                        <div class="fw-bold bg-secondary-subtle text-center rounded-3 px-2 mb-1">'.$q1->one_ucd.' <span class="">Und.</span></div>
+                                    </div>
+                                </div>
+                                <div class="mb-2 border py-2 px-3 rounded-4">
+                                    <div class="d-flex flex-column align-items-center">
+                                        <div class="fs-6 titulo text-muted fw-bold">2 U.C.D.</div>
+                                        <div class="fw-bold bg-secondary-subtle text-center rounded-3 px-2 mb-1">'.$q1->two_ucd.' <span class="">Und.</span></div>
+                                    </div>
+                                </div>
+                                <div class="mb-2 border border-danger py-2 px-3 rounded-4">
+                                    <div class="d-flex flex-column align-items-center">
+                                        <div class="fs-6 titulo text-muted fw-bold">3 U.C.D.</div>
+                                        <div class="fw-bold bg-danger-subtle text-center rounded-3 px-2 mb-1">'.$q1->three_ucd.' <span class="">Und.</span></div>
+                                    </div>
+                                </div>
+                                <div class="mb-2 border py-2 px-3 rounded-4">
+                                    <div class="d-flex flex-column align-items-center">
+                                        <div class="fs-6 titulo text-muted fw-bold">5 U.C.D.</div>
+                                        <div class="fw-bold bg-secondary-subtle text-center rounded-3 px-2 mb-1">'.$q1->five_ucd.' <span class="">Und.</span></div>
+                                    </div>
+                                </div>
+                            </div>';
+
+            // OPTION UCD ESTAMPILLAS  
+            $q2 = DB::table('ucd_denominacions')->where('estampillas','=', 'true')->get();
+            foreach ($q2 as $key) {
+                $options .= '<option value="'.$key->id.'">'.$key->denominacion.' UCD</option>';
+            }
+
+            // HTML
+            $html = '<div class="modal-header p-2 pt-3">
+                        <div class=" d-flex align-items-center">
+                            <i class="bx bx-receipt fs-4 mx-2 text-secondary"></i>
+                            <h1 class="modal-title fs-5 fw-bold text-muted">Detalle Estampillas</h1>
+                        </div>
+                    </div>
+                    <div class="modal-body px-5" style="font-size:13px">
+                        <div class="row">
+                            <div class="col-sm-4">
+                                '.$html_inventario.'
+                            </div>
+                            <div class="col-sm-8">
+                                <div class="titulo fw-bold fs-4 text-center"><span class="text-muted me-2">Total</span> '.$total_ucd.' U.C.D.</div>
+                                <form action="">
+                                    <p class="text-muted mt-2"><span class="text-danger">*</span> Ingrese las estampillas que se utilizaran para la venta.</p>
+                                    <div id="content_detalle_est">
+                                        <div class="d-flex justify-content-center pb-1">
+                                            <div class="row">
+                                                <div class="col-5">
+                                                    <label class="form-label" for="ucd_est">U.C.D.</label><span class="text-danger">*</span>
+                                                    <select class="form-select form-select-sm ucd_est" aria-label="Small select example"id="ucd_est_1" nro="1" required>
+                                                        '.$options.'
+                                                    </select>
+                                                </div>
+                                                <div class="col-5">
+                                                    <label class="form-label" for="cant_est">Cantidad</label><span class="text-danger">*</span>
+                                                    <input type="number" class="form-control form-control-sm cant_est" id="cant_est_1" nro="1"  required>
+                                                </div>
+                                                <div class="col-sm-1 pt-4">
+                                                    <a  href="javascript:void(0);" class="btn add_button_estampilla border-0">
+                                                        <i class="bx bx-plus fs-4" style="color:#038ae4"></i>
+                                                    </a>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="d-flex justify-content-center mt-3 mb-3">
+                                        <button type="submit" class="btn btn-success btn-sm me-3">Aceptar</button>
+                                        <button type="button" class="btn btn-secondary btn-sm" data-bs-dismiss="modal">Cancelar</button>
+                                    </div> 
+                                </form>
+                            </div>
+                        </div>                    
+                    </div>';
+
+            return response($html);
+
+
+        }else{
+            ////no esta asignado a ninguna taquilla
+            /////BITACORA 
+            return response()->json(['success' => false]);
+        }
+        
+
     }
 
     /**

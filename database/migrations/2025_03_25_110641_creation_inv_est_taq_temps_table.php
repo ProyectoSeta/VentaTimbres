@@ -17,10 +17,10 @@ return new class extends Migration
             $table->integer('key_taquilla')->unsigned()->unique();
             $table->foreign('key_taquilla')->references('id_taquilla')->on('taquillas')->onDelete('cascade');
             
-            $table->integer('1_ucd');
-            $table->integer('2_ucd');
-            $table->integer('3_ucd');
-            $table->integer('5_ucd');
+            $table->integer('one_ucd');
+            $table->integer('two_ucd');
+            $table->integer('three_ucd');
+            $table->integer('five_ucd');
             
             $table->date('fecha');
             

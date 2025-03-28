@@ -179,25 +179,93 @@ class HomeController extends Controller
                     $hora = date('H:i:s');
 
                     // ACTUALIZCION DEL INVENTARIO DE TAQUILLA (ESTAMPILLAS Y TFES)
-                    $q3 = DB::table('ucd_denominacions')->select('denominacions')->where('estampillas','=','true')->get();
-                    foreach ($q3 as $key) {
-                        $key_deno = $key->denominacions;
+                    $upd_1 = DB::table('inv_est_taq_temps')->where('key_taquilla', '=', $id_taquilla)
+                                                                        ->update(['fecha' => $hoy]);
+                    $upd_2 = DB::table('inv_tfe_taq_temps')->where('key_taquilla', '=', $id_taquilla)
+                                                                        ->update(['fecha' => $hoy]);
+                                                                        
+                    if ($upd_1 && $upd_2) {
+                        // INVENTARO ESTAMPILLAS TAQUILLA
+                        $q3 = DB::table('ucd_denominacions')->select('id','denominacion')->where('estampillas','=','true')->get();
+                        foreach ($q3 as $key) {
+                            $key_deno = $key->id;
+                            $deno = $key->denominacion;
+
+                            $cant_inv = 0;
+
+                            $c1 = DB::table('detalle_asignacion_estampillas')->select('cantidad_timbres','vendido')
+                                                                            ->where('key_taquilla','=',$id_taquilla)
+                                                                            ->where('key_denominacion','=',$key_deno)
+                                                                            ->where('condicion','!=',7)->get(); 
+                                                                            // return response($c1);
+                            if ($c1) {
+                                foreach ($c1 as $value) {
+                                    $cant_inv = $cant_inv + ($value->cantidad_timbres - $value->vendido);
+                                }
+                            }else{
+                                $cant_inv = 0;
+                            }
+                            
+
+                            switch ($key_deno) {
+                                case 1:
+                                    # 1 UCD
+                                    $upd_inv = DB::table('inv_est_taq_temps')->where('key_taquilla', '=', $id_taquilla)
+                                                                            ->where('fecha','=', $hoy)
+                                                                            ->update(['one_ucd' => $cant_inv]);
+                                    break;
+                                case 2:
+                                    # 2 UCD
+                                    $upd_inv = DB::table('inv_est_taq_temps')->where('key_taquilla', '=', $id_taquilla)
+                                                                            ->where('fecha','=', $hoy)
+                                                                            ->update(['two_ucd' => $cant_inv]);
+                                    break;
+                                case 3:
+                                    # 3 UCD
+                                    $upd_inv = DB::table('inv_est_taq_temps')->where('key_taquilla', '=', $id_taquilla)
+                                                                            ->where('fecha','=', $hoy)
+                                                                            ->update(['three_ucd' => $cant_inv]);
+                                    break;
+                                case 4:
+                                    # 5 UCD
+                                    $upd_inv = DB::table('inv_est_taq_temps')->where('key_taquilla', '=', $id_taquilla)
+                                                                            ->where('fecha','=', $hoy)
+                                                                            ->update(['five_ucd' => $cant_inv]);
+                                    break;
+                                default:
+                                    # code...
+                                    break;
+                            }
+                        }
+
+                        // INVENTARIO TFES TAQUILLA
+                        $cant_tfe = 0;
+                        $c2 = DB::table('inventario_tfes')->select('cantidad_timbres','vendido')
+                                                            ->where('key_taquilla','=',$id_taquilla)
+                                                            ->where('condicion','!=',7)->get();
+                        if ($c2) {
+                            foreach ($c2 as $value) {
+                                $cant_tfe = $cant_tfe + ($value->cantidad_timbres - $value->vendido);
+                            }
+                        }else{
+                            $cant_tfe = 0;
+                        }
                         
-                    }
 
-                    
-
-
-
+                        $upd_inv_tfe = DB::table('inv_tfe_taq_temps')->where('key_taquilla', '=', $id_taquilla)
+                                                                ->where('fecha','=', $hoy)
+                                                                ->update(['cantidad' => $cant_tfe]);
 
 
 
-
-                    $update = DB::table('apertura_taquillas')->where('key_taquilla', '=', $id_taquilla)
-                                                            ->where('fecha','=', $hoy)
-                                                            ->update(['apertura_taquillero' => $hora]);
-                    if ($update) {
-                        return response()->json(['success' => true]);
+                        $update = DB::table('apertura_taquillas')->where('key_taquilla', '=', $id_taquilla)
+                                                                ->where('fecha','=', $hoy)
+                                                                ->update(['apertura_taquillero' => $hora]);
+                        if ($update) {
+                            return response()->json(['success' => true]);
+                        }else{
+                            return response()->json(['success' => false]);
+                        }
                     }else{
                         return response()->json(['success' => false]);
                     }

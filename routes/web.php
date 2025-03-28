@@ -87,6 +87,8 @@ Route::post('/venta/total', [App\Http\Controllers\VentaController::class, 'total
 Route::post('/venta/debitado', [App\Http\Controllers\VentaController::class, 'debitado'])->name('venta.debitado');
 Route::post('/venta/add_contribuyente', [App\Http\Controllers\VentaController::class, 'add_contribuyente'])->name('venta.add_contribuyente');
 
+Route::post('/venta/estampillas', [App\Http\Controllers\VentaController::class, 'estampillas'])->name('venta.estampillas');
+
 Route::post('/venta/venta', [App\Http\Controllers\VentaController::class, 'venta'])->name('venta.venta');
 
 
