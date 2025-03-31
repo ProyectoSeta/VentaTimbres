@@ -99,8 +99,8 @@ class RollosController extends Controller
 
                     <form id="form_emitir_rollos" method="post" onsubmit="event.preventDefault(); emitirRollos()">
                         <div class="d-flex justify-content-center mt-3 mb-3">
-                            <button type="button" class="btn btn-secondary btn-sm me-2" data-bs-dismiss="modal">Cancelar</button>
-                            <button type="submit" class="btn btn-success btn-sm">Emitir</button>
+                            <button type="submit" class="btn btn-success btn-sm me-2">Emitir</button>
+                            <button type="button" class="btn btn-secondary btn-sm " data-bs-dismiss="modal">Cancelar</button>
                         </div>
                     </form>
                     

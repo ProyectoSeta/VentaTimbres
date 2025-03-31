@@ -509,6 +509,7 @@
             </div>  <!-- cierra modal-content -->
         </div>  <!-- cierra modal-dialog -->
     </div>
+    
 
     
 
@@ -750,7 +751,7 @@
                 });
             ///////////////////////////////////////////////////////////////////
 
-            ///////////////////////////////////////AGREGAR CAMPOS A OTRO(S) ESTAMPILLAS
+            ///////////////////////////////////////AGREGAR CAMPOS A OTRO(S) DETALLE ESTAMPILLAS
                 var maxFieldeEst = 3; //Input fields increment limitation
                 var h = 1; //Initial field counter is 1
 
@@ -760,7 +761,7 @@
                         $('#content_detalle_est').append('<div class="d-flex justify-content-center pb-1">'+
                                         '<div class="row">'+
                                             '<div class="col-5">'+
-                                                '<select class="form-select form-select-sm ucd_est" aria-label="Small select example"id="ucd_est_'+h+'" nro="'+h+'" required>'+
+                                                '<select class="form-select form-select-sm ucd_est" aria-label="Small select example"id="ucd_est_'+h+'" nro="'+h+'"  name="detalle['+h+'][ucd]" required>'+
                                                     '<option value="1">1 UCD</option>'+
                                                     '<option value="2">2 UCD</option>'+
                                                     '<option value="3">3 UCD</option>'+
@@ -768,7 +769,7 @@
                                                 '</select>'+
                                             '</div>'+
                                             '<div class="col-5">'+
-                                                '<input type="number" class="form-control form-control-sm cant_est" id="cant_est_1" nro="1"  required>'+
+                                                '<input type="number" class="form-control form-control-sm cant_est" id="cant_est_1" nro="1" name="detalle['+h+'][cantidad]" required>'+
                                             '</div>'+
                                             '<div class="col-sm-1">'+
                                                 '<a  href="javascript:void(0);" class="btn remove_button_estampillas" nro="'+h+'">'+
@@ -778,6 +779,12 @@
                                         '</div>'+
                                     '</div>'); // Add field html
                     }
+                });
+
+                $(document).on('click', '.remove_button_estampillas', function(e){ //Once remove button is clicked
+                    e.preventDefault();
+                    $(this).parent('div').parent('div').remove(); //Remove field html
+                    h--; //Decrement field counter
                 });
             //////////////////////////////////////////////////////////////////
 
@@ -1422,6 +1429,38 @@
                 }
             });
 
+        }
+
+        //////////////// VENTA DE TIMBRES
+        function detalleEstampillas(){
+            var formData = new FormData(document.getElementById("form_detalle_estampillas"));
+            $.ajax({
+                headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') },
+                url:'{{route("venta.detalle_estampillas") }}',
+                type:'POST',
+                contentType:false,
+                cache:false,
+                processData:false,
+                async: true,
+                data: formData,
+                success: function(response){
+                    console.log(response);
+                    // if (response.success) {
+                    //     $('#modal_venta_realizada').modal('show');
+                    //     $('#content_venta_realizada').html(response.html);
+                    // }else{
+                    //     if (response.nota) {
+                    //         alert(response.nota);
+                    //     }else{
+                    //         alert('Disculpe, ha ocurrido un error');
+                    //     }
+                    // }
+                       
+                },
+                error: function(error){
+                    
+                }
+            });
         }
 
 

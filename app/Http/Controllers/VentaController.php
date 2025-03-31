@@ -1650,20 +1650,20 @@ class VentaController extends Controller
                             </div>
                             <div class="col-sm-8">
                                 <div class="titulo fw-bold fs-4 text-center"><span class="text-muted me-2">Total</span> '.$total_ucd.' U.C.D.</div>
-                                <form action="">
+                                <form id="form_detalle_estampillas" method="post" onsubmit="event.preventDefault(); detalleEstampillas()>
                                     <p class="text-muted mt-2"><span class="text-danger">*</span> Ingrese las estampillas que se utilizaran para la venta.</p>
                                     <div id="content_detalle_est">
                                         <div class="d-flex justify-content-center pb-1">
                                             <div class="row">
                                                 <div class="col-5">
                                                     <label class="form-label" for="ucd_est">U.C.D.</label><span class="text-danger">*</span>
-                                                    <select class="form-select form-select-sm ucd_est" aria-label="Small select example"id="ucd_est_1" nro="1" required>
+                                                    <select class="form-select form-select-sm ucd_est" aria-label="Small select example"id="ucd_est_1" nro="1" name="detalle[1][ucd]" required>
                                                         '.$options.'
                                                     </select>
                                                 </div>
                                                 <div class="col-5">
                                                     <label class="form-label" for="cant_est">Cantidad</label><span class="text-danger">*</span>
-                                                    <input type="number" class="form-control form-control-sm cant_est" id="cant_est_1" nro="1"  required>
+                                                    <input type="number" class="form-control form-control-sm cant_est" id="cant_est_1" nro="1" name="detalle[1][cantidad]"  required>
                                                 </div>
                                                 <div class="col-sm-1 pt-4">
                                                     <a  href="javascript:void(0);" class="btn add_button_estampilla border-0">
@@ -1673,6 +1673,8 @@ class VentaController extends Controller
                                             </div>
                                         </div>
                                     </div>
+
+                                    <input type="hidden" name="taquilla" value="'.$id_taquilla.'">
 
                                     <div class="d-flex justify-content-center mt-3 mb-3">
                                         <button type="submit" class="btn btn-success btn-sm me-3">Aceptar</button>
@@ -1694,6 +1696,15 @@ class VentaController extends Controller
         
 
     }
+
+    public function detalle_estampillas(Request $request)
+    {
+        // $id_taquilla = $request->post('taquilla');
+        // $detalle = $request->post('detalle');
+
+        return response('hola');
+    }
+
 
     /**
      * Remove the specified resource from storage.

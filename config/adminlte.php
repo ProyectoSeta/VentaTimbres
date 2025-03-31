@@ -335,6 +335,17 @@ return [
         //     'label'       => 4,
         //     'label_color' => 'success',
         // ],
+        ['header' => 'Reporte'],
+        [
+            'text'        => 'Diario',
+            'route'         => '',
+            'icon'       => 'fas fa-angle-right pe-2', 
+        ],
+        [
+            'text'        => 'Anual',
+            'route'         => '',
+            'icon'       => 'fas fa-angle-right pe-2',  
+        ],
         ['header' => 'Papel de Seguridad'],
         [
             'text'        => 'Emisión',

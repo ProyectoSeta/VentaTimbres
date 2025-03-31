@@ -89,9 +89,10 @@ Route::post('/venta/add_contribuyente', [App\Http\Controllers\VentaController::c
 
 Route::post('/venta/estampillas', [App\Http\Controllers\VentaController::class, 'estampillas'])->name('venta.estampillas');
 
+
 Route::post('/venta/venta', [App\Http\Controllers\VentaController::class, 'venta'])->name('venta.venta');
 
-
+// Route::post('/venta/detalle_estampillas', [App\Http\Controllers\VentaController::class, 'detalle_estampillas'])->name('venta.detalle_estampillas');
 
 
 
