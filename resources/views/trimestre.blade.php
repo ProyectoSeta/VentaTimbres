@@ -14,7 +14,7 @@
     <div class="container rounded-4 p-3 px-0" style="background-color:#ffff;">
         
         <div class="d-flex justify-content-between align-items-center mb-4">
-            <h3 class="mb-3 text-navy titulo fw-bold">Reporte Anual <span class="text-secondary fs-4">| Recaudación </span></h3>
+            <h3 class="mb-3 text-navy titulo fw-bold">Trimestres {{$year}} <span class="text-secondary fs-4">| Reportes </span></h3>
         </div>
 
 
@@ -28,17 +28,26 @@
                         </tr>
                 </thead>
                 <tbody>
-                    <tr role="buttom" >
-                        <th>#</th>
-                        <th></th>
-                        <th>
-                            <div class="">
-                                <span class="badge bg-dark" style="" role="button">
-                                    <i class='bx bx-printer fs-6'></i>
-                                </span>
-                            </div>
-                        </th>
-                    </tr>
+                    @php
+                        $c = 0;
+                    @endphp
+                    @foreach ($trimestres as $t)
+                        @php
+                            $c++;
+                        @endphp
+                        <tr role="buttom">
+                            <td>{{$c}}</td>
+                            <td>{{$t}}</td>
+                            <td>
+                                <div class="">
+                                    <a href="{{ route('reportes_trimestral', ['tri' =>$t, 'year' =>$year] ) }}" class="badge bg-dark" style="" role="button">
+                                        <i class='bx bx-printer fs-6'></i>
+                                    </a>
+                                </div>
+                            </td>
+                        </tr> 
+                    @endforeach
+                    
                 </tbody>
             </table>
         </div>

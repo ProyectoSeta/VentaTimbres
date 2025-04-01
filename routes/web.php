@@ -213,9 +213,13 @@ Route::get('/arqueo', [App\Http\Controllers\ArqueoTaquillaController::class, 'in
 
 ///////////////////// REPORTE ANUAL
 Route::get('/reporte_anual', [App\Http\Controllers\ReporteAnualController::class, 'index'])->name('reporte_anual');
+Route::get('/pdf_reporte/{year?}/', [App\Http\Controllers\ReporteAnualController::class, 'pdf_reporte'])->name('pdf_reporte');
 
 //////////////////// REPORTE TRIMESTRAL
-Route::get('/trimestres/{year?}', [App\Http\Controllers\ReporteTrimestralController::class, 'index'])->name('trimestres');
+Route::get('/trimestres/{year?}/', [App\Http\Controllers\ReporteTrimestralController::class, 'index'])->name('trimestres');
+Route::get('/reportes_trimestral/{tri?}/{year?}/', [App\Http\Controllers\ReporteTrimestralController::class, 'reportes_trimestral'])->name('reportes_trimestral');
+
+
 
 // Route::post('/sede_taquilla/taquilleros', [App\Http\Controllers\SedeTaquillaController::class, 'taquilleros'])->name('sede_taquilla.taquilleros');
 

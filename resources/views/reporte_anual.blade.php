@@ -29,14 +29,30 @@
                         </tr>
                 </thead>
                 <tbody>
-                    <tr role="buttom" >
+                    <tr>
                         <th>1</th>
+                        <th>2025</th>
+                        <th>
+                            <div class="">
+                                <a href="{{ route('pdf_reporte', ['year' =>2025] ) }}" class="badge bg-dark" style="" role="button">
+                                    <i class='bx bx-printer fs-6'></i>
+                                </a>
+                            </div>
+                        </th>
+                        <th>
+                            <a href="{{ route('trimestres', ['year' =>2025]) }}" class="btn btn-primary btn-sm px-3 rounded-4" >
+                                <span>Ver</span>
+                            </a>
+                        </th>
+                    </tr>
+                    <tr>
+                        <th>2</th>
                         <th>2024</th>
                         <th>
                             <div class="">
-                                <span class="badge bg-dark" style="" role="button">
+                                <a href="{{ route('pdf_reporte', ['year' =>2024] ) }}" class="badge bg-dark" style="" role="button">
                                     <i class='bx bx-printer fs-6'></i>
-                                </span>
+                                </a>
                             </div>
                         </th>
                         <th>
