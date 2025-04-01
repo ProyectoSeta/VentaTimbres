@@ -130,7 +130,7 @@
                                             <select class="form-select form-select-sm forma" nro="1" name="tramite[1][forma]"id="forma_1" required>
                                                 <option value="">Seleccione</option>
                                             </select>
-                                            <!-- <input type="hidden" name="tramite[1][forma][detalle]"> -->
+                                            <input type="hidden" name="tramite[1][detalle]" id="detalle_1"> 
                                             <p class="text-end my-0 text-muted" id="cant_timbre_1"></p>
                                         </div>
                                         <div class="col-sm-1 pt-4">
@@ -671,6 +671,7 @@
                                                     '<select class="form-select form-select-sm forma" nro="'+c+'" name="tramite['+c+'][forma]" id="forma_'+c+'" required>'+
                                                         '<option value="">Seleccione</option>'+
                                                     '</select>'+
+                                                    '<input type="hidden" name="tramite[1][detalle]" id="detalle_'+c+'">'+
                                                     '<p class="text-end my-0 text-muted" id="cant_timbre_'+c+'"></p>'+
                                                 '</div>'+
                                                 '<div class="col-sm-1">'+
@@ -1078,7 +1079,7 @@
 
 
 
-            ///////////////////////// FORMA ESTAMPILLAS
+            ///////////////////////// DETALLE DE LOS TIMBRES HA VENDER (ESTAMPILLAS Y FORMA 14)
             $(document).on('change','.forma', function(e) {
                 var value = $(this).val();
                 var nro =  $(this).attr('nro');
@@ -1092,7 +1093,7 @@
                         headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') },
                         type: 'POST',
                         url: '{{route("venta.estampillas") }}',
-                        data: {tramite:tramite,condicion_sujeto:condicion_sujeto},
+                        data: {tramite:tramite,condicion_sujeto:condicion_sujeto,nro:nro},
                         success: function(response) {
                             $('#modal_detalle_estampillas').modal('show');
                             $('#content_detalle_estampillas').html(response);
@@ -1431,38 +1432,6 @@
 
         }
 
-        //////////////// VENTA DE TIMBRES
-        function detalleEstampillas(){
-            var formData = new FormData(document.getElementById("form_detalle_estampillas"));
-            $.ajax({
-                headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') },
-                url:'{{route("venta.detalle_estampillas") }}',
-                type:'POST',
-                contentType:false,
-                cache:false,
-                processData:false,
-                async: true,
-                data: formData,
-                success: function(response){
-                    console.log(response);
-                    // if (response.success) {
-                    //     $('#modal_venta_realizada').modal('show');
-                    //     $('#content_venta_realizada').html(response.html);
-                    // }else{
-                    //     if (response.nota) {
-                    //         alert(response.nota);
-                    //     }else{
-                    //         alert('Disculpe, ha ocurrido un error');
-                    //     }
-                    // }
-                       
-                },
-                error: function(error){
-                    
-                }
-            });
-        }
-
 
         //////////////// VENTA DE TIMBRES
         function venta(){
@@ -1490,6 +1459,39 @@
                         }
                     }
                        
+                },
+                error: function(error){
+                    
+                }
+            });
+        }
+
+
+
+        function detalleEst(){
+            var formData = new FormData(document.getElementById("form_detalle_est"));
+            $.ajax({
+                headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') },
+                url:'{{route("venta.est_detalle") }}',
+                type:'POST',
+                contentType:false,
+                cache:false,
+                processData:false,
+                async: true,
+                data: formData,
+                success: function(response){
+                    console.log(response);
+                    if (response.success) {
+                        $('#modal_detalle_estampillas').modal('hide');
+                        $('#detalle_'+response.nro).val(reponse.detalle);
+                    }else{
+                        if (response.nota) {
+                            alert(response.nota);
+                        }else{
+                            alert('Disculpe, ha ocurrido un error');
+                        }
+                    }
+
                 },
                 error: function(error){
                     

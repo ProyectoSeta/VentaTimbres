@@ -88,11 +88,10 @@ Route::post('/venta/debitado', [App\Http\Controllers\VentaController::class, 'de
 Route::post('/venta/add_contribuyente', [App\Http\Controllers\VentaController::class, 'add_contribuyente'])->name('venta.add_contribuyente');
 
 Route::post('/venta/estampillas', [App\Http\Controllers\VentaController::class, 'estampillas'])->name('venta.estampillas');
-
+Route::post('/venta/est_detalle', [App\Http\Controllers\VentaController::class, 'est_detalle'])->name('venta.est_detalle');
 
 Route::post('/venta/venta', [App\Http\Controllers\VentaController::class, 'venta'])->name('venta.venta');
 
-// Route::post('/venta/detalle_estampillas', [App\Http\Controllers\VentaController::class, 'detalle_estampillas'])->name('venta.detalle_estampillas');
 
 
 

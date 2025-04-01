@@ -56,27 +56,27 @@ class TaquillasSedeer extends Seeder
         // ESTAMPILLAS
         DB::table('inv_est_taq_temps')->insert([
             'key_taquilla' => 1,
-            '1_ucd' => 0,
-            '2_ucd' => 0,
-            '3_ucd' => 0,
-            '5_ucd' => 0,
+            'one_ucd' => 0,
+            'two_ucd' => 0,
+            'three_ucd' => 0,
+            'five_ucd' => 0,
             'fecha' => '2025-03-10'
         ]);
 
         DB::table('inv_est_taq_temps')->insert([
             'key_taquilla' => 2,
-            '1_ucd' => 0,
-            '2_ucd' => 0,
-            '3_ucd' => 0,
-            '5_ucd' => 0,
+            'one_ucd' => 0,
+            'two_ucd' => 0,
+            'three_ucd' => 0,
+            'five_ucd' => 0,
             'fecha' => '2025-03-10'
         ]);
         DB::table('inv_est_taq_temps')->insert([
             'key_taquilla' => 3,
-            '1_ucd' => 0,
-            '2_ucd' => 0,
-            '3_ucd' => 0,
-            '5_ucd' => 0,
+            'one_ucd' => 0,
+            'two_ucd' => 0,
+            'three_ucd' => 0,
+            'five_ucd' => 0,
             'fecha' => '2025-03-10'
         ]);
 

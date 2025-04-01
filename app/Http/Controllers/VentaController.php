@@ -1586,6 +1586,7 @@ class VentaController extends Controller
 
             $tramite = $request->post('tramite');
             $condicion_sujeto = $request->post('condicion_sujeto');
+            $nro = $request->post('nro');
 
             $total_ucd = '';
             $options = 'option value="Seleccione">Seleccione</option>';
@@ -1594,7 +1595,7 @@ class VentaController extends Controller
             $query = DB::table('tramites')->where('id_tramite','=', $tramite)->first();
             if ($condicion_sujeto == 10 || $condicion_sujeto == 11) {
                 //////juridico (firma personal - empresa)
-            $total_ucd = $query->juridico;
+                $total_ucd = $query->juridico;
             }else{
                 ////natural
                 $total_ucd = $query->natural;
@@ -1644,13 +1645,13 @@ class VentaController extends Controller
                         </div>
                     </div>
                     <div class="modal-body px-5" style="font-size:13px">
-                        <div class="row">
+                        <div class="row mb-3">
                             <div class="col-sm-4">
                                 '.$html_inventario.'
                             </div>
                             <div class="col-sm-8">
                                 <div class="titulo fw-bold fs-4 text-center"><span class="text-muted me-2">Total</span> '.$total_ucd.' U.C.D.</div>
-                                <form id="form_detalle_estampillas" method="post" onsubmit="event.preventDefault(); detalleEstampillas()>
+                                <form id="form_detalle_est" method="post" onsubmit="event.preventDefault(); detalleEst()">
                                     <p class="text-muted mt-2"><span class="text-danger">*</span> Ingrese las estampillas que se utilizaran para la venta.</p>
                                     <div id="content_detalle_est">
                                         <div class="d-flex justify-content-center pb-1">
@@ -1675,6 +1676,9 @@ class VentaController extends Controller
                                     </div>
 
                                     <input type="hidden" name="taquilla" value="'.$id_taquilla.'">
+                                    <input type="hidden" name="tramite" value="'.$tramite.'">
+                                    <input type="hidden" name="condicion_sujeto" value="'.$condicion_sujeto.'">
+                                    <input type="hidden" name="nro" value="'.$nro.'">
 
                                     <div class="d-flex justify-content-center mt-3 mb-3">
                                         <button type="submit" class="btn btn-success btn-sm me-3">Aceptar</button>
@@ -1697,14 +1701,116 @@ class VentaController extends Controller
 
     }
 
-    public function detalle_estampillas(Request $request)
-    {
-        // $id_taquilla = $request->post('taquilla');
-        // $detalle = $request->post('detalle');
 
-        return response('hola');
+
+
+
+
+
+
+    public function est_detalle(Request $request)
+    {
+        $id_taquilla = $request->post('taquilla');
+        $detalle = $request->post('detalle');
+        $tramite = $request->post('tramite');
+        $condicion_sujeto = $request->post('condicion_sujeto');
+        $nro = $request->post('nro');
+
+        // BUSCAR PRECIO TRAMITE
+        $total_ucd = 0;
+        $query = DB::table('tramites')->where('id_tramite','=', $tramite)->first();
+        if ($condicion_sujeto == 10 || $condicion_sujeto == 11) {
+            //////juridico (firma personal - empresa)
+            $total_ucd = $query->juridico;
+        }else{
+            ////natural
+            $total_ucd = $query->natural;
+        }
+
+        // COMPROBAR QUE SUMADOS DE EL MONTO TOTAL
+        $total_ucd_detalle = 0;
+        foreach ($detalle as $key) {
+            $ucd = $key['ucd'];
+            $cant = $key['cantidad'];
+
+            $total_ucd_detalle = $total_ucd_detalle + ($ucd * $cant);
+        }
+
+        if ($total_ucd_detalle == $total_ucd) {
+            //  COMPROBAR DISPONIBILIDAD
+            $q1 = DB::table('inv_est_taq_temps')->where('key_taquilla','=', $id_taquilla)->first();
+            foreach ($detalle as $value) {
+                $ucd = $value['ucd'];
+                $cant = $value['cantidad'];
+
+                switch ($ucd) {
+                    case 1:
+                        if ($q1->one_ucd < $cant) {
+                            return response()->json(['success' => false, 'nota' => 'No hay suficientes estampillas de 1 U.C.D., en su Inventario.']);
+                        }
+                        break;
+                    case 2:
+                        if ($q1->two_ucd < $cant) {
+                            return response()->json(['success' => false, 'nota' => 'No hay suficientes estampillas de 2 U.C.D., en su Inventario.']);
+                        }
+                        break;
+                    case 3:
+                        if ($q1->three_ucd < $cant) {
+                            return response()->json(['success' => false, 'nota' => 'No hay suficientes estampillas de 3 U.C.D., en su Inventario.']);
+                        }
+                        break;
+                    case 4:
+                        if ($q1->five_ucd < $cant) {
+                            return response()->json(['success' => false, 'nota' => 'No hay suficientes estampillas de 5 U.C.D., en su Inventario.']);
+                        }
+                        break;    
+                    default:
+                        return response()->json(['success' => false]);
+                        break;
+                }  
+            }
+
+
+
+            // ACTUALIZO EL INV TEMP DE LA TAQUILLA
+            foreach ($detalle as $detal) {
+                $ucd = $detal['ucd'];
+                $cant = $detal['cantidad'];
+
+                switch ($ucd) {
+                    case 1:
+                        $new_inv = $q1->one_ucd - $cant;
+                        $update = DB::table('inv_est_taq_temps')->where('key_taquilla','=',$id_taquilla)->update(['one_ucd' => $new_inv]);
+                        break;
+                    case 2:
+                        $new_inv = $q1->two_ucd - $cant;
+                        $update = DB::table('inv_est_taq_temps')->where('key_taquilla','=',$id_taquilla)->update(['two_ucd' => $new_inv]);
+                        break;
+                    case 3:
+                        $new_inv = $q1->three_ucd - $cant;
+                        $update = DB::table('inv_est_taq_temps')->where('key_taquilla','=',$id_taquilla)->update(['three_ucd' => $new_inv]);
+                        break;
+                    case 4:
+                        $new_inv = $q1->five_ucd - $cant;
+                        $update = DB::table('inv_est_taq_temps')->where('key_taquilla','=',$id_taquilla)->update(['five_ucd' => $new_inv]);
+                        break;    
+                    default:
+                        return response()->json(['success' => false]);
+                        break;
+                }
+            }
+
+            $input = base64_encode(serialize($detalle));
+            return response()->json(['success' => true, 'detalle' => $input, 'nro' => $nro]);
+
+        }else{
+            return response()->json(['success' => false, 'nota' => 'Disculpe, el Total del Tramite es '.$total_ucd.' U.C.D.']);
+        }
+       
     }
 
+
+    
 
     /**
      * Remove the specified resource from storage.
