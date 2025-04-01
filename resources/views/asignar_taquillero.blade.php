@@ -234,6 +234,18 @@
         </div>  <!-- cierra modal-dialog -->
     </div>
 
+    <!-- INFO CONTRIBUYENTE EXENCIONES -->
+    <div class="modal fade" id="modal_info_sujeto_exencion" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content" id="content_info_sujeto_exencion">
+                <div class="my-5 py-5 d-flex flex-column text-center">
+                    <i class='bx bx-loader-alt bx-spin fs-1 mb-3' style='color:#0077e2'  ></i>
+                    <span class="text-muted">Cargando, por favor espere un momento...</span>
+                </div>
+            </div>  <!-- cierra modal-content -->
+        </div>  <!-- cierra modal-dialog -->
+    </div>
+
 
 
 
@@ -306,6 +318,27 @@
 
 <script type="text/javascript">
     $(document).ready(function () {
+        /////////////////////// MODAL INFO SUJETO EXENCION
+        $(document).on('click','.info_sujeto_exencion', function(e) {
+            e.preventDefault();
+            var sujeto = $(this).attr('sujeto');
+            var exencion = $(this).attr('exencion');
+
+            $.ajax({
+                headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') },
+                type: 'POST',
+                url: '{{route("exenciones.sujeto") }}',
+                data: {sujeto:sujeto,exencion:exencion},
+                success: function(response) {
+                    console.log(response);
+                    $('#content_info_sujeto_exencion').html(response);
+                },
+                error: function() {
+                }
+            });
+        });
+
+
         ////////////////////////////  TAQUILLAS SEGUN LA SEDA - ASIGNACION FORMA 14
         $(document).on('change','.sede', function(e) {
             e.preventDefault(); 

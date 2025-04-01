@@ -77,7 +77,6 @@ class AsignadosController extends Controller
                                                     <!-- <div class="col-1">-</div> -->
                                                     <div class="col-7">
                                                         <input type="number" id="identidad_nro" class="form-control form-control-sm" name="identidad_nro" value="'.$q2->identidad_nro.'" disabled>
-                                                        <p class="text-end text-muted fw-bold mb-0" style="font-size:12px;">Ejemplo: 7521004</p>
                                                     </div>
                                                 </div>
                                             </div>
@@ -118,7 +117,7 @@ class AsignadosController extends Controller
 
             $tramites .= '<div class="d-flex justify-content-center">
                                     <div class="row w-100">
-                                        <h5 class="titulo fw-bold text-navy my-3">Tramite | <span class="text-secondary fs-6">Datos</span></h5>
+                                        <h5 class="titulo fw-bold text-navy mt-2 mb-3">Tramite | <span class="text-secondary fs-6">Datos</span></h5>
                                         <div class="col-sm-3">
                                             <label class="form-label" for="ente">Ente</label><span class="text-danger">*</span>
                                             <select class="form-select form-select-sm ente" disabled>
@@ -144,7 +143,6 @@ class AsignadosController extends Controller
                                             <select class="form-select form-select-sm forma"  disabled>
                                                 <option>TFE-14</option>
                                             </select>
-                                            <p class="text-end my-0 text-muted" id="cant_timbre_1">1 und.</p>
                                         </div>
                                     </div>
                                 </div>';
@@ -158,7 +156,10 @@ class AsignadosController extends Controller
                         </div>';
 
         $html = '<div class="modal-header p-2 pt-3 ps-3">
-                    <h1 class="modal-title fs-5 fw-bold text-navy">Venta | <span class="text-muted">Exención</span></h1>
+                    <h1 class="modal-title fs-5 fw-bold text-navy d-flex align-items-center">
+                        <div><i class="bx bx-receipt fs-4 me-2"></i></div>
+                        <div>Impresión | <span class="text-muted">Exención</span></div>
+                    </h1>
                 </div> 
                 <div class="modal-body px-5 py-3" style="font-size:13px">
                     <form id="form_impresion_exencion" method="post" onsubmit="event.preventDefault(); impresionExencion()">
@@ -174,10 +175,10 @@ class AsignadosController extends Controller
                                 <div class="bg-light rounded-3 px-3 py-2 mb-2">
                                     <div class="d-flex justify-content-between align-items-center">
                                         <p class="d-flex flex-column titulo mb-0">
-                                            <span class="fs-3 fw-bold text-navy">UCD</span>
+                                            <span class="fs-3 fw-bold text-navy">U.C.D.</span>
                                             <span class="fw-bold text-muted" style="font-size:13px">Unidad de Cuenta Dinámica</span>
                                         </p>
-                                        <span class="fs-2 text-navy fw-bold" id="ucd">'.$c1->total_ucd.' UCD</span>
+                                        <span class="fs-2 text-navy fw-bold" id="ucd">'.$c1->total_ucd.' U.C.D.</span>
                                     </div>
                                 </div>
                             </div>
@@ -477,7 +478,7 @@ class AsignadosController extends Controller
 
                             ///////////////////////////////////// HTML
                             $html = '<div class="modal-header">
-                                    <h1 class="modal-title fs-5 fw-bold text-navy">Venta realizada | <span class="text-muted">Timbres</span></h1>
+                                    <h1 class="modal-title fs-5 fw-bold text-navy">Timbre Fiscal | <span class="text-muted">Exención</span></h1>
                                 </div>
                                 <div class="modal-body px-4 py-3" style="font-size:12.7px">
 

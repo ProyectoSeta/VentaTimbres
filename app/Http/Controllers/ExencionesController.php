@@ -374,11 +374,11 @@ class ExencionesController extends Controller
         ///////////////////////////////////// VALIDACIÓN  CAMPOS
             foreach ($tramites as $tramite) {
                 $key_tramite = $tramite['tramite'];
-                $forma = $tramite['forma'];
+                // $forma = $tramite['forma'];
 
-                if ($forma == 'Seleccione' || $forma == '') {
-                    return response()->json(['success' => false, 'nota'=> 'Disculpe, debe seleccionar la Forma.']);
-                }
+                // if ($forma == 'Seleccione' || $forma == '') {
+                //     return response()->json(['success' => false, 'nota'=> 'Disculpe, debe seleccionar la Forma.']);
+                // }
 
                 if ($key_tramite == 'Seleccione' || $key_tramite == '') {
                     return response()->json(['success' => false, 'nota'=> 'Disculpe, debe seleccionar el Tramite.']);
