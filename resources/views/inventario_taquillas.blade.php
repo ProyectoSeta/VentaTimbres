@@ -32,8 +32,8 @@
                 @else
                     @if ($taquilla->fin == false)
                         @if ($taquilla->cant_taquillas == 1)
-                        <div class="col-lg-12 mb-5">
-                            <div class="border h-100 rounded-4 d-flex justify-content-between px-3 py-3">
+                        <div class="col-lg-12 mb-5 d-flex justify-content-center">
+                            <div class="border h-100 rounded-4 d-flex justify-content-between px-3 py-3 w-50">
                                 <!-- titulo -->
                                 <div class="">
                                     <div class="text-navy d-flex justify-content-betwee flex-column">

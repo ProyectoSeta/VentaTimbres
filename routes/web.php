@@ -89,6 +89,8 @@ Route::post('/venta/add_contribuyente', [App\Http\Controllers\VentaController::c
 
 Route::post('/venta/estampillas', [App\Http\Controllers\VentaController::class, 'estampillas'])->name('venta.estampillas');
 Route::post('/venta/est_detalle', [App\Http\Controllers\VentaController::class, 'est_detalle'])->name('venta.est_detalle');
+Route::post('/venta/update_inv_taquilla', [App\Http\Controllers\VentaController::class, 'update_inv_taquilla'])->name('venta.update_inv_taquilla');
+Route::post('/venta/delete_tramite', [App\Http\Controllers\VentaController::class, 'delete_tramite'])->name('venta.delete_tramite');
 
 Route::post('/venta/venta', [App\Http\Controllers\VentaController::class, 'venta'])->name('venta.venta');
 
@@ -208,6 +210,12 @@ Route::post('/sede_taquilla/habilitar_taquilla', [App\Http\Controllers\SedeTaqui
 ///////////////////// ARQUEO
 Route::get('/arqueo', [App\Http\Controllers\ArqueoTaquillaController::class, 'index'])->name('arqueo');
 
+
+///////////////////// REPORTE ANUAL
+Route::get('/reporte_anual', [App\Http\Controllers\ReporteAnualController::class, 'index'])->name('reporte_anual');
+
+//////////////////// REPORTE TRIMESTRAL
+Route::get('/trimestres/{year?}', [App\Http\Controllers\ReporteTrimestralController::class, 'index'])->name('trimestres');
 
 // Route::post('/sede_taquilla/taquilleros', [App\Http\Controllers\SedeTaquillaController::class, 'taquilleros'])->name('sede_taquilla.taquilleros');
 

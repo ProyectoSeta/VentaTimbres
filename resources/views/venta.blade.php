@@ -131,7 +131,7 @@
                                                 <option value="">Seleccione</option>
                                             </select>
                                             <input type="hidden" name="tramite[1][detalle]" id="detalle_1"> 
-                                            <p class="text-end my-0 text-muted" id="cant_timbre_1"></p>
+                                            <!-- <p class="text-end my-0 text-muted" id="cant_timbre_1"></p> -->
                                         </div>
                                         <div class="col-sm-1 pt-4">
                                             <a  href="javascript:void(0);" class="btn add_button_tramite disabled border-0">
@@ -639,6 +639,18 @@
 
     <script type="text/javascript">
         $(document).ready(function () {
+            ////ACTUALIZAR INVENTARIO
+            $.ajax({
+                headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') },
+                type: 'POST',
+                url: '{{route("venta.update_inv_taquilla") }}',
+                success: function(response) {
+                    console.log(response);
+                },
+                error: function() {
+                }
+            });
+
             ///////////////////////////////////////AGREGAR CAMPOS A OTRO(S) TRAMITES
                 var maxFieldTramite = 3; //Input fields increment limitation
                 var c = 1; //Initial field counter is 1
@@ -672,7 +684,7 @@
                                                         '<option value="">Seleccione</option>'+
                                                     '</select>'+
                                                     '<input type="hidden" name="tramite[1][detalle]" id="detalle_'+c+'">'+
-                                                    '<p class="text-end my-0 text-muted" id="cant_timbre_'+c+'"></p>'+
+                                                    // '<p class="text-end my-0 text-muted" id="cant_timbre_'+c+'"></p>'+
                                                 '</div>'+
                                                 '<div class="col-sm-1">'+
                                                     '<a  href="javascript:void(0);" class="btn remove_button_tramite" nro="'+c+'">'+
@@ -687,6 +699,7 @@
                 $(document).on('click', '.remove_button_tramite', function(e){ 
                     var nro =  $(this).attr('nro');
                     var ente =  $('#ente_'+nro).val();
+                    var detalle =  $('#detalle_'+nro).val();
 
                     if (ente == 4) {
                         var u = 0;
@@ -700,9 +713,20 @@
                         if (u == 1) {
                             $('#content_tamaño').addClass('d-none');
                         }
-                        // console.log(u);
                     }
 
+                    //////ACTUALIZAR INV TAQUILLA
+                    $.ajax({
+                        headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') },
+                        type: 'POST',
+                        url: '{{route("venta.delete_tramite") }}',
+                        data: {detalle:detalle},
+                        success: function(response) {
+                            console.log(response);
+                        },
+                        error: function() {
+                        }
+                    });
 
                     e.preventDefault();
                     $(this).parent('div').parent('div').remove(); //Remove field html
@@ -753,7 +777,7 @@
             ///////////////////////////////////////////////////////////////////
 
             ///////////////////////////////////////AGREGAR CAMPOS A OTRO(S) DETALLE ESTAMPILLAS
-                var maxFieldeEst = 3; //Input fields increment limitation
+                var maxFieldeEst = 10; //Input fields increment limitation
                 var h = 1; //Initial field counter is 1
 
                 $(document).on('click', '.add_button_estampilla', function(e){ //Once add button is clicked
@@ -1084,6 +1108,7 @@
                 var value = $(this).val();
                 var nro =  $(this).attr('nro');
                 var condicion_sujeto =  $('#condicion_sujeto').val();
+                var folios = $('#folios').val();
 
                 if (value == 4) {
                     ////ESTAMPILLAS
@@ -1093,7 +1118,7 @@
                         headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') },
                         type: 'POST',
                         url: '{{route("venta.estampillas") }}',
-                        data: {tramite:tramite,condicion_sujeto:condicion_sujeto,nro:nro},
+                        data: {tramite:tramite,condicion_sujeto:condicion_sujeto,nro:nro,folios:folios},
                         success: function(response) {
                             $('#modal_detalle_estampillas').modal('show');
                             $('#content_detalle_estampillas').html(response);
@@ -1107,6 +1132,18 @@
                 }
                 
             });
+
+            /////////////////////////// CERRAR MODAL DETALLE
+            $(document).on('click','#btn_cancelar_detalle_est', function(e) {
+                e.preventDefault();
+                var nro =  $(this).attr('nro');
+
+                $('#forma_'+nro+' option').remove();
+                $('#forma_'+nro).append('<option>Seleccione</option>'+
+                            '<option value="3">TFE-14</option>'+
+                            '<option value="4">Estampilla</option>');
+            });
+            /////////////////////////////////////////////////////////////////////////////////
     
 
 
@@ -1241,64 +1278,64 @@
 
 
             //////////////////ESTAMPILLA 10UCD Y DISPONIBILIDAD DE TIMBRE
-            $(document).on('change','.forma', function(e) {
-                var value = $(this).val();
-                var nro =  $(this).attr('nro');
+                // $(document).on('change','.forma', function(e) {
+                //     var value = $(this).val();
+                //     var nro =  $(this).attr('nro');
 
-                var ucd =  $('#ucd_tramite_'+nro).val();
-                var array = [];
-            
-                if (value == 4  && ucd == 10) {
-                    $('#cant_timbre_'+nro).html('2 Und.');
-                    var cant = 2;
-                }else{
-                    $('#cant_timbre_'+nro).html('1 Und.');
-                    var cant = 1;
-                }
+                //     var ucd =  $('#ucd_tramite_'+nro).val();
+                //     var array = [];
+                
+                //     if (value == 4  && ucd == 10) {
+                //         $('#cant_timbre_'+nro).html('2 Und.');
+                //         var cant = 2;
+                //     }else{
+                //         $('#cant_timbre_'+nro).html('1 Und.');
+                //         var cant = 1;
+                //     }
 
-                $('.ucd_tramite').each(function(e){
-                    var ucd_each = $(this).val();
-                    var nro_each = $(this).attr('nro');
-                    var forma_each =  $('#forma_'+nro_each).val();
+                //     $('.ucd_tramite').each(function(e){
+                //         var ucd_each = $(this).val();
+                //         var nro_each = $(this).attr('nro');
+                //         var forma_each =  $('#forma_'+nro_each).val();
 
-                    if (ucd_each == ucd && nro_each != nro && forma_each == value) {
-                        if (forma_each == 4  && ucd_each == 10) {
-                            cant = cant + 2;  
-                        }else{
-                            cant++;
-                        }
-                    }
-                });
+                //         if (ucd_each == ucd && nro_each != nro && forma_each == value) {
+                //             if (forma_each == 4  && ucd_each == 10) {
+                //                 cant = cant + 2;  
+                //             }else{
+                //                 cant++;
+                //             }
+                //         }
+                //     });
 
 
-                var objeto = {
-                    ucd: ucd,
-                    forma: value,
-                    cantidad: cant
-                };
-                array.push(objeto);
-                               
+                //     var objeto = {
+                //         ucd: ucd,
+                //         forma: value,
+                //         cantidad: cant
+                //     };
+                //     array.push(objeto);
+                                
 
-                $.ajax({
-                    headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') },
-                    type: 'POST',
-                    url: '{{route("venta.disponibilidad") }}',
-                    data: {array:array},
-                    success: function(response) {
-                        // console.log(response);
-                        if (response.success) {
+                //     $.ajax({
+                //         headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') },
+                //         type: 'POST',
+                //         url: '{{route("venta.disponibilidad") }}',
+                //         data: {array:array},
+                //         success: function(response) {
+                //             // console.log(response);
+                //             if (response.success) {
+                                
+                //             }else{
+                //                 alert(response.nota);
+                //                 forma(nro,ucd)
+                //             }
                             
-                        }else{
-                            alert(response.nota);
-                            forma(nro,ucd)
-                        }
-                        
-                    },
-                    error: function() {
-                    }
-                });
+                //         },
+                //         error: function() {
+                //         }
+                //     });
 
-            });
+                // });
         });
 
 
@@ -1483,7 +1520,7 @@
                     console.log(response);
                     if (response.success) {
                         $('#modal_detalle_estampillas').modal('hide');
-                        $('#detalle_'+response.nro).val(reponse.detalle);
+                        $('#detalle_'+response.nro).val(response.detalle);
                     }else{
                         if (response.nota) {
                             alert(response.nota);

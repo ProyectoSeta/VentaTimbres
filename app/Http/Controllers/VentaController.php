@@ -1587,6 +1587,7 @@ class VentaController extends Controller
             $tramite = $request->post('tramite');
             $condicion_sujeto = $request->post('condicion_sujeto');
             $nro = $request->post('nro');
+            $folios = $request->post('folios');
 
             $total_ucd = '';
             $options = 'option value="Seleccione">Seleccione</option>';
@@ -1599,6 +1600,12 @@ class VentaController extends Controller
             }else{
                 ////natural
                 $total_ucd = $query->natural;
+            }
+
+            ////SI HAY FOLIOS
+            if ($tramite == 1) {
+                $c1 = DB::table('tramites')->select('natural')->where('tramite','=', 'Folio')->first();
+                $total_ucd = $total_ucd + ($c1->natural * $folios);
             }
 
             // CONSULTA INVENTARIO
@@ -1679,10 +1686,11 @@ class VentaController extends Controller
                                     <input type="hidden" name="tramite" value="'.$tramite.'">
                                     <input type="hidden" name="condicion_sujeto" value="'.$condicion_sujeto.'">
                                     <input type="hidden" name="nro" value="'.$nro.'">
+                                    <input type="hidden" name="folios" value="'.$folios.'">
 
                                     <div class="d-flex justify-content-center mt-3 mb-3">
                                         <button type="submit" class="btn btn-success btn-sm me-3">Aceptar</button>
-                                        <button type="button" class="btn btn-secondary btn-sm" data-bs-dismiss="modal">Cancelar</button>
+                                        <button type="button" class="btn btn-secondary btn-sm" id="btn_cancelar_detalle_est" nro="'.$nro.'" data-bs-dismiss="modal">Cancelar</button>
                                     </div> 
                                 </form>
                             </div>
@@ -1706,8 +1714,6 @@ class VentaController extends Controller
 
 
 
-
-
     public function est_detalle(Request $request)
     {
         $id_taquilla = $request->post('taquilla');
@@ -1715,6 +1721,7 @@ class VentaController extends Controller
         $tramite = $request->post('tramite');
         $condicion_sujeto = $request->post('condicion_sujeto');
         $nro = $request->post('nro');
+        $folios = $request->post('folios');
 
         // BUSCAR PRECIO TRAMITE
         $total_ucd = 0;
@@ -1726,6 +1733,13 @@ class VentaController extends Controller
             ////natural
             $total_ucd = $query->natural;
         }
+
+        ////SI HAY FOLIOS
+        if ($tramite == 1) {
+            $c1 = DB::table('tramites')->select('natural')->where('tramite','=', 'Folio')->first();
+            $total_ucd = $total_ucd + ($c1->natural * $folios);
+        }
+
 
         // COMPROBAR QUE SUMADOS DE EL MONTO TOTAL
         $total_ucd_detalle = 0;
@@ -1810,7 +1824,160 @@ class VentaController extends Controller
     }
 
 
+
+
+
+
+    public function update_inv_taquilla(){
+        $user = auth()->id();
+        $query = DB::table('users')->select('key_sujeto')->where('id','=',$user)->first();
+        $q2 = DB::table('taquillas')->select('id_taquilla','clave')->where('key_funcionario','=',$query->key_sujeto)->first();
+        if ($q2) {
+            /// usuario taquillero
+            $id_taquilla = $q2->id_taquilla;
+
+            $hoy = date('Y-m-d');
+            $hora = date('H:i:s');
+
+            // ACTUALIZCION DEL INVENTARIO DE TAQUILLA (ESTAMPILLAS Y TFES)
+            $upd_1 = DB::table('inv_est_taq_temps')->select('fecha')->where('key_taquilla', '=', $id_taquilla)->first();
+            $upd_2 = DB::table('inv_tfe_taq_temps')->select('fecha')->where('key_taquilla', '=', $id_taquilla)->first();
+                                                                
+            if ($upd_1->fecha == $hoy && $upd_2->fecha == $hoy) {
+                // INVENTARO ESTAMPILLAS TAQUILLA
+                $q3 = DB::table('ucd_denominacions')->select('id','denominacion')->where('estampillas','=','true')->get();
+                foreach ($q3 as $key) {
+                    $key_deno = $key->id;
+                    $deno = $key->denominacion;
+
+                    $cant_inv = 0;
+
+                    $c1 = DB::table('detalle_asignacion_estampillas')->select('cantidad_timbres','vendido')
+                                                                    ->where('key_taquilla','=',$id_taquilla)
+                                                                    ->where('key_denominacion','=',$key_deno)
+                                                                    ->where('condicion','!=',7)->get(); 
+                                                                    // return response($c1);
+                    if ($c1) {
+                        foreach ($c1 as $value) {
+                            $cant_inv = $cant_inv + ($value->cantidad_timbres - $value->vendido);
+                        }
+                    }else{
+                        $cant_inv = 0;
+                    }
+                    
+
+                    switch ($key_deno) {
+                        case 1:
+                            # 1 UCD
+                            $upd_inv = DB::table('inv_est_taq_temps')->where('key_taquilla', '=', $id_taquilla)
+                                                                    ->where('fecha','=', $hoy)
+                                                                    ->update(['one_ucd' => $cant_inv]);
+                            break;
+                        case 2:
+                            # 2 UCD
+                            $upd_inv = DB::table('inv_est_taq_temps')->where('key_taquilla', '=', $id_taquilla)
+                                                                    ->where('fecha','=', $hoy)
+                                                                    ->update(['two_ucd' => $cant_inv]);
+                            break;
+                        case 3:
+                            # 3 UCD
+                            $upd_inv = DB::table('inv_est_taq_temps')->where('key_taquilla', '=', $id_taquilla)
+                                                                    ->where('fecha','=', $hoy)
+                                                                    ->update(['three_ucd' => $cant_inv]);
+                            break;
+                        case 4:
+                            # 5 UCD
+                            $upd_inv = DB::table('inv_est_taq_temps')->where('key_taquilla', '=', $id_taquilla)
+                                                                    ->where('fecha','=', $hoy)
+                                                                    ->update(['five_ucd' => $cant_inv]);
+                            break;
+                        default:
+                            # code...
+                            break;
+                    }
+                }
+
+                // INVENTARIO TFES TAQUILLA
+                $cant_tfe = 0;
+                $c2 = DB::table('inventario_tfes')->select('cantidad_timbres','vendido')
+                                                    ->where('key_taquilla','=',$id_taquilla)
+                                                    ->where('condicion','!=',7)->get();
+                if ($c2) {
+                    foreach ($c2 as $value) {
+                        $cant_tfe = $cant_tfe + ($value->cantidad_timbres - $value->vendido);
+                    }
+                }else{
+                    $cant_tfe = 0;
+                }
+                
+
+                $upd_inv_tfe = DB::table('inv_tfe_taq_temps')->where('key_taquilla', '=', $id_taquilla)
+                                                        ->where('fecha','=', $hoy)
+                                                        ->update(['cantidad' => $cant_tfe]);
+
+
+
+                $update = DB::table('apertura_taquillas')->where('key_taquilla', '=', $id_taquilla)
+                                                        ->where('fecha','=', $hoy)
+                                                        ->update(['apertura_taquillero' => $hora]);
+                if ($update) {
+                    return response()->json(['success' => true]);
+                }else{
+                    return response()->json(['success' => false]);
+                }
+            }else{
+                return response()->json(['success' => false, 'nota' => 'Disculpe, la taquilla no ha sido aperturada.']);
+            }
+            
+        }else{
+            ////no esta asignado a ninguna taquilla
+            /////BITACORA 
+            return response()->json(['success' => false, 'nota' => 'Disculpe, usted no se encuentra asociado a ninguna taquilla.']);
+        }
+    }
     
+
+
+
+
+    public function delete_tramite(Request $request){
+        $detalle = unserialize(base64_decode($request->post('detalle')));
+
+        $user = auth()->id();
+        $query = DB::table('users')->select('key_sujeto')->where('id','=',$user)->first();
+        $q2 = DB::table('taquillas')->select('id_taquilla','clave')->where('key_funcionario','=',$query->key_sujeto)->first();
+
+        $id_taquilla = $q2->id_taquilla;
+
+        $q1 = DB::table('inv_est_taq_temps')->where('key_taquilla','=', $id_taquilla)->first();
+        foreach ($detalle as $key) {
+            $ucd = $key['ucd'];
+            $cant = $key['cantidad'];
+
+            switch ($ucd) {
+                case 1:
+                    $new_inv = $q1->one_ucd + $cant;
+                    $update = DB::table('inv_est_taq_temps')->where('key_taquilla','=',$id_taquilla)->update(['one_ucd' => $new_inv]);
+                    break;
+                case 2:
+                    $new_inv = $q1->two_ucd + $cant;
+                    $update = DB::table('inv_est_taq_temps')->where('key_taquilla','=',$id_taquilla)->update(['two_ucd' => $new_inv]);
+                    break;
+                case 3:
+                    $new_inv = $q1->three_ucd + $cant;
+                    $update = DB::table('inv_est_taq_temps')->where('key_taquilla','=',$id_taquilla)->update(['three_ucd' => $new_inv]);
+                    break;
+                case 4:
+                    $new_inv = $q1->five_ucd + $cant;
+                    $update = DB::table('inv_est_taq_temps')->where('key_taquilla','=',$id_taquilla)->update(['five_ucd' => $new_inv]);
+                    break;    
+                default:
+                    return response()->json(['success' => false]);
+                    break;
+            }
+        }
+    }
+
 
     /**
      * Remove the specified resource from storage.

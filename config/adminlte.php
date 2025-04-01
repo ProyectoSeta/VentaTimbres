@@ -343,7 +343,7 @@ return [
         ],
         [
             'text'        => 'Anual',
-            'route'         => '',
+            'route'         => 'reporte_anual',
             'icon'       => 'fas fa-angle-right pe-2',  
         ],
         ['header' => 'Papel de Seguridad'],
