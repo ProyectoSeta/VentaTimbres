@@ -119,6 +119,10 @@
                             <div class="position-absolute top-0 start-50 translate-middle bg-white px-3 titulo fs-5 fw-bold">Selección del Tramite</div>
                             <div class="d-flex flex-column">
                                 <form id="form_agregar_tramite" method="post" onsubmit="event.preventDefault(); addTramite()">
+                                    <input type="hidden" name="total_ucd" id="total_ucd" value="0">
+                                    <input type="hidden" name="total_bs" id="total_bs" value="0">
+                                    <input type="hidden" name="nro" id="nro" value="1">
+
                                     <div class="d-flex justify-content-center tramites pb-1">
                                         <div class="row w-100 ">
                                             <div class="col-sm-2">
@@ -235,7 +239,7 @@
 
                         
 
-                        <!-- PAGO -->
+                        <!--  -->
                         <!-- <h5 class="titulo fw-bold text-center text-navy mb-3 ms-3 mt-3"> <span class="text-secondary fs-6">DETALLE VENTA</span></h5> -->
                         <div class="row"  style="font-size:13px">
                             <div class="col-sm-8">
@@ -265,6 +269,7 @@
                                                         <span>Est 1 UCD</span>
                                                         <span>Est 1 UCD</span>
                                                     </div>
+                                                    <input type="hidden" name="tramite[1]">
                                                 </td>
                                             </tr>
                                         </tbody>
@@ -1619,6 +1624,9 @@
 
         function addTramite(){
             var formData = new FormData(document.getElementById("form_agregar_tramite"));
+            var bs = $('#total_bs').val();
+            var ucd = $('#total_ucd').val();
+
             $.ajax({
                 headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') },
                 url:'{{route("venta.agregar") }}',

@@ -107,7 +107,27 @@ class VentaController extends Controller
 
     public function agregar(Request $request){
         $tramite = $request->post('tramite');
-        return response($tramite);
+
+        $ucd = $request->post('total_ucd');
+        $bs = $request->post('total_bs');
+
+
+        //////////////////////////////////// CALCULAR TOTALES
+        
+        ///////////////////////////////////
+
+        $tr = '';
+
+        $detalle_tramite = ([
+                            'tramite' => $tramite['tramite'],
+                            'metrado' => $request->post('folios'),
+                            'porcentaje' => $request->post('metros'),
+                            'nro_folios' => $request->post('capital'),
+                            'forma' => $tramite['forma'],
+                            'detalle_est' => $tramite['detalle'],
+        ]);
+
+        return response($detalle_tramite);
     }
 
 
