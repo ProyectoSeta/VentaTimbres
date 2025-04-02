@@ -92,6 +92,9 @@ Route::post('/venta/est_detalle', [App\Http\Controllers\VentaController::class, 
 Route::post('/venta/update_inv_taquilla', [App\Http\Controllers\VentaController::class, 'update_inv_taquilla'])->name('venta.update_inv_taquilla');
 Route::post('/venta/delete_tramite', [App\Http\Controllers\VentaController::class, 'delete_tramite'])->name('venta.delete_tramite');
 
+
+Route::post('/venta/agregar', [App\Http\Controllers\VentaController::class, 'agregar'])->name('venta.agregar');
+
 Route::post('/venta/venta', [App\Http\Controllers\VentaController::class, 'venta'])->name('venta.venta');
 
 

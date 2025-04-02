@@ -53,7 +53,7 @@
                     <!-- <form id="form_venta" method="post" onsubmit="event.preventDefault(); venta()"> -->
                         <!-- DATOS CONTRIBUYENTE -->
                         <div class="mb-3 border text-navy rounded-3 p-2 py-3 position-relative mt-4 pt-4" style="font-size:13px">
-                            <div class="position-absolute top-0 start-50 translate-middle bg-white px-3 titulo fs-5">Contribuyente</div>
+                            <div class="position-absolute top-0 start-50 translate-middle bg-white px-3 titulo fs-5 fw-bold">Contribuyente</div>
                             <div class="d-flex justify-content-center">
                                 <div class="row w-100">
                                     <!-- <h5 class="titulo fw-bold text-navy mb-3">Contribuyente | <span class="text-secondary fs-6">Datos</span></h5> -->
@@ -76,10 +76,10 @@
                                     <!-- ci o rif -->
                                     <div class="col-sm-4">
                                         <div class="row">
-                                            <div class="col-3 pt-2">
+                                            <div class="col-lg-3 pt-2">
                                                 <label class="form-label" for="identidad_condicion">C.I / R.I.F</label><span class="text-danger">*</span>
                                             </div>
-                                            <div class="col-9">
+                                            <div class="col-lg-9">
                                                 <div class="row">
                                                     <div class="col-4">
                                                         <select class="form-select form-select-sm" id="identidad_condicion" aria-label="Small select example" name="identidad_condicion">
@@ -96,10 +96,10 @@
                                     <!-- nombre o razon -->
                                     <div class="col-sm-5">
                                         <div class="row">
-                                            <div class="col-4 pt-2">
+                                            <div class="col-lg-4 pt-2">
                                                 <label class="form-label" for="nombre">Nombre / Razón Social</label><span class="text-danger">*</span>
                                             </div>
-                                            <div class="col-8">
+                                            <div class="col-lg-8">
                                                 <input type="text" id="nombre" class="form-control form-control-sm" name="nombre" disabled required>
                                             </div>
                                         </div>
@@ -115,10 +115,11 @@
 
                         <!-- TRAMITES -->
                         <!-- <h5 class="titulo fw-bold text-navy mb-3 ms-3">Tramite | <span class="text-secondary fs-6">Datos</span></h5> -->
-                        <div class="mb-3 border rounded-3 p-2 py-3" style="font-size:13px">
+                        <div class="mb-3 border rounded-3 p-2 pt-3 pb-1 position-relative mt-4" style="font-size:13px">
+                            <div class="position-absolute top-0 start-50 translate-middle bg-white px-3 titulo fs-5 fw-bold">Selección del Tramite</div>
                             <div class="d-flex flex-column">
-                                <form action="">
-                                    <div class="d-flex justify-content-center pb-1">
+                                <form id="form_agregar_tramite" method="post" onsubmit="event.preventDefault(); addTramite()">
+                                    <div class="d-flex justify-content-center tramites pb-1">
                                         <div class="row w-100 ">
                                             <div class="col-sm-2">
                                                 <label class="form-label" for="ente">Ente</label><span class="text-danger">*</span>
@@ -131,7 +132,7 @@
                                             </div>
                                             <div class="col-sm-5">
                                                 <label class="form-label" for="tramite">Tramite</label><span class="text-danger">*</span>
-                                                <select class="form-select form-select-sm tramite" name="tramite[1][tramite]" nro="1" id="tramite_1" disabled>
+                                                <select class="form-select form-select-sm tramite" name="tramite[tramite]" nro="1" id="tramite_1" disabled>
                                                     <option value="">Seleccione el tramite </option>
                                                         @foreach ($tramites as $tramite)
                                                             <option value="{{$tramite->id_tramite}}">{{$tramite->tramite}}</option>
@@ -145,11 +146,10 @@
                                             </div>
                                             <div class="col-sm-2">
                                                 <label class="form-label" for="forma">Forma</label><span class="text-danger">*</span>
-                                                <select class="form-select form-select-sm forma" nro="1" name="tramite[1][forma]"id="forma_1" required>
+                                                <select class="form-select form-select-sm forma" nro="1" name="tramite[forma]"id="forma_1" required>
                                                     <option value="">Seleccione</option>
                                                 </select>
-                                                <input type="hidden" name="tramite[1][detalle]" id="detalle_1"> 
-                                                <!-- <p class="text-end my-0 text-muted" id="cant_timbre_1"></p> -->
+                                                <input type="hidden" name="tramite[detalle]" id="detalle_est"> 
                                             </div>
                                             <div class="col-sm-1 d-flex align-items-end">
                                                 <!-- <a  href="javascript:void(0);" class="btn add_button_tramite disabled border-0">
@@ -159,80 +159,84 @@
                                             </div>
                                         </div>
                                     </div>
+
+                                    <!-- ADJUNTO -->
+                                    <div class="d-flex flex-column align-items-center m-0 p-0">
+                                        <!-- Folios -->
+                                        <div class="w-50 mt-2 d-none border p-3 rounded-3 mb-2" style="background:#f4f7f9; font-size:12.7px" id="content_folios">
+                                            <div class="text-muted mb-2">*NOTA: El anexo de cada folio tiene un valor de 1 UCD.</div>
+                                            <div class="d-flex align-items-center">
+                                                <label class="form-label" for="folios">Ingrese el número de Folios:</label>
+                                                <input type="number" id="folios" class="form-control form-control-sm w-50 ms-2" name="folios">
+                                            </div>
+                                        </div>
+
+                                        <!-- tamaño de empresa -->
+                                        <div class="w-75 mt-2 d-none border p-3 rounded-3" style="background:#f4f7f9; font-size:12.7px" id="content_tamaño">
+                                            <p class="text-muted my-0 pb-0">*Ingrese el tamaño de la Empresa.</p>
+                                            <div class="row d-flex align-items-center">
+                                                <div class="col-md-6 d-flex justify-content-center align-items-end">
+                                                    <div class="">
+                                                        <label class="form-label" for="metros">Tamaño de la empresa (Mts2):</label><span class="text-danger">*</span>
+                                                        <div class="d-flex align-items-center">
+                                                            <input type="number" id="metros" class="form-control form-control-sm me-2" name="metros">
+                                                            <span class="fw-bold">Mts2</span>
+                                                        </div>
+                                                    </div>
+                                                    <!-- btn calcular -->
+                                                    <div class="ms-3">
+                                                        <button type="button" class="btn btn-secondary btn-sm" id="btn_calcular_metrado">Calcular</button>
+                                                    </div>
+                                                </div>
+
+                                                <div class="col-md-6 text-center pt-0" id="size">
+                                                    
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <!-- Capital o Monto de la operación -->
+                                        <div class="w-75 mt-2 d-none border p-3 rounded-3" style="background:#f4f7f9; font-size:12.7px" id="content_capital">
+                                            <p class="text-muted my-0 pb-0">*Ingrese el Capital o Monto total de la Operación.</p>
+                                            <div class="row d-flex align-items-center px-3">
+                                                <div class="col-md-6 d-flex align-items-end justify-content-center">
+                                                    <div class="">
+                                                        <p class="fs-4 fw-bold mb-0 me-4 p_porcentaje">
+                                                            
+                                                        </p>
+                                                    </div>
+                                                    <div class="pb-1 me-4"> de</div>
+                                                    <div class="">
+                                                        <label class="form-label" for="capital">Monto (Bs.):</label><span class="text-danger">*</span>
+                                                        <div class="d-flex align-items-center">
+                                                            <input type="number" id="capital" class="form-control form-control-sm me-2" name="capital">
+                                                            <span class="fw-bold">Bs.</span>
+                                                        </div>
+                                                    </div>
+                                                    <!-- btn calcular -->
+                                                    <div class="ms-3">
+                                                        <button type="button" class="btn btn-secondary btn-sm" id="btn_calcular_porcentaje">Calcular</button>
+                                                    </div>
+                                                </div>
+
+                                                <div class="col-md-6 text-center pt-0" id="size">
+                                                    <p class="fs-4 fw-bold mb-0" id="pct_monto">0,00 Bs.</p>
+                                                    <p class="text-muted fw-bold fs-6"><span class="p_porcentaje"></span>del monto total.</p>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+
                                 </form>
-                                
                             </div> 
+
+                            
                         </div>
 
-                        <!-- ADJUNTO -->
-                        <div class="d-flex flex-column align-items-center m-0 p-0">
-                            <!-- Folios -->
-                            <div class="w-50 mt-2 d-none border p-3 rounded-3" style="background:#f4f7f9; font-size:12.7px" id="content_folios">
-                                <div class="text-muted mb-2">*NOTA: El anexo de cada folio tiene un valor de 1 UCD.</div>
-                                <div class="d-flex align-items-center">
-                                    <label class="form-label" for="folios">Ingrese el número de Folios:</label>
-                                    <input type="number" id="folios" class="form-control form-control-sm w-50 ms-2" name="folios" required>
-                                </div>
-                            </div>
-
-                            <!-- tamaño de empresa -->
-                            <div class="w-75 mt-2 d-none border p-3 rounded-3" style="background:#f4f7f9; font-size:12.7px" id="content_tamaño">
-                                <p class="text-muted my-0 pb-0">*Ingrese el tamaño de la Empresa.</p>
-                                <div class="row d-flex align-items-center">
-                                    <div class="col-md-6 d-flex justify-content-center align-items-end">
-                                        <div class="">
-                                            <label class="form-label" for="metros">Tamaño de la empresa (Mts2):</label><span class="text-danger">*</span>
-                                            <div class="d-flex align-items-center">
-                                                <input type="number" id="metros" class="form-control form-control-sm me-2" name="metros">
-                                                <span class="fw-bold">Mts2</span>
-                                            </div>
-                                        </div>
-                                        <!-- btn calcular -->
-                                        <div class="ms-3">
-                                            <button type="button" class="btn btn-secondary btn-sm" id="btn_calcular_metrado">Calcular</button>
-                                        </div>
-                                    </div>
-
-                                    <div class="col-md-6 text-center pt-0" id="size">
-                                        
-                                    </div>
-                                </div>
-                            </div>
-
-                            <!-- Capital o Monto de la operación -->
-                            <div class="w-75 mt-2 d-none border p-3 rounded-3" style="background:#f4f7f9; font-size:12.7px" id="content_capital">
-                                <p class="text-muted my-0 pb-0">*Ingrese el Capital o Monto total de la Operación.</p>
-                                <div class="row d-flex align-items-center px-3">
-                                    <div class="col-md-6 d-flex align-items-end justify-content-center">
-                                        <div class="">
-                                            <p class="fs-4 fw-bold mb-0 me-4 p_porcentaje">
-                                                
-                                            </p>
-                                        </div>
-                                        <div class="pb-1 me-4"> de</div>
-                                        <div class="">
-                                            <label class="form-label" for="capital">Monto (Bs.):</label><span class="text-danger">*</span>
-                                            <div class="d-flex align-items-center">
-                                                <input type="number" id="capital" class="form-control form-control-sm me-2" name="capital">
-                                                <span class="fw-bold">Bs.</span>
-                                            </div>
-                                        </div>
-                                        <!-- btn calcular -->
-                                        <div class="ms-3">
-                                            <button type="button" class="btn btn-secondary btn-sm" id="btn_calcular_porcentaje">Calcular</button>
-                                        </div>
-                                    </div>
-
-                                    <div class="col-md-6 text-center pt-0" id="size">
-                                        <p class="fs-4 fw-bold mb-0" id="pct_monto">0,00 Bs.</p>
-                                        <p class="text-muted fw-bold fs-6"><span class="p_porcentaje"></span>del monto total.</p>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
+                        
 
                         <!-- PAGO -->
-                        <h5 class="titulo fw-bold text-center text-navy mb-3 ms-3 mt-3"> <span class="text-secondary fs-6">DETALLE VENTA</span></h5>
+                        <!-- <h5 class="titulo fw-bold text-center text-navy mb-3 ms-3 mt-3"> <span class="text-secondary fs-6">DETALLE VENTA</span></h5> -->
                         <div class="row"  style="font-size:13px">
                             <div class="col-sm-8">
                                 <form action="">
@@ -705,17 +709,17 @@
 
     <script type="text/javascript">
         $(document).ready(function () {
-            // ////ACTUALIZAR INVENTARIO
-            // $.ajax({
-            //     headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') },
-            //     type: 'POST',
-            //     url: '{{route("venta.update_inv_taquilla") }}',
-            //     success: function(response) {
-            //         console.log(response);
-            //     },
-            //     error: function() {
-            //     }
-            // });
+            ////ACTUALIZAR INVENTARIO
+            $.ajax({
+                headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') },
+                type: 'POST',
+                url: '{{route("venta.update_inv_taquilla") }}',
+                success: function(response) {
+                    console.log(response);
+                },
+                error: function() {
+                }
+            });
 
             // ///////////////////////////////////////AGREGAR CAMPOS A OTRO(S) TRAMITES
             //     var maxFieldTramite = 3; //Input fields increment limitation
@@ -842,183 +846,226 @@
             //     });
             // ///////////////////////////////////////////////////////////////////
 
-            // ///////////////////////////////////////AGREGAR CAMPOS A OTRO(S) DETALLE ESTAMPILLAS
-            //     var maxFieldeEst = 10; //Input fields increment limitation
-            //     var h = 1; //Initial field counter is 1
+            ///////////////////////////////////////AGREGAR CAMPOS A OTRO(S) DETALLE ESTAMPILLAS
+                var maxFieldeEst = 10; //Input fields increment limitation
+                var h = 1; //Initial field counter is 1
 
-            //     $(document).on('click', '.add_button_estampilla', function(e){ //Once add button is clicked
-            //         if(h < maxFieldeEst){ //Check maximum number of input fields
-            //             h++; //Increment field counter
-            //             $('#content_detalle_est').append('<div class="d-flex justify-content-center pb-1">'+
-            //                             '<div class="row">'+
-            //                                 '<div class="col-5">'+
-            //                                     '<select class="form-select form-select-sm ucd_est" aria-label="Small select example"id="ucd_est_'+h+'" nro="'+h+'"  name="detalle['+h+'][ucd]" required>'+
-            //                                         '<option value="1">1 UCD</option>'+
-            //                                         '<option value="2">2 UCD</option>'+
-            //                                         '<option value="3">3 UCD</option>'+
-            //                                         '<option value="3">5 UCD</option>'+
-            //                                     '</select>'+
-            //                                 '</div>'+
-            //                                 '<div class="col-5">'+
-            //                                     '<input type="number" class="form-control form-control-sm cant_est" id="cant_est_1" nro="1" name="detalle['+h+'][cantidad]" required>'+
-            //                                 '</div>'+
-            //                                 '<div class="col-sm-1">'+
-            //                                     '<a  href="javascript:void(0);" class="btn remove_button_estampillas" nro="'+h+'">'+
-            //                                         '<i class="bx bx-x fs-4"></i>'+
-            //                                     '</a>'+
-            //                                 '</div>'+
-            //                             '</div>'+
-            //                         '</div>'); // Add field html
-            //         }
-            //     });
+                $(document).on('click', '.add_button_estampilla', function(e){ //Once add button is clicked
+                    if(h < maxFieldeEst){ //Check maximum number of input fields
+                        h++; //Increment field counter
+                        $('#content_detalle_est').append('<div class="d-flex justify-content-center pb-1">'+
+                                        '<div class="row">'+
+                                            '<div class="col-5">'+
+                                                '<select class="form-select form-select-sm ucd_est" aria-label="Small select example"id="ucd_est_'+h+'" nro="'+h+'"  name="detalle['+h+'][ucd]" required>'+
+                                                    '<option value="1">1 UCD</option>'+
+                                                    '<option value="2">2 UCD</option>'+
+                                                    '<option value="3">3 UCD</option>'+
+                                                    '<option value="3">5 UCD</option>'+
+                                                '</select>'+
+                                            '</div>'+
+                                            '<div class="col-5">'+
+                                                '<input type="number" class="form-control form-control-sm cant_est" id="cant_est_1" nro="1" name="detalle['+h+'][cantidad]" required>'+
+                                            '</div>'+
+                                            '<div class="col-sm-1">'+
+                                                '<a  href="javascript:void(0);" class="btn remove_button_estampillas" nro="'+h+'">'+
+                                                    '<i class="bx bx-x fs-4"></i>'+
+                                                '</a>'+
+                                            '</div>'+
+                                        '</div>'+
+                                    '</div>'); // Add field html
+                    }
+                });
 
-            //     $(document).on('click', '.remove_button_estampillas', function(e){ //Once remove button is clicked
-            //         e.preventDefault();
-            //         $(this).parent('div').parent('div').remove(); //Remove field html
-            //         h--; //Decrement field counter
-            //     });
-            // //////////////////////////////////////////////////////////////////
+                $(document).on('click', '.remove_button_estampillas', function(e){ //Once remove button is clicked
+                    e.preventDefault();
+                    $(this).parent('div').parent('div').remove(); //Remove field html
+                    h--; //Decrement field counter
+                });
+            //////////////////////////////////////////////////////////////////
 
-            // //////////////////////////// BUSCAR CONTRIBUYENTE
-            // $(document).on('keyup','#identidad_nro', function(e) {  
-            //     e.preventDefault(); 
-            //     var value = $(this).val();
-            //     var condicion = $('#identidad_condicion').val();
-            //     var condicion_sujeto = $('#condicion_sujeto').val();
+            ////////////////////////// CONDICIÓN SUJETO
+            $(document).on('change','#condicion_sujeto', function(e) {
+                e.preventDefault(); 
+                var value = $(this).val(); 
 
-            //     $.ajax({
-            //         headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') },
-            //         type: 'POST',
-            //         url: '{{route("venta.search") }}',
-            //         data: {value:value,condicion:condicion,condicion_sujeto:condicion_sujeto},
-            //         success: function(response) {
-            //             // console.log(response);               
-            //             if (response.success) {
-            //                 $('#btns_add_contribuyente').addClass('d-none');
-            //                 $('#nombre').val(response.nombre);
-            //                 $('#nombre').attr('disabled', true);
+                $('#identidad_condicion option').remove();
+
+                if (value == "9" || value == "10") {
+                    $('#identidad_condicion').append('<option>Seleccione</option>'+
+                                                    '<option value="V">V</option>'+
+                                                    '<option value="E">E</option>');
+                }else{
+                    $('#identidad_condicion').append('<option>Seleccione</option>'+
+                                                    '<option value="J">J</option>'+
+                                                    '<option value="G">G</option>');
+                }
+
+            });
+
+            //////////////////////////// BUSCAR CONTRIBUYENTE
+            $(document).on('keyup','#identidad_nro', function(e) {  
+                e.preventDefault(); 
+                var value = $(this).val();
+                var condicion = $('#identidad_condicion').val();
+                var condicion_sujeto = $('#condicion_sujeto').val();
+
+                $.ajax({
+                    headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') },
+                    type: 'POST',
+                    url: '{{route("venta.search") }}',
+                    data: {value:value,condicion:condicion,condicion_sujeto:condicion_sujeto},
+                    success: function(response) {
+                        // console.log(response);               
+                        if (response.success) {
+                            $('#btns_add_contribuyente').addClass('d-none');
+                            $('#nombre').val(response.nombre);
+                            $('#nombre').attr('disabled', true);
 
 
-            //                 $('.ente').attr('disabled', false);
-            //                 $('.tramite').attr('disabled', false);
-            //                 $('.forma').attr('disabled', false);
+                            $('.ente').attr('disabled', false);
+                            $('.tramite').attr('disabled', false);
+                            $('.forma').attr('disabled', false);
 
-            //                 $('.metodo').attr('disabled', false);
-            //                 $('.comprobante').attr('disabled', false);
-            //                 $('.debitado').attr('disabled', false);
+                            $('.metodo').attr('disabled', false);
+                            $('.comprobante').attr('disabled', false);
+                            $('.debitado').attr('disabled', false);
 
-            //                 $('.add_button_tramite').removeClass('disabled');
-            //                 $('.add_button').removeClass('disabled');
+                            $('.add_button_tramite').removeClass('disabled');
+                            $('.add_button').removeClass('disabled');
 
-            //                 $('#btn_submit_venta').attr('disabled', false);
+                            $('#btn_submit_venta').attr('disabled', false);
 
-            //             }else{
-            //                 $('#btns_add_contribuyente').removeClass('d-none');
-            //                 $('#nombre').attr('disabled', false);
-            //                 $('#nombre').val('');
+                        }else{
+                            $('#btns_add_contribuyente').removeClass('d-none');
+                            $('#nombre').attr('disabled', false);
+                            $('#nombre').val('');
                             
-            //                 $('.ente').attr('disabled', true);
-            //                 $('.tramite').attr('disabled', true);
-            //                 $('.forma').attr('disabled', true);
+                            $('.ente').attr('disabled', true);
+                            $('.tramite').attr('disabled', true);
+                            $('.forma').attr('disabled', true);
 
-            //                 $('.metodo').attr('disabled', true);
-            //                 $('.comprobante').attr('disabled', true);
-            //                 $('.debitado').attr('disabled', true);
+                            $('.metodo').attr('disabled', true);
+                            $('.comprobante').attr('disabled', true);
+                            $('.debitado').attr('disabled', true);
 
-            //                 $('.add_button_tramite').addClass('disabled');
-            //                 $('.add_button').addClass('disabled');
+                            $('.add_button_tramite').addClass('disabled');
+                            $('.add_button').addClass('disabled');
 
-            //                 $('#btn_submit_venta').attr('disabled', true);
-            //             }
-            //         },
-            //         error: function() {
-            //         }
-            //     });
+                            $('#btn_submit_venta').attr('disabled', true);
+                        }
+                    },
+                    error: function() {
+                    }
+                });
                 
             
-            // });
+            });
 
 
-            // $(document).on('change','#identidad_condicion', function(e) {
-            //     $('#identidad_nro').val('');
+            $(document).on('change','#identidad_condicion', function(e) {
+                $('#identidad_nro').val('');
 
-            //     $('#btns_add_contribuyente').removeClass('d-none');
-            //     $('#nombre').attr('disabled', false);
-            //     $('#nombre').val('');
+                $('#btns_add_contribuyente').removeClass('d-none');
+                $('#nombre').attr('disabled', false);
+                $('#nombre').val('');
                 
-            //     $('.ente').attr('disabled', true);
-            //     $('.tramite').attr('disabled', true);
-            //     $('.forma').attr('disabled', true);
+                $('.ente').attr('disabled', true);
+                $('.tramite').attr('disabled', true);
+                $('.forma').attr('disabled', true);
 
-            //     $('.metodo').attr('disabled', true);
-            //     $('.comprobante').attr('disabled', true);
-            //     $('.debitado').attr('disabled', true);
+                $('.metodo').attr('disabled', true);
+                $('.comprobante').attr('disabled', true);
+                $('.debitado').attr('disabled', true);
 
-            //     $('.add_button_tramite').addClass('disabled');
-            //     $('.add_button').addClass('disabled');
+                $('.add_button_tramite').addClass('disabled');
+                $('.add_button').addClass('disabled');
 
-            //     $('#btn_submit_venta').attr('disabled', true);
-            // });
+                $('#btn_submit_venta').attr('disabled', true);
+            });
 
-            // /////////////////////////// BTN REGISTRO CONTRIBUYENTE
-            // $(document).on('click','#btn_add_contribuyente', function(e) {
-            //     e.preventDefault();
-            //     var condicion_sujeto = $('#condicion_sujeto').val();
-            //     var condicion = $('#identidad_condicion').val();
-            //     var nro = $('#identidad_nro').val();
-            //     var nombre = $('#nombre').val();
+            /////////////////////////// BTN REGISTRO CONTRIBUYENTE
+            $(document).on('click','#btn_add_contribuyente', function(e) {
+                e.preventDefault();
+                var condicion_sujeto = $('#condicion_sujeto').val();
+                var condicion = $('#identidad_condicion').val();
+                var nro = $('#identidad_nro').val();
+                var nombre = $('#nombre').val();
 
-            //     $.ajax({
-            //         headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') },
-            //         type: 'POST',
-            //         url: '{{route("venta.add_contribuyente") }}',
-            //         data: {condicion:condicion,nro:nro,nombre:nombre,condicion_sujeto:condicion_sujeto},
-            //         success: function(response) {
-            //             // console.log(response);
-            //             if (response.success) {
-            //                 $('#nombre').attr('disabled', true);
-            //                 $('#btns_add_contribuyente').addClass('d-none');
-            //                 alert('REGISTRO DE CONTRIBUYENTE EXITOSO.');
-
-
-            //                 $('.ente').attr('disabled', false);
-            //                 $('.tramite').attr('disabled', false);
-            //                 $('.forma').attr('disabled', false);
-
-            //                 $('.metodo').attr('disabled', false);
-            //                 $('.comprobante').attr('disabled', false);
-            //                 $('.debitado').attr('disabled', false);
-
-            //                 $('.add_button_tramite').removeClass('disabled');
-            //                 $('.add_button').removeClass('disabled');
-
-            //                 $('#btn_submit_venta').attr('disabled', false);
+                $.ajax({
+                    headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') },
+                    type: 'POST',
+                    url: '{{route("venta.add_contribuyente") }}',
+                    data: {condicion:condicion,nro:nro,nombre:nombre,condicion_sujeto:condicion_sujeto},
+                    success: function(response) {
+                        // console.log(response);
+                        if (response.success) {
+                            $('#nombre').attr('disabled', true);
+                            $('#btns_add_contribuyente').addClass('d-none');
+                            alert('REGISTRO DE CONTRIBUYENTE EXITOSO.');
 
 
-            //             }else{
-            //                 if (response.nota) {
-            //                     alert(response.nota);
-            //                 }else{
-            //                     alert('Disculpe, ha ocurrido un error al registar a el contribuyente.');
-            //                 }
-            //                 ////alert
-            //             }   
-            //         },
-            //         error: function() {
-            //         }
-            //     });
-            // });
+                            $('.ente').attr('disabled', false);
+                            $('.tramite').attr('disabled', false);
+                            $('.forma').attr('disabled', false);
+
+                            $('.metodo').attr('disabled', false);
+                            $('.comprobante').attr('disabled', false);
+                            $('.debitado').attr('disabled', false);
+
+                            $('.add_button_tramite').removeClass('disabled');
+                            $('.add_button').removeClass('disabled');
+
+                            $('#btn_submit_venta').attr('disabled', false);
 
 
-            // /////////////////////////// BTN CANCELAR REGISTRO CONTRIBUYENTE
-            // $(document).on('click','#btn_cancel_add_c', function(e) {
-            //     e.preventDefault();
-            //     $('#btns_add_contribuyente').addClass('d-none');
-            //     $('#nombre').attr('disabled', true);
+                        }else{
+                            if (response.nota) {
+                                alert(response.nota);
+                            }else{
+                                alert('Disculpe, ha ocurrido un error al registar a el contribuyente.');
+                            }
+                            ////alert
+                        }   
+                    },
+                    error: function() {
+                    }
+                });
+            });
 
-            //     $('#nombre').val('');
-            //     $('#identidad_nro').val('');
-            // });
+
+            /////////////////////////// BTN CANCELAR REGISTRO CONTRIBUYENTE
+            $(document).on('click','#btn_cancel_add_c', function(e) {
+                e.preventDefault();
+                $('#btns_add_contribuyente').addClass('d-none');
+                $('#nombre').attr('disabled', true);
+
+                $('#nombre').val('');
+                $('#identidad_nro').val('');
+            });
+
+            //////////////////////////// TRAMITES SEGUN EL ENTE
+            $(document).on('change','.ente', function(e) {
+                e.preventDefault(); 
+                var nro =  $(this).attr('nro');
+                var value = $(this).val();
+
+                $.ajax({
+                    headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') },
+                    type: 'POST',
+                    url: '{{route("venta.tramites") }}',
+                    data: {value:value},
+                    success: function(response) {
+                        $('#tramite_'+nro).html(response);
+                    },
+                    error: function() {
+                    }
+                });
+            });
+
+
+
+
+
 
             // //////////////////////////// TRAMITE: PROTOCOLIZACIÓN
             // $(document).on('change','.tramite', function(e) {
@@ -1050,166 +1097,149 @@
             // });
 
 
-            // //////////////////////////// VALOR DEL TRAMITE SELECCIONADO
-            // $(document).on('change','.tramite', function(e) {
-            //     e.preventDefault(); 
-            //     var nro =  $(this).attr('nro');
-            //     var value = $(this).val();
+            //////////////////////////// VALOR DEL TRAMITE SELECCIONADO
+            $(document).on('change','.tramite', function(e) {
+                e.preventDefault(); 
+                var nro =  $(this).attr('nro');
+                var value = $(this).val();
 
-            //     var condicion_sujeto =  $('#condicion_sujeto').val();
-            //     var ente =  $('#ente_'+nro).val();
-            //     var metros = $('#metros').val();
-            //     var capital = $('#capital').val();
+                var condicion_sujeto =  $('#condicion_sujeto').val();
+                var ente =  $('#ente_'+nro).val();
+                var metros = $('#metros').val();
+                var capital = $('#capital').val();
 
-            //     $('#ucd_tramite_'+nro).val('');
-            //     $('#forma_'+nro+' option').remove();
-            //     $('#forma_'+nro).append('<option>Seleccione</option>');
+                $('#ucd_tramite_'+nro).val('');
+                $('#forma_'+nro+' option').remove();
+                $('#forma_'+nro).append('<option>Seleccione</option>');
 
-            //     if (value == '') {
-            //         $('#ucd_tramite_'+nro).val('0');
-            //     }else{
+                if (value == '') {
+                    $('#ucd_tramite_'+nro).val('0');
+                }else{
 
-            //         var tramites = [];
-            //         var condicion_folios = 0;
-            //         $('.tramite').each(function(){
-            //             var t = $(this).val();
-            //             tramites.push(t);
+                    var tramites = [];
+                    var condicion_folios = 0;
+                    $('.tramite').each(function(){
+                        var t = $(this).val();
+                        tramites.push(t);
 
-            //             if (t == 1 || t == 2) {
-            //                 condicion_folios = 1;
-            //             }
+                        if (t == 1 || t == 2) {
+                            condicion_folios = 1;
+                        }
 
-            //         });
+                    });
 
 
-            //         $.ajax({
-            //             headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') },
-            //             type: 'POST',
-            //             url: '{{route("venta.alicuota") }}',
-            //             data: {tramites:tramites,tramite:value,condicion_sujeto:condicion_sujeto,metros:metros,capital:capital},
-            //             success: function(response) {
-            //                 // console.log(response);
-            //                 if (response.success) {
-            //                     if (response.no_porcentaje > 1 || response.no_metrado > 1) {
-            //                         alert('Solo se puede escoger un tramite relacionado con los metros y el porcentaje de la gestión, por venta.');
-            //                         // $("#tramite_"+nro+" option[value='']").attr("selected",true);
-            //                         $('#tramite_'+nro)[0].selectedIndex = 0;
-            //                     }else{
-            //                         switch(response.alicuota) {
-            //                             case 7:
-            //                                 /// UCD
-            //                                 $('#ucd_tramite_'+nro).val(response.valor);
-            //                                 forma(nro,response.valor);
-            //                                 calcular();
+                    $.ajax({
+                        headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') },
+                        type: 'POST',
+                        url: '{{route("venta.alicuota") }}',
+                        data: {tramites:tramites,tramite:value,condicion_sujeto:condicion_sujeto,metros:metros,capital:capital},
+                        success: function(response) {
+                            // console.log(response);
+                            if (response.success) {
+                                if (response.no_porcentaje > 1 || response.no_metrado > 1) {
+                                    alert('Solo se puede escoger un tramite relacionado con los metros y el porcentaje de la gestión, por venta.');
+                                    // $("#tramite_"+nro+" option[value='']").attr("selected",true);
+                                    $('#tramite_'+nro)[0].selectedIndex = 0;
+                                }else{
+                                    switch(response.alicuota) {
+                                        case 7:
+                                            /// UCD
+                                            $('#ucd_tramite_'+nro).val(response.valor);
+                                            forma(nro,response.valor);
+                                            // calcular();
                                             
-            //                                 break;
-            //                             case 8:
-            //                                 /// PORCENTAJE
-            //                                 $('#capital').val('0');
-            //                                 $('#pct_monto').html('0,00 Bs.');
+                                            break;
+                                        case 8:
+                                            /// PORCENTAJE
+                                            $('#capital').val('0');
+                                            $('#pct_monto').html('0,00 Bs.');
 
-            //                                 $('#content_capital').removeClass('d-none');
-            //                                 $('.p_porcentaje').html(response.porcentaje+'%');
+                                            $('#content_capital').removeClass('d-none');
+                                            $('.p_porcentaje').html(response.porcentaje+'%');
 
-            //                                 break;
-            //                             case 13:
-            //                                 /// METRADO
-            //                                 $('#content_tamaño').removeClass('d-none');
+                                            break;
+                                        case 13:
+                                            /// METRADO
+                                            $('#content_tamaño').removeClass('d-none');
                                             
-            //                                 break;
-            //                             default:
-            //                                 alert('Disculpe, a ocurrido un error. Vuelva a intentarlo.');
-            //                                 break;
-            //                         }
-            //                     }
+                                            break;
+                                        default:
+                                            alert('Disculpe, a ocurrido un error. Vuelva a intentarlo.');
+                                            break;
+                                    }
+                                }
 
-            //                     //////////////////////  AGREGAR CLASE D-NONE SI EL CASO LO AMERITA
-            //                     if (response.no_porcentaje == 0) {
-            //                         $('#content_capital').addClass('d-none');
-            //                     }else if(response.no_metrado == 0){
-            //                         $('#content_tamaño').addClass('d-none');
-            //                     }
+                                //////////////////////  AGREGAR CLASE D-NONE SI EL CASO LO AMERITA
+                                if (response.no_porcentaje == 0) {
+                                    $('#content_capital').addClass('d-none');
+                                }else if(response.no_metrado == 0){
+                                    $('#content_tamaño').addClass('d-none');
+                                }
 
                                 
-            //                 }else{
+                            }else{
 
-            //                 }
+                            }
                             
-            //             },
-            //             error: function() {
-            //             }
-            //         });
+                        },
+                        error: function() {
+                        }
+                    });
 
-            //         if (condicion_folios == 0) {
-            //             $('#content_folios').addClass('d-none');
-            //             $('#html_folios').addClass('d-none');
-            //         }
+                    if (condicion_folios == 0) {
+                        $('#content_folios').addClass('d-none');
+                        $('#html_folios').addClass('d-none');
+                    }
 
-            //     }
-            // });
+                }
+            });
 
 
-            // //////////////////////////// TRAMITES SEGUN EL ENTE
-            // $(document).on('change','.ente', function(e) {
-            //     e.preventDefault(); 
-            //     var nro =  $(this).attr('nro');
-            //     var value = $(this).val();
-
-            //     $.ajax({
-            //         headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') },
-            //         type: 'POST',
-            //         url: '{{route("venta.tramites") }}',
-            //         data: {value:value},
-            //         success: function(response) {
-            //             $('#tramite_'+nro).html(response);
-            //         },
-            //         error: function() {
-            //         }
-            //     });
-            // });
+            
 
 
 
             // ///////////////////////// DETALLE DE LOS TIMBRES HA VENDER (ESTAMPILLAS Y FORMA 14)
-            // $(document).on('change','.forma', function(e) {
-            //     var value = $(this).val();
-            //     var nro =  $(this).attr('nro');
-            //     var condicion_sujeto =  $('#condicion_sujeto').val();
-            //     var folios = $('#folios').val();
+            $(document).on('change','.forma', function(e) {
+                var value = $(this).val();
+                var nro =  $(this).attr('nro');
+                var condicion_sujeto =  $('#condicion_sujeto').val();
+                var folios = $('#folios').val();
 
-            //     if (value == 4) {
-            //         ////ESTAMPILLAS
-            //         var tramite =  $('#tramite_'+nro).val();
+                if (value == 4) {
+                    ////ESTAMPILLAS
+                    var tramite =  $('#tramite_'+nro).val();
 
-            //         $.ajax({
-            //             headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') },
-            //             type: 'POST',
-            //             url: '{{route("venta.estampillas") }}',
-            //             data: {tramite:tramite,condicion_sujeto:condicion_sujeto,nro:nro,folios:folios},
-            //             success: function(response) {
-            //                 $('#modal_detalle_estampillas').modal('show');
-            //                 $('#content_detalle_estampillas').html(response);
-            //             },
-            //             error: function() {
-            //             }
-            //         });
-            //     }else{
-            //         ////TFE14
+                    $.ajax({
+                        headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') },
+                        type: 'POST',
+                        url: '{{route("venta.estampillas") }}',
+                        data: {tramite:tramite,condicion_sujeto:condicion_sujeto,nro:nro,folios:folios},
+                        success: function(response) {
+                            $('#modal_detalle_estampillas').modal('show');
+                            $('#content_detalle_estampillas').html(response);
+                        },
+                        error: function() {
+                        }
+                    });
+                }else{
+                    ////TFE14
 
-            //     }
+                }
                 
-            // });
+            });
 
-            // /////////////////////////// CERRAR MODAL DETALLE
-            // $(document).on('click','#btn_cancelar_detalle_est', function(e) {
-            //     e.preventDefault();
-            //     var nro =  $(this).attr('nro');
+            /////////////////////////// CERRAR MODAL DETALLE
+            $(document).on('click','#btn_cancelar_detalle_est', function(e) {
+                e.preventDefault();
+                var nro =  $(this).attr('nro');
 
-            //     $('#forma_'+nro+' option').remove();
-            //     $('#forma_'+nro).append('<option>Seleccione</option>'+
-            //                 '<option value="3">TFE-14</option>'+
-            //                 '<option value="4">Estampilla</option>');
-            // });
+                $('#forma_'+nro+' option').remove();
+                $('#forma_'+nro).append('<option>Seleccione</option>'+
+                            '<option value="3">TFE-14</option>'+
+                            '<option value="4">Estampilla</option>');
+            });
             // /////////////////////////////////////////////////////////////////////////////////
     
 
@@ -1221,42 +1251,42 @@
             // });
 
 
-            // //////////////////////////// VALOR DEL TRAMITE SEGUN EL METRADO Y EL PORCENTAJE
-            // // METRADO
-            // $(document).on('click','#btn_calcular_metrado', function(e) {
-            //     e.preventDefault();
-            //     var condicion_sujeto =  $('#condicion_sujeto').val();
-            //     var metros =  $('#metros').val();
-            //     var capital =  $('#capital').val();
+            //////////////////////////// VALOR DEL TRAMITE SEGUN EL METRADO Y EL PORCENTAJE
+            // METRADO
+            $(document).on('click','#btn_calcular_metrado', function(e) {
+                e.preventDefault();
+                var condicion_sujeto =  $('#condicion_sujeto').val();
+                var metros =  $('#metros').val();
+                var capital =  $('#capital').val();
 
-            //     $(".tramite").each(function(e){
-            //         var tramite = $(this).val();
-            //         var nro = $(this).attr('nro');
+                $(".tramite").each(function(e){
+                    var tramite = $(this).val();
+                    var nro = $(this).attr('nro');
 
-            //         var varios_metrado = 0;
+                    var varios_metrado = 0;
 
-            //         cal_misc(tramite,condicion_sujeto, metros,capital,nro,varios_metrado);
+                    cal_misc(tramite,condicion_sujeto, metros,capital,nro,varios_metrado);
                     
-            //     });
-            // });
+                });
+            });
 
 
-            // // PORCENTAJE       
-            // $(document).on('click','#btn_calcular_porcentaje', function(e) {
-            //     e.preventDefault();
-            //     var condicion_sujeto =  $('#condicion_sujeto').val();
-            //     var metros =  $('#metros').val();
-            //     var capital =  $('#capital').val();
+            // PORCENTAJE       
+            $(document).on('click','#btn_calcular_porcentaje', function(e) {
+                e.preventDefault();
+                var condicion_sujeto =  $('#condicion_sujeto').val();
+                var metros =  $('#metros').val();
+                var capital =  $('#capital').val();
 
-            //     $(".tramite").each(function(e){
-            //         var tramite = $(this).val();
-            //         var nro = $(this).attr('nro');
+                $(".tramite").each(function(e){
+                    var tramite = $(this).val();
+                    var nro = $(this).attr('nro');
 
-            //         cal_misc(tramite,condicion_sujeto, metros,capital,nro);
+                    cal_misc(tramite,condicion_sujeto, metros,capital,nro);
                     
                     
-            //     });
-            // });
+                });
+            });
 
 
             
@@ -1324,24 +1354,7 @@
             // });
 
 
-            // //////////////////////////// CONDICIÓN SUJETO
-            // $(document).on('change','#condicion_sujeto', function(e) {
-            //     e.preventDefault(); 
-            //     var value = $(this).val(); 
-
-            //     $('#identidad_condicion option').remove();
-
-            //     if (value == "9" || value == "10") {
-            //         $('#identidad_condicion').append('<option>Seleccione</option>'+
-            //                                         '<option value="V">V</option>'+
-            //                                         '<option value="E">E</option>');
-            //     }else{
-            //         $('#identidad_condicion').append('<option>Seleccione</option>'+
-            //                                         '<option value="J">J</option>'+
-            //                                         '<option value="G">G</option>');
-            //     }
-
-            // });
+           
 
 
             //////////////////ESTAMPILLA 10UCD Y DISPONIBILIDAD DE TIMBRE
@@ -1445,96 +1458,96 @@
         // }
 
 
-        // ///////////////// ADD CAMPO FORMA 
-        // function forma(nro,ucd) {
-        //     // console.log(nro+'/'+ucd);
-        //     ///////////////////////////  ADD CAMPO FORMA(S)
-        //     $('#forma_'+nro+' option').remove();
+        ///////////////// ADD CAMPO FORMA 
+        function forma(nro,ucd) {
+            // console.log(nro+'/'+ucd);
+            ///////////////////////////  ADD CAMPO FORMA(S)
+            $('#forma_'+nro+' option').remove();
 
-        //     if (ucd < 11) {
-        //         $('#forma_'+nro).append('<option>Seleccione</option>'+
-        //                     '<option value="3">TFE-14</option>'+
-        //                     '<option value="4">Estampilla</option>');
-        //     }else{
-        //         $('#forma_'+nro).append('<option>Seleccione</option>'+
-        //                     '<option value="3">TFE-14</option>');
-        //     }
+            if (ucd < 11) {
+                $('#forma_'+nro).append('<option>Seleccione</option>'+
+                            '<option value="3">TFE-14</option>'+
+                            '<option value="4">Estampilla</option>');
+            }else{
+                $('#forma_'+nro).append('<option>Seleccione</option>'+
+                            '<option value="3">TFE-14</option>');
+            }
 
-        // }
+        }
 
 
-        // //////////////// CALCULO METRADO Y PORCENTAJE
-        // function cal_misc(tramite,condicion_sujeto, metros,capital,nro){
-        //     $.ajax({
-        //         headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') },
-        //         type: 'POST',
-        //         url: '{{route("venta.alicuota") }}',
-        //         data: {tramite:tramite,condicion_sujeto:condicion_sujeto,metros:metros,capital:capital},
-        //         success: function(response) {
-        //             // console.log(response);
+        //////////////// CALCULO METRADO Y PORCENTAJE
+        function cal_misc(tramite,condicion_sujeto, metros,capital,nro){
+            $.ajax({
+                headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') },
+                type: 'POST',
+                url: '{{route("venta.alicuota") }}',
+                data: {tramite:tramite,condicion_sujeto:condicion_sujeto,metros:metros,capital:capital},
+                success: function(response) {
+                    // console.log(response);
 
-        //             if (response.success) {
-        //                 switch(response.alicuota) {
-        //                     case 7:
-        //                         /// UCD
-        //                         $('#ucd_tramite_'+nro).val(response.valor);
-        //                         forma(nro,response.valor);
-        //                         calcular();
+                    if (response.success) {
+                        switch(response.alicuota) {
+                            case 7:
+                                /// UCD
+                                $('#ucd_tramite_'+nro).val(response.valor);
+                                forma(nro,response.valor);
+                                calcular();
                                 
-        //                         break;
-        //                     case 8:
-        //                         /// PORCENTAJE
-        //                         if (response.valor_format == undefined) {
-        //                             $('#div_ucd_'+nro).html('<label class="form-label" for="ucd_tramite">Bs.</label><span class="text-danger">*</span>'+
-        //                                 '<input type="text" class="form-control form-control-sm ucd_tramite" id="ucd_tramite_'+nro+'" nro="'+nro+'" value="0" disabled required>');
-        //                             $('#pct_monto').html('0 Bs.');
-        //                         }else{
-        //                            $('#div_ucd_'+nro).html('<label class="form-label" for="ucd_tramite">Bs.</label><span class="text-danger">*</span>'+
-        //                                 '<input type="text" class="form-control form-control-sm ucd_tramite" id="ucd_tramite_'+nro+'" nro="'+nro+'" value="'+response.valor_format+'" disabled required>');
-        //                             $('#pct_monto').html(response.valor_format+' Bs.');
-        //                         }
+                                break;
+                            case 8:
+                                /// PORCENTAJE
+                                if (response.valor_format == undefined) {
+                                    $('#div_ucd_'+nro).html('<label class="form-label" for="ucd_tramite">Bs.</label><span class="text-danger">*</span>'+
+                                        '<input type="text" class="form-control form-control-sm ucd_tramite" id="ucd_tramite_'+nro+'" nro="'+nro+'" value="0" disabled required>');
+                                    $('#pct_monto').html('0 Bs.');
+                                }else{
+                                   $('#div_ucd_'+nro).html('<label class="form-label" for="ucd_tramite">Bs.</label><span class="text-danger">*</span>'+
+                                        '<input type="text" class="form-control form-control-sm ucd_tramite" id="ucd_tramite_'+nro+'" nro="'+nro+'" value="'+response.valor_format+'" disabled required>');
+                                    $('#pct_monto').html(response.valor_format+' Bs.');
+                                }
                                 
-        //                         forma(nro,response.valor);
-        //                         calcular();
+                                forma(nro,response.valor);
+                                calcular();
 
-        //                         break; 
+                                break; 
                                 
-        //                     case 13:
-        //                         /// METRADO
-        //                         $('#content_tamaño').removeClass('d-none');
+                            case 13:
+                                /// METRADO
+                                $('#content_tamaño').removeClass('d-none');
 
-        //                         if (response.size == 'small') {
-        //                             $('#size').html('<p class="fs-4 fw-bold mb-0">Pequeña</p>'+
-        //                                             '<p class="text-secondary">*Hasta 150 mts2.</p>');
-        //                         }else if(response.size == 'medium'){
-        //                             $('#size').html('<p class="fs-4 fw-bold mb-0">Mediana</p>'+
-        //                                             '<p class="text-secondary">*Desde 151, Hasta 399 mts2.</p>');
-        //                         }else if(response.size == 'large'){
-        //                             $('#size').html('<p class="fs-4 fw-bold mb-0">Grande</p>'+
-        //                                             '<p class="text-secondary">*Mayor a 400 mts2.</p>');
-        //                         }else{
-        //                             $('#size').html('');
-        //                         }
+                                if (response.size == 'small') {
+                                    $('#size').html('<p class="fs-4 fw-bold mb-0">Pequeña</p>'+
+                                                    '<p class="text-secondary">*Hasta 150 mts2.</p>');
+                                }else if(response.size == 'medium'){
+                                    $('#size').html('<p class="fs-4 fw-bold mb-0">Mediana</p>'+
+                                                    '<p class="text-secondary">*Desde 151, Hasta 399 mts2.</p>');
+                                }else if(response.size == 'large'){
+                                    $('#size').html('<p class="fs-4 fw-bold mb-0">Grande</p>'+
+                                                    '<p class="text-secondary">*Mayor a 400 mts2.</p>');
+                                }else{
+                                    $('#size').html('');
+                                }
 
-        //                         $('#ucd_tramite_'+nro).val(response.valor);
-        //                         forma(nro,response.valor);
-        //                         calcular();
+                                $('#ucd_tramite_'+nro).val(response.valor);
+                                forma(nro,response.valor);
+                                // calcular();
                                 
-        //                         break;
-        //                     default:
-        //                         alert('Disculpe, a ocurrido un error. Vuelva a intentarlo.');
-        //                         break;
-        //                 }
-        //             }else{
+                                break;
+                            default:
+                                alert('Disculpe, a ocurrido un error. Vuelva a intentarlo.');
+                                break;
+                        }
+                    }else{
 
-        //             }
+                    }
                     
-        //         },
-        //         error: function() {
-        //         }
-        //     });
+                },
+                error: function() {
+                }
+            });
 
-        // }
+        }
 
 
         // //////////////// VENTA DE TIMBRES
@@ -1572,36 +1585,63 @@
 
 
 
-        // function detalleEst(){
-        //     var formData = new FormData(document.getElementById("form_detalle_est"));
-        //     $.ajax({
-        //         headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') },
-        //         url:'{{route("venta.est_detalle") }}',
-        //         type:'POST',
-        //         contentType:false,
-        //         cache:false,
-        //         processData:false,
-        //         async: true,
-        //         data: formData,
-        //         success: function(response){
-        //             console.log(response);
-        //             if (response.success) {
-        //                 $('#modal_detalle_estampillas').modal('hide');
-        //                 $('#detalle_'+response.nro).val(response.detalle);
-        //             }else{
-        //                 if (response.nota) {
-        //                     alert(response.nota);
-        //                 }else{
-        //                     alert('Disculpe, ha ocurrido un error');
-        //                 }
-        //             }
+        function detalleEst(){
+            var formData = new FormData(document.getElementById("form_detalle_est"));
+            $.ajax({
+                headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') },
+                url:'{{route("venta.est_detalle") }}',
+                type:'POST',
+                contentType:false,
+                cache:false,
+                processData:false,
+                async: true,
+                data: formData,
+                success: function(response){
+                    console.log(response);
+                    if (response.success) {
+                        $('#modal_detalle_estampillas').modal('hide');
+                        $('#detalle_est').val(response.detalle);
+                    }else{
+                        if (response.nota) {
+                            alert(response.nota);
+                        }else{
+                            alert('Disculpe, ha ocurrido un error');
+                        }
+                    }
 
-        //         },
-        //         error: function(error){
+                },
+                error: function(error){
                     
-        //         }
-        //     });
-        // }
+                }
+            });
+        }
+
+
+        function addTramite(){
+            var formData = new FormData(document.getElementById("form_agregar_tramite"));
+            $.ajax({
+                headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') },
+                url:'{{route("venta.agregar") }}',
+                type:'POST',
+                contentType:false,
+                cache:false,
+                processData:false,
+                async: true,
+                data: formData,
+                success: function(response){
+                    console.log(response);
+                    if (response.success) {
+                        
+                    }else{
+                        
+                    }
+
+                },
+                error: function(error){
+                    
+                }
+            });
+        }
 
     </script>
   

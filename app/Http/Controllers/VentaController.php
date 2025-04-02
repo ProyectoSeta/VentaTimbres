@@ -105,29 +105,10 @@ class VentaController extends Controller
 
 
 
-    // public function metros(Request $request){
-    //     $tramite = $request->post('tramite');
-    //     $metros = $request->post('value');
-
-    //     if ($metros == '' || $metros == 0) {
-    //         return response('0');
-    //     }else{
-    //         if ($metros <= 150) {
-    //             ////pequeña
-    //             $query = DB::table('tramites')->select('small')->where('id_tramite','=', $tramite)->first();
-    //             return response($query->small);
-    //         }elseif ($metros > 150 && $metros < 400) {
-    //             /////mediana
-    //             $query = DB::table('tramites')->select('medium')->where('id_tramite','=', $tramite)->first();
-    //             return response($query->medium);
-    //         }elseif ($metros >= 400) {
-    //             /////grande
-    //             $query = DB::table('tramites')->select('large')->where('id_tramite','=', $tramite)->first();
-    //             return response($query->large);
-    //         }
-    //     }
-        
-    // }
+    public function agregar(Request $request){
+        $tramite = $request->post('tramite');
+        return response($tramite);
+    }
 
 
 
