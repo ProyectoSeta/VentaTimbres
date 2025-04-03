@@ -108,26 +108,195 @@ class VentaController extends Controller
     public function agregar(Request $request){
         $tramite = $request->post('tramite');
 
-        $ucd = $request->post('total_ucd');
-        $bs = $request->post('total_bs');
+        if ($tramite['forma'] == 'Seleccione' || $tramite['forma'] == '') {
+            return response()->json(['success' => false, 'nota' => 'Debe seleccionar la Forma.']);
+        }else{
+            $ucd = $request->post('total_ucd');
+            $bs = $request->post('total_bs');
+            $nro = $request->post('nro');
 
+            $condicion_sujeto = $request->post('condicion_sujeto');
+            $identidad_condicion = $request->post('identidad_condicion');
+            $identidad_nro = $request->post('identidad_nro');
 
-        //////////////////////////////////// CALCULAR TOTALES
+            $contribuyente = ([
+                'condicion_sujeto' => $condicion_sujeto,
+                'identidad_condicion' => $identidad_condicion,
+                'identidad_nro' => $identidad_nro,
+            ]);
+            $input_contribuyente = base64_encode(serialize($contribuyente));
+
+            //////////////////////////////////// CALCULAR TOTALES
+
+            $q_ucd =  DB::table('ucds')->select('valor')->orderBy('id', 'desc')->first();
+            $valor_ucd = $q_ucd->valor;
+            $total_ucd = 0; 
+            $total_bolivares = 0;
+
+            $ali_tramite = '';
+            $anexo = '';
+            $nombre_tramite = '';
+
+            if ($tramite != '') { 
+                $query = DB::table('tramites')->where('id_tramite','=', $tramite)->first();
+                $nombre_tramite = $query->tramite;
+                switch ($query->alicuota) {
+                    case 7:
+                        // UCD
+                        if ($condicion_sujeto == 10 || $condicion_sujeto == 11) {
+                            //////juridico (firma personal - empresa)
+                            $ucd_tramite = $query->juridico;
+                        }else{
+                            ////natural
+                            $ucd_tramite = $query->natural;
+                        }
+                        
+                        $total_ucd = $total_ucd + $ucd_tramite;
+                        $anexo = '<span class="text-muted fst-italic">No aplica</span>';
+
+                        //////SI ES PROTOCOLIZACIÓN Y TIENE FOLIOS ADICIONALES
+                        if($tramite['tramite'] == 1){
+                            $folios = $request->post('folios');
+                            if ($folios != 0 || $folios != '' || $folios != null) {
+                                $q1 = DB::table('tramites')->select('natural')->where('tramite','=', 'Folio')->first();
+                                $total_ucd = $total_ucd + ($folios * $q1->natural);
+
+                                $anexo = '<span class="text-muted fst-italic">+ '.$folios.' Folios ('.$q1->natural.' UCD c/u)</span>';
+                            }else{
+                                '<span class="text-muted fst-italic">Sin Folios anexos</span>';
+                            }
+                        }
+                        $ali_tramite = '<span class="">'.$total_ucd.' UCD</span>';
+
+                        break;
+                    case 8:
+                        // PORCENTAJE
+                        $capital = $request->post('capital');
+                        if (!empty($capital)) {
+                            // hay capital
+                            $bs_tramite = ($capital * $query->porcentaje) / 100;
+                            
+                        }else{
+                            // no hay capital
+                            $bs_tramite = 0;
+                        } 
+
+                        $total_bolivares = $total_bolivares + $bs_tramite;
+                        $bolivares_tramite_format = number_format($total_bolivares, 2, ',', '.');
+                        $capital_format = number_format($capital, 2, ',', '.');
+
+                        $ali_tramite = '<span class="">'.$bolivares_tramite_format.' Bs.</span>';
+                        $anexo = '<span class="text-muted fst-italic">Capital: '.$capital_format.' Bs.</span>';
+
+                        break;
+                    case 13:
+                        // METRADO
+                        $metros = $request->post('metros');
+                        if (!empty($metros)) {
+                            // hay metros
+                            if ($metros == '' || $metros == 0) {
+                                $ucd_tramite = 0;
+                            }else{
+                                if ($metros <= 150) {
+                                    ////pequeña
+                                    $ucd_tramite = $query->small;
+                                }elseif ($metros > 150 && $metros < 400) {
+                                    /////mediana
+                                    $ucd_tramite = $query->medium;
+                                }elseif ($metros >= 400) {
+                                    /////grande
+                                    $ucd_tramite = $query->large;
+                                }
+                            }
+                        }else{
+                            // no hay metros
+                            $ucd_tramite = 0;
+                        } 
+                        $total_ucd = $total_ucd + $ucd_tramite;
+
+                        $ali_tramite = '<span class="">'.$total_ucd.' UCD</span>';
+                        $anexo = '<span class="text-muted fst-italic">'.$metros.' mt2.</span>';
+                        break;
+                            
+                }
+            }else{
+                return response()->json(['success' => false, 'nota' => 'Debe seleccionar el Tramite.']);
+            }
         
-        ///////////////////////////////////
 
-        $tr = '';
+            $total_bolivares = $total_bolivares + ($total_ucd * $valor_ucd);
+            $total_bolivares_format = number_format($total_bolivares, 2, ',', '.');
+            ///////////////////////////////////
 
-        $detalle_tramite = ([
-                            'tramite' => $tramite['tramite'],
-                            'metrado' => $request->post('folios'),
-                            'porcentaje' => $request->post('metros'),
-                            'nro_folios' => $request->post('capital'),
-                            'forma' => $tramite['forma'],
-                            'detalle_est' => $tramite['detalle'],
-        ]);
 
-        return response($detalle_tramite);
+            // INPUT CON INFO
+            $detalle_tramite = ([
+                        'tramite' => $tramite['tramite'],
+                        'metrado' => $request->post('folios'),
+                        'porcentaje' => $request->post('metros'),
+                        'nro_folios' => $request->post('capital'),
+                        'forma' => $tramite['forma'],
+                        'detalle_est' => $tramite['detalle'],
+            ]);
+            $input = base64_encode(serialize($detalle_tramite));
+            
+            // //////////////////////////////// TR DE LA TABLA
+            $span = '';
+            if ($tramite['forma'] == 4) {
+                $detalle = unserialize(base64_decode($tramite['detalle']));
+
+                foreach ($detalle as $key) {
+                    $key_ucd = $key['ucd'];
+                    $key_cant = $key['cantidad'];
+                    
+                    $cu = DB::table('ucd_denominacions')->select('denominacion')->where('id','=', $key_ucd)->first();
+                    for ($i=0; $i < $key_cant; $i++) { 
+                        $span .= '<span>Est '.$cu->denominacion.' UCD</span>';
+                    }
+                }
+            }else{
+                $span = '<span>TFE-14</span>';
+            }
+        
+
+            $tr = '<tr class="tr" id="tr_'.$nro.'">
+                        <td>1</td>
+                        <td>'.$nombre_tramite.'</td>
+                        <td>
+                            '.$anexo.'
+                        </td>
+                        <td>
+                            '.$ali_tramite.'
+                        </td>
+                        <td>
+                            <div class="d-flex flex-column">
+                                '.$span.'
+                            </div>
+                            <input type="hidden" name="tramite['.$nro.']" class="tramite" value="'.$input.'">
+                        </td>
+                        <td>
+                            <a href="javascript:void(0);" class="btn remove_tramite" nro="'.$nro.'">
+                                <i class="bx bx-x fs-4"></i>
+                            </a>
+                        </td>
+                    </tr>';
+            ///////////////////////////////////
+
+            // SUMA DE NRO
+            $nro++;
+            
+            // SUMA DE MONTOS (BS - UCD)
+            // return response($ucd);
+            $ucd = $ucd + $total_ucd;
+            $bs = $bs + $total_bolivares;
+
+            $format_bs_total = number_format($bs, 2, ',', '.');
+
+            return response()->json(['success' => true, 'tr' => $tr, 'nro' => $nro, 'ucd' => $ucd, 'bs' => $bs, 'format_bs' => $format_bs_total,'contribuyente' => $input_contribuyente]);
+            
+        }
+
+        
     }
 
 
@@ -141,37 +310,23 @@ class VentaController extends Controller
         $no_ali_metros = 0;
         $no_ali_porcentaje = 0;
 
-        $tramites = $request->post('tramites');
-
-        if (isset($tramites)) {
-            foreach ($tramites as $key) {
-                if ($key != '') {
-                    $q1 = DB::table('tramites')->select('alicuota')->where('id_tramite','=', $key)->first();
-                    // PORCENTAJE
-                    if ($q1->alicuota == '8') {
-                        $no_ali_porcentaje = $no_ali_porcentaje + 1;
-                    }
-                    // METRADO
-                    else if ($q1->alicuota == '13') {
-                        $no_ali_metros = $no_ali_metros + 1;
-                    }
-                }
-            }
-        }
- 
-    
+        
 
         $query = DB::table('tramites')->where('id_tramite','=', $tramite)->first();
         if ($query) {
             switch ($query->alicuota) {
                 case 7:
                     // UCD
+                    $folios = false;
+                    if ($tramite == 1) {
+                        $folios = true;
+                    }
                     if ($condicion_sujeto == 10 || $condicion_sujeto == 11) {
                         //////juridico (firma personal - empresa)
-                        return response()->json(['success' => true, 'valor' => $query->juridico, 'alicuota' => $query->alicuota]);
+                        return response()->json(['success' => true, 'valor' => $query->juridico, 'alicuota' => $query->alicuota, 'folios' => $folios]);
                     }else{
                         ////natural
-                        return response()->json(['success' => true, 'valor' => $query->natural, 'alicuota' => $query->alicuota, 'no_porcentaje' => $no_ali_porcentaje, 'no_metrado' => $no_ali_metros]);
+                        return response()->json(['success' => true, 'valor' => $query->natural, 'alicuota' => $query->alicuota, 'no_porcentaje' => $no_ali_porcentaje, 'no_metrado' => $no_ali_metros, 'folios' => $folios]);
                     }
                 case 8:
                     // PORCENTAJE

@@ -48,356 +48,242 @@
                     </div>
                 </div>
                 
-
-                <!-- FORM -->
-                    <!-- <form id="form_venta" method="post" onsubmit="event.preventDefault(); venta()"> -->
-                        <!-- DATOS CONTRIBUYENTE -->
-                        <div class="mb-3 border text-navy rounded-3 p-2 py-3 position-relative mt-4 pt-4" style="font-size:13px">
-                            <div class="position-absolute top-0 start-50 translate-middle bg-white px-3 titulo fs-5 fw-bold">Contribuyente</div>
-                            <div class="d-flex justify-content-center">
-                                <div class="row w-100">
-                                    <!-- <h5 class="titulo fw-bold text-navy mb-3">Contribuyente | <span class="text-secondary fs-6">Datos</span></h5> -->
-                                    <!-- Tipo Contribuyente -->
-                                    <div class="col-sm-3">
-                                        <div class="row d-flex a">
-                                            <div class="col-lg-4 pt-2">
-                                                <label class="form-label" for="condicion_sujeto">Condición</label><span class="text-danger">*</span>
-                                            </div>
-                                            <div class="col-lg-8">
-                                                <select class="form-select form-select-sm" id="condicion_sujeto" aria-label="Small select example" name="condicion_sujeto">
-                                                    <option>Seleccione</option>
-                                                    <option value="9">Natural</option>
-                                                    <option value="10">Firma Personal</option>
-                                                    <option value="11">Empresa o Ente</option>
-                                                </select>
-                                            </div>
+                <form id="form_agregar_tramite" method="post" onsubmit="event.preventDefault(); addTramite()">
+                    <!-- DATOS CONTRIBUYENTE -->
+                    <div class="mb-3 border text-navy rounded-3 p-2 py-3 position-relative mt-4 pt-4" style="font-size:13px">
+                        <div class="position-absolute top-0 start-50 translate-middle bg-white px-3 titulo fs-5 fw-bold">Contribuyente</div>
+                        <div class="d-flex justify-content-center">
+                            <div class="row w-100">
+                                <!-- <h5 class="titulo fw-bold text-navy mb-3">Contribuyente | <span class="text-secondary fs-6">Datos</span></h5> -->
+                                <!-- Tipo Contribuyente -->
+                                <div class="col-sm-3">
+                                    <div class="row d-flex a">
+                                        <div class="col-lg-4 pt-2">
+                                            <label class="form-label" for="condicion_sujeto">Condición</label><span class="text-danger">*</span>
                                         </div>
-                                    </div>
-                                    <!-- ci o rif -->
-                                    <div class="col-sm-4">
-                                        <div class="row">
-                                            <div class="col-lg-3 pt-2">
-                                                <label class="form-label" for="identidad_condicion">C.I / R.I.F</label><span class="text-danger">*</span>
-                                            </div>
-                                            <div class="col-lg-9">
-                                                <div class="row">
-                                                    <div class="col-4">
-                                                        <select class="form-select form-select-sm" id="identidad_condicion" aria-label="Small select example" name="identidad_condicion">
-                                                            <option>Seleccione</option>
-                                                        </select>
-                                                    </div>
-                                                    <div class="col-8">
-                                                        <input type="number" id="identidad_nro" class="form-control form-control-sm" name="identidad_nro" required placeholder="Ej: 7521004">
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <!-- nombre o razon -->
-                                    <div class="col-sm-5">
-                                        <div class="row">
-                                            <div class="col-lg-4 pt-2">
-                                                <label class="form-label" for="nombre">Nombre / Razón Social</label><span class="text-danger">*</span>
-                                            </div>
-                                            <div class="col-lg-8">
-                                                <input type="text" id="nombre" class="form-control form-control-sm" name="nombre" disabled required>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-
-                            <div class="d-flex justify-content-center mt-3 mb-3 d-none" id="btns_add_contribuyente">
-                                <button type="button" class="btn btn-secondary btn-sm me-3" id="btn_cancel_add_c">Cancelar</button>
-                                <button type="button" class="btn btn-success btn-sm" id="btn_add_contribuyente">Registrar</button>
-                            </div>
-                        </div>
-
-                        <!-- TRAMITES -->
-                        <!-- <h5 class="titulo fw-bold text-navy mb-3 ms-3">Tramite | <span class="text-secondary fs-6">Datos</span></h5> -->
-                        <div class="mb-3 border rounded-3 p-2 pt-3 pb-1 position-relative mt-4" style="font-size:13px">
-                            <div class="position-absolute top-0 start-50 translate-middle bg-white px-3 titulo fs-5 fw-bold">Selección del Tramite</div>
-                            <div class="d-flex flex-column">
-                                <form id="form_agregar_tramite" method="post" onsubmit="event.preventDefault(); addTramite()">
-                                    <input type="hidden" name="total_ucd" id="total_ucd" value="0">
-                                    <input type="hidden" name="total_bs" id="total_bs" value="0">
-                                    <input type="hidden" name="nro" id="nro" value="1">
-
-                                    <div class="d-flex justify-content-center tramites pb-1">
-                                        <div class="row w-100 ">
-                                            <div class="col-sm-2">
-                                                <label class="form-label" for="ente">Ente</label><span class="text-danger">*</span>
-                                                <select class="form-select form-select-sm ente" nro="1" id="ente_1" disabled>
-                                                    @foreach ($entes as $ente)
-                                                        <option value="{{$ente->id_ente}}">{{$ente->ente}}</option>
-                                                    @endforeach
-                                                    
-                                                </select>
-                                            </div>
-                                            <div class="col-sm-5">
-                                                <label class="form-label" for="tramite">Tramite</label><span class="text-danger">*</span>
-                                                <select class="form-select form-select-sm tramite" name="tramite[tramite]" nro="1" id="tramite_1" disabled>
-                                                    <option value="">Seleccione el tramite </option>
-                                                        @foreach ($tramites as $tramite)
-                                                            <option value="{{$tramite->id_tramite}}">{{$tramite->tramite}}</option>
-                                                        @endforeach
-                                                </select>
-                                            </div>
-                                            <div class="col-sm-2" id="div_ucd_1">
-                                                <label class="form-label" for="ucd_tramite">U.C.D.</label><span class="text-danger">*</span>
-                                                <input type="text" class="form-control form-control-sm ucd_tramite" id="ucd_tramite_1" nro="1" disabled required>
-                                                <span class="text-end text-muted d-none" id="html_folios">+ <span class="fw-bold text-navy" id="ucd_folios">3 UCD</span> (Folios)</span>
-                                            </div>
-                                            <div class="col-sm-2">
-                                                <label class="form-label" for="forma">Forma</label><span class="text-danger">*</span>
-                                                <select class="form-select form-select-sm forma" nro="1" name="tramite[forma]"id="forma_1" required>
-                                                    <option value="">Seleccione</option>
-                                                </select>
-                                                <input type="hidden" name="tramite[detalle]" id="detalle_est"> 
-                                            </div>
-                                            <div class="col-sm-1 d-flex align-items-end">
-                                                <!-- <a  href="javascript:void(0);" class="btn add_button_tramite disabled border-0">
-                                                    <i class="bx bx-plus fs-4" style="color:#038ae4"></i>
-                                                </a> -->
-                                                <button class="btn btn-secondary btn-sm" type="submit">Agregar</button>
-                                            </div>
-                                        </div>
-                                    </div>
-
-                                    <!-- ADJUNTO -->
-                                    <div class="d-flex flex-column align-items-center m-0 p-0">
-                                        <!-- Folios -->
-                                        <div class="w-50 mt-2 d-none border p-3 rounded-3 mb-2" style="background:#f4f7f9; font-size:12.7px" id="content_folios">
-                                            <div class="text-muted mb-2">*NOTA: El anexo de cada folio tiene un valor de 1 UCD.</div>
-                                            <div class="d-flex align-items-center">
-                                                <label class="form-label" for="folios">Ingrese el número de Folios:</label>
-                                                <input type="number" id="folios" class="form-control form-control-sm w-50 ms-2" name="folios">
-                                            </div>
-                                        </div>
-
-                                        <!-- tamaño de empresa -->
-                                        <div class="w-75 mt-2 d-none border p-3 rounded-3" style="background:#f4f7f9; font-size:12.7px" id="content_tamaño">
-                                            <p class="text-muted my-0 pb-0">*Ingrese el tamaño de la Empresa.</p>
-                                            <div class="row d-flex align-items-center">
-                                                <div class="col-md-6 d-flex justify-content-center align-items-end">
-                                                    <div class="">
-                                                        <label class="form-label" for="metros">Tamaño de la empresa (Mts2):</label><span class="text-danger">*</span>
-                                                        <div class="d-flex align-items-center">
-                                                            <input type="number" id="metros" class="form-control form-control-sm me-2" name="metros">
-                                                            <span class="fw-bold">Mts2</span>
-                                                        </div>
-                                                    </div>
-                                                    <!-- btn calcular -->
-                                                    <div class="ms-3">
-                                                        <button type="button" class="btn btn-secondary btn-sm" id="btn_calcular_metrado">Calcular</button>
-                                                    </div>
-                                                </div>
-
-                                                <div class="col-md-6 text-center pt-0" id="size">
-                                                    
-                                                </div>
-                                            </div>
-                                        </div>
-
-                                        <!-- Capital o Monto de la operación -->
-                                        <div class="w-75 mt-2 d-none border p-3 rounded-3" style="background:#f4f7f9; font-size:12.7px" id="content_capital">
-                                            <p class="text-muted my-0 pb-0">*Ingrese el Capital o Monto total de la Operación.</p>
-                                            <div class="row d-flex align-items-center px-3">
-                                                <div class="col-md-6 d-flex align-items-end justify-content-center">
-                                                    <div class="">
-                                                        <p class="fs-4 fw-bold mb-0 me-4 p_porcentaje">
-                                                            
-                                                        </p>
-                                                    </div>
-                                                    <div class="pb-1 me-4"> de</div>
-                                                    <div class="">
-                                                        <label class="form-label" for="capital">Monto (Bs.):</label><span class="text-danger">*</span>
-                                                        <div class="d-flex align-items-center">
-                                                            <input type="number" id="capital" class="form-control form-control-sm me-2" name="capital">
-                                                            <span class="fw-bold">Bs.</span>
-                                                        </div>
-                                                    </div>
-                                                    <!-- btn calcular -->
-                                                    <div class="ms-3">
-                                                        <button type="button" class="btn btn-secondary btn-sm" id="btn_calcular_porcentaje">Calcular</button>
-                                                    </div>
-                                                </div>
-
-                                                <div class="col-md-6 text-center pt-0" id="size">
-                                                    <p class="fs-4 fw-bold mb-0" id="pct_monto">0,00 Bs.</p>
-                                                    <p class="text-muted fw-bold fs-6"><span class="p_porcentaje"></span>del monto total.</p>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-
-                                </form>
-                            </div> 
-
-                            
-                        </div>
-
-                        
-
-                        <!--  -->
-                        <!-- <h5 class="titulo fw-bold text-center text-navy mb-3 ms-3 mt-3"> <span class="text-secondary fs-6">DETALLE VENTA</span></h5> -->
-                        <div class="row"  style="font-size:13px">
-                            <div class="col-sm-8">
-                                <form action="">
-                                    <table class="table text-center"  style="font-size:13px">
-                                        <thead>
-                                            <tr class="table-dark">
-                                                <th>#</th>
-                                                <th>Tramite</th>
-                                                <th>Anexo</th>
-                                                <th>UCD | Bs.</th>
-                                                <th>Forma</th>
-                                            </tr>
-                                        </thead>
-                                        <tbody>
-                                            <tr>
-                                                <td>1</td>
-                                                <td>Título Universitario</td>
-                                                <td>
-                                                    <span class="text-muted fst-italic">No aplica</span>
-                                                </td>
-                                                <td>
-                                                    <span class="">2 UCD</span>
-                                                </td>
-                                                <td>
-                                                    <div class="d-flex flex-column">
-                                                        <span>Est 1 UCD</span>
-                                                        <span>Est 1 UCD</span>
-                                                    </div>
-                                                    <input type="hidden" name="tramite[1]">
-                                                </td>
-                                            </tr>
-                                        </tbody>
-                                    </table>
-                                </form>
-                            </div>
-                            <div class="col-sm-4">
-                                <div class="">
-                                    <div class="d-flex flex-column">
-                                        <div class="bg-primary-subtle rounded-3 px-3 py-1 mb-2">
-                                            <div class="d-flex justify-content-between align-items-center">
-                                                <p class="d-flex flex-column titulo mb-0">
-                                                    <span class="fs-5 fw-bold text-navy">Debitado</span>
-                                                </p>
-                                                <span class="fs-5 text-navy fw-bold" id="debitado">0,00</span>
-                                            </div>
-                                        </div>
-                                        <div class="bg-body-secondary rounded-3 px-3 py-1 mb-2">
-                                            <div class="d-flex justify-content-between align-items-center">
-                                                <p class="d-flex flex-column titulo mb-0">
-                                                    <span class="fs-5 fw-bold text-navy">Diferencia</span>
-                                                </p>
-                                                <span class="fs-5 text-navy fw-bold" id="diferencia">0,00</span>
-                                            </div>
-                                        </div>
-                                        <div class="bg-body-secondary rounded-3 px-3 py-1">
-                                            <div class="d-flex justify-content-between align-items-center">
-                                                <p class="d-flex flex-column titulo mb-0">
-                                                    <span class="fs-5 fw-bold text-navy">Vuelto</span>
-                                                </p>
-                                                <span class="fs-5 text-navy fw-bold" id="vuelto">0,00</span>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                            
-                            
-                        </div>
-
-
-
-
-
-                        <!-- <div class="mb-3 border rounded-3 p-2 py-3" style="font-size:13px">
-                            <div class="d-flex flex-column pago_timbre">
-                                <div class="d-flex justify-content-center" >
-                                    <div class="row w-100">
-                                        <div class="col-sm-4">
-                                            <label class="form-label" for="metodo">Metodo de Pago</label><span class="text-danger">*</span>
-                                            <select class="form-select form-select-sm metodo" aria-label="Small select example" i="1" name="pago[1][metodo]" disabled>
-                                                <option value="5">Punto</option>
-                                                <option value="6">Efectivo Bs.</option>
+                                        <div class="col-lg-8">
+                                            <select class="form-select form-select-sm" id="condicion_sujeto" aria-label="Small select example" name="condicion_sujeto">
+                                                <option>Seleccione</option>
+                                                <option value="9">Natural</option>
+                                                <option value="10">Firma Personal</option>
+                                                <option value="11">Empresa o Ente</option>
                                             </select>
                                         </div>
-                                        <div class="col-sm-3">
-                                            <label class="form-label" for="comprobante">No. Comprobante</label><span class="text-danger">*</span>
-                                            <input type="number" class="form-control form-control-sm comprobante" name="pago[1][comprobante]" id="comprobante_1" disabled required>
+                                    </div>
+                                </div>
+                                <!-- ci o rif -->
+                                <div class="col-sm-4">
+                                    <div class="row">
+                                        <div class="col-lg-3 pt-2">
+                                            <label class="form-label" for="identidad_condicion">C.I / R.I.F</label><span class="text-danger">*</span>
                                         </div>
-                                        <div class="col-sm-4">
-                                            <label class="form-label" for="debitado">Monto Debitado </label><span class="text-danger">*</span>
-                                            <input type="number" step="0.01" id="debitado_1" class="form-control form-control-sm debitado" name="pago[1][debitado]" disabled required>
+                                        <div class="col-lg-9">
+                                            <div class="row">
+                                                <div class="col-4">
+                                                    <select class="form-select form-select-sm" id="identidad_condicion" aria-label="Small select example" name="identidad_condicion">
+                                                        <option>Seleccione</option>
+                                                    </select>
+                                                </div>
+                                                <div class="col-8">
+                                                    <input type="number" id="identidad_nro" class="form-control form-control-sm" name="identidad_nro" required placeholder="Ej: 7521004">
+                                                </div>
+                                            </div>
                                         </div>
-                                        <div class="col-sm-1 pt-4">
-                                            <a  href="javascript:void(0);" class="btn add_button disabled border-0" title="Agregar monto en Efectivo">
-                                                <i class="bx bx-plus fs-4" style="color:#038ae4"></i>
-                                            </a>
+                                    </div>
+                                </div>
+                                <!-- nombre o razon -->
+                                <div class="col-sm-5">
+                                    <div class="row">
+                                        <div class="col-lg-4 pt-2">
+                                            <label class="form-label" for="nombre">Nombre / Razón Social</label><span class="text-danger">*</span>
+                                        </div>
+                                        <div class="col-lg-8">
+                                            <input type="text" id="nombre" class="form-control form-control-sm" name="nombre" disabled required>
                                         </div>
                                     </div>
                                 </div>
                             </div>
-                        </div> -->
+                        </div>
 
-                        <!-- <p class="text-muted text-end fw-bold mb-2 p-0" style="font-size:13px"><span style="color:red">*</span> Campos requeridos.</p> -->
-                       
-                    <!-- </form> -->
-                <!-- CIERRA FORM -->
+                        <div class="d-flex justify-content-center mt-3 mb-3 d-none" id="btns_add_contribuyente">
+                            <button type="button" class="btn btn-secondary btn-sm me-3" id="btn_cancel_add_c">Cancelar</button>
+                            <button type="button" class="btn btn-success btn-sm" id="btn_add_contribuyente">Registrar</button>
+                        </div>
+                    </div>
 
-            </div>
-            <!-- DETALLES VENTA -->
-            <div class="">
-                <!-- DEBITO -->
-                <!-- <h5 class="titulo fw-bold text-success fs-4 mt-4 mb-3">Debito</h5> -->
+                    <!-- TRAMITES -->
+                    <div class="mb-3 border rounded-3 p-2 pt-3 pb-1 position-relative mt-4" style="font-size:13px">
+                        <div class="position-absolute top-0 start-50 translate-middle bg-white px-3 titulo fs-5 fw-bold">Selección del Tramite</div>
+                        <div class="d-flex flex-column">
+                            <input type="hidden" name="total_ucd" id="total_ucd" value="0">
+                            <input type="hidden" name="total_bs" id="total_bs" value="0">
+                            <input type="hidden" name="nro" id="nro" value="1">
+
+                            <div class="d-flex justify-content-center tramites pb-1">
+                                <div class="row w-100 ">
+                                    <div class="col-sm-2">
+                                        <label class="form-label" for="ente">Ente</label><span class="text-danger">*</span>
+                                        <select class="form-select form-select-sm ente" nro="1" id="ente_1" disabled>
+                                            @foreach ($entes as $ente)
+                                                <option value="{{$ente->id_ente}}">{{$ente->ente}}</option>
+                                            @endforeach
+                                            
+                                        </select>
+                                    </div>
+                                    <div class="col-sm-5">
+                                        <label class="form-label" for="tramite">Tramite</label><span class="text-danger">*</span>
+                                        <select class="form-select form-select-sm tramite" name="tramite[tramite]" nro="1" id="tramite_1" disabled>
+                                            <option value="">Seleccione el tramite </option>
+                                            @foreach ($tramites as $tramite)
+                                                <option value="{{$tramite->id_tramite}}">{{$tramite->tramite}}</option>
+                                            @endforeach
+                                        </select>
+                                    </div>
+                                    <div class="col-sm-2" id="div_ucd_1">
+                                        <label class="form-label" for="ucd_tramite">U.C.D.</label><span class="text-danger">*</span>
+                                        <input type="text" class="form-control form-control-sm ucd_tramite" id="ucd_tramite_1" nro="1" disabled required>
+                                        <span class="text-end text-muted d-none" id="html_folios">+ <span class="fw-bold text-navy" id="ucd_folios">3 UCD</span> (Folios)</span>
+                                    </div>
+                                    <div class="col-sm-2">
+                                        <label class="form-label" for="forma">Forma</label><span class="text-danger">*</span>
+                                        <select class="form-select form-select-sm forma" nro="1" name="tramite[forma]" id="forma_1" required>
+                                            <option value="">Seleccione</option>
+                                        </select>
+                                        <input type="hidden" name="tramite[detalle]" id="detalle_est"> 
+                                    </div>
+                                    <div class="col-sm-1 d-flex align-items-end">
+                                        <button class="btn btn-secondary btn-sm" type="submit">Agregar</button>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- ADJUNTO -->
+                            <div class="d-flex flex-column align-items-center m-0 p-0">
+                                <!-- Folios -->
+                                <div class="w-50 mt-2 d-none border p-3 rounded-3 mb-2" style="background:#f4f7f9; font-size:12.7px" id="content_folios">
+                                    <div class="text-muted mb-2">*NOTA: El anexo de cada folio tiene un valor de 1 UCD.</div>
+                                    <div class="d-flex align-items-center">
+                                        <label class="form-label" for="folios">Ingrese el número de Folios:</label>
+                                        <input type="number" id="folios" class="form-control form-control-sm w-50 ms-2" name="folios">
+                                    </div>
+                                </div>
+
+                                <!-- tamaño de empresa -->
+                                <div class="w-75 mt-2 d-none border p-3 rounded-3 mb-2" style="background:#f4f7f9; font-size:12.7px" id="content_tamaño">
+                                    <p class="text-muted my-0 pb-0">*Ingrese el tamaño de la Empresa.</p>
+                                    <div class="row d-flex align-items-center">
+                                        <div class="col-md-6 d-flex justify-content-center align-items-end">
+                                            <div class="">
+                                                <label class="form-label" for="metros">Tamaño de la empresa (Mts2):</label><span class="text-danger">*</span>
+                                                <div class="d-flex align-items-center">
+                                                    <input type="number" id="metros" class="form-control form-control-sm me-2" name="metros">
+                                                    <span class="fw-bold">Mts2</span>
+                                                </div>
+                                            </div>
+                                            <!-- btn calcular -->
+                                            <div class="ms-3">
+                                                <button type="button" class="btn btn-secondary btn-sm" id="btn_calcular_metrado">Calcular</button>
+                                            </div>
+                                        </div>
+
+                                        <div class="col-md-6 text-center pt-0" id="size">
+                                            
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- Capital o Monto de la operación -->
+                                <div class="w-75 mt-2 d-none border p-3 rounded-3 mb-2" style="background:#f4f7f9; font-size:12.7px" id="content_capital">
+                                    <p class="text-muted my-0 pb-0">*Ingrese el Capital o Monto total de la Operación.</p>
+                                    <div class="row d-flex align-items-center px-3">
+                                        <div class="col-md-6 d-flex align-items-end justify-content-center">
+                                            <div class="">
+                                                <p class="fs-4 fw-bold mb-0 me-4 p_porcentaje">
+                                                    
+                                                </p>
+                                            </div>
+                                            <div class="pb-1 me-4"> de</div>
+                                            <div class="">
+                                                <label class="form-label" for="capital">Monto (Bs.):</label><span class="text-danger">*</span>
+                                                <div class="d-flex align-items-center">
+                                                    <input type="number" id="capital" class="form-control form-control-sm me-2" name="capital">
+                                                    <span class="fw-bold">Bs.</span>
+                                                </div>
+                                            </div>
+                                            <!-- btn calcular -->
+                                            <div class="ms-3">
+                                                <button type="button" class="btn btn-secondary btn-sm" id="btn_calcular_porcentaje">Calcular</button>
+                                            </div>
+                                        </div>
+
+                                        <div class="col-md-6 text-center pt-0" id="size">
+                                            <p class="fs-4 fw-bold mb-0" id="pct_monto">0,00 Bs.</p>
+                                            <p class="text-muted fw-bold fs-6"><span class="p_porcentaje"></span>del monto total.</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div> 
+
+                        
+                    </div>
+                </form>
                 
-                 
 
-                <!-- DETALLE -->
-                <!-- <div class="border rounded-3 my-3" style="font-size:12px">
-                    <div class="d-flex flex-column text-center fw-semibold lh-sm my-2" style="font-size:12px">
-                        <span class="fw-bold">Servicio Tributario de Aragua (SETA)</span>
-                        <span>Detalle de la Venta</span>
-                        <span>Tramites | Formas</span>
+            
+                
+                <div class="row"  style="font-size:13px">
+                    <div class="col-sm-8">
+                        <form id="form_venta" method="post" onsubmit="event.preventDefault(); venta()">
+                            <input type="hidden" name="contribuyente">
+                            <table class="table text-center"  style="font-size:13px">
+                                <thead>
+                                    <tr class="table-dark">
+                                        <th>#</th>
+                                        <th>Tramite</th>
+                                        <th>Anexo</th>
+                                        <th>UCD | Bs.</th>
+                                        <th>Forma</th>
+                                        <th width="10%"></th>
+                                    </tr>
+                                </thead>
+                                <tbody id="tamites_table">
+                                    
+                                </tbody>
+                            </table>
+                        </form>
                     </div>
-
-                    <div class="mx-3">
-                        <table class="table table-sm table-borderles lh-sm"  style="font-size:12px">
-                            <thead class="text-center">
-                               <tr>
-                                    <th>Tramite</th>
-                                    <th>Detalle</th>
-                                    <th>Total UCD</th>
-                                </tr> 
-                            </thead>
-                            <tbody>
-                                <tr>
-                                    <td>Protocolización</td>
-                                    <td>
-                                        <div class="d-flex flex-column lh-sm">
-                                            <span>TFE 14 (10 UCD)</span>
-                                        </div>
-                                    </td>
-                                    <th>10 UDC</th>
-                                </tr>
-                                <tr>
-                                    <td>Sellado de Libro</td>
-                                    <td>
-                                        <div class="d-flex flex-column lh-sm">
-                                            <span>Est (5 UCD)</span>
-                                            <span>Est (5 UCD)</span>
-                                        </div>
-                                    </td>
-                                    <th>10 UDC</th>
-                                </tr>
-                            </tbody>
-                            
-                        </table>
+                    <div class="col-sm-4">
+                        <div class="">
+                            <div class="d-flex flex-column">
+                                <div class="bg-primary-subtle rounded-3 px-3 py-1 mb-2">
+                                    <div class="d-flex justify-content-between align-items-center">
+                                        <p class="d-flex flex-column titulo mb-0">
+                                            <span class="fs-5 fw-bold text-navy">Debitado</span>
+                                        </p>
+                                        <span class="fs-5 text-navy fw-bold" id="debitado">0,00</span>
+                                    </div>
+                                </div>
+                                <div class="bg-body-secondary rounded-3 px-3 py-1 mb-2">
+                                    <div class="d-flex justify-content-between align-items-center">
+                                        <p class="d-flex flex-column titulo mb-0">
+                                            <span class="fs-5 fw-bold text-navy">Diferencia</span>
+                                        </p>
+                                        <span class="fs-5 text-navy fw-bold" id="diferencia">0,00</span>
+                                    </div>
+                                </div>
+                                <div class="bg-body-secondary rounded-3 px-3 py-1">
+                                    <div class="d-flex justify-content-between align-items-center">
+                                        <p class="d-flex flex-column titulo mb-0">
+                                            <span class="fs-5 fw-bold text-navy">Vuelto</span>
+                                        </p>
+                                        <span class="fs-5 text-navy fw-bold" id="vuelto">0,00</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
                     </div>
-                </div> -->
+                </div>
 
 
                 <!-- BUTTONS -->
@@ -405,8 +291,42 @@
                     <button type="submit" class="btn btn-success btn-sm me-3" disabled id="btn_submit_venta">Realizar Venta</button>
                     <a class="btn btn-secondary btn-sm" data-bs-toggle="modal" data-bs-target="#modal_venta_realizada" >Cancelar</a>
                 </div> -->
-            </div>
-        </div>
+
+
+                <!-- <div class="mb-3 border rounded-3 p-2 py-3" style="font-size:13px">
+                    <div class="d-flex flex-column pago_timbre">
+                        <div class="d-flex justify-content-center" >
+                            <div class="row w-100">
+                                <div class="col-sm-4">
+                                    <label class="form-label" for="metodo">Metodo de Pago</label><span class="text-danger">*</span>
+                                    <select class="form-select form-select-sm metodo" aria-label="Small select example" i="1" name="pago[1][metodo]" disabled>
+                                        <option value="5">Punto</option>
+                                        <option value="6">Efectivo Bs.</option>
+                                    </select>
+                                </div>
+                                <div class="col-sm-3">
+                                    <label class="form-label" for="comprobante">No. Comprobante</label><span class="text-danger">*</span>
+                                    <input type="number" class="form-control form-control-sm comprobante" name="pago[1][comprobante]" id="comprobante_1" disabled required>
+                                </div>
+                                <div class="col-sm-4">
+                                    <label class="form-label" for="debitado">Monto Debitado </label><span class="text-danger">*</span>
+                                    <input type="number" step="0.01" id="debitado_1" class="form-control form-control-sm debitado" name="pago[1][debitado]" disabled required>
+                                </div>
+                                <div class="col-sm-1 pt-4">
+                                    <a  href="javascript:void(0);" class="btn add_button disabled border-0" title="Agregar monto en Efectivo">
+                                        <i class="bx bx-plus fs-4" style="color:#038ae4"></i>
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div> -->
+
+                <!-- <p class="text-muted text-end fw-bold mb-2 p-0" style="font-size:13px"><span style="color:red">*</span> Campos requeridos.</p> -->
+                       
+
+            </div><!--  cierra div.col-lg-12 -->
+        </div><!--  cierra div.row -->
 
 
         
@@ -1080,26 +1000,26 @@
             //     }
             // });
 
-            // $(document).on('keyup','#folios', function(e) {
-            //     var value = $(this).val();
+            $(document).on('keyup','#folios', function(e) {
+                var value = $(this).val();
 
-            //     $('#html_folios').removeClass('d-none');
+                $('#html_folios').removeClass('d-none');
 
-            //     $.ajax({
-            //         headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') },
-            //         type: 'POST',
-            //         url: '{{route("venta.folios") }}',
-            //         data: {value:value},
-            //         success: function(response) {
-            //             console.log(response);
-            //             $('#ucd_folios').html(response+' UCD');
-            //             calcular();
-            //         },
-            //         error: function() {
-            //         }
-            //     });
+                $.ajax({
+                    headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') },
+                    type: 'POST',
+                    url: '{{route("venta.folios") }}',
+                    data: {value:value},
+                    success: function(response) {
+                        console.log(response);
+                        $('#ucd_folios').html(response+' UCD');
+                        // calcular();
+                    },
+                    error: function() {
+                    }
+                });
 
-            // });
+            });
 
 
             //////////////////////////// VALOR DEL TRAMITE SELECCIONADO
@@ -1109,6 +1029,7 @@
                 var value = $(this).val();
 
                 var condicion_sujeto =  $('#condicion_sujeto').val();
+
                 var ente =  $('#ente_'+nro).val();
                 var metros = $('#metros').val();
                 var capital = $('#capital').val();
@@ -1120,83 +1041,67 @@
                 if (value == '') {
                     $('#ucd_tramite_'+nro).val('0');
                 }else{
-
-                    var tramites = [];
-                    var condicion_folios = 0;
-                    $('.tramite').each(function(){
-                        var t = $(this).val();
-                        tramites.push(t);
-
-                        if (t == 1 || t == 2) {
-                            condicion_folios = 1;
-                        }
-
-                    });
-
-
                     $.ajax({
                         headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') },
                         type: 'POST',
                         url: '{{route("venta.alicuota") }}',
-                        data: {tramites:tramites,tramite:value,condicion_sujeto:condicion_sujeto,metros:metros,capital:capital},
+                        data: {tramite:value,condicion_sujeto:condicion_sujeto,metros:metros,capital:capital},
                         success: function(response) {
-                            // console.log(response);
+                            console.log(response);
                             if (response.success) {
-                                if (response.no_porcentaje > 1 || response.no_metrado > 1) {
-                                    alert('Solo se puede escoger un tramite relacionado con los metros y el porcentaje de la gestión, por venta.');
-                                    // $("#tramite_"+nro+" option[value='']").attr("selected",true);
-                                    $('#tramite_'+nro)[0].selectedIndex = 0;
-                                }else{
-                                    switch(response.alicuota) {
-                                        case 7:
-                                            /// UCD
-                                            $('#ucd_tramite_'+nro).val(response.valor);
-                                            forma(nro,response.valor);
-                                            // calcular();
-                                            
-                                            break;
-                                        case 8:
-                                            /// PORCENTAJE
-                                            $('#capital').val('0');
-                                            $('#pct_monto').html('0,00 Bs.');
+                                
+                                switch(response.alicuota) {
+                                    case 7:
+                                        /// UCD
+                                        $('#ucd_tramite_'+nro).val(response.valor);
+                                        forma(nro,response.valor);
+                                        // calcular();
 
-                                            $('#content_capital').removeClass('d-none');
-                                            $('.p_porcentaje').html(response.porcentaje+'%');
+                                        if (response.folios == true) {
+                                            $('#content_folios').removeClass('d-none');
+                                            $('#content_capital').addClass('d-none');
+                                            $('#content_tamaño').addClass('d-none');
+                                        }else{
+                                            $('#content_capital').addClass('d-none');
+                                            $('#content_folios').addClass('d-none');
+                                            $('#content_tamaño').addClass('d-none');
+                                            $('#html_folios').addClass('d-none');
+                                        }
+                                        
+                                        break;
+                                    case 8:
+                                        /// PORCENTAJE
+                                        $('#capital').val('0');
+                                        $('#pct_monto').html('0,00 Bs.');
 
-                                            break;
-                                        case 13:
-                                            /// METRADO
-                                            $('#content_tamaño').removeClass('d-none');
-                                            
-                                            break;
-                                        default:
-                                            alert('Disculpe, a ocurrido un error. Vuelva a intentarlo.');
-                                            break;
-                                    }
+                                        $('#content_capital').removeClass('d-none');
+                                        $('#content_folios').addClass('d-none');
+                                        $('#content_tamaño').addClass('d-none');
+                                        $('#html_folios').addClass('d-none');
+
+                                        $('.p_porcentaje').html(response.porcentaje+'%');
+
+                                        break;
+                                    case 13:
+                                        /// METRADO
+                                        $('#content_tamaño').removeClass('d-none');
+                                        $('#content_folios').addClass('d-none');
+                                        $('#content_capital').addClass('d-none');
+                                        $('#html_folios').addClass('d-none');
+                                        
+                                        break;
+                                    default:
+                                        alert('Disculpe, a ocurrido un error. Vuelva a intentarlo.');
+                                        break;
                                 }
-
-                                //////////////////////  AGREGAR CLASE D-NONE SI EL CASO LO AMERITA
-                                if (response.no_porcentaje == 0) {
-                                    $('#content_capital').addClass('d-none');
-                                }else if(response.no_metrado == 0){
-                                    $('#content_tamaño').addClass('d-none');
-                                }
-
                                 
                             }else{
 
                             }
-                            
                         },
                         error: function() {
                         }
                     });
-
-                    if (condicion_folios == 0) {
-                        $('#content_folios').addClass('d-none');
-                        $('#html_folios').addClass('d-none');
-                    }
-
                 }
             });
 
@@ -1639,9 +1544,30 @@
                 success: function(response){
                     console.log(response);
                     if (response.success) {
-                        
+                        /////ADD TR
+                        $('#tamites_table').append(response.tr);
+
+                        ///TOTALES
+
+                        // UPDATE CAMPOS
+
+                        //////LIMPIAR 
+                        $('#ente_1').html('@foreach ($entes as $ente)'+
+                                                '<option value="{{$ente->id_ente}}">{{$ente->ente}}</option>'+
+                                            '@endforeach');
+                        $('#tramite_1').html('<option value="">Seleccione el tramite </option>'+
+                                                '@foreach ($tramites as $tramite)'+
+                                                    '<option value="{{$tramite->id_tramite}}">{{$tramite->tramite}}</option>'+
+                                                '@endforeach');
+                        $('#ucd_tramite_1').val('0');
+                        $('#forma_1').html('<option value="">Seleccione</option>');    
+                        $('#detalle_est').val('');                     
                     }else{
-                        
+                        if (response.nota != '') {
+                            alert(response.nota);
+                        }else{
+
+                        }
                     }
 
                 },
