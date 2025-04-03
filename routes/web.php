@@ -94,6 +94,7 @@ Route::post('/venta/delete_tramite', [App\Http\Controllers\VentaController::clas
 
 
 Route::post('/venta/agregar', [App\Http\Controllers\VentaController::class, 'agregar'])->name('venta.agregar');
+Route::post('/venta/quitar', [App\Http\Controllers\VentaController::class, 'quitar'])->name('venta.quitar');
 
 Route::post('/venta/venta', [App\Http\Controllers\VentaController::class, 'venta'])->name('venta.venta');
 

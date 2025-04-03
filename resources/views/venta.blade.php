@@ -235,7 +235,7 @@
                 <div class="row"  style="font-size:13px">
                     <div class="col-sm-8">
                         <form id="form_venta" method="post" onsubmit="event.preventDefault(); venta()">
-                            <input type="hidden" name="contribuyente">
+                            <input type="hidden" name="contribuyente" id="contribuyente">
                             <table class="table text-center"  style="font-size:13px">
                                 <thead>
                                     <tr class="table-dark">
@@ -807,6 +807,37 @@
                     h--; //Decrement field counter
                 });
             //////////////////////////////////////////////////////////////////
+                
+
+            //////////////////////////////////////QUITAR TRAMITE
+                $(document).on('click', '.remove_tramite', function(e){ //Once remove button is clicked
+                    e.preventDefault();
+                    var nro =  $(this).attr('nro');
+                    var ucd =  $('#total_ucd').val();
+                    var bs =  $('#total_bs').val();
+                    var tramite = $('#tramite_'+nro).attr('tramite');
+                    // var condicion_sujeto =  $('#condicion_sujeto').val();
+                    console.log(tramite);
+                    $.ajax({
+                        headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') },
+                        type: 'POST',
+                        url: '{{route("venta.quitar") }}',
+                        data: {ucd:ucd,bs:bs,tramite:tramite,condicion_sujeto:condicion_sujeto},
+                        success: function(response) {
+                            console.log(response);
+                            if (response.success) {
+                                
+                            }else{
+
+                            }
+                        },
+                        error: function() {
+                        }
+                    });
+
+                    // $('#tr_'+nro).remove(); //Remove field html
+                
+                });
 
             ////////////////////////// CONDICIÓN SUJETO
             $(document).on('change','#condicion_sujeto', function(e) {
@@ -1548,8 +1579,14 @@
                         $('#tamites_table').append(response.tr);
 
                         ///TOTALES
+                        $('#ucd').html(response.ucd); 
+                        $('#bolivares').html(response.format_bs); 
 
                         // UPDATE CAMPOS
+                        $('#total_ucd').val(response.ucd);
+                        $('#total_bs').val(response.bs);
+                        $('#nro').val(response.nro);
+                        $('#contribuyente').val(response.contribuyente);
 
                         //////LIMPIAR 
                         $('#ente_1').html('@foreach ($entes as $ente)'+

@@ -127,7 +127,6 @@ class VentaController extends Controller
             $input_contribuyente = base64_encode(serialize($contribuyente));
 
             //////////////////////////////////// CALCULAR TOTALES
-
             $q_ucd =  DB::table('ucds')->select('valor')->orderBy('id', 'desc')->first();
             $valor_ucd = $q_ucd->valor;
             $total_ucd = 0; 
@@ -272,10 +271,10 @@ class VentaController extends Controller
                             <div class="d-flex flex-column">
                                 '.$span.'
                             </div>
-                            <input type="hidden" name="tramite['.$nro.']" class="tramite" value="'.$input.'">
+                            <input type="hidden" name="tramite['.$nro.']" class="tramite" id="tramite_'.$nro.'" value="'.$input.'" tramite="'.$input.'">
                         </td>
                         <td>
-                            <a href="javascript:void(0);" class="btn remove_tramite" nro="'.$nro.'">
+                            <a href="javascript:void(0);" class="btn remove_tramite" nro="'.$nro.'" tramite="'.$tramite['tramite'].'">
                                 <i class="bx bx-x fs-4"></i>
                             </a>
                         </td>
@@ -297,6 +296,101 @@ class VentaController extends Controller
         }
 
         
+    }
+
+
+    public function quitar(Request $request){
+        $tramite = $request->post('tramite');
+        $condicion_sujeto = $request->post('condicion_sujeto');
+        
+        $ucd = $request->post('ucd');
+        $bs = $request->post('bs');
+
+        //////////////////////////////////// CALCULAR TOTALES
+        $q_ucd =  DB::table('ucds')->select('valor')->orderBy('id', 'desc')->first();
+        $valor_ucd = $q_ucd->valor;
+        $total_ucd = 0; 
+        $total_bolivares = 0;
+
+        $query = DB::table('tramites')->where('id_tramite','=', $tramite)->first();
+        $nombre_tramite = $query->tramite;
+        switch ($query->alicuota) {
+            case 7:
+                // UCD
+                if ($condicion_sujeto == 10 || $condicion_sujeto == 11) {
+                    //////juridico (firma personal - empresa)
+                    $ucd_tramite = $query->juridico;
+                }else{
+                    ////natural
+                    $ucd_tramite = $query->natural;
+                }
+                
+                $total_ucd = $total_ucd + $ucd_tramite;
+
+                //////SI ES PROTOCOLIZACIÓN Y TIENE FOLIOS ADICIONALES
+                if($tramite == 1){
+                    $folios = $request->post('folios');
+                    if ($folios != 0 || $folios != '' || $folios != null) {
+                        $q1 = DB::table('tramites')->select('natural')->where('tramite','=', 'Folio')->first();
+                        $total_ucd = $total_ucd + ($folios * $q1->natural);
+                    }else{
+                       
+                    }
+                }
+
+                break;
+            case 8:
+                // PORCENTAJE
+                $capital = $request->post('capital');
+                if (!empty($capital)) {
+                    // hay capital
+                    $bs_tramite = ($capital * $query->porcentaje) / 100;
+                    
+                }else{
+                    // no hay capital
+                    $bs_tramite = 0;
+                } 
+
+                $total_bolivares = $total_bolivares + $bs_tramite;
+
+                break;
+            case 13:
+                // METRADO
+                $metros = $request->post('metros');
+                if (!empty($metros)) {
+                    // hay metros
+                    if ($metros == '' || $metros == 0) {
+                        $ucd_tramite = 0;
+                    }else{
+                        if ($metros <= 150) {
+                            ////pequeña
+                            $ucd_tramite = $query->small;
+                        }elseif ($metros > 150 && $metros < 400) {
+                            /////mediana
+                            $ucd_tramite = $query->medium;
+                        }elseif ($metros >= 400) {
+                            /////grande
+                            $ucd_tramite = $query->large;
+                        }
+                    }
+                }else{
+                    // no hay metros
+                    $ucd_tramite = 0;
+                } 
+                $total_ucd = $total_ucd + $ucd_tramite;
+                break;        
+        }
+
+        $total_bolivares = $total_bolivares + ($total_ucd * $valor_ucd);
+        
+        // RESTAR PRECIO A LOS TOTALES
+        $ucd = $ucd - $total_ucd;
+        $bs = $bs - $total_bolivares;
+        
+        
+        $total_bolivares_format = number_format($bs, 2, ',', '.');
+        
+        return response()->json(['success' => true, 'ucd' => $ucd, 'bs' => $bs, 'format_bs' => $total_bolivares_format]);
     }
 
 
