@@ -815,18 +815,26 @@
                     var nro =  $(this).attr('nro');
                     var ucd =  $('#total_ucd').val();
                     var bs =  $('#total_bs').val();
-                    var tramite = $('#tramite_'+nro).attr('tramite');
-                    // var condicion_sujeto =  $('#condicion_sujeto').val();
-                    console.log(tramite);
+                    var tramite = $('input[type=hidden]#tramite_'+nro).val();
+                    // console.log(tramite);
                     $.ajax({
                         headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') },
                         type: 'POST',
                         url: '{{route("venta.quitar") }}',
-                        data: {ucd:ucd,bs:bs,tramite:tramite,condicion_sujeto:condicion_sujeto},
+                        data: {ucd:ucd,bs:bs,tramite:tramite},
                         success: function(response) {
                             console.log(response);
                             if (response.success) {
-                                
+                                ///TOTALES
+                                $('#ucd').html(response.ucd); 
+                                $('#bolivares').html(response.format_bs); 
+
+                                // UPDATE CAMPOS
+                                $('#total_ucd').val(response.ucd);
+                                $('#total_bs').val(response.bs);
+
+                                /////ELIMINAR TR
+                                $('#tr_'+nro).remove(); //Remove field html
                             }else{
 
                             }
@@ -834,8 +842,6 @@
                         error: function() {
                         }
                     });
-
-                    // $('#tr_'+nro).remove(); //Remove field html
                 
                 });
 

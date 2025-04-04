@@ -81,7 +81,6 @@ class VentaController extends Controller
 
 
 
-
     public function tramites(Request $request)
     {
         $value = $request->post('value');
@@ -93,6 +92,7 @@ class VentaController extends Controller
 
         return response($option);
     }
+
 
 
     public function folios(Request $request){
@@ -137,7 +137,7 @@ class VentaController extends Controller
             $nombre_tramite = '';
 
             if ($tramite != '') { 
-                $query = DB::table('tramites')->where('id_tramite','=', $tramite)->first();
+                $query = DB::table('tramites')->where('id_tramite','=', $tramite['tramite'])->first();
                 $nombre_tramite = $query->tramite;
                 switch ($query->alicuota) {
                     case 7:
@@ -231,11 +231,12 @@ class VentaController extends Controller
             // INPUT CON INFO
             $detalle_tramite = ([
                         'tramite' => $tramite['tramite'],
-                        'metrado' => $request->post('folios'),
-                        'porcentaje' => $request->post('metros'),
-                        'nro_folios' => $request->post('capital'),
+                        'metros' => $request->post('metros'),
+                        'capital' => $request->post('capital'),
+                        'nro_folios' => $request->post('folios'),
                         'forma' => $tramite['forma'],
                         'detalle_est' => $tramite['detalle'],
+                        'condicion_sujeto' => $condicion_sujeto,
             ]);
             $input = base64_encode(serialize($detalle_tramite));
             
@@ -271,7 +272,7 @@ class VentaController extends Controller
                             <div class="d-flex flex-column">
                                 '.$span.'
                             </div>
-                            <input type="hidden" name="tramite['.$nro.']" class="tramite" id="tramite_'.$nro.'" value="'.$input.'" tramite="'.$input.'">
+                            <input type="hidden" name="tramite['.$nro.']" class="tramite" id="tramite_'.$nro.'" value="'.$input.'">
                         </td>
                         <td>
                             <a href="javascript:void(0);" class="btn remove_tramite" nro="'.$nro.'" tramite="'.$tramite['tramite'].'">
@@ -300,9 +301,7 @@ class VentaController extends Controller
 
 
     public function quitar(Request $request){
-        $tramite = $request->post('tramite');
-        $condicion_sujeto = $request->post('condicion_sujeto');
-        
+        $tramite = unserialize(base64_decode($request->post('tramite')));
         $ucd = $request->post('ucd');
         $bs = $request->post('bs');
 
@@ -312,8 +311,9 @@ class VentaController extends Controller
         $total_ucd = 0; 
         $total_bolivares = 0;
 
-        $query = DB::table('tramites')->where('id_tramite','=', $tramite)->first();
-        $nombre_tramite = $query->tramite;
+        $query = DB::table('tramites')->where('id_tramite','=', $tramite['tramite'])->first();
+        $condicion_sujeto = $tramite['condicion_sujeto'];
+
         switch ($query->alicuota) {
             case 7:
                 // UCD
@@ -328,8 +328,8 @@ class VentaController extends Controller
                 $total_ucd = $total_ucd + $ucd_tramite;
 
                 //////SI ES PROTOCOLIZACIÓN Y TIENE FOLIOS ADICIONALES
-                if($tramite == 1){
-                    $folios = $request->post('folios');
+                if($tramite['tramite'] == 1){
+                    $folios = $tramite['nro_folios'];
                     if ($folios != 0 || $folios != '' || $folios != null) {
                         $q1 = DB::table('tramites')->select('natural')->where('tramite','=', 'Folio')->first();
                         $total_ucd = $total_ucd + ($folios * $q1->natural);
@@ -341,7 +341,7 @@ class VentaController extends Controller
                 break;
             case 8:
                 // PORCENTAJE
-                $capital = $request->post('capital');
+                $capital = $tramite['capital'];
                 if (!empty($capital)) {
                     // hay capital
                     $bs_tramite = ($capital * $query->porcentaje) / 100;
@@ -350,13 +350,12 @@ class VentaController extends Controller
                     // no hay capital
                     $bs_tramite = 0;
                 } 
-
                 $total_bolivares = $total_bolivares + $bs_tramite;
 
                 break;
             case 13:
                 // METRADO
-                $metros = $request->post('metros');
+                $metros = $tramite['metros'];
                 if (!empty($metros)) {
                     // hay metros
                     if ($metros == '' || $metros == 0) {
@@ -461,6 +460,18 @@ class VentaController extends Controller
         }
     }
 
+
+
+
+
+
+
+
+
+
+
+
+    
 
 
     public function total(Request $request)
