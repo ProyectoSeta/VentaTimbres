@@ -231,10 +231,9 @@
                 
 
             
-                
-                <div class="row"  style="font-size:13px">
-                    <div class="col-sm-8">
-                        <form id="form_venta" method="post" onsubmit="event.preventDefault(); venta()">
+                <form id="form_venta" method="post" onsubmit="event.preventDefault(); venta()">
+                    <div class="row"  style="font-size:13px">
+                        <div class="col-sm-8">
                             <input type="hidden" name="contribuyente" id="contribuyente">
                             <table class="table text-center"  style="font-size:13px">
                                 <thead>
@@ -251,76 +250,83 @@
                                     
                                 </tbody>
                             </table>
-                        </form>
-                    </div>
-                    <div class="col-sm-4">
-                        <div class="">
-                            <div class="d-flex flex-column">
-                                <div class="bg-primary-subtle rounded-3 px-3 py-1 mb-2">
-                                    <div class="d-flex justify-content-between align-items-center">
-                                        <p class="d-flex flex-column titulo mb-0">
-                                            <span class="fs-5 fw-bold text-navy">Debitado</span>
-                                        </p>
-                                        <span class="fs-5 text-navy fw-bold" id="debitado">0,00</span>
+                        </div>
+                        <div class="col-sm-4">
+                            <!-- DEBITO - DIFERENCIA - VUELTO -->
+                            <div class="">
+                                <div class="d-flex flex-column">
+                                    <div class="bg-primary-subtle rounded-3 px-3 py-1 mb-2">
+                                        <div class="d-flex justify-content-between align-items-center">
+                                            <p class="d-flex flex-column titulo mb-0">
+                                                <span class="fs-5 fw-bold text-navy">Debitado</span>
+                                            </p>
+                                            <span class="fs-5 text-navy fw-bold" id="debitado">0,00</span>
+                                        </div>
                                     </div>
-                                </div>
-                                <div class="bg-body-secondary rounded-3 px-3 py-1 mb-2">
-                                    <div class="d-flex justify-content-between align-items-center">
-                                        <p class="d-flex flex-column titulo mb-0">
-                                            <span class="fs-5 fw-bold text-navy">Diferencia</span>
-                                        </p>
-                                        <span class="fs-5 text-navy fw-bold" id="diferencia">0,00</span>
+                                    <div class="bg-body-secondary rounded-3 px-3 py-1 mb-2">
+                                        <div class="d-flex justify-content-between align-items-center">
+                                            <p class="d-flex flex-column titulo mb-0">
+                                                <span class="fs-5 fw-bold text-navy">Diferencia</span>
+                                            </p>
+                                            <span class="fs-5 text-navy fw-bold" id="diferencia">0,00</span>
+                                        </div>
                                     </div>
-                                </div>
-                                <div class="bg-body-secondary rounded-3 px-3 py-1">
-                                    <div class="d-flex justify-content-between align-items-center">
-                                        <p class="d-flex flex-column titulo mb-0">
-                                            <span class="fs-5 fw-bold text-navy">Vuelto</span>
-                                        </p>
-                                        <span class="fs-5 text-navy fw-bold" id="vuelto">0,00</span>
+                                    <div class="bg-body-secondary rounded-3 px-3 py-1">
+                                        <div class="d-flex justify-content-between align-items-center">
+                                            <p class="d-flex flex-column titulo mb-0">
+                                                <span class="fs-5 fw-bold text-navy">Vuelto</span>
+                                            </p>
+                                            <span class="fs-5 text-navy fw-bold" id="vuelto">0,00</span>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
-                        </div>
-                    </div>
-                </div>
-
-
-                <!-- BUTTONS -->
-                <!-- <div class="d-flex justify-content-center mt-3 mb-3">
-                    <button type="submit" class="btn btn-success btn-sm me-3" disabled id="btn_submit_venta">Realizar Venta</button>
-                    <a class="btn btn-secondary btn-sm" data-bs-toggle="modal" data-bs-target="#modal_venta_realizada" >Cancelar</a>
-                </div> -->
-
-
-                <!-- <div class="mb-3 border rounded-3 p-2 py-3" style="font-size:13px">
-                    <div class="d-flex flex-column pago_timbre">
-                        <div class="d-flex justify-content-center" >
-                            <div class="row w-100">
-                                <div class="col-sm-4">
-                                    <label class="form-label" for="metodo">Metodo de Pago</label><span class="text-danger">*</span>
-                                    <select class="form-select form-select-sm metodo" aria-label="Small select example" i="1" name="pago[1][metodo]" disabled>
-                                        <option value="5">Punto</option>
-                                        <option value="6">Efectivo Bs.</option>
-                                    </select>
-                                </div>
-                                <div class="col-sm-3">
-                                    <label class="form-label" for="comprobante">No. Comprobante</label><span class="text-danger">*</span>
-                                    <input type="number" class="form-control form-control-sm comprobante" name="pago[1][comprobante]" id="comprobante_1" disabled required>
-                                </div>
-                                <div class="col-sm-4">
-                                    <label class="form-label" for="debitado">Monto Debitado </label><span class="text-danger">*</span>
-                                    <input type="number" step="0.01" id="debitado_1" class="form-control form-control-sm debitado" name="pago[1][debitado]" disabled required>
-                                </div>
-                                <div class="col-sm-1 pt-4">
-                                    <a  href="javascript:void(0);" class="btn add_button disabled border-0" title="Agregar monto en Efectivo">
-                                        <i class="bx bx-plus fs-4" style="color:#038ae4"></i>
-                                    </a>
+                            <!-- CIERRA DEBITO -->
+                            <!-- PAGO -->
+                            <div class="my-3 border rounded-3 p-2 py-3" style="font-size:13px">
+                                <div class="d-flex flex-column pago_timbre">
+                                    <div class="d-flex justify-content-center" >
+                                        <div class="row w-100">
+                                            <div class="col-lg-4">
+                                                <label class="form-label" for="metodo">Metodo</label><span class="text-danger">*</span>
+                                                <select class="form-select form-select-sm metodo" aria-label="Small select example" i="1" name="pago[1][metodo]" disabled>
+                                                    <option value="5">Punto</option>
+                                                    <option value="6">Efectivo Bs.</option>
+                                                </select>
+                                            </div>
+                                            <div class="col-lg-3">
+                                                <label class="form-label" for="comprobante">Comp.</label><span class="text-danger">*</span>
+                                                <input type="number" class="form-control form-control-sm comprobante" name="pago[1][comprobante]" id="comprobante_1" disabled required>
+                                            </div>
+                                            <div class="col-lg-4">
+                                                <label class="form-label" for="debitado">Monto</label><span class="text-danger">*</span>
+                                                <input type="number" step="0.01" id="debitado_1" class="form-control form-control-sm debitado" name="pago[1][debitado]" disabled required>
+                                            </div>
+                                            <div class="col-lg-1 pt-4">
+                                                <a  href="javascript:void(0);" class="btn add_button disabled border-0 p-0" title="Agregar monto en Efectivo">
+                                                    <i class="bx bx-plus pt-2 fs-4" style="color:#038ae4"></i>
+                                                </a>
+                                            </div>
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
+                            <!-- CIERRA PAGO -->
                         </div>
                     </div>
-                </div> -->
+
+                    <!-- BUTTONS -->
+                    <div class="d-flex justify-content-center mt-3 mb-3">
+                        <button type="submit" class="btn btn-success btn-sm me-3" disabled id="btn_submit_venta">Realizar Venta</button>
+                        <a class="btn btn-secondary btn-sm" data-bs-toggle="modal" data-bs-target="#modal_venta_realizada" >Cancelar</a>
+                    </div>
+
+                </form>
+
+                
+
+
+                
 
                 <!-- <p class="text-muted text-end fw-bold mb-2 p-0" style="font-size:13px"><span style="color:red">*</span> Campos requeridos.</p> -->
                        
@@ -731,45 +737,43 @@
             // ///////////////////////////////////////////////////////////////////
 
 
-            // ///////////////////////////////////////AGREGAR CAMPOS A OTRO(S) PAGO
-            //     var maxFieldPago = 2; //Input fields increment limitation
-            //     var x = 1; //Initial field counter is 1
+            ///////////////////////////////////////AGREGAR CAMPOS A OTRO(S) PAGO
+                var maxFieldPago = 2; //Input fields increment limitation
+                var x = 1; //Initial field counter is 1
 
-            //     $(document).on('click', '.add_button', function(e){ //Once add button is clicked
-            //         if(x < maxFieldPago){ //Check maximum number of input fields
-            //             x++; //Increment field counter
-            //             $('.pago_timbre').append('<div class="d-flex justify-content-center mt-2" >'+
-            //                 '<div class="row w-100">'+
-            //                     '<div class="col-sm-4">'+
-            //                         '<label class="form-label" for="">Metodo de Pago</label><span class="text-danger">*</span>'+
-            //                         '<select class="form-select form-select-sm metodo" name="pago[2][metodo]" >'+
-            //                             '<option value="6">Efectivo Bs.</option>'+
-            //                         '</select>'+
-            //                     '</div>'+
-            //                     '<div class="col-sm-3">'+
-            //                         '<label class="form-label" for="">No. Comprobante</label><span class="text-danger">*</span>'+
-            //                         '<input type="number" class="form-control form-control-sm comprobante" name="pago[2][comprobante]" disabled>'+
-            //                     '</div>'+
-            //                     '<div class="col-sm-4">'+
-            //                         '<label class="form-label" for="">Monto Debitado </label><span class="text-danger">*</span>'+
-            //                         '<input type="number" step="0.01" id="debitado_2" class="form-control form-control-sm debitado" name="pago[2][debitado]"  required>'+
-            //                     '</div>'+
-            //                     '<div class="col-sm-1  pt-4">'+
-            //                         '<a  href="javascript:void(0);" class="btn remove_button" >'+
-            //                             '<i class="bx bx-x fs-4"></i>'+
-            //                         '</a>'+
-            //                     '</div>'+
-            //                 '</div>'+
-            //             '</div>'); // Add field html
-            //         }
-            //     });
+                $(document).on('click', '.add_button', function(e){ //Once add button is clicked
+                    if(x < maxFieldPago){ //Check maximum number of input fields
+                        x++; //Increment field counter
+                        $('.pago_timbre').append('<div class="d-flex justify-content-center mt-2" >'+
+                            '<div class="row w-100">'+
+                                '<div class="col-sm-4">'+
+                                    '<select class="form-select form-select-sm metodo" name="pago[2][metodo]" i="2">'+
+                                        '<option value="6">Efectivo Bs.</option>'+
+                                        '<option value="5">Punto</option>'+
+                                    '</select>'+
+                                '</div>'+
+                                '<div class="col-sm-3">'+
+                                    '<input type="number" class="form-control form-control-sm comprobante" name="pago[2][comprobante]" id="comprobante_2" disabled>'+
+                                '</div>'+
+                                '<div class="col-sm-4">'+
+                                    '<input type="number" step="0.01" id="debitado_2" class="form-control form-control-sm debitado" name="pago[2][debitado]"  required>'+
+                                '</div>'+
+                                '<div class="col-sm-1  pt-1">'+
+                                    '<a  href="javascript:void(0);" class="btn remove_button p-0" >'+
+                                        '<i class="bx bx-x fs-4"></i>'+
+                                    '</a>'+
+                                '</div>'+
+                            '</div>'+
+                        '</div>'); // Add field html
+                    }
+                });
 
-            //     $(document).on('click', '.remove_button', function(e){ //Once remove button is clicked
-            //         e.preventDefault();
-            //         $(this).parent('div').parent('div').remove(); //Remove field html
-            //         x--; //Decrement field counter
-            //     });
-            // ///////////////////////////////////////////////////////////////////
+                $(document).on('click', '.remove_button', function(e){ //Once remove button is clicked
+                    e.preventDefault();
+                    $(this).parent('div').parent('div').remove(); //Remove field html
+                    x--; //Decrement field counter
+                });
+            ///////////////////////////////////////////////////////////////////
 
             ///////////////////////////////////////AGREGAR CAMPOS A OTRO(S) DETALLE ESTAMPILLAS
                 var maxFieldeEst = 10; //Input fields increment limitation
@@ -810,40 +814,40 @@
                 
 
             //////////////////////////////////////QUITAR TRAMITE
-                $(document).on('click', '.remove_tramite', function(e){ //Once remove button is clicked
-                    e.preventDefault();
-                    var nro =  $(this).attr('nro');
-                    var ucd =  $('#total_ucd').val();
-                    var bs =  $('#total_bs').val();
-                    var tramite = $('input[type=hidden]#tramite_'+nro).val();
-                    // console.log(tramite);
-                    $.ajax({
-                        headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') },
-                        type: 'POST',
-                        url: '{{route("venta.quitar") }}',
-                        data: {ucd:ucd,bs:bs,tramite:tramite},
-                        success: function(response) {
-                            console.log(response);
-                            if (response.success) {
-                                ///TOTALES
-                                $('#ucd').html(response.ucd); 
-                                $('#bolivares').html(response.format_bs); 
+            $(document).on('click', '.remove_tramite', function(e){ //Once remove button is clicked
+                e.preventDefault();
+                var nro =  $(this).attr('nro');
+                var ucd =  $('#total_ucd').val();
+                var bs =  $('#total_bs').val();
+                var tramite = $('input[type=hidden]#tramite_'+nro).val();
+                // console.log(tramite);
+                $.ajax({
+                    headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') },
+                    type: 'POST',
+                    url: '{{route("venta.quitar") }}',
+                    data: {ucd:ucd,bs:bs,tramite:tramite},
+                    success: function(response) {
+                        console.log(response);
+                        if (response.success) {
+                            ///TOTALES
+                            $('#ucd').html(response.ucd); 
+                            $('#bolivares').html(response.format_bs); 
 
-                                // UPDATE CAMPOS
-                                $('#total_ucd').val(response.ucd);
-                                $('#total_bs').val(response.bs);
+                            // UPDATE CAMPOS
+                            $('#total_ucd').val(response.ucd);
+                            $('#total_bs').val(response.bs);
 
-                                /////ELIMINAR TR
-                                $('#tr_'+nro).remove(); //Remove field html
-                            }else{
+                            /////ELIMINAR TR
+                            $('#tr_'+nro).remove(); //Remove field html
+                        }else{
 
-                            }
-                        },
-                        error: function() {
                         }
-                    });
-                
+                    },
+                    error: function() {
+                    }
                 });
+            
+            });
 
             ////////////////////////// CONDICIÓN SUJETO
             $(document).on('change','#condicion_sujeto', function(e) {
@@ -895,7 +899,7 @@
                             $('.add_button_tramite').removeClass('disabled');
                             $('.add_button').removeClass('disabled');
 
-                            $('#btn_submit_venta').attr('disabled', false);
+                            // $('#btn_submit_venta').attr('disabled', false);
 
                         }else{
                             $('#btns_add_contribuyente').removeClass('d-none');
@@ -1239,66 +1243,62 @@
             
 
 
-            // //////////////////////////// CALCULAR DEBITO
-            // $(document).on('keyup','.debitado', function(e) {
-            //     var id = $(this).attr('id');
-            //     var value = $(this).val();
-            //     var metros = $('#metros').val();
-            //     var otro_debito = 0;
+            //////////////////////////// CALCULAR DEBITO
+            $(document).on('keyup','.debitado', function(e) {
+                var id = $(this).attr('id');
+                var value = $(this).val();
+                var otro_debito = 0;
 
-            //     var condicion_sujeto =  $('#condicion_sujeto').val();
+                if (id == 'debitado_1') {
+                    otro_debito = $("#debitado_2").val();
+                }else{
+                    otro_debito = $("#debitado_1").val();
+                }
 
-            //     if (id == 'debitado_1') {
-            //         otro_debito = $("#debitado_2").val();
-            //     }else{
-            //         otro_debito = $("#debitado_1").val();
-            //     }
-
-            //     var tramites = [];
-            //     $('.tramite').each(function(){
-            //         var t = $(this).val();
-            //         tramites.push(t);
-            //     });
+                var tramites = [];
+                $('.tramite_in').each(function(){
+                    var t = $(this).val();
+                    tramites.push(t);
+                });
                 
-            //     $.ajax({
-            //         headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') },
-            //         type: 'POST',
-            //         url: '{{route("venta.debitado") }}',
-            //         data: {value:value,tramites:tramites,otro_debito:otro_debito,metros:metros,condicion_sujeto:condicion_sujeto},
-            //         success: function(response) {
-            //             console.log(response);
-            //             $('#debitado').html(response.debito);
-            //             $('#diferencia').html(response.diferencia);
-            //             $('#vuelto').html(response.vuelto);
+                $.ajax({
+                    headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') },
+                    type: 'POST',
+                    url: '{{route("venta.debitado") }}',
+                    data: {value:value,tramites:tramites,otro_debito:otro_debito},
+                    success: function(response) {
+                        console.log(response);
+                        $('#debitado').html(response.debito);
+                        $('#diferencia').html(response.diferencia);
+                        $('#vuelto').html(response.vuelto);
 
-            //             if (response.submit) {
-            //                 $('#btn_submit_venta').attr('disabled', false);
-            //             }else{
-            //                 $('#btn_submit_venta').attr('disabled', true);
-            //             }
-            //         },
-            //         error: function() {
-            //         }
-            //     });
+                        if (response.submit) {
+                            $('#btn_submit_venta').attr('disabled', false);
+                        }else{
+                            $('#btn_submit_venta').attr('disabled', true);
+                        }
+                    },
+                    error: function() {
+                    }
+                });
                
                 
-            // });
+            });
             
 
-            // //////////////////////////// DESABILITAR CAMPO NO COMPROBANTE
-            // $(document).on('change','.metodo', function(e) {
-            //     e.preventDefault(); 
-            //     var value = $(this).val();
-            //     var i = $(this).attr('i');
-            //     console.log(value+'/'+i);
-            //     if (value == '6') {
-            //         $('#comprobante_'+i).attr('disabled', true);
-            //         $('#comprobante_'+i).val('');
-            //     }else{
-            //         $('#comprobante_'+i).attr('disabled', false);
-            //     }
+            //////////////////////////// DESABILITAR CAMPO NO COMPROBANTE
+            $(document).on('change','.metodo', function(e) {
+                e.preventDefault(); 
+                var value = $(this).val();
+                var i = $(this).attr('i');
+                if (value == '6') {
+                    $('#comprobante_'+i).attr('disabled', true);
+                    $('#comprobante_'+i).val('');
+                }else{
+                    $('#comprobante_'+i).attr('disabled', false);
+                }
                
-            // });
+            });
 
 
            
@@ -1439,7 +1439,7 @@
                                 /// UCD
                                 $('#ucd_tramite_'+nro).val(response.valor);
                                 forma(nro,response.valor);
-                                calcular();
+                                // calcular();
                                 
                                 break;
                             case 8:
@@ -1455,7 +1455,7 @@
                                 }
                                 
                                 forma(nro,response.valor);
-                                calcular();
+                                // calcular();
 
                                 break; 
                                 
@@ -1497,38 +1497,39 @@
         }
 
 
-        // //////////////// VENTA DE TIMBRES
-        // function venta(){
-        //     var formData = new FormData(document.getElementById("form_venta"));
-        //     // console.log("alo");
-        //     $.ajax({
-        //         headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') },
-        //         url:'{{route("venta.venta") }}',
-        //         type:'POST',
-        //         contentType:false,
-        //         cache:false,
-        //         processData:false,
-        //         async: true,
-        //         data: formData,
-        //         success: function(response){
-        //             console.log(response);
-        //             if (response.success) {
-        //                 $('#modal_venta_realizada').modal('show');
-        //                 $('#content_venta_realizada').html(response.html);
-        //             }else{
-        //                 if (response.nota) {
-        //                     alert(response.nota);
-        //                 }else{
-        //                     alert('Disculpe, ha ocurrido un error');
-        //                 }
-        //             }
+        //////////////// VENTA DE TIMBRES
+        function venta(){
+            console.log('jijij');
+            var formData = new FormData(document.getElementById("form_venta"));
+            // console.log("alo");
+            $.ajax({
+                headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') },
+                url:'{{route("venta.venta") }}',
+                type:'POST',
+                contentType:false,
+                cache:false,
+                processData:false,
+                async: true,
+                data: formData,
+                success: function(response){
+                    console.log(response);
+                    if (response.success) {
+                        $('#modal_venta_realizada').modal('show');
+                        $('#content_venta_realizada').html(response.html);
+                    }else{
+                        if (response.nota) {
+                            alert(response.nota);
+                        }else{
+                            alert('Disculpe, ha ocurrido un error');
+                        }
+                    }
                        
-        //         },
-        //         error: function(error){
+                },
+                error: function(error){
                     
-        //         }
-        //     });
-        // }
+                }
+            });
+        }
 
 
 
@@ -1604,7 +1605,13 @@
                                                 '@endforeach');
                         $('#ucd_tramite_1').val('0');
                         $('#forma_1').html('<option value="">Seleccione</option>');    
-                        $('#detalle_est').val('');                     
+                        $('#detalle_est').val('');        
+                        
+                        // OCULTAR ANEXOS
+                        $('#content_capital').addClass('d-none');
+                        $('#content_folios').addClass('d-none');
+                        $('#content_tamaño').addClass('d-none');
+                        $('#html_folios').addClass('d-none');
                     }else{
                         if (response.nota != '') {
                             alert(response.nota);
