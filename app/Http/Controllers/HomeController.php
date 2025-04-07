@@ -274,9 +274,11 @@ class HomeController extends Controller
 
         if ($q2) {
             $id_taquilla = $q2->id_taquilla;
+            $hoy = date('Y-m-d');
 
             $q3 = DB::table('efectivo_taquillas_temps')->select('efectivo')->where('key_taquilla','=',$id_taquilla)->first();
-           
+            $q4 = DB::table('apertura_taquillas')->select('fondo_caja')->where('fecha','=',$hoy)->where('key_taquilla','=',$id_taquilla)->first();
+
             $html = '<div class="modal-header p-2 pt-3 d-flex justify-content-center">
                     <div class="text-center">
                         <i class="bx bx-money fs-2 text-muted me-2"></i>
@@ -289,10 +291,11 @@ class HomeController extends Controller
                         <label for="clave" class="form-label"><span class="text-danger">* </span>Monto ingresado en Bóveda:</label>
                         
                         <div class="d-flex align-items-center">
-                            <input type="number" id="monto" class="form-control form-control-sm me-2" name="monto" required> <span>Bs.</span>
+                            <input type="number" id="monto" step="0.01" max="'.$q3->efectivo.'" class="form-control form-control-sm me-2" name="monto" required> <span>Bs.</span>
                         </div>
                         
-                        <p>Monto Total (Efectivo) en Taquilla: <span class="text-success"> '.$q3->efectivo.' Bs</span></p>
+                        <p class="pb-0 mb-0">Monto Total (Efectivo) en Taquilla: <span class="text-success"> '.$q3->efectivo.' Bs</span></p>
+                        <span>Fondo de caja: <span class="text-success"> '.$q4->fondo_caja.' Bs</span></span>
 
                         <p class="text-muted text-end"><span style="color:red">*</span> Campo requerido.</p>
 
@@ -439,15 +442,91 @@ class HomeController extends Controller
                 $id_taquilla = $q2->id_taquilla;
 
                 if (Hash::check($pass, $q2->clave)) {
+                    //  ARQUEO
+                    $recaudado = 0;
+                    $punto = 0;
+                    $efectivo = 0;
+                    $recaudado_tfe = 0;
+                    $recaudado_est = 0;
+                    $cantidad_tfe = 0;
+                    $cantidad_est = 0;
+
+                    $q1 = DB::table('ventas')->select('id_venta','total_bolivares','key_ucd')
+                                            ->where('key_taquilla','=',$id_taquilla)
+                                            ->where('fecha','=',$hoy)->get();
+                    if ($q1) {
+                        foreach ($q1 as $key) {
+                            $recaudado = $recaudado + $key->total_bolivares;
+
+                            // CONSULTA UCD
+                            $c1 = DB::table('ucds')->select('valor')->where('id','=',$key->key_ucd)->first();
+                            $valor_ucd = $c1->valor;
+    
+                            // PUNTO Y EFECTIVO
+                            $q2 = DB::table('pago_ventas')->where('key_venta','=',$key->id_venta)->get();
+                            foreach ($q2 as $pago) {
+                                if ($pago->metodo == 5) {
+                                    //PUNTO
+                                    $punto = $punto + $pago->monto;
+                                }else{
+                                    //EFECTIVO
+                                    $efectivo = $efectivo + $pago->monto;
+                                }
+                            }
+                            
+    
+                            // (RECAUDACION Y CANTIDAD) TFE Y EST
+                            $q3 = DB::table('detalle_ventas')->where('key_venta','=',$key->id_venta)->get();
+                            foreach ($q3 as $value) {
+                                if ($value->forma == 3) {
+                                    // FORMA 14
+                                    $cantidad_tfe++;
+
+                                    if ($value->capital != NULL) {
+                                        // bs
+                                        $recaudado_tfe = $recaudado_tfe + $value->bs;
+                                    }else{
+                                        // ucd
+                                        $ucd_bs = $value->ucd * $valor_ucd;
+                                        $recaudado_tfe = $recaudado_tfe + $ucd_bs;
+                                    }
+                                }else{
+                                    // ESTAMPILLAS
+                                    $q4 = DB::table('detalle_venta_estampillas')->selectRaw("count(*) as total")->where('key_detalle_venta','=',$value->correlativo)->first();
+                                    $cantidad_est = $cantidad_est + $q4->total;
+
+                                    $ucd_bs = $value->ucd * $valor_ucd;
+                                    $recaudado_est = $recaudado_est + $ucd_bs;
+                                }
+                            }
+                        } //cierra foreach
+                    }else{
+                        // sin ventas
+                    }
+
                     $hora = date('H:i:s');
-                    $update = DB::table('apertura_taquillas')->where('key_taquilla', '=', $id_taquilla)
-                                                            ->where('fecha','=', $hoy)
-                                                            ->update(['cierre_taquilla' => $hora]);
-                    if ($update) {
-                        return response()->json(['success' => true]);
+                    $insert = DB::table('cierre_taquillas')->insert(['key_taquilla' => $id_taquilla,
+                                                                    'recaudado' => $recaudado,
+                                                                    'punto' => $punto,
+                                                                    'efectivo' => $efectivo,
+                                                                    'recaudado_tfe' => $recaudado_tfe,
+                                                                    'recaudado_est' => $recaudado_est,
+                                                                    'cantidad_tfe' => $cantidad_tfe,
+                                                                    'cantidad_est' => $cantidad_est
+                                                                ]); 
+                    if ($insert) {
+                        $update = DB::table('apertura_taquillas')->where('key_taquilla', '=', $id_taquilla)
+                                                                    ->where('fecha','=', $hoy)
+                                                                    ->update(['cierre_taquilla' => $hora]);
+                        if ($update) {
+                            return response()->json(['success' => true]);
+                        }else{
+                            return response()->json(['success' => false]);
+                        }
                     }else{
                         return response()->json(['success' => false]);
-                    }
+                    }             
+                   
                 }else{
                     return response()->json(['success' => false, 'nota' => 'Disculpe, la contraseña ingresada no es válida.']);
                 }

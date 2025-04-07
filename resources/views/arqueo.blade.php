@@ -19,7 +19,7 @@
                     <div class="text-muted fs-4">{{$hoy_view}}</div>
                 </div>
                 <div class="col-md-6">
-                    <div class="display-6 fw-semibold"><span class="text-body-tertiary me-2">Total</span> 15.000,00 Bs.</div>
+                    <div class="display-6 fw-bold text-navy"><span class="text-body-tertiary me-3">Total</span>@php echo(number_format($arqueo->recaudado, 2, ',', '.')) @endphp Bs.</div>
                 </div>
             </div>
 
@@ -28,7 +28,7 @@
                 <div class="row d-flex align-items-center text-center">
                     <div class="col-md-6">
                         <h5 class="fw-semibold ">Punto</h5>
-                        <h4 class="">11.800,00 Bs.</h4>
+                        <h4 class="">@php echo(number_format($arqueo->punto, 2, ',', '.')) @endphp Bs.</h4>
                     </div>
                     {{-- <div class="col-md-4">
                         <canvas id="pct_venta"></canvas>
@@ -36,19 +36,22 @@
                     <div class="col-md-6">
                         <div class="">
                             <h5 class="">Efectivo</h5>
-                            <h4 class="">3.200,00 Bs.</h4>
+                            <h4 class="">@php echo(number_format($arqueo->efectivo, 2, ',', '.')) @endphp Bs.</h4>
                         </div>
                         <div class="">
-                            <table class="table table-sm table-borderless lh-1">
+                            <table class="table table-sm table-borderless lh-1 pb-0 mb-0">
                                 <tr>
                                     <th>En taquilla:</th>
-                                    <td>500,00 Bs.</td>
+                                    <td>@php echo(number_format($efectivo_taq, 2, ',', '.')) @endphp Bs.</td>
                                 </tr>
                                 <tr>
                                     <th>En boveda:</th>
-                                    <td>2.700,00 Bs.</td>
+                                    <td>@php echo(number_format($bs_boveda, 2, ',', '.')) @endphp Bs.</td>
                                 </tr>
                             </table>
+                            @if ($fondo_caja != 0 || $fondo_caja != NULL)
+                                <span class="text-end" style="font-size:12.7px">+@php echo(number_format($fondo_caja, 2, ',', '.')) @endphp Bs. por Fondo de Caja.</span>
+                            @endif
                         </div>
                     </div>
                 </div>
@@ -62,8 +65,8 @@
                             <h2 class="fs-4 text-navy fw-semibold">FORMA 14 | <span class="fs-6 text-muted">Timbre Fiscal Electrónico</span></h2>
                         </div>
                         <div class="d-flex flex-column">
-                            <div class="fs-4 fw-semibold text-secondary">13.000,00 Bs.</div>  
-                            <span class="text-muted">252 Unidades</span>
+                            <div class="fs-4 fw-semibold text-secondary">@php echo(number_format($arqueo->recaudado_tfe, 2, ',', '.')) @endphp Bs.</div>  
+                            <span class="text-muted">{{$arqueo->cantidad_tfe}} Unidades</span>
                             <a href="">Ver detalles</a>
                         </div>
                     </div>
@@ -71,11 +74,11 @@
                 <div class="col-md-6">
                     <div class="bg-body-tertiary me-md-3 px-3 px-md-5 py-4 pb-5 text-center overflow-hidden rounded-4">
                         <div class="">
-                            <h2 class="fs-4 fw-semibold">Estampillas | <span class="fs-6">Timbre Movil</span></h2>
+                            <h2 class="fs-4  text-navy fw-semibold">Estampillas | <span class="fs-6 text-muted">Timbre Movil</span></h2>
                         </div>
                         <div class="d-flex flex-column">
-                            <div class="fs-4 fw-semibold text-secondary">2.000,00 Bs.</div>  
-                            <span class="text-muted">50 Unidades</span>
+                            <div class="fs-4 fw-semibold text-secondary">@php echo(number_format($arqueo->recaudado_est, 2, ',', '.')) @endphp Bs.</div>  
+                            <span class="text-muted">{{$arqueo->cantidad_est}} Unidades</span>
                             <a href="">Ver detalles</a>
                         </div>
                     </div>
@@ -106,10 +109,14 @@
                                     </a>
                                 </td>
                                 <td>
-                                    <span class="fw-bold text-muted">{{$venta->total_ucd}} U.C.D.</span>
+                                    @if ($venta->total_ucd == 0)
+                                        <span class="fst-italic text-muted">No Aplica</span>
+                                    @else
+                                        <span class="fw-bold text-muted">{{$venta->total_ucd}} U.C.D.</span>
+                                    @endif
                                 </td>
                                 <td>
-                                    <span class="fw-bold text-navy">{{$venta->total_bolivares}} Bs.</span>
+                                    <span class="fw-bold text-navy">@php echo(number_format($venta->total_bolivares, 2, ',', '.')) @endphp Bs.</span>
                                 </td>
                                 <td>
                                     <a href="" class="timbres" venta="{{$venta->id_venta}}" data-bs-toggle="modal" data-bs-target="#modal_timbres">Ver</a>

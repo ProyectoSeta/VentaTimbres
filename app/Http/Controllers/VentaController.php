@@ -1238,6 +1238,7 @@ class VentaController extends Controller
 
                     ///////////////////////////////////// INSERT DETALLE Y SUMA TOTAL 
                         $total_ucd = 0;
+                        $total_bolivares = 0;
                     
                         // $array_correlativo_tfe = [];
                         // $array_correlativo_estampillas = [];
@@ -1251,33 +1252,34 @@ class VentaController extends Controller
                         $exist_tfe = false;
                         $exist_estampillas = false;
 
-                        foreach ($tramites as $t) {
-                            $tramite = unserialize(base64_decode($t));
-
-                            $consulta_tramite = DB::table('tramites')->join('entes', 'tramites.key_ente', '=','entes.id_ente')
-                                                                    ->select('tramites.tramite','tramites.alicuota','entes.ente')
-                                                                    ->where('tramites.id_tramite','=',$tramite['tramite'])->first();
-
-                            $i1 = DB::table('ventas')->insert(['key_user' => $user, 
+                        $i1 = DB::table('ventas')->insert(['key_user' => $user, 
                                                             'key_taquilla' => $id_taquilla, 
                                                             'key_contribuyente' => $id_contribuyente,
                                                             'key_ucd' => $id_ucd]); 
-                            if ($i1) {
-                                $id_venta = DB::table('ventas')->max('id_venta');
+                        if ($i1) {
+                            $id_venta = DB::table('ventas')->max('id_venta');
+
+                            foreach ($tramites as $t) {
+                                $tramite = unserialize(base64_decode($t));
+    
+                                $consulta_tramite = DB::table('tramites')->join('entes', 'tramites.key_ente', '=','entes.id_ente')
+                                                                        ->select('tramites.tramite','tramites.alicuota','entes.ente')
+                                                                        ->where('tramites.id_tramite','=',$tramite['tramite'])->first();
+                                    
                                 if ($tramite['forma'] == 3) {
                                     /////////////////////////////////////////////////////////////////////////////////////////////////////////// FORMA 14
                                     $key_tramite = $tramite['tramite'];
-
+    
                                     $exist_tfe = true;
                                     $ucd_tramite = '';
                                     $key_deno = '';
-
+    
                                     $alicuota = '';
-
+    
                                     //////// IDENTIFICACION DE FORMA
                                     $c_forma = DB::table('formas')->select('identificador')->where('forma','=','Forma14')->first();
                                     $identificador_forma = $c_forma->identificador;
-
+    
                                     //////// VALOR UCD TRAMITE  
                                     $cons = DB::table('tramites')->select('alicuota')->where('id_tramite','=', $key_tramite)->first();
                                     switch ($cons->alicuota) {
@@ -1293,24 +1295,24 @@ class VentaController extends Controller
                                                 $consulta = DB::table('tramites')->select('natural')->where('id_tramite','=', $key_tramite)->first();
                                                 $ucd_tramite = $consulta->natural;
                                             }
-
+    
                                             /////////////////////////FOLIOS
                                             $folios = $tramite['nro_folios'];
                                             if ($key_tramite == 1) {
                                                 if ($folios != '' || $folios != 0) {
                                                     $qf = DB::table('tramites')->select('natural')->where('tramite','=', 'Folio')->first();
-
+    
                                                     $ucd_tramite = $ucd_tramite + ($folios * $qf->natural);
                                                 }
                                             }
                                             
-
-                                           
+    
+                                            
                                             $q5 = DB::table('ucd_denominacions')->select('id','identificador')->where('denominacion','=',$ucd_tramite)->where('alicuota','=',7)->first();
                                             $key_deno = $q5->id;
                                             $identificador_ucd = $q5->identificador;
                                             
-
+    
                                             $total_ucd = $total_ucd + $ucd_tramite;
                                             if ($key_tramite == 1) {
                                                 if ($folios != '' || $folios != 0){
@@ -1335,18 +1337,18 @@ class VentaController extends Controller
                                                                                 'ucd' => $ucd_tramite,
                                                                                 'bs' => null]);
                                             }
-                                             
+                                                
                                             if ($i2){
                                                 $id_detalle_venta = DB::table('detalle_ventas')->max('correlativo');
-
+    
                                                 $c5 = DB::table('detalle_venta_tfes')->select('key_inventario_tfe','nro_timbre')
                                                                                             ->where('key_taquilla','=',$id_taquilla)
                                                                                             ->orderBy('correlativo', 'desc')->first();
                                                 if ($c5) {
                                                     $nro_hipotetico = $c5->nro_timbre +1;
-
+    
                                                     $c6 = DB::table('inventario_tfes')->select('hasta','key_lote_papel')->where('correlativo','=',$c5->key_inventario_tfe)->first();
-
+    
                                                     if ($nro_hipotetico > $c6->hasta) {
                                                         $c7 = DB::table('inventario_tfes')->select('desde','correlativo','key_lote_papel')
                                                                                             ->where('key_taquilla','=',$id_taquilla)
@@ -1385,18 +1387,18 @@ class VentaController extends Controller
                                                         return response()->json(['success' => false, 'nota'=> 'No hay TFE Forma 14 disponibles en taquilla.']);
                                                     }
                                                 }
-
+    
                                                 // SERIAL
                                                 $length = 6;
                                                 $formato_nro = substr(str_repeat(0, $length).$nro_timbre, - $length);
-
+    
                                                 $serial = $identificador_ucd.''.$identificador_forma.''.$formato_nro;
-
+    
                                                 // QR
                                                 $url = 'https://tfe14.tributosaragua.com.ve/?id='.$nro_timbre.'?lp='.$key_lote; 
                                                 QrCode::format('png')->size(180)->eye('circle')->generate($url, public_path('assets/qrForma14/qrcode_TFE'.$nro_timbre.'.png'));
-
-
+    
+    
                                                 // insert detalle_venta_estampilla
                                                 $i3 = DB::table('detalle_venta_tfes')->insert(['key_venta' => $id_venta, 
                                                                                                 'key_taquilla' => $id_taquilla,  
@@ -1410,7 +1412,7 @@ class VentaController extends Controller
                                                 if ($i3){
                                                     $cant_tfe = $cant_tfe + 1;
                                                     $cant_ucd_tfe = $cant_ucd_tfe + $ucd_tramite;
-
+    
                                                     $row_timbres .= '<div class="border mb-4 rounded-3">
                                                                         <div class="d-flex justify-content-between px-3 py-2 align-items-center">
                                                                             <!-- DATOS -->
@@ -1449,23 +1451,24 @@ class VentaController extends Controller
                                                 //// eliminar venta
                                                 return response()->json(['success' => false]);
                                             }
-
+    
                                             break;
-
+    
                                         case 8:
                                             // PORCENTAJE
                                             $alicuota = 8;
-
+    
                                             $capital = $tramite['capital'];
-
+    
                                             $consulta = DB::table('tramites')->select('porcentaje')->where('id_tramite','=', $key_tramite)->first();
                                             $porcentaje = $consulta->porcentaje;
-
+    
                                             $cons_ident = DB::table('ucd_denominacions')->select('identificador')->where('denominacion','=', $porcentaje)->where('alicuota','=', 8)->first();
                                             $identificador_ali =$cons_ident->identificador;
-
+    
                                             $total_bs_capital = ($capital * $porcentaje) / 100;
-
+                                            $total_bolivares = $total_bolivares + $total_bs_capital; 
+    
                                             $i2 = DB::table('detalle_ventas')->insert(['key_venta' => $id_venta, 
                                                                                         'key_tramite' => $key_tramite, 
                                                                                         'forma' => $tramite['forma'],
@@ -1477,15 +1480,15 @@ class VentaController extends Controller
                                                                                         'bs' => $total_bs_capital]); 
                                             if ($i2){
                                                 $id_detalle_venta = DB::table('detalle_ventas')->max('correlativo');
-
+    
                                                 $c5 = DB::table('detalle_venta_tfes')->select('key_inventario_tfe','nro_timbre')
                                                                                             ->where('key_taquilla','=',$id_taquilla)
                                                                                             ->orderBy('correlativo', 'desc')->first();
                                                 if ($c5) {
                                                     $nro_hipotetico = $c5->nro_timbre +1;
-
+    
                                                     $c6 = DB::table('inventario_tfes')->select('hasta','key_lote_papel')->where('correlativo','=',$c5->key_inventario_tfe)->first();
-
+    
                                                     if ($nro_hipotetico > $c6->hasta) {
                                                         $c7 = DB::table('inventario_tfes')->select('desde','correlativo','key_lote_papel')
                                                                                             ->where('key_taquilla','=',$id_taquilla)
@@ -1524,18 +1527,18 @@ class VentaController extends Controller
                                                         return response()->json(['success' => false, 'nota'=> 'No hay TFE Forma 14 disponibles en taquilla.']);
                                                     }
                                                 }
-
+    
                                                 // SERIAL
                                                 $length = 6;
                                                 $formato_nro = substr(str_repeat(0, $length).$nro_timbre, - $length);
-
+    
                                                 $serial = $identificador_ali.''.$identificador_forma.''.$formato_nro;
-
+    
                                                 // QR
                                                 $url = 'https://tfe14.tributosaragua.com.ve/?id='.$nro_timbre.'?lp='.$key_lote; 
                                                 QrCode::format('png')->size(180)->eye('circle')->generate($url, public_path('assets/qrForma14/qrcode_TFE'.$nro_timbre.'.png'));
-
-
+    
+    
                                                 // insert detalle_venta_estampilla
                                                 $i3 = DB::table('detalle_venta_tfes')->insert(['key_venta' => $id_venta, 
                                                                                                 'key_taquilla' => $id_taquilla,  
@@ -1549,7 +1552,7 @@ class VentaController extends Controller
                                                 if ($i3){
                                                     $cant_tfe = $cant_tfe + 1;
                                                     $cant_ucd_tfe = $cant_ucd_tfe;
-
+    
                                                     $row_timbres .= '<div class="border mb-4 rounded-3">
                                                                         <div class="d-flex justify-content-between px-3 py-2 align-items-center">
                                                                             <!-- DATOS -->
@@ -1584,19 +1587,19 @@ class VentaController extends Controller
                                                     // delete venta
                                                     return response()->json(['success' => false]);
                                                 }
-
+    
                                             }else{
                                                 //// eliminar venta
                                                 return response()->json(['success' => false]);
                                             }
-
+     
                                             break;
                                         
                                         case 13:
                                             // METRADO
                                             $alicuota = 13;
                                             $metros = $tramite['metros'];
-
+    
                                             if ($metros > 0 && $metros <= 150) {
                                                 ////pequeña
                                                 $consulta = DB::table('tramites')->select('small')->where('id_tramite','=', $key_tramite)->first();
@@ -1617,8 +1620,8 @@ class VentaController extends Controller
                                             $identificador_ucd = $q5->identificador;
                         
                                             $total_ucd = $total_ucd + $ucd_tramite;
-
-
+    
+    
                                             $i2 = DB::table('detalle_ventas')->insert(['key_venta' => $id_venta, 
                                                                                 'key_tramite' => $key_tramite, 
                                                                                 'forma' => $tramite['forma'],
@@ -1630,15 +1633,15 @@ class VentaController extends Controller
                                                                                 'bs' => null]); 
                                             if ($i2){
                                                 $id_detalle_venta = DB::table('detalle_ventas')->max('correlativo');
-
+    
                                                 $c5 = DB::table('detalle_venta_tfes')->select('key_inventario_tfe','nro_timbre')
                                                                                             ->where('key_taquilla','=',$id_taquilla)
                                                                                             ->orderBy('correlativo', 'desc')->first();
                                                 if ($c5) {
                                                     $nro_hipotetico = $c5->nro_timbre +1;
-
+    
                                                     $c6 = DB::table('inventario_tfes')->select('hasta','key_lote_papel')->where('correlativo','=',$c5->key_inventario_tfe)->first();
-
+    
                                                     if ($nro_hipotetico > $c6->hasta) {
                                                         $c7 = DB::table('inventario_tfes')->select('desde','correlativo','key_lote_papel')
                                                                                             ->where('key_taquilla','=',$id_taquilla)
@@ -1654,7 +1657,7 @@ class VentaController extends Controller
                                                             return response()->json(['success' => false, 'nota'=> '']);
                                                         }
                                                     }else{
-
+    
                                                         $nro_timbre = $nro_hipotetico;
                                                         $key_inventario = $c5->key_inventario_tfe;
                                                         $key_lote = $c6->key_lote_papel;
@@ -1678,18 +1681,18 @@ class VentaController extends Controller
                                                         return response()->json(['success' => false, 'nota'=> 'No hay TFE Forma 14 disponibles en taquilla.']);
                                                     }
                                                 }
-
+    
                                                 // SERIAL
                                                 $length = 6;
                                                 $formato_nro = substr(str_repeat(0, $length).$nro_timbre, - $length);
-
+    
                                                 $serial = $identificador_ucd.''.$identificador_forma.''.$formato_nro;
-
+    
                                                 // QR
                                                 $url = 'https://tfe14.tributosaragua.com.ve/?id='.$nro_timbre.'?lp='.$key_lote; 
                                                 QrCode::format('png')->size(180)->eye('circle')->generate($url, public_path('assets/qrForma14/qrcode_TFE'.$nro_timbre.'.png'));
-
-
+    
+    
                                                 // insert detalle_venta_estampilla
                                                 $i3 = DB::table('detalle_venta_tfes')->insert(['key_venta' => $id_venta, 
                                                                                                 'key_taquilla' => $id_taquilla,  
@@ -1703,7 +1706,7 @@ class VentaController extends Controller
                                                 if ($i3){
                                                     $cant_tfe = $cant_tfe + 1;
                                                     $cant_ucd_tfe = $cant_ucd_tfe + $ucd_tramite;
-
+    
                                                     $row_timbres .= '<div class="border mb-4 rounded-3">
                                                                         <div class="d-flex justify-content-between px-3 py-2 align-items-center">
                                                                             <!-- DATOS -->
@@ -1742,7 +1745,7 @@ class VentaController extends Controller
                                                 //// eliminar venta
                                                 return response()->json(['success' => false]);
                                             }
-
+    
                                             break;
                                                 
                                         default:
@@ -1750,22 +1753,22 @@ class VentaController extends Controller
                                             return response()->json(['success' => false, 'nota'=> '']);
                                             break;
                                     }
-
+    
                                 
-
-
+    
+    
                                 }else{
                                     /////////////////////////////////////////////////////////////////////////////////////////////////////////// ESTAMPILLAS
                                     $key_tramite = $tramite['tramite'];
                                     $exist_estampillas = true;
-
+    
                                     $ucd_tramite = '';
                                     $key_deno = '';
-
+    
                                     //////// IDENTIFICACION DE FORMA
                                     $c_forma = DB::table('formas')->select('identificador')->where('forma','=','Estampillas')->first();
                                     $identificador_forma = $c_forma->identificador;
-
+    
                                     //////// VALOR UCD TRAMITE  
                                     if ($condicion_sujeto == 10 || $condicion_sujeto == 11) {
                                         //////juridico (firma personal - empresa)
@@ -1776,18 +1779,18 @@ class VentaController extends Controller
                                         $consulta = DB::table('tramites')->select('natural')->where('id_tramite','=', $key_tramite)->first();
                                         $ucd_tramite = $consulta->natural;
                                     }
-
-
+    
+    
                                     /////////////////////////FOLIOS
                                     $folios =  $tramite['nro_folios'];
                                     if ($key_tramite == 1) {
                                         if ($folios != '' || $folios != 0) {
                                             $qf = DB::table('tramites')->select('natural')->where('tramite','=', 'Folio')->first();
-
+    
                                             $ucd_tramite = $ucd_tramite + ($folios * $qf->natural);
                                         }
                                     }
-
+    
                                     $total_ucd = $total_ucd + $ucd_tramite;
                                     if ($key_tramite == 1) {
                                         if ($folios != '' || $folios != 0) {
@@ -1821,23 +1824,23 @@ class VentaController extends Controller
                                         foreach ($detalle_est as $est) {
                                             $key_deno = $est['ucd'];
                                             $cant_est = $est['cantidad'];
-
+    
                                             $q5 = DB::table('ucd_denominacions')->select('denominacion','identificador')->where('id','=',$key_deno)->where('alicuota','=',7)->first();
                                             $identificador_ucd = $q5->identificador;
-
+    
                                             for ($i=0; $i < $cant_est ; $i++) { 
                                                 $nro_timbre = '';
                                                 $key_detalle_asignacion = '';
-
+    
                                                 $c5 = DB::table('detalle_venta_estampillas')->select('key_detalle_asignacion','nro_timbre')
                                                                                             ->where('key_denominacion','=',$key_deno)
                                                                                             ->where('key_taquilla','=',$id_taquilla)
                                                                                             ->orderBy('correlativo', 'desc')->first();
                                                 if ($c5) {
                                                     $nro_hipotetico = $c5->nro_timbre +1;
-
+    
                                                     $c6 = DB::table('detalle_asignacion_estampillas')->select('hasta')->where('correlativo','=',$c5->key_detalle_asignacion)->first();
-
+    
                                                     if ($nro_hipotetico > $c6->hasta) {
                                                         $c7 = DB::table('detalle_asignacion_estampillas')->select('desde','correlativo')
                                                                     ->where('key_taquilla','=',$id_taquilla)
@@ -1875,14 +1878,14 @@ class VentaController extends Controller
                                                         return response()->json(['success' => false, 'nota'=> 'No hay timbres disponibles de ']);
                                                     }
                                                 }
-
+    
                                                 // SERIAL
                                                 $length = 6;
                                                 $formato_nro = substr(str_repeat(0, $length).$nro_timbre, - $length);
-
+    
                                                 $serial = $identificador_ucd.''.$identificador_forma.''.$formato_nro;
-
-
+    
+    
                                                 // insert detalle_venta_estampilla
                                                 $i3 = DB::table('detalle_venta_estampillas')->insert(['key_venta' => $id_venta, 
                                                                                                     'key_taquilla' => $id_taquilla,  
@@ -1895,7 +1898,7 @@ class VentaController extends Controller
                                                 if ($i3) {
                                                     $cant_estampillas = $cant_estampillas + 1;
                                                     $cant_ucd_estampillas = $cant_ucd_estampillas + $q5->denominacion;
-
+    
                                                     $row_timbres .= '<div class="border mb-4 rounded-3">
                                                                         <div class="d-flex justify-content-between px-3 py-2 align-items-center">
                                                                             <!-- DATOS -->
@@ -1922,7 +1925,7 @@ class VentaController extends Controller
                                                                             </div>
                                                                         </div>
                                                                     </div>';
-
+    
                                                     /////////ACTUALIZAR NRO TIMBRES VENDIDOS (DETALLE_ASIGNACION_TIMBRES)
                                                     $c_vendido = DB::table('detalle_asignacion_estampillas')->select('vendido')->where('correlativo','=',$key_detalle_asignacion)->first();
                                                     $new_vendido = $c_vendido->vendido + 1;
@@ -1932,23 +1935,22 @@ class VentaController extends Controller
                                                     return response()->json(['success' => false]);
                                                 }
                                             }
-
-
+    
+    
                                         }
                                     }else{
                                         //// eliminar venta
                                         return response()->json(['success' => false]);
                                     }
-
+    
                                 } ///cierra else ESTAMPILLAS
-                            }else{
-                                return response()->json(['success' => false]);
-                            }
-
-                            
-
+                                
+                            } ///cierra foreach tramites
+                        }else{
+                            return response()->json(['success' => false]);
                         }
 
+                        
 
                         ///////////////////////////////////////  UPDATE INVENTARIO TAQUILLAS
                         $inv1 = DB::table('inventario_taquillas')->select('cantidad_tfe')->where('key_taquilla','=',$id_taquilla)->first();
@@ -1964,7 +1966,7 @@ class VentaController extends Controller
 
 
                     ///////////////////////////////////// UPDATE TOTAL UCD / BOLIVARES (TABLE VENTAS)
-                        $total_bolivares = $total_ucd * $valor_ucd;
+                        $total_bolivares = $total_bolivares + ($total_ucd * $valor_ucd);
                         $update_venta = DB::table('ventas')->where('id_venta','=',$id_venta)->update(['total_ucd' => $total_ucd, 'total_bolivares' => $total_bolivares]);
 
                         $formato_total_bolivares =  number_format($total_bolivares, 2, ',', '.');

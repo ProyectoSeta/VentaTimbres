@@ -16,11 +16,13 @@ class ArqueoTaquillaController extends Controller
     public function index()
     {
         // comprobar que la taquilla ha sio cerrada para mostrar el arqueo PENDIENTE
+
+        // FECHA HOY (FORMATO)
         $dias = array("Domingo","Lunes","Martes","Miercoles","Jueves","Viernes","Sábado");
         $meses = array("Enero","Febrero","Marzo","Abril","Mayo","Junio","Julio","Agosto","Septiembre","Octubre","Noviembre","Diciembre"); 
         $hoy_view = $dias[date('w')].", ".date('d')." de ".$meses[date('n')-1]. " ".date('Y');
 
-        // venta del día
+        // VENTAS DEL DÍA
         $user = auth()->id();
         $query = DB::table('users')->select('key_sujeto')->where('id','=',$user)->first();
         $q2 = DB::table('taquillas')->select('id_taquilla')->where('key_funcionario','=',$query->key_sujeto)->first();
@@ -33,9 +35,27 @@ class ArqueoTaquillaController extends Controller
                                 ->where('ventas.key_taquilla','=',$id_taquilla)
                                 ->where('ventas.fecha','=',$hoy)
                                 ->get();
+        
+        // DETALLE ARQUEO
+        $arqueo = DB::table('cierre_taquillas')->where('fecha','=',$hoy)->where('key_taquilla','=',$id_taquilla)->first();
+
+        // DETALLE_EFECTIVO
+        $c1 = DB::table('apertura_taquillas')->select('fondo_caja')->where('fecha','=',$hoy)->where('key_taquilla','=',$id_taquilla)->first();
+        $fondo_caja = $c1->fondo_caja;
+        $bs_boveda = 0;
+
+        $c2 = DB::table('boveda_ingresos')->select('monto')->where('fecha','=',$hoy)->where('key_taquilla','=',$id_taquilla)->get();
+        if ($c2) {
+            foreach ($c2 as $key) {
+                $bs_boveda = $bs_boveda + $key->monto;
+            }
+            
+        }
+
+        $efectivo_taq = ($arqueo->efectivo + $fondo_caja) - $bs_boveda;
 
 
-        return view('arqueo',compact('hoy_view','ventas'));
+        return view('arqueo',compact('hoy_view','ventas','arqueo','bs_boveda','efectivo_taq','fondo_caja'));
     }
 
     /**
