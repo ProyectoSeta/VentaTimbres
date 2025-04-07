@@ -143,7 +143,7 @@
                 <div class="modal-body px-5 py-3" style="font-size:13px">
                     <form id="form_fondo_caja" method="post" onsubmit="event.preventDefault(); fondoCaja()">
                         
-                        <label for="clave" class="form-label"><span class="text-danger">* </span>Ingrese el fonde de caja con el que apertura la Taquilla:</label>
+                        <label for="fondo" class="form-label"><span class="text-danger">* </span>Ingrese el fondo de caja con el que apertura la Taquilla:</label>
                         
                         <div class="d-flex align-items-center">
                             <input type="number" id="fondo" class="form-control form-control-sm me-2" name="fondo" required> <span>Bs.</span>
@@ -193,8 +193,8 @@
                         <p class="text-muted">IMPORTANTE: Si cierra la Taquilla, no podrá volver a aperturarla durante el día, sin la aprobacion del Coordinador.
                              Asegurese de haber culminado todos los procesos.</p>    
 
-                        <label for="clave" class="form-label"><span class="text-danger">* </span>Ingrese la clave de seguridad de la Taquilla:</label>
-                        <input type="password" id="clave" class="form-control form-control-sm" name="clave" required>
+                        <label for="clave_cierre" class="form-label"><span class="text-danger">* </span>Ingrese la clave de seguridad de la Taquilla:</label>
+                        <input type="password" id="clave_cierre" class="form-control form-control-sm" name="clave_cierre" required>
 
                         <p class="text-muted text-end"><span style="color:red">*</span> Campos requeridos.</p>
 

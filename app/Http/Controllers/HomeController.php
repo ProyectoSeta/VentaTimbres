@@ -26,83 +26,6 @@ class HomeController extends Controller
 
     public function index()
     {
-        
-
-
-
-
-        // function calcularCombinacionMinimaConLimite($arrayNumeros, $montoTotal, $limiteElementos = 5) {
-        //     $combinacion = [];
-            
-        //     // Ordenar los números en orden descendente
-        //     usort($arrayNumeros, function($a, $b) {
-        //         return $b['numero'] - $a['numero'];
-        //     });
-        
-        //     $elementosUsados = 0;
-        
-        //     foreach ($arrayNumeros as $item) {
-        //         $numero = $item['numero'];
-        //         $cantidadDisponible = $item['cantidad'];
-        
-        //         // Calcular cuántas veces podemos usar este número sin exceder el monto o el límite de elementos
-        //         $cantidadUsar = min(floor($montoTotal / $numero), $cantidadDisponible);
-        
-        //         // Ajustar la cantidad a usar si excede el límite de elementos
-        //         if ($cantidadUsar + $elementosUsados > $limiteElementos) {
-        //             $cantidadUsar = $limiteElementos - $elementosUsados;
-        //         }
-        
-        //         if ($cantidadUsar > 0) {
-        //             $combinacion[] = [
-        //                 'numero' => $numero,
-        //                 'cantidad' => $cantidadUsar,
-        //             ];
-        //             $montoTotal -= $cantidadUsar * $numero;
-        //             $elementosUsados += $cantidadUsar;
-        //         }
-        
-        //         // Si el monto total llega a 0 o alcanzamos el límite de elementos, terminamos
-        //         if ($montoTotal == 0 || $elementosUsados >= $limiteElementos) {
-        //             break;
-        //         }
-        //     }
-        
-        //     // Verificar si el monto total pudo ser alcanzado
-        //     if ($montoTotal > 0) {
-        //         return null; // No se pudo lograr el monto exacto con los números disponibles y el límite de elementos
-        //     }
-        
-        //     return $combinacion;
-        // }
-        
-        
-
-        // $arrayNumeros = [
-        //     ['numero' => 5, 'cantidad' => 3],
-        //     ['numero' => 3, 'cantidad' => 5],
-        //     ['numero' => 2, 'cantidad' => 10],
-        //     ['numero' => 1, 'cantidad' => 0],
-        // ];
-        
-        // $montoTotal = 6;
-        
-        // $resultado = calcularCombinacionMinimaConLimite($arrayNumeros, $montoTotal);
-        
-        // if ($resultado) {
-        //     echo "Mejor combinación encontrada:\n";
-        //     foreach ($resultado as $item) {
-        //         echo "Número: {$item['numero']}, Cantidad: {$item['cantidad']}\n";
-        //     }
-        // } else {
-        //     echo "No es posible alcanzar el monto total dentro del límite de elementos.\n";
-        // }
-        
-
-        
-
-        
-
         $user = auth()->id();
         $query = DB::table('users')->select('key_sujeto')->where('id','=',$user)->first();
         $q2 = DB::table('taquillas')->select('id_taquilla')->where('key_funcionario','=',$query->key_sujeto)->first();
@@ -501,7 +424,7 @@ class HomeController extends Controller
 
 
     public function cierre_taquilla(Request $request){
-        $pass = $request->post('clave');
+        $pass = $request->post('clave_cierre');
 
         if ($pass == '' || $pass == null) {
             return response()->json(['success' => false, 'nota' => 'Ingrese la clave de seguridad.']);

@@ -28,6 +28,9 @@ return new class extends Migration
             $table->float('metros')->nullable();
             $table->float('capital')->nullable();
             $table->integer('folios')->nullable();
+
+            $table->integer('ucd')->nullable();
+            $table->float('bs')->nullable();
         });
     }
 

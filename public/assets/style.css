@@ -99,3 +99,10 @@
 .zoom_text:hover{
     transform: scale(1.05);
 }
+
+/* IMG ARQUEO */
+.bg_arqueo{
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+}

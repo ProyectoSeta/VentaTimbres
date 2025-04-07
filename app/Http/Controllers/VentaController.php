@@ -941,8 +941,7 @@ class VentaController extends Controller
             }
         }
         
-        $total_bolivares = $total_ucd * $valor_ucd;
-
+        $total_bolivares = $total_bolivares + ($total_ucd * $valor_ucd);
         
         ////formato 2 decimales
         if ($debito > $total_bolivares) {
@@ -1306,16 +1305,11 @@ class VentaController extends Controller
                                             }
                                             
 
-                                            ///////DENOMINACION E IDENTIFICADOR DE DENOMINACION
-                                            // if ($ucd_tramite == 10) {
-                                            //     $q5 = DB::table('ucd_denominacions')->select('id','identificador')->where('denominacion','=','5')->where('alicuota','=',7)->first();
-                                            //     $key_deno = $q5->id; 
-                                            //     $identificador_ucd = $q5->identificador;
-                                            // }else{
-                                                $q5 = DB::table('ucd_denominacions')->select('id','identificador')->where('denominacion','=',$ucd_tramite)->where('alicuota','=',7)->first();
-                                                $key_deno = $q5->id;
-                                                $identificador_ucd = $q5->identificador;
-                                            // }
+                                           
+                                            $q5 = DB::table('ucd_denominacions')->select('id','identificador')->where('denominacion','=',$ucd_tramite)->where('alicuota','=',7)->first();
+                                            $key_deno = $q5->id;
+                                            $identificador_ucd = $q5->identificador;
+                                            
 
                                             $total_ucd = $total_ucd + $ucd_tramite;
                                             if ($key_tramite == 1) {
@@ -1326,7 +1320,9 @@ class VentaController extends Controller
                                                                                 'cantidad' => 1,
                                                                                 'metros' => null,
                                                                                 'capital' => null,
-                                                                                'folios' => $folios]);
+                                                                                'folios' => $folios,
+                                                                                'ucd' => $ucd_tramite,
+                                                                                'bs' => null]);
                                                 }
                                             }else{
                                                 $i2 = DB::table('detalle_ventas')->insert(['key_venta' => $id_venta, 
@@ -1335,7 +1331,9 @@ class VentaController extends Controller
                                                                                 'cantidad' => 1,
                                                                                 'metros' => null,
                                                                                 'capital' => null,
-                                                                                'folios' => null]);
+                                                                                'folios' => null,
+                                                                                'ucd' => $ucd_tramite,
+                                                                                'bs' => null]);
                                             }
                                              
                                             if ($i2){
@@ -1416,7 +1414,7 @@ class VentaController extends Controller
                                                     $row_timbres .= '<div class="border mb-4 rounded-3">
                                                                         <div class="d-flex justify-content-between px-3 py-2 align-items-center">
                                                                             <!-- DATOS -->
-                                                                            <div class="">
+                                                                            <div class="w-50">
                                                                                 <div class="text-danger fw-bold fs-4" id="">A-'.$formato_nro.'<span class="text-muted ms-2">TFE-14</span></div> 
                                                                                 <table class="table table-borderless table-sm">
                                                                                     <tr>
@@ -1473,7 +1471,10 @@ class VentaController extends Controller
                                                                                         'forma' => $tramite['forma'],
                                                                                         'cantidad' => 1,
                                                                                         'metros' => null,
-                                                                                        'capital' => $capital]); 
+                                                                                        'capital' => $capital,
+                                                                                        'folios' => null,
+                                                                                        'ucd' => null,
+                                                                                        'bs' => $total_bs_capital]); 
                                             if ($i2){
                                                 $id_detalle_venta = DB::table('detalle_ventas')->max('correlativo');
 
@@ -1552,7 +1553,7 @@ class VentaController extends Controller
                                                     $row_timbres .= '<div class="border mb-4 rounded-3">
                                                                         <div class="d-flex justify-content-between px-3 py-2 align-items-center">
                                                                             <!-- DATOS -->
-                                                                            <div class="">
+                                                                            <div class="w-50">
                                                                                 <div class="text-danger fw-bold fs-4" id="">A-'.$formato_nro.'<span class="text-muted ms-2">TFE-14</span></div> 
                                                                                 <table class="table table-borderless table-sm">
                                                                                     <tr>
@@ -1623,7 +1624,10 @@ class VentaController extends Controller
                                                                                 'forma' => $tramite['forma'],
                                                                                 'cantidad' => 1,
                                                                                 'metros' => $metros,
-                                                                                'capital' => null]); 
+                                                                                'capital' => null,
+                                                                                'folios' => null,
+                                                                                'ucd' => $ucd_tramite,
+                                                                                'bs' => null]); 
                                             if ($i2){
                                                 $id_detalle_venta = DB::table('detalle_ventas')->max('correlativo');
 
@@ -1703,7 +1707,7 @@ class VentaController extends Controller
                                                     $row_timbres .= '<div class="border mb-4 rounded-3">
                                                                         <div class="d-flex justify-content-between px-3 py-2 align-items-center">
                                                                             <!-- DATOS -->
-                                                                            <div class="">
+                                                                            <div class="w-50">
                                                                                 <div class="text-danger fw-bold fs-4" id="">A-'.$formato_nro.'<span class="text-muted ms-2">TFE-14</span></div> 
                                                                                 <table class="table table-borderless table-sm">
                                                                                     <tr>
@@ -1784,18 +1788,6 @@ class VentaController extends Controller
                                         }
                                     }
 
-
-                                    // ///////DENOMINACION E IDENTIFICADOR DE DENOMINACION
-                                    // if ($ucd_tramite == 10) {
-                                    //     $q5 = DB::table('ucd_denominacions')->select('id','identificador')->where('denominacion','=','5')->where('alicuota','=',7)->first();
-                                    //     $key_deno = $q5->id; 
-                                    //     $identificador_ucd = $q5->identificador;
-                                    // }else{
-                                    //     $q5 = DB::table('ucd_denominacions')->select('id','identificador')->where('denominacion','=',$ucd_tramite)->where('alicuota','=',7)->first();
-                                    //     $key_deno = $q5->id;
-                                    //     $identificador_ucd = $q5->identificador;
-                                    // }
-
                                     $total_ucd = $total_ucd + $ucd_tramite;
                                     if ($key_tramite == 1) {
                                         if ($folios != '' || $folios != 0) {
@@ -1805,28 +1797,32 @@ class VentaController extends Controller
                                                                                 'cantidad' => 1,
                                                                                 'metros' => null,
                                                                                 'capital' => null,
-                                                                                'folios' => $folios]); 
+                                                                                'folios' => $folios,
+                                                                                'ucd' => $ucd_tramite,
+                                                                                'bs' => null]); 
                                         }
                                     }else{
                                         $i2 = DB::table('detalle_ventas')->insert(['key_venta' => $id_venta, 
-                                                                                'key_tramite' => $key_tramite, 
-                                                                                'forma' => $tramite['forma'],
-                                                                                'cantidad' => 1,
-                                                                                'metros' => null,
-                                                                                'capital' => null,
-                                                                                'folios' => null]); 
+                                                                            'key_tramite' => $key_tramite, 
+                                                                            'forma' => $tramite['forma'],
+                                                                            'cantidad' => 1,
+                                                                            'metros' => null,
+                                                                            'capital' => null,
+                                                                            'folios' => null,
+                                                                            'ucd' => $ucd_tramite,
+                                                                            'bs' => null]); 
                                     }
                                     
                                     if ($i2) {
                                         $id_detalle_venta = DB::table('detalle_ventas')->max('correlativo');
                                         ///////////////////////// BUSCAR CORRELATIVO
                                         $detalle_est = unserialize(base64_decode($tramite['detalle_est']));
-
+                                        // return response($detalle_est);
                                         foreach ($detalle_est as $est) {
                                             $key_deno = $est['ucd'];
-                                            $cant_est = ['cant'];
+                                            $cant_est = $est['cantidad'];
 
-                                            $q5 = DB::table('ucd_denominacions')->select('identificador')->where('id','=',$key_deno)->where('alicuota','=',7)->first();
+                                            $q5 = DB::table('ucd_denominacions')->select('denominacion','identificador')->where('id','=',$key_deno)->where('alicuota','=',7)->first();
                                             $identificador_ucd = $q5->identificador;
 
                                             for ($i=0; $i < $cant_est ; $i++) { 
@@ -1898,12 +1894,12 @@ class VentaController extends Controller
                                                                                                     'qr' => 'assets/qrEstampillas/qrcode_EST'.$nro_timbre.'.png']); 
                                                 if ($i3) {
                                                     $cant_estampillas = $cant_estampillas + 1;
-                                                    $cant_ucd_estampillas = $cant_ucd_estampillas + 5;
+                                                    $cant_ucd_estampillas = $cant_ucd_estampillas + $q5->denominacion;
 
                                                     $row_timbres .= '<div class="border mb-4 rounded-3">
                                                                         <div class="d-flex justify-content-between px-3 py-2 align-items-center">
                                                                             <!-- DATOS -->
-                                                                            <div class="">
+                                                                            <div class="w-50">
                                                                                 <div class="text-danger fw-bold fs-4" id="">'.$formato_nro.'<span class="text-muted ms-2">Estampilla</span></div> 
                                                                                 <table class="table table-borderless table-sm">
                                                                                     <tr>
@@ -1918,7 +1914,7 @@ class VentaController extends Controller
                                                                             </div>
                                                                             <!-- UCD -->
                                                                             <div class="">
-                                                                                <div class="text-center titulo fw-bold fs-3">5 UCD</div>
+                                                                                <div class="text-center titulo fw-bold fs-3">'.$q5->denominacion.' UCD</div>
                                                                             </div>
                                                                             <!-- QR -->
                                                                             <div class="text-center">
