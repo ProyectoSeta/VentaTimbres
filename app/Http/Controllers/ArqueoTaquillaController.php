@@ -16,46 +16,56 @@ class ArqueoTaquillaController extends Controller
     public function index()
     {
         // comprobar que la taquilla ha sio cerrada para mostrar el arqueo PENDIENTE
-
-        // FECHA HOY (FORMATO)
-        $dias = array("Domingo","Lunes","Martes","Miercoles","Jueves","Viernes","Sábado");
-        $meses = array("Enero","Febrero","Marzo","Abril","Mayo","Junio","Julio","Agosto","Septiembre","Octubre","Noviembre","Diciembre"); 
-        $hoy_view = $dias[date('w')].", ".date('d')." de ".$meses[date('n')-1]. " ".date('Y');
-
-        // VENTAS DEL DÍA
+        $hoy = date('Y-m-d');
         $user = auth()->id();
         $query = DB::table('users')->select('key_sujeto')->where('id','=',$user)->first();
         $q2 = DB::table('taquillas')->select('id_taquilla')->where('key_funcionario','=',$query->key_sujeto)->first();
 
         $id_taquilla = $q2->id_taquilla;
-        $hoy = date('Y-m-d');
 
-        $ventas = DB::table('ventas')->join('contribuyentes', 'ventas.key_contribuyente', '=','contribuyentes.id_contribuyente')
-                                ->select('ventas.*','contribuyentes.identidad_condicion','contribuyentes.identidad_nro')
-                                ->where('ventas.key_taquilla','=',$id_taquilla)
-                                ->where('ventas.fecha','=',$hoy)
-                                ->get();
-        
-        // DETALLE ARQUEO
-        $arqueo = DB::table('cierre_taquillas')->where('fecha','=',$hoy)->where('key_taquilla','=',$id_taquilla)->first();
+        $c1 = DB::table('apertura_taquillas')->select('cierre_taquilla','fondo_caja')->where('fecha','=',$hoy)->where('key_taquilla','=',$id_taquilla)->first();
+        if ($c1) {
+            if ($c1->cierre_taquilla != NULL) {
+                // FECHA HOY (FORMATO)
+                $dias = array("Domingo","Lunes","Martes","Miercoles","Jueves","Viernes","Sábado");
+                $meses = array("Enero","Febrero","Marzo","Abril","Mayo","Junio","Julio","Agosto","Septiembre","Octubre","Noviembre","Diciembre"); 
+                $hoy_view = $dias[date('w')].", ".date('d')." de ".$meses[date('n')-1]. " ".date('Y');
 
-        // DETALLE_EFECTIVO
-        $c1 = DB::table('apertura_taquillas')->select('fondo_caja')->where('fecha','=',$hoy)->where('key_taquilla','=',$id_taquilla)->first();
-        $fondo_caja = $c1->fondo_caja;
-        $bs_boveda = 0;
+                // VENTAS DEL DÍA
+                $ventas = DB::table('ventas')->join('contribuyentes', 'ventas.key_contribuyente', '=','contribuyentes.id_contribuyente')
+                                        ->select('ventas.*','contribuyentes.identidad_condicion','contribuyentes.identidad_nro')
+                                        ->where('ventas.key_taquilla','=',$id_taquilla)
+                                        ->where('ventas.fecha','=',$hoy)
+                                        ->get();
+                
+                // DETALLE ARQUEO
+                $arqueo = DB::table('cierre_taquillas')->where('fecha','=',$hoy)->where('key_taquilla','=',$id_taquilla)->first();
 
-        $c2 = DB::table('boveda_ingresos')->select('monto')->where('fecha','=',$hoy)->where('key_taquilla','=',$id_taquilla)->get();
-        if ($c2) {
-            foreach ($c2 as $key) {
-                $bs_boveda = $bs_boveda + $key->monto;
+                // DETALLE_EFECTIVO
+                $fondo_caja = $c1->fondo_caja;
+                $bs_boveda = 0;
+
+                $c2 = DB::table('boveda_ingresos')->select('monto')->where('fecha','=',$hoy)->where('key_taquilla','=',$id_taquilla)->get();
+                if ($c2) {
+                    foreach ($c2 as $key) {
+                        $bs_boveda = $bs_boveda + $key->monto;
+                    }
+                    
+                }
+
+                $efectivo_taq = ($arqueo->efectivo + $fondo_caja) - $bs_boveda;
+
+
+                return view('arqueo',compact('hoy_view','ventas','arqueo','bs_boveda','efectivo_taq','fondo_caja'));
+            }else{
+                //no ha cerrado taquilla
+                return redirect()->action([HomeController::class, 'index']);
             }
-            
+        }else{
+            /////taquilla sin aperturar
+            return redirect()->action([HomeController::class, 'index']);
         }
 
-        $efectivo_taq = ($arqueo->efectivo + $fondo_caja) - $bs_boveda;
-
-
-        return view('arqueo',compact('hoy_view','ventas','arqueo','bs_boveda','efectivo_taq','fondo_caja'));
     }
 
     /**

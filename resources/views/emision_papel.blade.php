@@ -174,7 +174,7 @@
     
 <!--****************** MODALES **************************-->
     <!-- ************ EMITIR PAPEL DE SEGURIDAD: FORMA 14  ************** -->
-    <div class="modal fade" id="modal_emitir_papel_f14" tabindex="-1" aria-hidden="true">
+    <div class="modal fade" id="modal_emitir_papel_f14" tabindex="-1" aria-hidden="true"  data-bs-keyboard="false" aria-hidden="true" aria-labelledby="exampleModalLabel">
         <div class="modal-dialog">
             <div class="modal-content" id="content_emitir_papel_f14">
                 <div class="my-5 py-5 d-flex flex-column text-center">
@@ -186,7 +186,7 @@
     </div>
 
     <!-- ************ EMITIR PAPEL DE SEGURIDAD: ESTAMPILLAS  ************** -->
-    <div class="modal fade" id="modal_emitir_papel_estampillas" tabindex="-1" aria-hidden="true">
+    <div class="modal fade" id="modal_emitir_papel_estampillas" tabindex="-1" aria-hidden="true"  data-bs-keyboard="false" aria-hidden="true" aria-labelledby="exampleModalLabel">
         <div class="modal-dialog">
             <div class="modal-content" id="content_emitir_papel_estampillas">
                 <div class="my-5 py-5 d-flex flex-column text-center">
@@ -198,7 +198,7 @@
     </div>
 
     <!-- ************ DETALLE LOTE: ESTAMPILLAS  ************** -->
-    <div class="modal fade" id="modal_detalle_lote_estampillas" tabindex="-1" aria-hidden="true">
+    <div class="modal fade" id="modal_detalle_lote_estampillas" tabindex="-1"  data-bs-backdrop="static" >
         <div class="modal-dialog">
             <div class="modal-content" id="content_detalle_lote_estampillas">
                  <div class="my-5 py-5 d-flex flex-column text-center">
@@ -210,7 +210,7 @@
     </div>
 
     <!-- ************ DETALLE LOTE: TFES  ************** -->
-    <div class="modal fade" id="modal_detalle_lote_tfes" tabindex="-1" aria-hidden="true">
+    <div class="modal fade" id="modal_detalle_lote_tfes" tabindex="-1"  data-bs-backdrop="static" >
         <div class="modal-dialog">
             <div class="modal-content" id="content_detalle_lote_tfes">
                  <div class="my-5 py-5 d-flex flex-column text-center">
