@@ -93,6 +93,7 @@
                             <th>Contribuyente</th>
                             <th>Total U.C.D.</th>
                             <th>Total Bs.</th>
+                            <th>Detalle</th>
                             <th>Timbres</th>
                         </tr>
                     </thead>
@@ -119,7 +120,10 @@
                                     <span class="fw-bold text-navy">@php echo(number_format($venta->total_bolivares, 2, ',', '.')) @endphp Bs.</span>
                                 </td>
                                 <td>
-                                    <a href="" class="timbres" venta="{{$venta->id_venta}}" data-bs-toggle="modal" data-bs-target="#modal_timbres">Ver</a>
+                                    <a role="button" class="detalle_venta" venta="{{$venta->id_venta}}" data-bs-toggle="modal" data-bs-target="#modal_detalle_venta">Ver</a>
+                                </td>
+                                <td>
+                                    <a role="button" class="timbres" venta="{{$venta->id_venta}}" data-bs-toggle="modal" data-bs-target="#modal_timbres">Ver</a>
                                 </td>
                             </tr>
                         @endforeach
@@ -137,7 +141,7 @@
 
 
 
-    {{-- MODALES --}}
+{{-- ********************************************* MODALES ***********************************************--}}
     <!-- INFO CONTRIBUYENTE EXENCIONES -->
     <div class="modal fade" id="modal_info_sujeto" tabindex="-1" aria-hidden="true">
         <div class="modal-dialog">
@@ -161,6 +165,18 @@
             </div>  <!-- cierra modal-content -->
         </div>  <!-- cierra modal-dialog -->
     </div>
+
+    <!-- DETALLE VENTA -->
+    <div class="modal fade" id="modal_detalle_venta" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content" id="content_detalle_venta">
+                
+            </div>  <!-- cierra modal-content -->
+        </div>  <!-- cierra modal-dialog -->
+    </div>
+{{-- **************************************************************************************************--}}
+
+
 
 @stop
 
@@ -242,6 +258,30 @@
                     success: function(response) {
                         console.log(response);
                         $('#content_timbres').html(response);
+                    },
+                    error: function() {
+                    }
+                });
+            });
+
+            /////////////////////// DETALLE VENTA
+            $(document).on('click','.detalle_venta', function(e) {
+                e.preventDefault();
+                var venta = $(this).attr('venta');
+
+                $.ajax({
+                    headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') },
+                    type: 'POST',
+                    url: '{{route("arqueo.detalle_venta") }}',
+                    data: {venta:venta},
+                    success: function(response) {
+                        console.log(response);
+                        if (response.success) {
+                            $('#content_detalle_venta').html(response.html);
+                        }else{
+                            alert('Disculpe, vuelva a cargar la pagina.');
+                        }
+                        
                     },
                     error: function() {
                     }

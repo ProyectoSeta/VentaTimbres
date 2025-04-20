@@ -120,6 +120,14 @@ class DenominacionsSedeer extends Seeder
             'identificador' => 'M',
             'alicuota' => 7,
         ]);
+        DB::table('ucd_denominacions')->insert([
+            'denominacion' => '0',
+            'forma01' => 'false',
+            'forma14' => 'true',
+            'estampillas' => 'false',
+            'identificador' => 'N',
+            'alicuota' => 7,
+        ]);
 
     }
 }

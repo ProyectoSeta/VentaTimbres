@@ -294,8 +294,8 @@ class HomeController extends Controller
                             <input type="number" id="monto" step="0.01" max="'.$q3->efectivo.'" class="form-control form-control-sm me-2" name="monto" required> <span>Bs.</span>
                         </div>
                         
-                        <p class="pb-0 mb-0">Monto Total (Efectivo) en Taquilla: <span class="text-success"> '.$q3->efectivo.' Bs</span></p>
-                        <span>Fondo de caja: <span class="text-success"> '.$q4->fondo_caja.' Bs</span></span>
+                        <p class="pb-0 mb-0">Monto Total (Efectivo) en Taquilla: <span class="text-success"> '.number_format($q3->efectivo, 2, ',', '.').' Bs</span></p>
+                        <span>Fondo de caja: <span class="text-success"> '.number_format($q4->fondo_caja, 2, ',', '.').' Bs</span></span>
 
                         <p class="text-muted text-end"><span style="color:red">*</span> Campo requerido.</p>
 
@@ -382,7 +382,7 @@ class HomeController extends Controller
                                 <td>
                                     <span class="badge bg-primary-subtle border border-primary-subtle text-primary-emphasis rounded-pill" style="font-size:12.7px">'.$hora.'</span>
                                 </td>
-                                <td class="fw-bold">'.$key->monto.' Bs.</td>
+                                <td class="fw-bold">'.number_format($key->monto, 2, ',', '.').' Bs.</td>
                             </tr>';
                 }
             }else{

@@ -9,38 +9,33 @@
         <div class="row">
             <!-- VENTA -->
             <div class="col-lg-12">
-                <!-- UCD HOY -->
-                <!-- <div class="d-flex justify-content-center align-items-center mt-3 pb-3" style="font-size:14px">
-                    <div class="d-flex bg-navy rounded-4">
-                        <div class="bg-primary rounded-start-4 py-2 px-3 fs-6 fw-bold">
-                            <span>U.C.D. Hoy   </span>
-                        </div>
-                        <div class="py-2 px-3 fs-6 fw-bold text-end">
-                            <span>{{$ucd}} bs. ({{$moneda}})</span>
-                        </div> 
-                    </div>
-                </div> -->
-
                 <!-- TOTALES -->
-                
-                <div class="row d-flex align-items-end mb-2">
-                    <div class="col-lg-5 p-1">
+                <div class="row align-items-center mb-2">
+                    <div class="col-lg-3 p-1">
+                        <div class="rounded-3 px-3 py-2 bg-navy text-white">
+                            <div class="d-flex justify-content-between align-items-center">
+                                <p class="d-flex flex-column titulo mb-0">
+                                    <span class="fs-5 fw-bold pb-0 mb-0 ">| Hoy ({{$moneda}})</span>
+                                </p>
+                                <span class="fs-4 fw-semibold">{{$ucd_hoy}} bs.</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-3 p-1">
                         <div class="rounded-3 px-3 py-2" style="background:#d9e9ff">
                             <div class="d-flex justify-content-between align-items-center">
                                 <p class="d-flex flex-column titulo mb-0">
                                     <span class="fs-3 fw-bold text-navy pb-0 mb-0">U.C.D.</span>
-                                    <!-- <span class="fw-bold text-muted" style="font-size:13px">Unidad de Cuenta Dinámica</span> -->
                                 </p>
                                 <span class="fs-2 text-navy fw-bold" id="ucd">0 </span>
                             </div>
                         </div>
                     </div>
-                    <div class="col-lg-7 p-1">
+                    <div class="col-lg-6 p-1">
                         <div class="bg-warning-subtle rounded-3 px-3 py-2">
                             <div class="d-flex justify-content-between align-items-center">
                                 <p class="d-flex flex-column titulo mb-0">
                                     <span class="fs-3 fw-bold text-navy pb-0 mb-0">Bolivares</span>
-                                    <!-- <span class="fw-bold text-muted" style="font-size:13px">A pagar</span> -->
                                 </p>
                                 <span class="fs-2 text-navy fw-bold" id="bolivares">0,00</span>
                             </div>

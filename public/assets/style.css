@@ -100,9 +100,15 @@
     transform: scale(1.05);
 }
 
+.text_12{
+    font-size: 12.7px;
+}
+
 /* IMG ARQUEO */
 .bg_arqueo{
     background-size: cover;
     background-position: center;
     background-repeat: no-repeat;
 }
+
+

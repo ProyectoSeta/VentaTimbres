@@ -19,8 +19,9 @@ class VentaController extends Controller
         $tramites = DB::table('tramites')->select('id_tramite','tramite')->where('key_ente','=',1)->get();
         $q1 =  DB::table('ucds')->select('valor','moneda')->orderBy('id', 'desc')->first();
         $ucd = $q1->valor;
+        $ucd_hoy = number_format($ucd, 2, ',', '.');
         $moneda = $q1->moneda;
-        return view('venta', compact('entes','tramites','ucd','moneda'));
+        return view('venta', compact('entes','tramites','ucd_hoy','ucd','moneda'));
     }
 
     /**
@@ -1309,8 +1310,15 @@ class VentaController extends Controller
     
                                             
                                             $q5 = DB::table('ucd_denominacions')->select('id','identificador')->where('denominacion','=',$ucd_tramite)->where('alicuota','=',7)->first();
-                                            $key_deno = $q5->id;
-                                            $identificador_ucd = $q5->identificador;
+                                            if ($q5) {
+                                                $key_deno = $q5->id;
+                                                $identificador_ucd = $q5->identificador;
+                                            }else{
+                                                $q5_otros = DB::table('ucd_denominacions')->select('id','identificador')->where('denominacion','=','0.00')->where('alicuota','=',7)->first();
+                                                $key_deno = $q5_otros->id;
+                                                $identificador_ucd = $q5_otros->identificador;
+                                            }
+                                            
                                             
     
                                             $total_ucd = $total_ucd + $ucd_tramite;
@@ -1361,6 +1369,7 @@ class VentaController extends Controller
                                                             $update_2 = DB::table('inventario_tfes')->where('correlativo','=',$c7->correlativo)->update(['condicion' => 3]);
                                                         }else{
                                                             // delete venta
+                                                            $delete_venta = DB::table('ventas')->where('id_venta', '=', $id_venta)->delete();
                                                             return response()->json(['success' => false, 'nota'=> '']);
                                                         }
                                                     }else{
@@ -1384,6 +1393,7 @@ class VentaController extends Controller
                                                         $update_3 = DB::table('inventario_tfes')->where('correlativo','=',$c8->correlativo)->update(['condicion' => 3]);
                                                     }else{
                                                         // delete venta
+                                                        $delete_venta = DB::table('ventas')->where('id_venta', '=', $id_venta)->delete();
                                                         return response()->json(['success' => false, 'nota'=> 'No hay TFE Forma 14 disponibles en taquilla.']);
                                                     }
                                                 }
@@ -1418,7 +1428,7 @@ class VentaController extends Controller
                                                                             <!-- DATOS -->
                                                                             <div class="w-50">
                                                                                 <div class="text-danger fw-bold fs-4" id="">A-'.$formato_nro.'<span class="text-muted ms-2">TFE-14</span></div> 
-                                                                                <table class="table table-borderless table-sm">
+                                                                                <table class="table table-borderless table-sm lh-1 text_12">
                                                                                     <tr>
                                                                                         <th>Ente:</th>
                                                                                         <td>'.$consulta_tramite->ente.'</td>
@@ -1426,6 +1436,10 @@ class VentaController extends Controller
                                                                                     <tr>
                                                                                         <th>Tramite:</th>
                                                                                         <td>'.$consulta_tramite->tramite.'</td>
+                                                                                    </tr>
+                                                                                    <tr>
+                                                                                        <th>Serial:</th>
+                                                                                        <td>'.$serial.'</td>
                                                                                     </tr>
                                                                                 </table>
                                                                             </div>
@@ -1445,10 +1459,12 @@ class VentaController extends Controller
                                                     $update_vendido = DB::table('inventario_tfes')->where('correlativo','=',$key_inventario)->update(['vendido' => $new_vendido]);
                                                 }else{
                                                     // delete venta
+                                                    $delete_venta = DB::table('ventas')->where('id_venta', '=', $id_venta)->delete();
                                                     return response()->json(['success' => false]);
                                                 }
                                             }else{
                                                 //// eliminar venta
+                                                $delete_venta = DB::table('ventas')->where('id_venta', '=', $id_venta)->delete();
                                                 return response()->json(['success' => false]);
                                             }
     
@@ -1501,6 +1517,7 @@ class VentaController extends Controller
                                                             $update_2 = DB::table('inventario_tfes')->where('correlativo','=',$c7->correlativo)->update(['condicion' => 3]);
                                                         }else{
                                                             // delete venta
+                                                            $delete_venta = DB::table('ventas')->where('id_venta', '=', $id_venta)->delete();
                                                             return response()->json(['success' => false, 'nota'=> '']);
                                                         }
                                                     }else{
@@ -1524,6 +1541,7 @@ class VentaController extends Controller
                                                         $update_3 = DB::table('inventario_tfes')->where('correlativo','=',$c8->correlativo)->update(['condicion' => 3]);
                                                     }else{
                                                         // delete venta
+                                                        $delete_venta = DB::table('ventas')->where('id_venta', '=', $id_venta)->delete();
                                                         return response()->json(['success' => false, 'nota'=> 'No hay TFE Forma 14 disponibles en taquilla.']);
                                                     }
                                                 }
@@ -1558,7 +1576,7 @@ class VentaController extends Controller
                                                                             <!-- DATOS -->
                                                                             <div class="w-50">
                                                                                 <div class="text-danger fw-bold fs-4" id="">A-'.$formato_nro.'<span class="text-muted ms-2">TFE-14</span></div> 
-                                                                                <table class="table table-borderless table-sm">
+                                                                                <table class="table table-borderless table-sm lh-1 text_12">
                                                                                     <tr>
                                                                                         <th>Ente:</th>
                                                                                         <td>'.$consulta_tramite->ente.'</td>
@@ -1566,6 +1584,10 @@ class VentaController extends Controller
                                                                                     <tr>
                                                                                         <th>Tramite:</th>
                                                                                         <td>'.$consulta_tramite->tramite.'</td>
+                                                                                    </tr>
+                                                                                    <tr>
+                                                                                        <th>Serial:</th>
+                                                                                        <td>'.$serial.'</td>
                                                                                     </tr>
                                                                                 </table>
                                                                             </div>
@@ -1585,11 +1607,13 @@ class VentaController extends Controller
                                                     $update_vendido = DB::table('inventario_tfes')->where('correlativo','=',$key_inventario)->update(['vendido' => $new_vendido]);
                                                 }else{
                                                     // delete venta
+                                                    $delete_venta = DB::table('ventas')->where('id_venta', '=', $id_venta)->delete();
                                                     return response()->json(['success' => false]);
                                                 }
     
                                             }else{
                                                 //// eliminar venta
+                                                $delete_venta = DB::table('ventas')->where('id_venta', '=', $id_venta)->delete();
                                                 return response()->json(['success' => false]);
                                             }
      
@@ -1654,6 +1678,7 @@ class VentaController extends Controller
                                                             $update_2 = DB::table('inventario_tfes')->where('correlativo','=',$c7->correlativo)->update(['condicion' => 3]);
                                                         }else{
                                                             // delete venta
+                                                            $delete_venta = DB::table('ventas')->where('id_venta', '=', $id_venta)->delete();
                                                             return response()->json(['success' => false, 'nota'=> '']);
                                                         }
                                                     }else{
@@ -1678,6 +1703,7 @@ class VentaController extends Controller
                                                         $update_3 = DB::table('inventario_tfes')->where('correlativo','=',$c8->correlativo)->update(['condicion' => 3]);
                                                     }else{
                                                         // delete venta
+                                                        $delete_venta = DB::table('ventas')->where('id_venta', '=', $id_venta)->delete();
                                                         return response()->json(['success' => false, 'nota'=> 'No hay TFE Forma 14 disponibles en taquilla.']);
                                                     }
                                                 }
@@ -1712,7 +1738,7 @@ class VentaController extends Controller
                                                                             <!-- DATOS -->
                                                                             <div class="w-50">
                                                                                 <div class="text-danger fw-bold fs-4" id="">A-'.$formato_nro.'<span class="text-muted ms-2">TFE-14</span></div> 
-                                                                                <table class="table table-borderless table-sm">
+                                                                                <table class="table table-borderless table-sm lh-1 text_12">
                                                                                     <tr>
                                                                                         <th>Ente:</th>
                                                                                         <td>'.$consulta_tramite->ente.'</td>
@@ -1720,6 +1746,10 @@ class VentaController extends Controller
                                                                                     <tr>
                                                                                         <th>Tramite:</th>
                                                                                         <td>'.$consulta_tramite->tramite.'</td>
+                                                                                    </tr>
+                                                                                    <tr>
+                                                                                        <th>Serial:</th>
+                                                                                        <td>'.$serial.'</td>
                                                                                     </tr>
                                                                                 </table>
                                                                             </div>
@@ -1739,10 +1769,12 @@ class VentaController extends Controller
                                                     $update_vendido = DB::table('inventario_tfes')->where('correlativo','=',$key_inventario)->update(['vendido' => $new_vendido]);
                                                 }else{
                                                     // delete venta
+                                                    $delete_venta = DB::table('ventas')->where('id_venta', '=', $id_venta)->delete();
                                                     return response()->json(['success' => false]);
                                                 }
                                             }else{
                                                 //// eliminar venta
+                                                $delete_venta = DB::table('ventas')->where('id_venta', '=', $id_venta)->delete();
                                                 return response()->json(['success' => false]);
                                             }
     
@@ -1750,6 +1782,7 @@ class VentaController extends Controller
                                                 
                                         default:
                                             // delete venta
+                                            $delete_venta = DB::table('ventas')->where('id_venta', '=', $id_venta)->delete();
                                             return response()->json(['success' => false, 'nota'=> '']);
                                             break;
                                     }
@@ -1853,6 +1886,7 @@ class VentaController extends Controller
                                                             $update_2 = DB::table('detalle_asignacion_estampillas')->where('correlativo','=',$c7->correlativo)->update(['condicion' => 3]);
                                                         }else{
                                                             // delete venta
+                                                            $delete_venta = DB::table('ventas')->where('id_venta', '=', $id_venta)->delete();
                                                             return response()->json(['success' => false, 'nota'=> '']);
                                                         }
                                                     }else{
@@ -1875,6 +1909,7 @@ class VentaController extends Controller
                                                         $update_3 = DB::table('detalle_asignacion_estampillas')->where('correlativo','=',$c8->correlativo)->update(['condicion' => 3]);
                                                     }else{
                                                         // delete venta
+                                                        $delete_venta = DB::table('ventas')->where('id_venta', '=', $id_venta)->delete();
                                                         return response()->json(['success' => false, 'nota'=> 'No hay timbres disponibles de ']);
                                                     }
                                                 }
@@ -1904,7 +1939,7 @@ class VentaController extends Controller
                                                                             <!-- DATOS -->
                                                                             <div class="w-50">
                                                                                 <div class="text-danger fw-bold fs-4" id="">'.$formato_nro.'<span class="text-muted ms-2">Estampilla</span></div> 
-                                                                                <table class="table table-borderless table-sm">
+                                                                                <table class="table table-borderless table-sm lh-1 text_12">
                                                                                     <tr>
                                                                                         <th>Ente:</th>
                                                                                         <td>'.$consulta_tramite->ente.'</td>
@@ -1912,6 +1947,10 @@ class VentaController extends Controller
                                                                                     <tr>
                                                                                         <th>Tramite:</th>
                                                                                         <td>'.$consulta_tramite->tramite.'</td>
+                                                                                    </tr>
+                                                                                    <tr>
+                                                                                        <th>Serial:</th>
+                                                                                        <td>'.$serial.'</td>
                                                                                     </tr>
                                                                                 </table>
                                                                             </div>
@@ -1932,6 +1971,7 @@ class VentaController extends Controller
                                                     $update_vendido = DB::table('detalle_asignacion_estampillas')->where('correlativo','=',$key_detalle_asignacion)->update(['vendido' => $new_vendido]);
                                                 }else{
                                                     // delete venta
+                                                    $delete_venta = DB::table('ventas')->where('id_venta', '=', $id_venta)->delete();
                                                     return response()->json(['success' => false]);
                                                 }
                                             }
@@ -1940,6 +1980,7 @@ class VentaController extends Controller
                                         }
                                     }else{
                                         //// eliminar venta
+                                        $delete_venta = DB::table('ventas')->where('id_venta', '=', $id_venta)->delete();
                                         return response()->json(['success' => false]);
                                     }
     
@@ -2033,7 +2074,7 @@ class VentaController extends Controller
                                                 <div class="text-muted">G-20008920-2</div>
                                             </div>
 
-                                            <table class="table table-sm my-3">
+                                            <table class="table table-sm my-3 text_12">
                                                 <tr>
                                                     <th>Forma</th>
                                                     <th>Cant.</th>
@@ -2043,7 +2084,7 @@ class VentaController extends Controller
                                             </table>
 
                                             <div class="d-flex justify-content-center">
-                                                <table class="table table-sm w-50">
+                                                <table class="table table-sm w-50 text_12">
                                                     <tr>
                                                         <th>Total UCD</th>
                                                         <td>'.$total_ucd.'</td>
@@ -2059,7 +2100,7 @@ class VentaController extends Controller
                                                 </table>
                                             </div>
 
-                                            <table class="table table-sm">
+                                            <table class="table table-sm text_12">
                                                 '.$tr_detalle_debito.'
                                             </table>
 
