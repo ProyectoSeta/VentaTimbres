@@ -27,16 +27,15 @@
             <div class="bg_arqueo" style="background-image: url({{asset('assets/fondo2.png')}});">
                 <div class="row d-flex align-items-center text-center">
                     <div class="col-md-6">
-                        <h5 class="fw-semibold ">Punto</h5>
-                        <h4 class="">@php echo(number_format($arqueo->punto, 2, ',', '.')) @endphp Bs.</h4>
+                        <h5 class="fw-bold fs-3">Punto</h5>
+                        <h4 class="fw-semibold">@php echo(number_format($arqueo->punto, 2, ',', '.')) @endphp Bs.</h4>
+                        <a href="#" data-bs-toggle="modal" data-bs-target="#modal_cierre_punto">Cierre de Punto</a>
                     </div>
-                    {{-- <div class="col-md-4">
-                        <canvas id="pct_venta"></canvas>
-                    </div> --}}
+                    
                     <div class="col-md-6">
                         <div class="">
-                            <h5 class="">Efectivo</h5>
-                            <h4 class="">@php echo(number_format($arqueo->efectivo, 2, ',', '.')) @endphp Bs.</h4>
+                            <h5 class="fw-bold fs-3">Efectivo</h5>
+                            <h4 class="fw-semibold">@php echo(number_format($arqueo->efectivo, 2, ',', '.')) @endphp Bs.</h4>
                         </div>
                         <div class="">
                             <table class="table table-sm table-borderless lh-1 pb-0 mb-0">
@@ -50,7 +49,7 @@
                                 </tr>
                             </table>
                             @if ($fondo_caja != 0 || $fondo_caja != NULL)
-                                <span class="text-end" style="font-size:12.7px">+@php echo(number_format($fondo_caja, 2, ',', '.')) @endphp Bs. por Fondo de Caja.</span>
+                                <span class="text-end fw-bold"  style="font-size:13.4px"><span class="text-danger">IMPORTANTE: </span>- @php echo(number_format($fondo_caja, 2, ',', '.')) @endphp Bs. por Fondo de Caja.</span>
                             @endif
                         </div>
                     </div>
@@ -67,7 +66,7 @@
                         <div class="d-flex flex-column">
                             <div class="fs-4 fw-semibold text-secondary">@php echo(number_format($arqueo->recaudado_tfe, 2, ',', '.')) @endphp Bs.</div>  
                             <span class="text-muted">{{$arqueo->cantidad_tfe}} Unidades</span>
-                            <a href="">Ver detalles</a>
+                            <a href="#" class="detalle_forma" data-bs-toggle="modal" data-bs-target="#modal_detalle_formas" forma="3">Ver detalles</a>
                         </div>
                     </div>
                 </div>
@@ -79,7 +78,7 @@
                         <div class="d-flex flex-column">
                             <div class="fs-4 fw-semibold text-secondary">@php echo(number_format($arqueo->recaudado_est, 2, ',', '.')) @endphp Bs.</div>  
                             <span class="text-muted">{{$arqueo->cantidad_est}} Unidades</span>
-                            <a href="">Ver detalles</a>
+                            <a href="#" class="detalle_forma" data-bs-toggle="modal" data-bs-target="#modal_detalle_formas" forma="4">Ver detalles</a>
                         </div>
                     </div>
                 </div>
@@ -156,7 +155,7 @@
 
     <!-- DETALLE TIMBRES -->
     <div class="modal fade" id="modal_timbres" tabindex="-1" aria-hidden="true">
-        <div class="modal-dialog modal-lg">
+        <div class="modal-dialog modal-l">
             <div class="modal-content" id="content_timbres">
                 <div class="my-5 py-5 d-flex flex-column text-center">
                     <i class='bx bx-loader-alt bx-spin fs-1 mb-3' style='color:#0077e2'  ></i>
@@ -170,6 +169,50 @@
     <div class="modal fade" id="modal_detalle_venta" tabindex="-1" aria-hidden="true">
         <div class="modal-dialog modal-lg">
             <div class="modal-content" id="content_detalle_venta">
+                
+            </div>  <!-- cierra modal-content -->
+        </div>  <!-- cierra modal-dialog -->
+    </div>
+
+    <!-- DETALLE FORMAS -->
+    <div class="modal fade" id="modal_detalle_formas" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content" id="content_detalle_formas">
+                
+            </div>  <!-- cierra modal-content -->
+        </div>  <!-- cierra modal-dialog -->
+    </div>
+
+    <!-- CIERRE PUNTO -->
+    <div class="modal fade" id="modal_cierre_punto" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal">
+            <div class="modal-content" id="content_cierre_punto">
+                <div class="modal-header p-2 pt-3 d-flex justify-content-center">
+                    <div class="text-center">
+                        <i class='bx bx-error-circle fs-2 text-danger me-2'></i>
+                        <h1 class="modal-title fs-5 fw-bold text-navy">Cierre de Punto</h1>
+                    </div>
+                </div>
+                <div class="modal-body px-4" style="font-size:13px">
+                    <div class="table-responsive">
+                        <table class="table table-sm">
+                            <thead>
+                                <tr>
+                                    <th>Hora (Aprox.)</th>
+                                    <th>Referencia</th>
+                                    <th>Monto</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td></td>
+                                    <td></td>
+                                    <td></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
                 
             </div>  <!-- cierra modal-content -->
         </div>  <!-- cierra modal-dialog -->
@@ -220,7 +263,6 @@
                     }
                 }
             );
-
         });
     </script>
 
@@ -287,6 +329,43 @@
                     }
                 });
             });
+
+            /////////////////////// MODAL DETALLE FORMA class="detalle_forma"
+            $(document).on('click','.detalle_forma', function(e) {
+                e.preventDefault();
+                var forma = $(this).attr('forma');
+
+                $.ajax({
+                    headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') },
+                    type: 'POST',
+                    url: '{{route("arqueo.detalle_forma") }}',
+                    data: {forma:forma},
+                    success: function(response) {
+                        console.log(response);
+                        $('#content_detalle_formas').html(response);
+                        $('#table_detalle_forma').DataTable(
+                            {
+                                // "order": [[ 0, "desc" ]],
+                                "language": {
+                                    "lengthMenu": " Mostrar  _MENU_  Registros por página",
+                                    "zeroRecords": "No se encontraron registros",
+                                    "info": "Mostrando página _PAGE_ de _PAGES_",
+                                    "infoEmpty": "No se encuentran Registros",
+                                    "infoFiltered": "(filtered from _MAX_ total records)",
+                                    'search':"Buscar",
+                                    'paginate':{
+                                        'next':'Siguiente',
+                                        'previous':'Anterior'
+                                    }
+                                }
+                            }
+                        );
+                    },
+                    error: function() {
+                    }
+                });
+            });
+
         });
     </script>
   

@@ -260,7 +260,7 @@ class VentaController extends Controller
             $folios = $request->post('folios');
 
             $total_ucd = '';
-            $options = 'option value="Seleccione">Seleccione</option>';
+            $options = '<option value="Seleccione">Seleccione</option>';
 
             // PRECIO TRAMITE
             $query = DB::table('tramites')->where('id_tramite','=', $tramite)->first();
@@ -294,10 +294,10 @@ class VentaController extends Controller
                                         <div class="fw-bold bg-secondary-subtle text-center rounded-3 px-2 mb-1">'.$q1->two_ucd.' <span class="">Und.</span></div>
                                     </div>
                                 </div>
-                                <div class="mb-2 border border-danger py-2 px-3 rounded-4">
+                                <div class="mb-2 border py-2 px-3 rounded-4">
                                     <div class="d-flex flex-column align-items-center">
                                         <div class="fs-6 titulo text-muted fw-bold">3 U.C.D.</div>
-                                        <div class="fw-bold bg-danger-subtle text-center rounded-3 px-2 mb-1">'.$q1->three_ucd.' <span class="">Und.</span></div>
+                                        <div class="fw-bold bg-secondary-subtle text-center rounded-3 px-2 mb-1">'.$q1->three_ucd.' <span class="">Und.</span></div>
                                     </div>
                                 </div>
                                 <div class="mb-2 border py-2 px-3 rounded-4">

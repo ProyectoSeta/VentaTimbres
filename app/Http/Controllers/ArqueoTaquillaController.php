@@ -215,7 +215,10 @@ class ArqueoTaquillaController extends Controller
         }
 
         $html = '<div class="modal-header">
-                    <h1 class="modal-title fs-5 fw-bold text-navy">Detalle | <span class="text-muted">Timbres</span></h1>
+                    <h1 class="modal-title fs-5 fw-bold d-flex align-items-center">
+                        <i class="bx bx-detail fs-4 me-2 text-muted"></i>
+                        <span class="text-navy">Detalle | <span class="text-muted">Timbres</span></span>
+                    </h1>
                 </div>
                 <div class="modal-body px-4 py-3" style="font-size:13px">
                     <div class="">
@@ -344,7 +347,7 @@ class ArqueoTaquillaController extends Controller
                     foreach ($c3 as $est) {
                         $est_c .= '<span>Est '.$est->denominacion.' UCD ('.$est->serial.')</span>';
                     }
-                    $div_est = '<div class="d-flex flex-column">'.$est.'</div>';
+                    $div_est = '<div class="d-flex flex-column">'.$est_c.'</div>';
 
                     if ($value->folios != NULL) {
                         $anexo = '<span class="text-muted fst-italic">+ '.$value->folios.' Folios</span>';
@@ -363,7 +366,10 @@ class ArqueoTaquillaController extends Controller
             }
 
             $html = '<div class="modal-header p-2 pt-3">
-                        <h1 class="modal-title fs-5 fw-bold text-navy">Detalle Venta</h1>
+                        <h1 class="fs-5 fw-bold d-flex align-items-center">
+                            <i class="bx bx-detail fs-4 me-2 text-muted"></i>
+                            <span class="text-navy">Detalle Venta</span>
+                        </h1>
                     </div>
                     <div class="modal-body px-4" style="font-size:12.7px">
                         <div class="d-flex flex-column align-items-center mb-4">
@@ -384,7 +390,7 @@ class ArqueoTaquillaController extends Controller
                         </div>
 
                         <h5 class="fw-bold titulo text-navy text-center">Tramites y Timbres</h5>
-                        <table class="table table-sm mb-3" style="font-size:12.7px">
+                        <table class="table table-sm text-center mb-3" style="font-size:12.7px">
                             <thead>
                                 <tr>
                                     <th>#</th>
@@ -411,15 +417,121 @@ class ArqueoTaquillaController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, string $id)
+    public function detalle_forma(Request $request)
     {
-        //
+        $hoy = date('Y-m-d');
+        $forma = $request->post('forma');
+
+        $modal_header = "";
+        $tr = "";
+        $thead = '';
+        $length = 6;
+
+        $user = auth()->id();
+        $query = DB::table('users')->select('key_sujeto')->where('id','=',$user)->first();
+        $q2 = DB::table('taquillas')->select('id_taquilla')->where('key_funcionario','=',$query->key_sujeto)->first();
+
+        $id_taquilla = $q2->id_taquilla;
+
+        $query = DB::table('ventas')->join('contribuyentes', 'ventas.key_contribuyente', '=','contribuyentes.id_contribuyente')
+                                    ->select('ventas.id_venta','contribuyentes.identidad_condicion','contribuyentes.identidad_nro','contribuyentes.nombre_razon','contribuyentes.condicion_sujeto')
+                                    ->where('ventas.fecha','=',$hoy)->get();
+        foreach ($query as $venta) {
+            $c1 = DB::table('tipos')->select('nombre_tipo')->where('id_tipo','=',$venta->condicion_sujeto)->first();
+            if ($forma == 3) {
+                ////FORMA 14
+                $q1 = DB::table('detalle_venta_tfes')->select('nro_timbre','serial')->where('key_venta','=',$venta->id_venta)->get();
+                foreach ($q1 as $key) {
+                    $formato_nro = substr(str_repeat(0, $length).$key->nro_timbre, - $length);
+                    $tr .=   '<tr>
+                                <td><span class="text-danger fw-bold fs-6">A-'.$formato_nro.'</span></td>
+                                <td><span class="text-navy fw-semibold fw-6">'.$key->serial.'</span></td>
+                                <td class="text-muted">'.$venta->id_venta.'</td>
+                                <td>
+                                    '.$venta->nombre_razon.'<span class="badge bg-secondary-subtle text-secondary-emphasis ms-2">'.$c1->nombre_tipo.'</span><br>
+                                    <span class="text-muted">'.$venta->identidad_condicion.'-'.$venta->identidad_nro.'</span>
+    
+                                </td>
+                            </tr>';
+                }
+            }else{
+                ////ESTAMPILLAS
+                $q1 = DB::table('detalle_venta_estampillas')->select('key_denominacion','nro_timbre','serial')->where('key_venta','=',$venta->id_venta)->get();
+                foreach ($q1 as $key) {
+                    $c2 = DB::table('ucd_denominacions')->select('denominacion')->where('id','=',$key->key_denominacion)->first();
+                    $formato_nro = substr(str_repeat(0, $length).$key->nro_timbre, - $length);
+                    $tr .=   '<tr>
+                                <td><span class="text-danger fw-bold fs-6">'.$formato_nro.'</span></td>
+                                <td><span class="text-navy fw-semibold fw-6">'.$key->serial.'</span></td>
+                                <td class="text-muted">'.$venta->id_venta.'</td>
+                                <td class="">'.$c2->denominacion.' UCD</td>
+                                <td>
+                                    '.$venta->nombre_razon.'<span class="badge bg-secondary-subtle text-secondary-emphasis ms-2">'.$c1->nombre_tipo.'</span><br>
+                                    <span class="text-muted">'.$venta->identidad_condicion.'-'.$venta->identidad_nro.'</span>
+    
+                                </td>
+                            </tr>';
+                }
+            }
+            
+        }
+
+        ////MODAL HEADER
+        if ($forma == 3) {
+            $modal_header = '<div class="modal-header p-2 pt-3 d-flex justify-content-center">
+                                <div class="text-center">
+                                    <i class="bx bx-receipt fs-2 text-muted me-2"></i>
+                                    <h1 class="modal-title fs-5 fw-bold text-navy">Detalle | TFE-14 vendidos</h1>
+                                </div>
+                            </div>';
+            $thead = '<thead>
+                        <tr>
+                            <th>No. Timbre</th>
+                            <th>Serial</th>
+                            <th>Id. Venta</th>
+                            <th>Contribuyente</th>
+                        </tr>
+                    </thead>';
+        }else{
+            $modal_header = '<div class="modal-header p-2 pt-3 d-flex justify-content-center">
+                                <div class="text-center">
+                                    <i class="bx bx-receipt fs-2 text-muted me-2"></i>
+                                    <h1 class="modal-title fs-5 fw-bold text-navy">Detalle | Estampillas vendidas</h1>
+                                </div>
+                            </div>';
+            $thead = '<thead>
+                        <tr>
+                            <th>No. Timbre</th>
+                            <th>Serial</th>
+                            <th>Id. Venta</th>
+                            <th>Denominación</th>
+                            <th>Contribuyente</th>
+                        </tr>
+                    </thead>';
+        }
+
+        $html = ''.$modal_header.'
+                <div class="modal-body px-4" style="font-size:13px">
+                    <div class="table-responsive" style="font-size:12.7px">
+                        <table class="table table-sm text-center" id="table_detalle_forma">
+                            '.$thead.'
+                            <tbody>
+                                '.$tr.'
+                            </tbody>
+                        </table>
+                    </div>
+                </div>';
+
+        return response($html);
+        
+
+
     }
 
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(string $id)
+    public function cierre_punto()
     {
         //
     }

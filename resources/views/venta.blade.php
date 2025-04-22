@@ -781,6 +781,7 @@
                                         '<div class="row">'+
                                             '<div class="col-5">'+
                                                 '<select class="form-select form-select-sm ucd_est" aria-label="Small select example"id="ucd_est_'+h+'" nro="'+h+'"  name="detalle['+h+'][ucd]" required>'+
+                                                    '<option value="Seleccione">Seleccione</option>'+
                                                     '<option value="1">1 UCD</option>'+
                                                     '<option value="2">2 UCD</option>'+
                                                     '<option value="3">3 UCD</option>'+

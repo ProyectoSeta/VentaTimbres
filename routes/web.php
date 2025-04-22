@@ -216,6 +216,8 @@ Route::get('/arqueo', [App\Http\Controllers\ArqueoTaquillaController::class, 'in
 Route::post('/arqueo/contribuyente', [App\Http\Controllers\ArqueoTaquillaController::class, 'contribuyente'])->name('arqueo.contribuyente');
 Route::post('/arqueo/timbres', [App\Http\Controllers\ArqueoTaquillaController::class, 'timbres'])->name('arqueo.timbres');
 Route::post('/arqueo/detalle_venta', [App\Http\Controllers\ArqueoTaquillaController::class, 'detalle_venta'])->name('arqueo.detalle_venta');
+Route::post('/arqueo/detalle_forma', [App\Http\Controllers\ArqueoTaquillaController::class, 'detalle_forma'])->name('arqueo.detalle_forma');
+Route::post('/arqueo/cierre_punto', [App\Http\Controllers\ArqueoTaquillaController::class, 'cierre_punto'])->name('arqueo.cierre_punto');
 
 
 ///////////////////// REPORTE ANUAL
