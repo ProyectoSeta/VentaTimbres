@@ -159,6 +159,7 @@ class ArqueoTaquillaController extends Controller
                             </div>
                         </div>';
                 }else{
+                    $formato_bs =  number_format($key->bs, 2, ',', '.');
                     $timbres .= '<div class="border mb-4 rounded-3">
                             <div class="d-flex justify-content-between px-3 py-2 align-items-center">
                                 <!-- DATOS -->
@@ -177,7 +178,7 @@ class ArqueoTaquillaController extends Controller
                                 </div>
                                 <!-- UCD -->
                                 <div class="">
-                                    <div class="text-center titulo fw-bold fs-3">'.$key->bs.' Bs.</div>
+                                    <div class="text-center titulo fw-bold fs-3">'.$formato_bs.' Bs.</div>
                                 </div>
                             </div>
                         </div>';
@@ -394,7 +395,7 @@ class ArqueoTaquillaController extends Controller
                             <thead>
                                 <tr>
                                     <th>#</th>
-                                    <th>Tramite</th>
+                                    <th width="45%">Tramite</th>
                                     <th>Anexo</th>
                                     <th>UCD|Bs.</th>
                                     <th>Forma</th>
@@ -533,6 +534,50 @@ class ArqueoTaquillaController extends Controller
      */
     public function cierre_punto()
     {
-        //
+        $user = auth()->id();
+        $query = DB::table('users')->select('key_sujeto')->where('id','=',$user)->first();
+        $q2 = DB::table('taquillas')->select('id_taquilla')->where('key_funcionario','=',$query->key_sujeto)->first();
+
+        $id_taquilla = $q2->id_taquilla;
+        $hoy = date('Y-m-d');
+        $tr = '';
+
+        $q1 = DB::table('ventas')->select('id_venta','hora')->where('key_taquilla','=',$id_taquilla)->where('fecha','=',$hoy)->get();
+        foreach ($q1 as $value) {
+            $con = DB::table('pago_ventas')->where('key_venta','=',$value->id_venta)->where('metodo','=',5)->get();
+            foreach ($con as $key) {
+                $formato = number_format($key->monto, 2, ',', '.');
+                $tr .= '<tr>
+                            <td>'.$value->hora.'</td>
+                            <td>'.$key->comprobante.'</td>
+                            <td>'.$formato.'</td>
+                        </tr>';
+            }
+        }
+
+        $html = '<div class="modal-header p-2 pt-3 d-flex justify-content-center">
+                    <div class="text-center">
+                        <i class="bx bx-error-circle fs-2 text-danger me-2"></i>
+                        <h1 class="modal-title fs-5 fw-bold text-navy">Cierre de Punto</h1>
+                    </div>
+                </div>
+                <div class="modal-body px-4" style="font-size:13px">
+                    <div class="table-responsive">
+                        <table class="table table-sm">
+                            <thead>
+                                <tr>
+                                    <th>Hora (Aprox.)</th>
+                                    <th>Referencia</th>
+                                    <th>Monto</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                '.$tr.'
+                            </tbody>
+                        </table>
+                    </div>
+                </div>';
+
+        return response($html);
     }
 }

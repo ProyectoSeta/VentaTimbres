@@ -29,7 +29,7 @@
                     <div class="col-md-6">
                         <h5 class="fw-bold fs-3">Punto</h5>
                         <h4 class="fw-semibold">@php echo(number_format($arqueo->punto, 2, ',', '.')) @endphp Bs.</h4>
-                        <a href="#" data-bs-toggle="modal" data-bs-target="#modal_cierre_punto">Cierre de Punto</a>
+                        <a href="#" data-bs-toggle="modal" data-bs-target="#modal_cierre_punto" id="cierre_punto">Cierre de Punto</a>
                     </div>
                     
                     <div class="col-md-6">
@@ -187,33 +187,7 @@
     <div class="modal fade" id="modal_cierre_punto" tabindex="-1" aria-hidden="true">
         <div class="modal-dialog modal">
             <div class="modal-content" id="content_cierre_punto">
-                <div class="modal-header p-2 pt-3 d-flex justify-content-center">
-                    <div class="text-center">
-                        <i class='bx bx-error-circle fs-2 text-danger me-2'></i>
-                        <h1 class="modal-title fs-5 fw-bold text-navy">Cierre de Punto</h1>
-                    </div>
-                </div>
-                <div class="modal-body px-4" style="font-size:13px">
-                    <div class="table-responsive">
-                        <table class="table table-sm">
-                            <thead>
-                                <tr>
-                                    <th>Hora (Aprox.)</th>
-                                    <th>Referencia</th>
-                                    <th>Monto</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <tr>
-                                    <td></td>
-                                    <td></td>
-                                    <td></td>
-                                </tr>
-                            </tbody>
-                        </table>
-                    </div>
-                </div>
-                
+                                
             </div>  <!-- cierra modal-content -->
         </div>  <!-- cierra modal-dialog -->
     </div>
@@ -360,6 +334,23 @@
                                 }
                             }
                         );
+                    },
+                    error: function() {
+                    }
+                });
+            });
+
+            /////////////////////// CIERRE PUNTO
+            $(document).on('click','#cierre_punto', function(e) {
+                e.preventDefault();
+
+                $.ajax({
+                    headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') },
+                    type: 'POST',
+                    url: '{{route("arqueo.cierre_punto") }}',
+                    success: function(response) {
+                        console.log(response);
+                        $('#content_cierre_punto').html(response);
                     },
                     error: function() {
                     }

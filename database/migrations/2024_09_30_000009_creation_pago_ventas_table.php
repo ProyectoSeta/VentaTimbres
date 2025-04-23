@@ -23,6 +23,7 @@ return new class extends Migration
             $table->integer('comprobante')->nullable(); 
             $table->decimal('monto');
 
+            $table->datetime('fecha');
 
         });
     }

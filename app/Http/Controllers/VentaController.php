@@ -250,7 +250,7 @@ class VentaController extends Controller
     {
         $user = auth()->id();
         $query = DB::table('users')->select('key_sujeto')->where('id','=',$user)->first();
-        $q2 = DB::table('taquillas')->select('id_taquilla','clave')->where('key_funcionario','=',$query->key_sujeto)->first();
+        $q2 = DB::table('taquillas')->select('id_taquilla')->where('key_funcionario','=',$query->key_sujeto)->first();
         if ($q2){
             $id_taquilla = $q2->id_taquilla;
 
@@ -384,7 +384,7 @@ class VentaController extends Controller
     public function est_detalle(Request $request)
     {
         $id_taquilla = $request->post('taquilla');
-        $detalle = $request->post('detalle');
+        $detalle = $request->post('detalle'); 
         $tramite = $request->post('tramite');
         $condicion_sujeto = $request->post('condicion_sujeto');
         $nro = $request->post('nro');
@@ -413,6 +413,9 @@ class VentaController extends Controller
         foreach ($detalle as $key) {
             $ucd = $key['ucd'];
             $cant = $key['cantidad'];
+            if ($ucd == 4) {
+                $ucd = 5;
+            }
 
             $total_ucd_detalle = $total_ucd_detalle + ($ucd * $cant);
         }
@@ -693,6 +696,53 @@ class VentaController extends Controller
         $ucd = $request->post('ucd');
         $bs = $request->post('bs');
 
+        //////////////////////////////////// RESTAR NUMERO DE ESTAMPILLAS (SI LO AMERITA)
+        $user = auth()->id();
+        $q_u = DB::table('users')->select('key_sujeto')->where('id','=',$user)->first();
+        $q2 = DB::table('taquillas')->select('id_taquilla')->where('key_funcionario','=',$q_u->key_sujeto)->first();
+        $id_taquilla = $q2->id_taquilla;
+        $detalle_est = unserialize(base64_decode($tramite['detalle_est']));
+        
+
+        if ($detalle_est != null) {
+            foreach ($detalle_est as $detalle) {
+                switch ($detalle['ucd']) {
+                    case 1:
+                        $con1 = DB::table('inv_est_taq_temps')->select('one_ucd')->where('key_taquilla','=',$id_taquilla)->first();
+                        $cant_inv = $con1->one_ucd;
+
+                        $cant_new = $cant_inv + $detalle['cantidad'];
+                        $upt_1 = DB::table('inv_est_taq_temps')->where('key_taquilla','=',$id_taquilla)->update(['one_ucd' => $cant_new]);
+                        break;
+                    case 2:
+                        $con1 = DB::table('inv_est_taq_temps')->select('two_ucd')->where('key_taquilla','=',$id_taquilla)->first();
+                        $cant_inv = $con1->two_ucd;
+
+                        $cant_new = $cant_inv + $detalle['cantidad'];
+                        $upt_1 = DB::table('inv_est_taq_temps')->where('key_taquilla','=',$id_taquilla)->update(['two_ucd' => $cant_new]);
+                        break;
+                    case 3:
+                        $con1 = DB::table('inv_est_taq_temps')->select('three_ucd')->where('key_taquilla','=',$id_taquilla)->first();
+                        $cant_inv = $con1->three_ucd;
+
+                        $cant_new = $cant_inv + $detalle['cantidad'];
+                        $upt_1 = DB::table('inv_est_taq_temps')->where('key_taquilla','=',$id_taquilla)->update(['three_ucd' => $cant_new]);
+                        break;
+                    case 4:
+                        $con1 = DB::table('inv_est_taq_temps')->select('five_ucd')->where('key_taquilla','=',$id_taquilla)->first();
+                        $cant_inv = $con1->five_ucd;
+
+                        $cant_new = $cant_inv + $detalle['cantidad'];
+                        $upt_1 = DB::table('inv_est_taq_temps')->where('key_taquilla','=',$id_taquilla)->update(['five_ucd' => $cant_new]);
+                        break;
+                    
+                    default:
+                        # code...
+                        break;
+                }
+            }
+        }
+
         //////////////////////////////////// CALCULAR TOTALES
         $q_ucd =  DB::table('ucds')->select('valor')->orderBy('id', 'desc')->first();
         $valor_ucd = $q_ucd->valor;
@@ -721,8 +771,6 @@ class VentaController extends Controller
                     if ($folios != 0 || $folios != '' || $folios != null) {
                         $q1 = DB::table('tramites')->select('natural')->where('tramite','=', 'Folio')->first();
                         $total_ucd = $total_ucd + ($folios * $q1->natural);
-                    }else{
-                       
                     }
                 }
 
@@ -1218,6 +1266,7 @@ class VentaController extends Controller
                         $valor_ucd = $q3->valor;
 
                     ///////////////////////////////////// VALIDACIÓN  CAMPOS
+                        $nro_tfe14 = 0;
                         foreach ($tramites as $t) {
                             $tramite = unserialize(base64_decode($t));
                             
@@ -1231,10 +1280,20 @@ class VentaController extends Controller
                             if ($key_tramite == 'Seleccione' || $key_tramite == '') {
                                 return response()->json(['success' => false, 'nota'=> 'Disculpe, debe seleccionar el Tramite.']);
                             }
+
+                            /////conteo TFE-14
+                            if ($forma == 3) {
+                                $nro_tfe14++;
+                            }
                             
                         }
+                    
 
-                
+                    ////////////////////////////////////VERIFICAR CANTIDAD DE TFE (INVENTARIO CONTRA VENTA)
+                        $con_inv_tfe =  DB::table('inv_tfe_taq_temps')->select('cantidad')->where('key_taquilla', '=',$id_taquilla)->first();
+                        if ($nro_tfe14 > $con_inv_tfe->cantidad) {
+                            return response()->json(['success' => false, 'nota'=> 'No hay suficientes timbres TFE-14 en el inventario de la taquilla. Por favor, comuniquese con el coordinador.']);
+                        }
 
 
                     ///////////////////////////////////// INSERT DETALLE Y SUMA TOTAL 
@@ -1570,6 +1629,8 @@ class VentaController extends Controller
                                                 if ($i3){
                                                     $cant_tfe = $cant_tfe + 1;
                                                     $cant_ucd_tfe = $cant_ucd_tfe;
+
+                                                    $formato_total_bs_capital =  number_format($total_bs_capital, 2, ',', '.');
     
                                                     $row_timbres .= '<div class="border mb-4 rounded-3">
                                                                         <div class="d-flex justify-content-between px-3 py-2 align-items-center">
@@ -1593,7 +1654,7 @@ class VentaController extends Controller
                                                                             </div>
                                                                             <!-- UCD -->
                                                                             <div class="">
-                                                                                <div class="text-center titulo fw-bold fs-3">'.$total_bs_capital.' Bs.</div>
+                                                                                <div class="text-center titulo fw-bold fs-3">'.$formato_total_bs_capital.' Bs.</div>
                                                                             </div>
                                                                             <!-- QR -->
                                                                             <div class="text-center">

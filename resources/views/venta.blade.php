@@ -234,7 +234,7 @@
                                 <thead>
                                     <tr class="table-dark">
                                         <th>#</th>
-                                        <th>Tramite</th>
+                                        <th width="45%">Tramite</th>
                                         <th>Anexo</th>
                                         <th>UCD | Bs.</th>
                                         <th>Forma</th>
