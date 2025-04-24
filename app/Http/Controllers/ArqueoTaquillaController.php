@@ -548,7 +548,7 @@ class ArqueoTaquillaController extends Controller
             foreach ($con as $key) {
                 $formato = number_format($key->monto, 2, ',', '.');
                 $tr .= '<tr>
-                            <td>'.$value->hora.'</td>
+                            <td>'.date("h:i A",strtotime($value->hora)).'</td>
                             <td>'.$key->comprobante.'</td>
                             <td>'.$formato.'</td>
                         </tr>';
@@ -562,8 +562,8 @@ class ArqueoTaquillaController extends Controller
                     </div>
                 </div>
                 <div class="modal-body px-4" style="font-size:13px">
-                    <div class="table-responsive">
-                        <table class="table table-sm">
+                    <div class="table-responsive py-2"style="font-size:12.7px">
+                        <table class="table table-sm text-center" id="table_cierre_punto">
                             <thead>
                                 <tr>
                                     <th>Hora (Aprox.)</th>

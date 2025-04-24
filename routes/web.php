@@ -219,6 +219,11 @@ Route::post('/arqueo/detalle_venta', [App\Http\Controllers\ArqueoTaquillaControl
 Route::post('/arqueo/detalle_forma', [App\Http\Controllers\ArqueoTaquillaController::class, 'detalle_forma'])->name('arqueo.detalle_forma');
 Route::post('/arqueo/cierre_punto', [App\Http\Controllers\ArqueoTaquillaController::class, 'cierre_punto'])->name('arqueo.cierre_punto');
 
+///////////////////// CIERRE
+Route::get('/cierre', [App\Http\Controllers\CierreController::class, 'index'])->name('cierre');
+Route::post('/cierre/comprobar', [App\Http\Controllers\CierreController::class, 'comprobar'])->name('cierre.comprobar');
+Route::post('/cierre/registro_cierre', [App\Http\Controllers\CierreController::class, 'registro_cierre'])->name('cierre.registro_cierre');
+
 
 ///////////////////// REPORTE ANUAL
 Route::get('/reporte_anual', [App\Http\Controllers\ReporteAnualController::class, 'index'])->name('reporte_anual');

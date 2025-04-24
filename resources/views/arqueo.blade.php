@@ -185,7 +185,7 @@
 
     <!-- CIERRE PUNTO -->
     <div class="modal fade" id="modal_cierre_punto" tabindex="-1" aria-hidden="true">
-        <div class="modal-dialog modal">
+        <div class="modal-dialog">
             <div class="modal-content" id="content_cierre_punto">
                                 
             </div>  <!-- cierra modal-content -->
@@ -351,6 +351,23 @@
                     success: function(response) {
                         console.log(response);
                         $('#content_cierre_punto').html(response);
+                        $('#table_cierre_punto').DataTable(
+                            {
+                                // "order": [[ 0, "desc" ]],
+                                "language": {
+                                    "lengthMenu": " Mostrar  _MENU_  Registros por página",
+                                    "zeroRecords": "No se encontraron registros",
+                                    "info": "Mostrando página _PAGE_ de _PAGES_",
+                                    "infoEmpty": "No se encuentran Registros",
+                                    "infoFiltered": "(filtered from _MAX_ total records)",
+                                    'search':"Buscar",
+                                    'paginate':{
+                                        'next':'Siguiente',
+                                        'previous':'Anterior'
+                                    }
+                                }
+                            }
+                        );
                     },
                     error: function() {
                     }

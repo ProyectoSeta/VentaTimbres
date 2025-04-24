@@ -418,16 +418,22 @@ return [
         
         ['header' => 'Taquillas'],
         [
+            'text'        => 'Aperturar',
+            'route'         => 'apertura',
+            'icon'       => 'fas fa-angle-right pe-2',  
+        ],
+        [
+            'text'        => 'Cierre',
+            'route'         => 'cierre',
+            'icon'       => 'fas fa-angle-right pe-2',  
+        ],
+        [
             'text'        => 'Inventario',
             'route'         => 'inventario_taquillas',
             'icon'       => 'fas fa-angle-right pe-2',  
         ],
-        ['header' => 'Apertura'],
-        [
-            'text'        => 'Taquillas',
-            'route'         => 'apertura',
-            'icon'       => 'fas fa-angle-right pe-2',  
-        ],
+
+        
         ['header' => 'Sedes | Taquillas '],
         [
             'text'        => 'Agregar y/o Modificar',
