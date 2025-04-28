@@ -32,6 +32,7 @@ class DatabaseSeeder extends Seeder
         $this->call(ActividadesEconomicasSeeder::class);
         $this->call(EfectivoTaquillasSeeder::class);
         $this->call(ProveedorSeeder::class);
+        $this->call(AjustesSeeder::class);
 
         
         // \App\Models\User::factory(10)->create();

@@ -100,5 +100,11 @@ class ClasificacionSeeder extends Seeder
         DB::table('clasificacions')->insert([
             'nombre_clf' => 'Solvente',
         ]);
+
+
+        // CLASIFICACIÓN CONFIGURACIONES
+        DB::table('clasificacions')->insert([
+            'nombre_clf' => 'emision_tfe14',
+        ]);
     }
 }

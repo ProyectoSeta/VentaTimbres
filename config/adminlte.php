@@ -441,6 +441,14 @@ return [
             'icon'       => 'fas fa-angle-right pe-2',  
         ],
 
+        ['header' => 'Configuraciones'],
+        [
+            'text'        => 'Ajustes',
+            'route'         => 'ajustes',
+            'icon'       => 'fas fa-angle-right pe-2',  
+        ],
+
+
 
 
 
