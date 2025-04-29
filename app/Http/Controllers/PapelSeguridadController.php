@@ -98,10 +98,12 @@ class PapelSeguridadController extends Controller
             $desde = $query->hasta + 1;
         }else{
             /////primer lote a emitir
-            $desde = 1;
+            //////consultar cual es el inicio de correlativo
+            $con_inicio = DB::table('configuraciones')->select("valor")->where('correlativo','=',3)->first(); //// 3 => inicio correlativo
+            $desde = $con_inicio->valor;
         }
 
-        $c1 =  DB::table('variables')->select('valor')->where('variable','=','cant_por_emision_tfes')->first();
+        $c1 =  DB::table('configuraciones')->select('valor')->where('correlativo','=',2)->first(); //// 2 => cant. timbres tfe14 por lote 
         $cant_timbres_lote = $c1->valor;
         $hasta = ($desde + $cant_timbres_lote) - 1;
 
@@ -118,12 +120,12 @@ class PapelSeguridadController extends Controller
                     </div>
                 </div> 
                 <div class="modal-body px-5 py-3" style="font-size:13px">
-                    <p class="text-justify">*NOTA: Sí el total de Timbres Fiscales a emitir es diferente al esperado o se ha cambiado la cantidad de timbres a producirse por emisión, ingrese al módulo Configuraciones (Papel de Seguridad) para cambiar el número total de Timbres Fiscales por emisión.  
+                    <p class="text-justify">*NOTA: Sí el total de Timbres Fiscales a emitir es diferente al esperado o se ha cambiado la cantidad de timbres a producirse por emisión, ingrese al <span class="fw-bold">Módulo Configuraciones (Ajustes)</span> para cambiar el número total de Timbres Fiscales por emisión (Lote).  
                     </p>
                     
                     <div class="fw-bold text-center">
                         <p class="text-navy m-0">Total de Timbres a Emitir</p>
-                        <p class="fs-5 titulo fw-semibold text-muted">1000 Timbres TFE-14 | Papel de Seguridad</p>
+                        <p class="fs-5 titulo fw-semibold text-muted">'.$cant_timbres_lote.' Timbres TFE-14 | Papel de Seguridad</p>
                     </div>
                     
 
@@ -183,10 +185,12 @@ class PapelSeguridadController extends Controller
                 $desde = $query->hasta + 1;
             }else{
                 /////primer lote a emitir
-                $desde = 1;
+                //////consultar cual es el inicio de correlativo
+                $con_inicio = DB::table('configuraciones')->select("valor")->where('correlativo','=',3)->first(); //// 3 => inicio correlativo
+                $desde = $con_inicio->valor;
             }
 
-            $c1 =  DB::table('variables')->select('valor')->where('variable','=','cant_por_emision_tfes')->first();
+            $c1 =  DB::table('configuraciones')->select('valor')->where('correlativo','=',2)->first(); //// 2 => cant. timbres tfe14 por lote 
             $cant_timbres_lote = $c1->valor;
             $hasta = ($desde + $cant_timbres_lote) - 1;
             
@@ -225,7 +229,7 @@ class PapelSeguridadController extends Controller
                             </div>
                         </div>
                         <div class="modal-body px-5 py-3" style="font-size:13px">
-                            <p class="text-justify">*NOTA: El lote en emisión tiene un total de '.$cant_timbres_lote.' Trimbres Fiscales TFE-14.</p>
+                            <p class="text-justify fw-semibold">*NOTA: El lote en emisión tiene un total de '.$cant_timbres_lote.' Trimbres Fiscales TFE-14.</p>
                         
                             <div class="">
                                 <table class="table text-center">
@@ -457,7 +461,7 @@ class PapelSeguridadController extends Controller
                     </div>
                 </div> 
                 <div class="modal-body px-5 py-3" style="font-size:13px">
-                    <p class="text-justify">*NOTA: Si el total de Papel de Seguridad para Estampillas a emitir es diferente al esperado o se ha cambiado la cantidad a producirse por emisión, ingrese al módulo configuraciones (Papel de Seguridad) para cambiar el número total de Papel de Seguridad para Estampillas por emisión. 
+                    <p class="text-justify">*NOTA: Si el total de Papel de Seguridad para Estampillas a emitir es diferente al esperado o se ha cambiado la cantidad a producirse por emisión, ingrese al <span class="fw-bold">Módulo Configuraciones (Ajustes)</span> para cambiar el número total de Papel de Seguridad para Estampillas por emisión. 
                     </p>
                     
                     <div class="fw-bold text-center">

@@ -15,12 +15,12 @@
 @section('content')
     
     <div class="container rounded-4 p-3 px-0" style="background-color:#ffff;">
-        <div class="row mb-5">
+        <div class="row mb-4 align-items-cente">
             <div class="col-lg-4 pe-5">
                 <div class="text-center">
                     <h4 class="fw-bold titulo text-nay " style="color: #004cbd"><span class="text-muted">Lote | </span>TFE 14 </h4>
                 </div>
-                <div class="">
+                <div class="pt-2">
                     <div class="row">
                         <div class="col-lg -8 d-flex flex-column">
                             <div class=" fs-5 text-navy fw-bold" >Disponible en Inventario</div>
@@ -33,16 +33,22 @@
                 </div>
             </div>
             <div class="col-lg-8">
-                <div class="row gap-1 mb-5 mt-3">
+                <h4 class="fw-bold titulo text-center " style="color: #004cbd"><span class="text-muted">Inventario | </span>Estampillas </h4>
+                <div class="row row-cols-md-3">
                     @foreach ($deno as $de)
-                        <div class="col border py-2 px-3 rounded-3">
-                            <div class="row">
+                        <div class="col py-2 px-3 ">
+                            <div class="row border rounded-3">
                                 <div class="col-md-5">
-                                    <div class=" fs-5 text-navy fw-bold" >{{$de->denominacion}} U.C.D.</div>
+                                    <div class=" fs-5 text-navy fw-bold" >{{$de->denominacion}} {{$de->alicuota}}</div>
                                     <div class="text-secondary" style="font-size:13px">En Inv.</div>
                                 </div>
                                 <div class="col-md-7 d-flex align-items-center">
-                                    <div class="fs-5 fw-bold bg-dark-subtle text-center rounded-3 px-3">{{$de->total_timbres}} <span class="fs-6">Und.</span></div>
+                                    @if ($de->alicuota == 'UCD')
+                                        <div class="fs-5 fw-bold text-navy bg-primary-subtle text-center rounded-3 px-3">{{$de->total_timbres}} <span class="fs-6">Und.</span></div>
+                                    @else
+                                        <div class="fs-5 fw-bold bg-dark-subtle text-center rounded-3 px-3">{{$de->total_timbres}} <span class="fs-6">Und.</span></div>
+                                    @endif
+                                    
                                 </div>
                             </div>
                         </div>
@@ -207,10 +213,13 @@
 
                                 <p class="text-muted my-2 text-end">Taquillero designado: <span class="text-navy fw-bold" id="funcionario_forma14"> </span></p>
 
+
                                 <label for="cantidad" class="form-label">Cantidad de Timbres Fiscales TFE-14: <span style="color:red">*</span></label>
                                 <input class="form-control form-control-sm" type="number" name="cantidad" required>
-
+                                <div class="text-end text-danger" style="font-size:12px">*La cantidad a ingresar debe ser multiplo de {{$cant_timbres_rollo}} (Timbres por rollo).</div>
                                
+                                <div class="text-muted fw-semibold text-center mt-2">*Nota: La cantidad es el total individual de Timbres fiscales TFE-14 por Rollo.</div>
+
                                 <div class="d-flex justify-content-center mt-3 mb-3">
                                     <button type="button" class="btn btn-secondary btn-sm me-2" data-bs-dismiss="modal">Cancelar</button>
                                     <button type="submit" class="btn btn-success btn-sm">Asignar</button>
@@ -587,7 +596,7 @@
             async: true,
             data: formData,
             success: function(response){
-                // console.log(response);
+                console.log(response);
                 if (response.success) {
                     $('#modal_asignar_timbres').modal('hide');
                     $('#modal_asignado_estampillas').modal('show');

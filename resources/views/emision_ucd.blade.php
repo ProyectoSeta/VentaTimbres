@@ -6,10 +6,8 @@
     
     <script src="{{ asset('jss/bundle.js') }}" defer></script>
     <link href="{{asset('css/datatable.min.css') }}" rel="stylesheet">
-    <!-- <script src="{{asset('vendor/sweetalert.js') }}"></script>  -->
     <script src="{{ asset('jss/jquery-3.5.1.js') }}" ></script>
 
-    <!-- <img src="{{asset('assets/bf-1.svg')}}" class="w-100" alt="..."> -->
 @stop
 
 @section('content')
@@ -397,7 +395,7 @@
                     }else{
                         alert('Disculpe, ha ocurrido un error en la emisión. Vuelva a intentarlo.');
                     }
-                    
+                    window.location.href = "{{ route('emision_ucd')}}";
                 }
             },
             error: function(error){

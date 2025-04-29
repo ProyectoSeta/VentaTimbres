@@ -34,6 +34,8 @@ class DatabaseSeeder extends Seeder
         $this->call(ProveedorSeeder::class);
         $this->call(AjustesSeeder::class);
 
+        $this->call(InventarioUTSeeder::class);
+
         
         // \App\Models\User::factory(10)->create();
 

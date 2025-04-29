@@ -54,8 +54,18 @@ Route::get('/papel/pdf_tfes', [App\Http\Controllers\PapelSeguridadController::cl
 Route::get('/papel/pdf_estampillas', [App\Http\Controllers\PapelSeguridadController::class, 'pdf_estampillas'])->name('papel.pdf_estampillas');
 
 
+
+
+
+
 ///////////////////// INVENTARIO PAPEL DE SEGURIDAD
 Route::get('/inventario_papel', [App\Http\Controllers\InventarioPapelController::class, 'index'])->name('inventario_papel');
+
+///////////////////// INVENTARIO ESTAMPILLAS UT
+Route::get('/inventario_ut', [App\Http\Controllers\InventarioUTController::class, 'index'])->name('inventario_ut');
+
+
+
 
 
 

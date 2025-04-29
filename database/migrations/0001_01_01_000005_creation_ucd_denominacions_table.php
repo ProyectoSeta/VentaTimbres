@@ -21,7 +21,7 @@ return new class extends Migration
 
             $table->string('identificador',1)->unique();
 
-            $table->integer('alicuota')->unsigned(); ///////UCD - PORCENTAJE
+            $table->integer('alicuota')->unsigned(); ///////UCD - PORCENTAJE - METRADO - UT
             $table->foreign('alicuota')->references('id_tipo')->on('tipos')->onDelete('cascade');
         });
     }

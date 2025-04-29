@@ -129,5 +129,23 @@ class DenominacionsSedeer extends Seeder
             'alicuota' => 7,
         ]);
 
+        /// UT ESTAMPILLAS
+        DB::table('ucd_denominacions')->insert([
+            'denominacion' => '20',
+            'forma01' => 'false',
+            'forma14' => 'false',
+            'estampillas' => 'true',
+            'identificador' => 'O',
+            'alicuota' => 19,
+        ]);
+        DB::table('ucd_denominacions')->insert([
+            'denominacion' => '50',
+            'forma01' => 'false',
+            'forma14' => 'false',
+            'estampillas' => 'true',
+            'identificador' => 'P',
+            'alicuota' => 19,
+        ]);
+
     }
 }

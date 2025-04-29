@@ -82,5 +82,10 @@ class TiposSeeder extends Seeder
             'nombre_tipo' => 'Deposito',
         ]);
 
+        //////////ALICUOTAS PT.3
+        DB::table('tipos')->insert([
+            'nombre_tipo' => 'UT',
+        ]);
+
     }
 }

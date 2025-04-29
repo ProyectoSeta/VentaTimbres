@@ -60,12 +60,20 @@ class AsignarController extends Controller
 
         // DENOMINACIONES PARA ESTAMPILLAS
         $deno = [];
-        $query_3 = DB::table('ucd_denominacions')->where('estampillas', '=', 'true')->get();
+        $query_3 = DB::table('ucd_denominacions')
+                        ->join('tipos', 'ucd_denominacions.alicuota', '=','tipos.id_tipo')
+                        ->select('ucd_denominacions.*','tipos.nombre_tipo')
+                        ->where('ucd_denominacions.estampillas', '=', 'true')->get();
         foreach ($query_3 as $key) {
             $key_deno = $key->id;
 
             $total_timbres = 0;
-            $c1 = DB::table('inventario_estampillas')->select('cantidad_timbres','asignado')->where('key_denominacion', '=', $key_deno)->where('estado', '=', 1)->get();
+            if ($key->alicuota == 7) {
+                $c1 = DB::table('inventario_estampillas')->select('cantidad_timbres','asignado')->where('key_denominacion', '=', $key_deno)->where('estado', '=', 1)->get();
+            }else{
+                $c1 = DB::table('inventario_ut_estampillas')->select('cantidad_timbres','asignado')->where('key_denominacion', '=', $key_deno)->get();
+            }
+            
             foreach ($c1 as $key2) {
                 $tp = $key2->cantidad_timbres - $key2->asignado;
                 $total_timbres = $total_timbres + $tp;
@@ -73,6 +81,7 @@ class AsignarController extends Controller
 
             $array = array(
                 'denominacion' => $key->denominacion,
+                'alicuota' => $key->nombre_tipo,
                 'total_timbres' => $total_timbres
             );
 
@@ -89,8 +98,12 @@ class AsignarController extends Controller
             $total_f14 = $total_f14 + $total_prev;
         }
 
+        // NUMERO DE TIMBRES POR ROLLO
+        $con =  DB::table('configuraciones')->select('valor')->where('correlativo','=',1)->first(); //// 1 => cant. timbres tfe14 por rollo 
+        $cant_timbres_rollo = $con->valor;
+
         $sedes =  DB::table('sedes')->get();
-        return view('asignar', compact('sedes','asignado_tfe','asignado_estampillas','deno','total_f14'));
+        return view('asignar', compact('sedes','asignado_tfe','asignado_estampillas','deno','total_f14','cant_timbres_rollo'));
     }
 
     /**
@@ -162,6 +175,16 @@ class AsignarController extends Controller
                     if ($timbres_dispo < $cantidad) {
                         return response()->json(['success' => false, 'nota' => 'Disculpe, no hay suficiente Papel de seguridad en el Inventario para cubrir la Asignación.']); 
                     }
+
+                ///////////// VERIFICAR QUE CUMPLE CON UNA CANTIDAD ESPECIFICA DE ROLLOS 
+                    $con_rollo =  DB::table('configuraciones')->select('valor')->where('correlativo','=',1)->first(); //// 1 => cant. timbres tfe14 por rollo
+                    $cant_por_rollo = $con_rollo->valor;
+
+                    $operador = $cantidad % $cant_por_rollo;
+                    if ($operador != 0) {
+                        return response()->json(['success' => false, 'nota' => 'Disculpe, debe ingresar el número total de timbres, contenidos en los rollos a asignar. (La cantidad debe ser multiplo de '.$cant_por_rollo.')']); 
+                    }              
+
 
 
                 ////////////// ASIGNACIÓN
@@ -452,10 +475,31 @@ class AsignarController extends Controller
     public function denominacions(Request $request)
     {
         $option = '<option value="Seleccione">Seleccione</option>';
-        $query = DB::table('ucd_denominacions')->where('estampillas','=','true')->get();
+
+        ////comprobar si corresponse UT o UCD
+        $c1 = DB::table('inventario_ut_estampillas')->select('cantidad_timbres','asignado')->get();
+        $total_dispo = 0;
+        foreach ($c1 as $key) {
+            $total_dispo = $total_dispo + ($key->cantidad_timbres - $key->asignado);
+        }
+
+        if ($total_dispo == 0) {
+            $query = DB::table('ucd_denominacions')
+                        ->join('tipos', 'ucd_denominacions.alicuota', '=','tipos.id_tipo')
+                        ->select('ucd_denominacions.*','tipos.nombre_tipo')
+                        ->where('ucd_denominacions.estampillas','=','true')
+                        ->where('ucd_denominacions.alicuota','=',7)->get();
+        }else{
+            $query = DB::table('ucd_denominacions')
+                        ->join('tipos', 'ucd_denominacions.alicuota', '=','tipos.id_tipo')
+                        ->select('ucd_denominacions.*','tipos.nombre_tipo')
+                        ->where('ucd_denominacions.estampillas','=','true')
+                        ->where('ucd_denominacions.alicuota','=',19)->get();
+        }
+        
         foreach ($query as $denomi) {
             $value = $denomi->denominacion;
-            $option .= '<option value="'.$denomi->id.'">'.$value.' UCD</option>';
+            $option .= '<option value="'.$denomi->id.'">'.$value.' '.$denomi->nombre_tipo.'</option>';
            
         }
         return response($option);
@@ -477,10 +521,31 @@ class AsignarController extends Controller
 
 
         $option_ucd = '<option value="Seleccione">Seleccione</option>';
-        $query = DB::table('ucd_denominacions')->where('estampillas','=','true')->get();
+
+        ////comprobar si corresponse UT o UCD
+        $c1 = DB::table('inventario_ut_estampillas')->select('cantidad_timbres','asignado')->get();
+        $total_dispo = 0;
+        foreach ($c1 as $key) {
+            $total_dispo = $total_dispo + ($key->cantidad_timbres - $key->asignado);
+        }
+
+        if ($total_dispo == 0) {
+            $query = DB::table('ucd_denominacions')
+                        ->join('tipos', 'ucd_denominacions.alicuota', '=','tipos.id_tipo')
+                        ->select('ucd_denominacions.*','tipos.nombre_tipo')
+                        ->where('ucd_denominacions.estampillas','=','true')
+                        ->where('ucd_denominacions.alicuota','=',7)->get();
+        }else{
+            $query = DB::table('ucd_denominacions')
+                        ->join('tipos', 'ucd_denominacions.alicuota', '=','tipos.id_tipo')
+                        ->select('ucd_denominacions.*','tipos.nombre_tipo')
+                        ->where('ucd_denominacions.estampillas','=','true')
+                        ->where('ucd_denominacions.alicuota','=',19)->get();
+        }
+
         foreach ($query as $denomi) {
             $value = $denomi->denominacion;
-            $option_ucd .= '<option value="'.$denomi->id.'">'.$value.' UCD</option>';
+            $option_ucd .= '<option value="'.$denomi->id.'">'.$value.' '.$denomi->nombre_tipo.'</option>';
            
         }
 
@@ -565,6 +630,27 @@ class AsignarController extends Controller
                     }
                 }
             }
+        
+        ///////////////////////////////////////////////////////////// VERIFICAR TIPO DE ALICUOTA
+            ////comprobar si corresponse UT o UCD
+            $con_1 = DB::table('inventario_ut_estampillas')->select('cantidad_timbres','asignado')->get();
+            $total_dispo_ut = 0;
+            $table_inventario = '';
+            $inventario = '';
+
+            foreach ($con_1 as $key) {
+                $total_dispo_ut = $total_dispo_ut + ($key->cantidad_timbres - $key->asignado);
+            }
+
+            if ($total_dispo_ut == 0) {
+                // UCD
+                $table_inventario = 'inventario_estampillas';
+                $inventario = 7;
+            }else{
+                // UT
+                $table_inventario = 'inventario_ut_estampillas';
+                $inventario = 19;
+            }
 
         /////////////////////////////////////////////////////////////VERIFICAR DISPONIBILIDAD
             foreach ($emitir as $e) {
@@ -573,7 +659,7 @@ class AsignarController extends Controller
 
                 $cant_dispo = 0;
 
-                $c1 = DB::table('inventario_estampillas')->select('cantidad_timbres','asignado')->where('key_denominacion','=', $deno)->where('estado','=', 1)->get();
+                $c1 = DB::table(''.$table_inventario.'')->select('cantidad_timbres','asignado')->where('key_denominacion','=', $deno)->where('estado','=', 1)->get();
                 foreach ($c1 as $key) {
                     $cant_dispo = $cant_dispo + ($key->cantidad_timbres - $key->asignado);
                     if ($cant_dispo >= $cantidad) {
@@ -582,8 +668,11 @@ class AsignarController extends Controller
                 }
 
                 if ($cant_dispo < $cantidad) {
-                    $c2 = DB::table('ucd_denominacions')->select('denominacion')->where('id','=', $deno)->first();
-                    return response()->json(['success' => false, 'nota' => 'Disculpe, no hay suficientes estampillas de '.$c2->denominacion.' UCD para realizar la Asignación.']);
+                    $c2 = DB::table('ucd_denominacions')
+                        ->join('tipos', 'ucd_denominacions.alicuota', '=','tipos.id_tipo')
+                        ->select('ucd_denominacions.denominacion','tipos.nombre_tipo')
+                        ->where('ucd_denominacions.id','=', $deno)->first();
+                    return response()->json(['success' => false, 'nota' => 'Disculpe, no hay suficientes estampillas de '.$c2->denominacion.' '.$c2->nombre_tipo.' para realizar la Asignación.']);
                 }
                 
             }
@@ -601,12 +690,15 @@ class AsignarController extends Controller
                     $key_deno = $e['denominacion'];
                     $cantidad = $e['cantidad'];
 
-                    $con = DB::table('ucd_denominacions')->select('denominacion')->where('id', '=', $key_deno)->first();
+                    $con = DB::table('ucd_denominacions')
+                                ->join('tipos', 'ucd_denominacions.alicuota', '=','tipos.id_tipo')
+                                ->select('ucd_denominacions.denominacion','tipos.nombre_tipo')
+                                ->where('ucd_denominacions.id', '=', $key_deno)->first();
     
                     $timbres_asignados = 0;
                     $timbres_restantes = $cantidad;
     
-                    $q1 = DB::table('inventario_estampillas')->select('id_inventario_estampilla','cantidad_timbres','desde','hasta','asignado')
+                    $q1 = DB::table(''.$table_inventario.'')->select('id_inventario_estampilla','cantidad_timbres','desde','hasta','asignado')
                                                             ->where('estado', '=', 1)
                                                             ->where('key_denominacion', '=', $key_deno)->get();
                     foreach ($q1 as $key) {
@@ -645,13 +737,14 @@ class AsignarController extends Controller
                                                                                                     'cantidad_timbres' => $cant_asignados,
                                                                                                     'desde' => $desde,
                                                                                                     'hasta' => $hasta,
+                                                                                                    'vendido' => 0,
                                                                                                     'condicion' => null,
-                                                                                                    'vendido' => 0
+                                                                                                    'inventario' => $inventario,
                                                                                                     ]);
                             if ($insert_detalle) {
                                 $tr .= '<tr>
                                             <td>
-                                                <sapn class="fw-bold text-navy fs-6">'.$con->denominacion.' UCD</sapn>
+                                                <sapn class="fw-bold text-navy fs-6">'.$con->denominacion.' '.$con->nombre_tipo.'</sapn>
                                             </td>
                                             <td>'.$desde.'</td>
                                             <td>'.$hasta.'</td>
@@ -661,9 +754,9 @@ class AsignarController extends Controller
                                 $new_asignado = $key->asignado + $cant_asignados;
 
                                 if ($key->cantidad_timbres == $new_asignado) {
-                                    $update_asignado = DB::table('inventario_estampillas')->where('id_inventario_estampilla','=',$key->id_inventario_estampilla)->update(['asignado' => $new_asignado, 'estado' => 2]);
+                                    $update_asignado = DB::table(''.$table_inventario.'')->where('id_inventario_estampilla','=',$key->id_inventario_estampilla)->update(['asignado' => $new_asignado, 'estado' => 2]);
                                 }else{
-                                    $update_asignado = DB::table('inventario_estampillas')->where('id_inventario_estampilla','=',$key->id_inventario_estampilla)->update(['asignado' => $new_asignado]);
+                                    $update_asignado = DB::table(''.$table_inventario.'')->where('id_inventario_estampilla','=',$key->id_inventario_estampilla)->update(['asignado' => $new_asignado]);
                                 }
                             }else{
                                 /////eliminar registro de asignacion estampillas
@@ -698,7 +791,7 @@ class AsignarController extends Controller
 
                             <table class="table">
                                 <tr>
-                                    <th>UCD</th>
+                                    <th>'.$con->nombre_tipo.'</th>
                                     <th>Desde</th>
                                     <th>Hasta</th>
                                     <th>Cantidad</th>

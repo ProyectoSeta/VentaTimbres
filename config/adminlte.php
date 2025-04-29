@@ -354,8 +354,18 @@ return [
         ],
         [
             'text'        => 'Inventario',
-            'route'         => 'inventario_papel',
-            'icon'       => 'fas fa-angle-right pe-2',   
+            // 'route'         => 'inventario_papel',
+            'icon'       => 'fas fa-angle-right pe-2', 
+            'submenu' => [
+                            [
+                                'text' => 'Papel de Seguridad',
+                                'route'  => 'inventario_papel',
+                            ], 
+                            [
+                                'text' => 'Estampillas U.T.',
+                                'route'  => 'inventario_ut',
+                            ],
+                        ],
         ],
         ['header' => 'Estampillas'],
         [

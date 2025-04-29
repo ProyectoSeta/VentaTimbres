@@ -21,7 +21,7 @@ class EmisionUcdController extends Controller
     {
         // DENOMINACIONES PARA ESTAMPILLAS
         $deno = [];
-        $q1 = DB::table('ucd_denominacions')->where('estampillas', '=', 'true')->get();
+        $q1 = DB::table('ucd_denominacions')->where('estampillas', '=', 'true')->where('alicuota', '=', 7)->get();
         foreach ($q1 as $key) {
             $key_deno = $key->id;
 
@@ -107,7 +107,7 @@ class EmisionUcdController extends Controller
         $option = '';
         $total_estampillas = 0;
 
-        $query = DB::table('ucd_denominacions')->where('estampillas','=','true')->get();
+        $query = DB::table('ucd_denominacions')->where('estampillas','=','true')->where('alicuota','=',7)->get();
         foreach ($query as $denomi) {
             $value = $denomi->denominacion;
             $option .= '<option value="'.$denomi->id.'">'.$value.' UCD</option>';

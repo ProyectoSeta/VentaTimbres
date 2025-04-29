@@ -20,8 +20,10 @@ return new class extends Migration
             $table->integer('key_asignacion')->unsigned();
             $table->foreign('key_asignacion')->references('id_asignacion')->on('asignacion_estampillas')->onDelete('cascade');
 
-            $table->integer('key_inventario_estampilla')->unsigned();
-            $table->foreign('key_inventario_estampilla')->references('id_inventario_estampilla')->on('inventario_estampillas')->onDelete('cascade');
+            // $table->integer('key_inventario_estampilla')->unsigned();
+            // $table->foreign('key_inventario_estampilla')->references('id_inventario_estampilla')->on('inventario_estampillas')->onDelete('cascade');
+
+            $table->integer('key_inventario_estampilla');
 
             $table->integer('key_denominacion')->unsigned();
             $table->foreign('key_denominacion')->references('id')->on('ucd_denominacions')->onDelete('cascade');
@@ -35,6 +37,9 @@ return new class extends Migration
 
             $table->integer('condicion')->unsigned()->nullable(); ///////RESERVA - EN USO - VENDIDO
             $table->foreign('condicion')->references('id_clasificacion')->on('clasificacions')->onDelete('cascade');
+
+            $table->integer('inventario')->unsigned(); ///////UCD - UT
+            $table->foreign('inventario')->references('id_tipo')->on('tipos')->onDelete('cascade');
  
         });
     }
