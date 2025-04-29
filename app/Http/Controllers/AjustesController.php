@@ -1,25 +1,71 @@
 <?php
 
 namespace App\Http\Controllers;
-
+use DB;
 use Illuminate\Http\Request;
 
 class AjustesController extends Controller
 {
+    public function __construct()
+    {
+        $this->middleware('auth');
+    }
     /**
      * Display a listing of the resource.
      */
     public function index()
     {
-        return view('ajustes');
+        $con_14 = DB::table('configuraciones')->join('clasificacions', 'configuraciones.unidad', '=', 'clasificacions.id_clasificacion')
+                                                ->select('configuraciones.*','clasificacions.nombre_clf')
+                                                ->where('configuraciones.module', '=',23)->get();
+        $con_venta = DB::table('configuraciones')->join('clasificacions', 'configuraciones.unidad', '=', 'clasificacions.id_clasificacion')
+                                                ->select('configuraciones.*','clasificacions.nombre_clf')
+                                                ->where('configuraciones.module', '=',24)->get();
+
+        return view('ajustes',compact('con_14','con_venta'));
     }
 
     /**
      * Show the form for creating a new resource.
      */
-    public function create()
+    public function modal_editar(Request $request)
     {
-        //
+        $correlativo = $request->post('correlativo'); 
+        if ($correlativo == 3) { ////INICIO DE CORRELATIVO TFE-14
+            $c1 = DB::table('configuraciones')->select('valor')->where('correlativo', '=', $correlativo)->first();
+            if ($c1->valor != NULL){
+                return response()->json(['success' => false, 'nota' => 'Disculpe, este valor solo es modificable una (1) sola vez.']);
+            }
+        }
+
+        $query = DB::table('configuraciones')->select('nombre')->where('correlativo', '=', $correlativo)->first();
+        if ($query) {
+            $html = '<div class="modal-header p-2 pt-3 d-flex justify-content-center">
+                        <div class="text-center">
+                        <i class="bx bx-pencil fs-2 text-muted me-2"></i>
+                            <h1 class="modal-title fs-5 fw-bold text-navy">Editar Valor</h1>
+                            <div class="text-muted fw-semibold">'.$query->nombre.'</div>
+                        </div>
+                    </div>
+                    <div class="modal-body px-5" style="font-size:13px">
+                        <form  id="form_editar_valor_ajustes" method="post" onsubmit="event.preventDefault(); editarValor()">
+                            <label for="valor" class="form-label mt-3">¿Cual es el nuevo valor para <span class="text-navy">"'.$query->nombre.'"</span>? <span style="color:red">*</span></label>
+                            <input class="form-control form-control-sm" step="0.01" type="number" id="valor" name="valor" required>
+                            <input type="hidden" name="correlativo" value="'.$correlativo.'" required> 
+                            
+                            <p class="text-muted text-end mt-2 mb-5"><span style="color:red">*</span> Campos requeridos.</p>
+
+                            <div class="d-flex justify-content-center mt-3 mb-3">
+                                <button type="submit" class="btn btn-success btn-sm me-3" id="btn_guardar_guia">Guardar</button>
+                                <button type="button" class="btn btn-secondary btn-sm" data-bs-dismiss="modal">Cancelar</button>
+                            </div>
+                        </form>
+                    </div>';
+
+            return response()->json(['success' => true, 'html' => $html]);
+        }
+        
+        
     }
 
     /**
@@ -27,7 +73,7 @@ class AjustesController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        
     }
 
     /**
@@ -49,9 +95,38 @@ class AjustesController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, string $id)
+    public function update(Request $request)
     {
-        //
+        $correlativo = $request->post('correlativo'); 
+        $valor = $request->post('valor'); 
+        $hoy = date('Y-m-d h:i:s');
+
+        if ($correlativo == 3) { ////INICIO DE CORRELATIVO TFE-14
+            //verificar si el valor no ha sido ingresado antes
+            $c1 = DB::table('configuraciones')->select('valor')->where('correlativo', '=', $correlativo)->first();
+            if ($c1->valor == NULL) {
+                $update = DB::table('configuraciones')->where('correlativo','=',$correlativo)->update(['valor' => $valor, 'updated_at' => $hoy]);
+                if ($update) {
+                    ////BITACORA
+                    return response()->json(['success' => true]);
+                }else{
+                    return response()->json(['success' => false]);
+                }
+            }else{
+                /// BITACORA
+                return response()->json(['success' => false, 'nota' => 'Disculpe, este valor solo es modificable una (1) sola vez.']);
+            }
+        }else{
+            $update = DB::table('configuraciones')->where('correlativo','=',$correlativo)->update(['valor' => $valor, 'updated_at' => $hoy]);
+            if ($update) {
+                ////BITACORA
+                return response()->json(['success' => true]);
+            }else{
+                return response()->json(['success' => false]);
+            }
+        }
+
+        
     }
 
     /**

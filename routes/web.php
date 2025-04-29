@@ -238,6 +238,8 @@ Route::get('/reportes_trimestral/{tri?}/{year?}/', [App\Http\Controllers\Reporte
 
 ///////////////////// AJUSTES
 Route::get('/ajustes', [App\Http\Controllers\AjustesController::class, 'index'])->name('ajustes');
+Route::post('/ajustes/modal_editar', [App\Http\Controllers\AjustesController::class, 'modal_editar'])->name('ajustes.modal_editar');
+Route::post('/ajustes/update', [App\Http\Controllers\AjustesController::class, 'update'])->name('ajustes.update');
 
 
 // Route::post('/sede_taquilla/taquilleros', [App\Http\Controllers\SedeTaquillaController::class, 'taquilleros'])->name('sede_taquilla.taquilleros');

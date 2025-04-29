@@ -106,5 +106,15 @@ class ClasificacionSeeder extends Seeder
         DB::table('clasificacions')->insert([
             'nombre_clf' => 'emision_tfe14',
         ]);
+        DB::table('clasificacions')->insert([
+            'nombre_clf' => 'venta',
+        ]);
+
+        DB::table('clasificacions')->insert([
+            'nombre_clf' => 'Bs',
+        ]);
+        DB::table('clasificacions')->insert([
+            'nombre_clf' => 'Und',
+        ]);
     }
 }

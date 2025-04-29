@@ -13,23 +13,36 @@ class AjustesSeeder extends Seeder
      */
     public function run(): void
     {
+        // EMISION TFE14
         DB::table('configuraciones')->insert([
             'nombre' => 'Timbres por Rollo',
             'descripcion' => 'Cantidad de Timbres Fiscales TFE-14 que contiene un (1) rollo.',
             'valor' => '60',
+            'unidad' => 26,
             'module' => 23
         ]);
         DB::table('configuraciones')->insert([
             'nombre' => 'Timbres emitidos por Lote',
             'descripcion' => 'Cantidad Total de Timbres Fiscales TFE-14 emitidos en un Lote de rollos.',
             'valor' => '6000',
+            'unidad' => 26,
             'module' => 23
         ]);
         DB::table('configuraciones')->insert([
             'nombre' => 'No. Inicio | Correlativo de papel',
             'descripcion' => 'Número (Correlativo de papel) por el cual se iniciará la emisión de Timbres Fiscales TFE-14.',
             'valor' => NUll,
+            'unidad' => 26,
             'module' => 23
+        ]);
+
+        // VENTA
+        DB::table('configuraciones')->insert([
+            'nombre' => 'Precio U.T.',
+            'descripcion' => 'Precio de la Unidad Tributaria',
+            'valor' => '73.46',
+            'unidad' => 25,
+            'module' => 24
         ]);
     }
 }

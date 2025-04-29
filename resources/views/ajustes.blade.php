@@ -12,27 +12,100 @@
 @section('content')
     <div class="mx-5">
         
-        <div class="row d-flex align-items-center mb-5">
-            <div class="col-md-6 text-navy display-6 titulo fw-bold">Ajustes Generales</div>
+        <div class="row d-flex align-items-center mb-4">
+            <div class="col-md-6 text-navy fs-2 titulo fw-bold">Ajustes |  <span class="text-muted fs-3">Generales</span> </div>
         </div>
 
 
-        <p class="text-muted fw-bold fs-4 text-center titulo">Emisión de TFE-14</p>
+        <p class="text-muted fw-semibold fs-4 text-center titulo">Emisión de TFE-14</p>
 
         <div class="table-responsive" style="font-size:12.7px">
-            <table id="table_apertura_hoy" class="table text-center border-light-subtle" style="font-size:13px">
+            <table id="table_ajustes_tfe" class="table text-center border-light-subtle" style="font-size:13px">
                 <thead>
                     <tr>
-                        <th></th>
-                        <th></th>
-                        <th></th>
-                        <th></th>
-                        <th></th>
-                        <th></th>
+                        <th>#</th>
+                        <th>Nombre</th>
+                        <th>Descripción</th>
+                        <th>Valor</th>
+                        <th>Opción</th>
+                        <th>Ultima actualización</th>
                     </tr> 
                 </thead>
                 <tbody>
-                    
+                    @php
+                        $c = 0;
+                    @endphp
+                    @foreach ($con_14 as $a14)
+                        @php
+                            $c++;
+                        @endphp
+                        <tr>
+                            <td><span class="text-muted">{{$c}}</span></td>
+                            <td><span class="text-navy fw-semibold">{{$a14->nombre}}</span></td>
+                            <td>{{$a14->descripcion}}</td>
+                            <td>
+                                @if ($a14->valor == NULL)
+                                    <span class="text-secondary fst-italic">Sin asignar.</span>
+                                @else
+                                    @if ($a14->correlativo == 3)
+                                        <span class="fw-semibold">No. {{$a14->valor}}</span>
+                                    @else
+                                        <span class="fw-semibold">{{$a14->valor}} {{$a14->nombre_clf}}.</span> 
+                                    @endif
+                                @endif
+                            </td>
+                            <td>
+                                @if ($a14->correlativo == 3 && $a14->valor != NULL)
+                                    <span class="text-secondary fst-italic">No editable.</span>
+                                @else
+                                    <span class="badge editar" style="background-color: #169131;" i="{{$a14->correlativo}}" role="button" data-bs-toggle="modal" data-bs-target="#modal_editar_valor">
+                                        <i class="bx bx-pencil fs-6"></i>
+                                    </span>
+                                @endif
+                            </td>
+                            <td>
+                                <span class="text-muted">{{date("d-m-Y | h:i A",strtotime($a14->updated_at))}}</span>
+                            </td>
+                        </tr>
+                    @endforeach
+                </tbody>
+            </table>
+        </div>
+
+        <p class="text-muted fw-semibold fs-4 text-center titulo">Venta</p>
+
+        <div class="table-responsive" style="font-size:12.7px">
+            <table id="table_ajustes_venta" class="table text-center border-light-subtle" style="font-size:13px">
+                <thead>
+                    <tr>
+                        <th>#</th>
+                        <th>Nombre</th>
+                        <th>Descripción</th>
+                        <th>Valor</th>
+                        <th>Opción</th>
+                        <th>Ultima actualización</th>
+                    </tr> 
+                </thead>
+                <tbody>
+                    @foreach ($con_venta as $av)
+                        @php
+                            $c++;
+                        @endphp
+                        <tr>
+                            <td><span class="text-muted">{{$c}}</span></td>
+                            <td><span class="text-navy fw-semibold">{{$av->nombre}}</span></td>
+                            <td>{{$av->descripcion}}</td>
+                            <td> <span class="fw-semibold">{{$av->valor}} {{$av->nombre_clf}}.</span></td>
+                            <td>
+                                <span class="badge editar" style="background-color: #169131;" i="{{$av->correlativo}}" role="button" data-bs-toggle="modal" data-bs-target="#modal_editar_valor">
+                                    <i class="bx bx-pencil fs-6"></i>
+                                </span>
+                            </td>
+                            <td>
+                                <span class="text-muted">{{date("d-m-Y | h:i A",strtotime($av->updated_at))}}</span>
+                            </td>
+                        </tr>
+                    @endforeach
                 </tbody>
             </table>
         </div>
@@ -43,9 +116,9 @@
 
 <!-- *********************************  MODALES ******************************* -->
     <!-- ************ APERTURA DE TAQUILLAS ************** -->
-    <div class="modal fade" id="modal_apertura_taquillas" tabindex="-1" aria-hidden="true">
-        <div class="modal-dialog modal-lg">
-            <div class="modal-content" id="content_apertura_taquillas">
+    <div class="modal fade" id="modal_editar_valor" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content" id="content_editar_valor">
                 
             </div>  <!-- cierra modal-content -->
         </div>  <!-- cierra modal-dialog -->
@@ -80,9 +153,24 @@
    
     <script type="text/javascript">
         $(document).ready(function () {
-            $('#table_apertura_hoy').DataTable(
+            $('#table_ajustes_tfe').DataTable(
                 {
-                    // "order": [[ 0, "desc" ]],
+                    "language": {
+                        "lengthMenu": " Mostrar  _MENU_  Registros por página",
+                        "zeroRecords": "No se encontraron registros",
+                        "info": "Mostrando página _PAGE_ de _PAGES_",
+                        "infoEmpty": "No se encuentran Registros",
+                        "infoFiltered": "(filtered from _MAX_ total records)",
+                        'search':"Buscar",
+                        'paginate':{
+                            'next':'Siguiente',
+                            'previous':'Anterior'
+                        }
+                    }
+                }
+            );
+            $('#table_ajustes_venta').DataTable(
+                {
                     "language": {
                         "lengthMenu": " Mostrar  _MENU_  Registros por página",
                         "zeroRecords": "No se encontraron registros",
@@ -104,9 +192,63 @@
 
     <script type="text/javascript">
         $(document).ready(function () {
-           
+           //////////////////////////// MODAL EDITAR
+           $(document).on('click','.editar', function(e) {
+                e.preventDefault(); 
+                var correlativo =  $(this).attr('i');
+                $.ajax({
+                    headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') },
+                    type: 'POST',
+                    url: '{{route("ajustes.modal_editar") }}',
+                    data: {correlativo:correlativo},
+                    success: function(response) {
+                        if (response.success) {
+                            $('#content_editar_valor').html(response.html);
+                        }else{
+                            if (response.nota) {
+                                alert(response.nota);
+                                window.location.href = "{{ route('ajustes')}}";
+                            }
+                        }
+                       
+                    },
+                    error: function() {
+                    }
+                });
+            });
 
         });
+
+        function editarValor(){
+            var formData = new FormData(document.getElementById("form_editar_valor_ajustes"));
+            $.ajax({
+                headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') },
+                url:'{{route("ajustes.update") }}',
+                type:'POST',
+                contentType:false,
+                cache:false,
+                processData:false,
+                async: true,
+                data: formData,
+                success: function(response){
+                    console.log(response);
+                    if (response.success) {
+                        alert('ACTUALIZACIÓN EXITOSA.');
+                        window.location.href = "{{ route('ajustes')}}";
+                    }else{
+                        if (response.nota) {
+                            alert(response.nota);
+                        }else{
+                            alert('Disculpe, ha ocurrido un error');
+                        }
+                    }
+
+                },
+                error: function(error){
+                    
+                }
+            });
+        }
 
         
     </script>

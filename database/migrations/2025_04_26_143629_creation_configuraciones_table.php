@@ -16,7 +16,10 @@ return new class extends Migration
 
             $table->string('nombre');
             $table->string('descripcion');
-            $table->integer('valor')->nullable(); 
+            $table->float('valor')->nullable(); 
+
+            $table->integer('unidad')->unsigned(); 
+            $table->foreign('unidad')->references('id_clasificacion')->on('clasificacions')->onDelete('cascade');
             
             $table->integer('module')->unsigned(); 
             $table->foreign('module')->references('id_clasificacion')->on('clasificacions')->onDelete('cascade');
