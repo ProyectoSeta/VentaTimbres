@@ -100,7 +100,11 @@ class PapelSeguridadController extends Controller
             /////primer lote a emitir
             //////consultar cual es el inicio de correlativo
             $con_inicio = DB::table('configuraciones')->select("valor")->where('correlativo','=',3)->first(); //// 3 => inicio correlativo
-            $desde = $con_inicio->valor;
+            if ($con_inicio->valor != null) {
+                $desde = $con_inicio->valor;
+            }else{
+                return response()->json(['success' => false, 'nota' => 'Disculpe, todavia no se ha definido el número de inicio del correlativo para la emision de los timbres fiscales TFE-14. Por favor, vaya hasta el modulo Configuraciones/Ajustes, y defina la variable.']);
+            }
         }
 
         $c1 =  DB::table('configuraciones')->select('valor')->where('correlativo','=',2)->first(); //// 2 => cant. timbres tfe14 por lote 
@@ -158,7 +162,8 @@ class PapelSeguridadController extends Controller
                     
                 </div>';
 
-        return response($html);
+
+        return response()->json(['success' => true, 'html' => $html]);
 
 
     }

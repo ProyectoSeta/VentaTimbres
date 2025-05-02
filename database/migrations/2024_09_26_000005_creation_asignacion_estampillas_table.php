@@ -26,6 +26,9 @@ return new class extends Migration
             $table->foreign('condicion')->references('id_clasificacion')->on('clasificacions')->onDelete('cascade');
 
             $table->date('fecha_recibido')->nullable();
+
+            $table->integer('inventario')->unsigned(); ///////UCD - UT
+            $table->foreign('inventario')->references('id_tipo')->on('tipos')->onDelete('cascade');
  
         });
     }

@@ -24,7 +24,7 @@
                         @elseif ($apertura_taquillero == true)
                             <button type="button" class="btn btn-s btn-dark py-1" id="btn_historial_boveda" data-bs-toggle="offcanvas" data-bs-target="#historial_boveda" aria-controls="historial_boveda">Historial Bv.</button>
                             <button type="button" class="btn btn-s btn-dark py-1" id="btn_boveda" data-bs-toggle="modal" data-bs-target="#modal_ingresar_boveda">Bóveda</button>
-                            <a href="{{ route('venta') }}" class="btn btn-s btn-success py-1">Vender</a>
+                            <a href="{{ route('venta') }}" class="btn btn-s btn-success py-1">Vender (F2)</a>
                             <button type="button" class="btn btn-s btn-secondary  py-1" data-bs-toggle="modal" data-bs-target="#modal_cerrar_taquilla">Cierre</button>
                         @endif               
                     </div>
@@ -319,6 +319,17 @@
                     error: function() {
                     }
                 });
+            });
+
+
+
+
+            /////// REDIRIGIR CON F2 A VENTA
+            $(document).keydown(function(e) {
+                if (e.keyCode == 113) { // 112 es el código para la tecla F1
+                    // $("#mi_boton").click();
+                    window.location.href = "{{ route('venta')}}";
+                }
             });
         });
 

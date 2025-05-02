@@ -559,7 +559,7 @@ class AsignarController extends Controller
                         </div>
                         <div class="col-lg-6">
                             <label for="select_taquilla_estampilla" class="form-label">Taquilla: <span style="color:red">*</span></label>
-                            <select class="form-select form-select-sm taquilla" forma="estampillas" id="select_taquilla_estampilla" name="taquilla" required>
+                            <select class="form-select form-select-sm " forma="estampillas" id="select_taquilla_estampilla" name="taquilla" required>
                                 <option value="Seleccione">Seleccionar</option>
                             </select>
                         </div>
@@ -682,7 +682,8 @@ class AsignarController extends Controller
             $insert_asignacion = DB::table('asignacion_estampillas')->insert(['key_user' => $user,
                                                                             'key_taquilla' => $taquilla,
                                                                             'condicion' => 8,
-                                                                            'fecha_recibido' => null]); 
+                                                                            'fecha_recibido' => null,
+                                                                            'inventario' => $inventario]); 
             if ($insert_asignacion) {
                 $id_asignacion = DB::table('asignacion_estampillas')->max('id_asignacion');
 
@@ -826,9 +827,13 @@ class AsignarController extends Controller
         $query =  DB::table('detalle_asignacion_estampillas')->where('key_asignacion', '=', $asignacion)->get();
         $tables = '';
 
+        $ali = '';
 
         foreach ($query as $detalle) {
-            $consulta = DB::table('ucd_denominacions')->select('denominacion')->where('id','=', $detalle->key_denominacion)->first();
+            $consulta = DB::table('ucd_denominacions')
+                            ->join('tipos', 'ucd_denominacions.alicuota', '=','tipos.id_tipo')
+                            ->select('ucd_denominacions.denominacion','tipos.nombre_tipo')
+                            ->where('ucd_denominacions.id','=', $detalle->key_denominacion)->first();
             $ucd = $consulta->denominacion;
 
             $array = array(
@@ -836,10 +841,12 @@ class AsignarController extends Controller
                         'cantidad' => $detalle->cantidad_timbres,
                         'desde' => $detalle->desde,
                         'hasta' => $detalle->hasta,
+                        'alicuota' => $consulta->nombre_tipo,
                     );
             $a = (object) $array;
             array_push($correlativo,$a);
             
+            $ali = $consulta->nombre_tipo;
 
         }////
 
@@ -859,7 +866,7 @@ class AsignarController extends Controller
         $id_taquilla = $c1->key_taquilla;
 
 
-        $pdf = PDF::loadView('pdfAsignacionEstampillas', compact('correlativo','taquillero','sede','ci_taquillero','id_taquilla','asignacion'));
+        $pdf = PDF::loadView('pdfAsignacionEstampillas', compact('correlativo','taquillero','sede','ci_taquillero','id_taquilla','asignacion','ali'));
 
         return $pdf->download('Asignación_Estampillas_'.$asignacion.'.pdf');
 
@@ -915,9 +922,13 @@ class AsignarController extends Controller
         
         $query = DB::table('detalle_asignacion_estampillas')->where('key_asignacion','=', $asignacion)->get(); 
         foreach ($query as $q1) {
-            $consulta = DB::table('ucd_denominacions')->select('denominacion')->where('id','=',$q1->key_denominacion)->first();
+            $consulta = DB::table('ucd_denominacions')
+                            ->join('tipos', 'ucd_denominacions.alicuota', '=','tipos.id_tipo')
+                            ->select('ucd_denominacions.denominacion','tipos.nombre_tipo')
+                            ->where('ucd_denominacions.id','=',$q1->key_denominacion)->first();
+
             $tr .= '<tr>
-                        <td><span class="text-navy fw-bold fs-6">'.$consulta->denominacion.' UCD</span></td>
+                        <td><span class="text-navy fw-bold fs-6">'.$consulta->denominacion.' '.$consulta->nombre_tipo.'</span></td>
                         <td>'.$q1->desde.'</td>
                         <td>'.$q1->hasta.'</td>
                         <td class="text-muted">'.$q1->cantidad_timbres.' und.</td>
@@ -927,7 +938,7 @@ class AsignarController extends Controller
         $tables = '<div class="">
                         <table class="table text-center">
                             <tr>
-                                <th>UCD</th>
+                                <th>Estampillas</th>
                                 <th>Desde</th>
                                 <th>Hasta</th>
                                 <th>Cant. Timbres</th>

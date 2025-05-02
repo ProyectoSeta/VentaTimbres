@@ -28,7 +28,7 @@
                             <div class="text-secondary">Para asignar a Taquilla</div>
                         </div>
                         <div class="col-lg -4">
-                            <div class="fs-1 text-primary fw-bold bg-primary-subtle text-center rounded-4  px-2">75.000 <span class="fs-5">Und.</span></div>
+                            <div class="fs-1 text-primary fw-bold bg-primary-subtle text-center rounded-4  px-2">{{$cant_20ut}} <span class="fs-5">Und.</span></div>
                         </div>
                     </div>
                 </div>
@@ -44,7 +44,7 @@
                             <div class="text-secondary">Para asignar a Taquilla</div>
                         </div>
                         <div class="col-lg -4">
-                            <div class="fs-1 text-primary fw-bold bg-primary-subtle text-center rounded-4 px-2">60.000 <span class="fs-5">Und.</span></div>
+                            <div class="fs-1 text-primary fw-bold bg-primary-subtle text-center rounded-4 px-2">{{$cant_50ut}} <span class="fs-5">Und.</span></div>
                         </div>
                     </div>
                 </div>
@@ -56,18 +56,34 @@
         <div class="fs-4 titulo fw-semibold text-muted text-center">Asignadas a Taquillas</div>
 
         <div class="table-responsive" style="font-size:12.7px">
-            <table id="papel_f14_emitidos" class="table text-center border-light-subtle" style="font-size:12.7px">
+            <table id="table_asignados_ut" class="table text-center border-light-subtle" style="font-size:12.7px">
                 <thead>
                     <th>#</th>
+                    <th>Asignado a (Taquilla)</th>
+                    <th>Ubicación</th>
                     <th>Fecha</th>
-                    <th>Cantidad</th>
-                    <th>Desde</th>
-                    <th>Hasta</th>
-                    <th>Detalle</th>  <!-- fecha entrega, emitidos en ucd, user -->
-                    <th>Estado</th>  
+                    <th>Detalles</th>
+                    <th>Constancia</th> 
                 </thead>
                 <tbody id="" class="border-light-subtle"> 
-                           
+                    @foreach ($asignado_estampillas as $estampillas)
+                        <tr>
+                            <td>{{$estampillas->id_asignacion}}</td>
+                            <td>
+                                <a href="#" class="taquilla" taquilla="{{$estampillas->key_taquilla}}" data-bs-toggle="modal" data-bs-target="#modal_info_taquilla">Taquilla ID {{$estampillas->key_taquilla}}</a>
+                            </td>
+                            <td>
+                                <span class="fw-bold text-navy titulo">{{$estampillas->sede}}</span>
+                            </td>
+                            <td class="text-muted">{{$estampillas->fecha}}</td>
+                            <td>
+                                <a href="" class="detalle_asignacion_estampillas" vista="asignacion" asignacion="{{$estampillas->id_asignacion}}" data-bs-toggle="modal" data-bs-target="#modal_asignado_estampillas">Ver</a>
+                            </td>
+                            <td>
+                                <a href="{{route('asignar.pdf_estampillas', ['asignacion' => $estampillas->id_asignacion])}}">Imprimir</a>
+                            </td>
+                        </tr>
+                    @endforeach
                 </tbody> 
             </table>
         </div>
@@ -81,7 +97,29 @@
     
     
 <!--****************** MODALES **************************-->
-    
+    <!-- ************  CORRELATIVO ESTAMPILLAS ASIGNADAS ************** -->
+    <div class="modal fade" id="modal_asignado_estampillas" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content" id="content_asignado_estampillas">
+                <div class="my-5 py-5 d-flex flex-column text-center">
+                    <i class='bx bx-loader-alt bx-spin fs-1 mb-3' style='color:#0077e2'  ></i>
+                    <span class="text-muted">Cargando, por favor espere un momento...</span>
+                </div>
+            </div>  <!-- cierra modal-content -->
+        </div>  <!-- cierra modal-dialog -->
+    </div>
+
+    <!-- ********* INFO SUJETO ******** -->
+    <div class="modal" id="modal_info_taquilla" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-sm">
+            <div class="modal-content" id="html_info_taquilla">
+                <div class="my-5 py-5 d-flex flex-column text-center">
+                    <i class='bx bx-loader-alt bx-spin fs-1 mb-3' style='color:#0077e2'  ></i>
+                    <span class="text-muted">Cargando, por favor espere un momento...</span>
+                </div>
+            </div>  <!-- cierra modal-content -->
+        </div>  <!-- cierra modal-dialog -->
+    </div>
 
 
 <!--************************************************-->
@@ -113,7 +151,7 @@
    
     <script type="text/javascript">
         $(document).ready(function () {
-            $('#papel_f14_emitidos').DataTable(
+            $('#table_asignados_ut').DataTable(
                 {
                     "order": [[ 0, "desc" ]],
                     "language": {
@@ -137,7 +175,44 @@
 
 <script type="text/javascript">
     $(document).ready(function () {
-        
+        ///////////////////////////  DETALLES ASIGNACION ESTAMPILLAS
+        $(document).on('click','.detalle_asignacion_estampillas', function(e) {
+            e.preventDefault(); 
+            var asignacion = $(this).attr('asignacion');
+            var vista = $(this).attr('vista');
+
+            $.ajax({
+                headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') },
+                type: 'POST',
+                url: '{{route("asignar.detalle_estampillas") }}',
+                data: {asignacion:asignacion,vista:vista},
+                success: function(response) {
+                    // console.log(response);
+                    $('#content_asignado_estampillas').html(response);                 
+                },
+                error: function() {
+                }
+            });
+        });
+
+        ///////////////////////////  INFO TAQUILLA
+        $(document).on('click','.taquilla', function(e) {
+            e.preventDefault(); 
+            var taquilla = $(this).attr('taquilla');
+
+            $.ajax({
+                headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') },
+                type: 'POST',
+                url: '{{route("asignar.info_taquilla") }}',
+                data: {taquilla:taquilla},
+                success: function(response) {
+                    $('#html_info_taquilla').html(response);                 
+                },
+                error: function() {
+                }
+            });
+        });
+
       
 
 

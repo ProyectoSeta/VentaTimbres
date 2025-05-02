@@ -147,6 +147,18 @@ class VentaController extends Controller
                                                                     ->where('fecha','=', $hoy)
                                                                     ->update(['five_ucd' => $cant_inv]);
                             break;
+                        case 15:
+                            # 20 UT
+                            $upd_inv = DB::table('inv_est_taq_temps')->where('key_taquilla', '=', $id_taquilla)
+                                                                    ->where('fecha','=', $hoy)
+                                                                    ->update(['twenty_ut' => $cant_inv]);
+                            break;
+                        case 16:
+                            # 50 UT
+                            $upd_inv = DB::table('inv_est_taq_temps')->where('key_taquilla', '=', $id_taquilla)
+                                                                    ->where('fecha','=', $hoy)
+                                                                    ->update(['fifty_ut' => $cant_inv]);
+                            break;
                         default:
                             # code...
                             break;
@@ -249,6 +261,8 @@ class VentaController extends Controller
     public function estampillas(Request $request)
     {
         $user = auth()->id();
+        $alicuota = '';
+
         $query = DB::table('users')->select('key_sujeto')->where('id','=',$user)->first();
         $q2 = DB::table('taquillas')->select('id_taquilla')->where('key_funcionario','=',$query->key_sujeto)->first();
         if ($q2){
@@ -279,8 +293,18 @@ class VentaController extends Controller
             }
 
             // CONSULTA INVENTARIO
-            $q1 = DB::table('inv_est_taq_temps')->where('key_taquilla','=', $id_taquilla)->first();
-            $html_inventario = '<div class="text-center text-muted titulo fs-6 mb-2">Inventario de Estampillas</div>
+            ////comprobar si corresponse UT o UCD
+            $con = DB::table('inventario_ut_estampillas')->select('cantidad_timbres','asignado','key_denominacion')->get();
+            $total_dispo = 0;
+
+            foreach ($con as $value) {
+                $total_dispo = $total_dispo + ($value->cantidad_timbres - $value->asignado);
+            }
+
+            if ($total_dispo == 0) {
+                $alicuota = 7;
+                $q1 = DB::table('inv_est_taq_temps')->where('key_taquilla','=', $id_taquilla)->first();
+                $html_inventario = '<div class="text-center text-muted titulo fs-6 mb-2">Inventario de Estampillas</div>
                             <div class="d-flex flex-column">
                                 <div class="mb-2 border py-2 px-3 rounded-4">
                                     <div class="d-flex flex-column align-items-center">
@@ -307,11 +331,35 @@ class VentaController extends Controller
                                     </div>
                                 </div>
                             </div>';
+            }else{
+                $alicuota = 19;
+                $q1 = DB::table('inv_est_taq_temps')->where('key_taquilla','=', $id_taquilla)->first();
+                $html_inventario = '<div class="text-center text-muted titulo fs-6 mb-2">Inventario de Estampillas</div>
+                            <div class="d-flex flex-column">
+                                <div class="mb-2 border py-2 px-3 rounded-4">
+                                    <div class="d-flex flex-column align-items-center">
+                                        <div class="fs-6 titulo text-muted fw-bold">20 U.T.</div>
+                                        <div class="fw-bold bg-secondary-subtle text-center rounded-3 px-2 mb-1">'.$q1->twenty_ut.' <span class="">Und.</span></div>
+                                    </div>
+                                </div>
+                                <div class="mb-2 border py-2 px-3 rounded-4">
+                                    <div class="d-flex flex-column align-items-center">
+                                        <div class="fs-6 titulo text-muted fw-bold">50 U.T.</div>
+                                        <div class="fw-bold bg-secondary-subtle text-center rounded-3 px-2 mb-1">'.$q1->fifty_ut.' <span class="">Und.</span></div>
+                                    </div>
+                                </div>
+                            </div>';
+            }
+
+            
 
             // OPTION UCD ESTAMPILLAS  
-            $q2 = DB::table('ucd_denominacions')->where('estampillas','=', 'true')->get();
+            $q2 = DB::table('ucd_denominacions')->join('tipos', 'ucd_denominacions.alicuota', '=','tipos.id_tipo')
+                                                ->select('ucd_denominacions.id','ucd_denominacions.denominacion','tipos.nombre_tipo')
+                                                ->where('ucd_denominacions.estampillas','=', 'true')
+                                                ->where('ucd_denominacions.alicuota','=', $alicuota)->get();
             foreach ($q2 as $key) {
-                $options .= '<option value="'.$key->id.'">'.$key->denominacion.' UCD</option>';
+                $options .= '<option value="'.$key->id.'">'.$key->denominacion.' '.$key->nombre_tipo.'</option>';
             }
 
             // HTML
@@ -328,6 +376,7 @@ class VentaController extends Controller
                             </div>
                             <div class="col-sm-8">
                                 <div class="titulo fw-bold fs-4 text-center"><span class="text-muted me-2">Total</span> '.$total_ucd.' U.C.D.</div>
+                                <div class="fs-6 text-center text-muted">Bolívares </div>
                                 <form id="form_detalle_est" method="post" onsubmit="event.preventDefault(); detalleEst()">
                                     <p class="text-muted mt-2"><span class="text-danger">*</span> Ingrese las estampillas que se utilizaran para la venta.</p>
                                     <div id="content_detalle_est">

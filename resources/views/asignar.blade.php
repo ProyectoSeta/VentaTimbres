@@ -121,7 +121,6 @@
                     <th>Fecha</th>
                     <th>Detalles</th>
                     <th>Constancia</th>
-                    <!-- <th>¿Recibido?</th>  -->
                 </thead>
                 <tbody id="" class="border-light-subtle"> 
                     @foreach ($asignado_estampillas as $estampillas)
@@ -140,9 +139,6 @@
                             <td>
                                 <a href="{{route('asignar.pdf_estampillas', ['asignacion' => $estampillas->id_asignacion])}}">Imprimir</a>
                             </td>
-                            <!-- <td>
-                                <span class="text-secondary fst-italic">Sin recibir</span>
-                            </td> -->
                         </tr>
                     @endforeach
                 </tbody> 
@@ -205,7 +201,7 @@
                                     </div>
                                     <div class="col-lg-6">
                                         <label for="taquilla" class="form-label">Taquilla: <span style="color:red">*</span></label>
-                                        <select class="form-select form-select-sm taquilla" forma="14" id="select_taquilla_tfe" name="taquilla" required>
+                                        <select class="form-select form-select-sm " forma="14" id="select_taquilla_tfe" name="taquilla" required>
                                             <option>Seleccionar</option>
                                         </select>
                                     </div>
@@ -311,7 +307,7 @@
         $(document).ready(function () {
             $('#asignados_forma14').DataTable(
                 {
-                    // "order": [[ 0, "desc" ]],
+                    "order": [[ 0, "desc" ]],
                     "language": {
                         "lengthMenu": " Mostrar  _MENU_  Registros por página",
                         "zeroRecords": "No se encontraron registros",
@@ -329,7 +325,7 @@
 
             $('#asignados_estampillas').DataTable(
                 {
-                    // "order": [[ 0, "desc" ]],
+                    "order": [[ 0, "desc" ]],
                     "language": {
                         "lengthMenu": " Mostrar  _MENU_  Registros por página",
                         "zeroRecords": "No se encontraron registros",

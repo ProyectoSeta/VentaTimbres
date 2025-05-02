@@ -91,7 +91,7 @@
         <table>
             <thead>
                 <tr>
-                    <th>UCD</th>
+                    <th>Estampillas</th>
                     <th>Desde</th>
                     <th>Hasta</th>
                     <th>Cant. Timbres</th>
@@ -100,7 +100,7 @@
             <tbody>
                 @foreach ($correlativo as $c)
                     <tr>
-                        <td class="ucd_title">{{$c->ucd}} UCD</td>
+                        <td class="ucd_title">{{$c->ucd}} {{$c->alicuota}}</td>
                         <td>{{$c->desde}}</td>
                         <td>{{$c->hasta}}</td>
                         <td>{{$c->cantidad}} und.</td>

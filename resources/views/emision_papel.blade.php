@@ -306,9 +306,17 @@
                 headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') },
                 type: 'POST',
                 url: '{{route("papel.modal_f14") }}',
-                success: function(response) {
-                    // console.log(response);
-                    $('#content_emitir_papel_f14').html(response);
+                success: function(response) {                    
+                    if (response.success) {
+                        $('#content_emitir_papel_f14').html(response.html);
+                    }else{
+                        if (response.nota != '') {
+                            alert(response.nota)
+                        }else{
+                            alert('Disculpe, ha ocurrido un error. Vuelva a intentarlo.')
+                        }
+                        window.location.href = "{{ route('emision_papel')}}";
+                    }
                 },
                 error: function() {
                 }
