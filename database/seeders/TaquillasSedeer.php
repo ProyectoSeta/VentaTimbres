@@ -60,6 +60,8 @@ class TaquillasSedeer extends Seeder
             'two_ucd' => 0,
             'three_ucd' => 0,
             'five_ucd' => 0,
+            'twenty_ut' => 0,
+            'fifty_ut' => 0,
             'fecha' => '2025-03-10'
         ]);
 
@@ -69,6 +71,8 @@ class TaquillasSedeer extends Seeder
             'two_ucd' => 0,
             'three_ucd' => 0,
             'five_ucd' => 0,
+            'twenty_ut' => 0,
+            'fifty_ut' => 0,
             'fecha' => '2025-03-10'
         ]);
         DB::table('inv_est_taq_temps')->insert([
@@ -77,6 +81,8 @@ class TaquillasSedeer extends Seeder
             'two_ucd' => 0,
             'three_ucd' => 0,
             'five_ucd' => 0,
+            'twenty_ut' => 0,
+            'fifty_ut' => 0,
             'fecha' => '2025-03-10'
         ]);
 

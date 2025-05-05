@@ -21,6 +21,9 @@ return new class extends Migration
             $table->integer('two_ucd');
             $table->integer('three_ucd');
             $table->integer('five_ucd');
+
+            $table->integer('twety_ut');
+            $table->integer('fifty_ut');
             
             $table->date('fecha');
             

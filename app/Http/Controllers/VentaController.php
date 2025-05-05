@@ -292,6 +292,7 @@ class VentaController extends Controller
                 $total_ucd = $total_ucd + ($c1->natural * $folios);
             }
 
+
             // CONSULTA INVENTARIO
             ////comprobar si corresponse UT o UCD
             $con = DB::table('inventario_ut_estampillas')->select('cantidad_timbres','asignado','key_denominacion')->get();
@@ -301,9 +302,10 @@ class VentaController extends Controller
                 $total_dispo = $total_dispo + ($value->cantidad_timbres - $value->asignado);
             }
 
+            $q1 = DB::table('inv_est_taq_temps')->where('key_taquilla','=', $id_taquilla)->first();
+
             if ($total_dispo == 0) {
                 $alicuota = 7;
-                $q1 = DB::table('inv_est_taq_temps')->where('key_taquilla','=', $id_taquilla)->first();
                 $html_inventario = '<div class="text-center text-muted titulo fs-6 mb-2">Inventario de Estampillas</div>
                             <div class="d-flex flex-column">
                                 <div class="mb-2 border py-2 px-3 rounded-4">
@@ -333,18 +335,24 @@ class VentaController extends Controller
                             </div>';
             }else{
                 $alicuota = 19;
-                $q1 = DB::table('inv_est_taq_temps')->where('key_taquilla','=', $id_taquilla)->first();
+                //// VALOR UT 
+                $con_valor_ut = DB::table('configuraciones')->select('valor')->where('nombre','=','Precio U.T.')->first();
+                $precio_20 = number_format((20 * $con_valor_ut->valor), 2, ',', '.');
+                $precio_50 = number_format((50 * $con_valor_ut->valor), 2, ',', '.');
+
                 $html_inventario = '<div class="text-center text-muted titulo fs-6 mb-2">Inventario de Estampillas</div>
                             <div class="d-flex flex-column">
                                 <div class="mb-2 border py-2 px-3 rounded-4">
                                     <div class="d-flex flex-column align-items-center">
                                         <div class="fs-6 titulo text-muted fw-bold">20 U.T.</div>
+                                        <div class="fw-semibold text-secondary" style="font-style:12.4px">'.$precio_20.'Bs. c/u</div>
                                         <div class="fw-bold bg-secondary-subtle text-center rounded-3 px-2 mb-1">'.$q1->twenty_ut.' <span class="">Und.</span></div>
                                     </div>
                                 </div>
                                 <div class="mb-2 border py-2 px-3 rounded-4">
                                     <div class="d-flex flex-column align-items-center">
                                         <div class="fs-6 titulo text-muted fw-bold">50 U.T.</div>
+                                        <div class="fw-semibold text-secondary" style="font-style:12.4px">'.$precio_50.'Bs. c/u</div>
                                         <div class="fw-bold bg-secondary-subtle text-center rounded-3 px-2 mb-1">'.$q1->fifty_ut.' <span class="">Und.</span></div>
                                     </div>
                                 </div>
@@ -362,6 +370,11 @@ class VentaController extends Controller
                 $options .= '<option value="'.$key->id.'">'.$key->denominacion.' '.$key->nombre_tipo.'</option>';
             }
 
+            ///PRECIO UCD HOY
+            $con_ucd =  DB::table('ucds')->select('valor','moneda')->orderBy('id', 'desc')->first();
+            $ucd_bs = $con_ucd->valor * $total_ucd;
+            $format_ucd_bs = number_format($ucd_bs, 2, ',', '.');
+
             // HTML
             $html = '<div class="modal-header p-2 pt-3">
                         <div class=" d-flex align-items-center">
@@ -376,14 +389,14 @@ class VentaController extends Controller
                             </div>
                             <div class="col-sm-8">
                                 <div class="titulo fw-bold fs-4 text-center"><span class="text-muted me-2">Total</span> '.$total_ucd.' U.C.D.</div>
-                                <div class="fs-6 text-center text-muted">Bolívares </div>
+                                <div class="fs-6 text-center text-muted">Bolívares '.$format_ucd_bs.' Bs.</div>
                                 <form id="form_detalle_est" method="post" onsubmit="event.preventDefault(); detalleEst()">
                                     <p class="text-muted mt-2"><span class="text-danger">*</span> Ingrese las estampillas que se utilizaran para la venta.</p>
                                     <div id="content_detalle_est">
                                         <div class="d-flex justify-content-center pb-1">
                                             <div class="row">
                                                 <div class="col-5">
-                                                    <label class="form-label" for="ucd_est">U.C.D.</label><span class="text-danger">*</span>
+                                                    <label class="form-label" for="ucd_est">Estampilla</label><span class="text-danger">*</span>
                                                     <select class="form-select form-select-sm ucd_est" aria-label="Small select example"id="ucd_est_1" nro="1" name="detalle[1][ucd]" required>
                                                         '.$options.'
                                                     </select>
@@ -406,6 +419,7 @@ class VentaController extends Controller
                                     <input type="hidden" name="condicion_sujeto" value="'.$condicion_sujeto.'">
                                     <input type="hidden" name="nro" value="'.$nro.'">
                                     <input type="hidden" name="folios" value="'.$folios.'">
+                                    <input type="hidden" name="alicuota" value="'.$alicuota.'">
 
                                     <div class="d-flex justify-content-center mt-3 mb-3">
                                         <button type="submit" class="btn btn-success btn-sm me-3">Aceptar</button>
@@ -439,6 +453,8 @@ class VentaController extends Controller
         $nro = $request->post('nro');
         $folios = $request->post('folios');
 
+        $alicuota = $request->post('alicuota');
+
         // BUSCAR PRECIO TRAMITE
         $total_ucd = 0;
         $query = DB::table('tramites')->where('id_tramite','=', $tramite)->first();
@@ -459,86 +475,137 @@ class VentaController extends Controller
 
         // COMPROBAR QUE SUMADOS DE EL MONTO TOTAL
         $total_ucd_detalle = 0;
-        foreach ($detalle as $key) {
-            $ucd = $key['ucd'];
-            $cant = $key['cantidad'];
-            if ($ucd == 4) {
-                $ucd = 5;
-            }
+        $total_bs_ut = 0;
 
-            $total_ucd_detalle = $total_ucd_detalle + ($ucd * $cant);
-        }
+        ///total bs ucd
+        $con_ucd =  DB::table('ucds')->select('valor')->orderBy('id', 'desc')->first();
+        $total_bs_est = $total_ucd * $con_ucd->valor;
 
-        if ($total_ucd_detalle == $total_ucd) {
-            //  COMPROBAR DISPONIBILIDAD
-            $q1 = DB::table('inv_est_taq_temps')->where('key_taquilla','=', $id_taquilla)->first();
-            foreach ($detalle as $value) {
-                $ucd = $value['ucd'];
-                $cant = $value['cantidad'];
-
-                switch ($ucd) {
-                    case 1:
-                        if ($q1->one_ucd < $cant) {
-                            return response()->json(['success' => false, 'nota' => 'No hay suficientes estampillas de 1 U.C.D., en su Inventario.']);
-                        }
-                        break;
-                    case 2:
-                        if ($q1->two_ucd < $cant) {
-                            return response()->json(['success' => false, 'nota' => 'No hay suficientes estampillas de 2 U.C.D., en su Inventario.']);
-                        }
-                        break;
-                    case 3:
-                        if ($q1->three_ucd < $cant) {
-                            return response()->json(['success' => false, 'nota' => 'No hay suficientes estampillas de 3 U.C.D., en su Inventario.']);
-                        }
-                        break;
-                    case 4:
-                        if ($q1->five_ucd < $cant) {
-                            return response()->json(['success' => false, 'nota' => 'No hay suficientes estampillas de 5 U.C.D., en su Inventario.']);
-                        }
-                        break;    
-                    default:
-                        return response()->json(['success' => false]);
-                        break;
-                }  
-            }
-
-
-
-            // ACTUALIZO EL INV TEMP DE LA TAQUILLA
-            foreach ($detalle as $detal) {
-                $ucd = $detal['ucd'];
-                $cant = $detal['cantidad'];
-
-                switch ($ucd) {
-                    case 1:
-                        $new_inv = $q1->one_ucd - $cant;
-                        $update = DB::table('inv_est_taq_temps')->where('key_taquilla','=',$id_taquilla)->update(['one_ucd' => $new_inv]);
-                        break;
-                    case 2:
-                        $new_inv = $q1->two_ucd - $cant;
-                        $update = DB::table('inv_est_taq_temps')->where('key_taquilla','=',$id_taquilla)->update(['two_ucd' => $new_inv]);
-                        break;
-                    case 3:
-                        $new_inv = $q1->three_ucd - $cant;
-                        $update = DB::table('inv_est_taq_temps')->where('key_taquilla','=',$id_taquilla)->update(['three_ucd' => $new_inv]);
-                        break;
-                    case 4:
-                        $new_inv = $q1->five_ucd - $cant;
-                        $update = DB::table('inv_est_taq_temps')->where('key_taquilla','=',$id_taquilla)->update(['five_ucd' => $new_inv]);
-                        break;    
-                    default:
-                        return response()->json(['success' => false]);
-                        break;
+        if ($alicuota == 7) {
+            ////UCD
+            foreach ($detalle as $key) {
+                $ucd = $key['ucd'];
+                $cant = $key['cantidad'];
+                if ($ucd == 4) {
+                    $ucd = 5;
                 }
+                $total_ucd_detalle = $total_ucd_detalle + ($ucd * $cant);
             }
-
-            $input = base64_encode(serialize($detalle));
-            return response()->json(['success' => true, 'detalle' => $input, 'nro' => $nro]);
-
         }else{
-            return response()->json(['success' => false, 'nota' => 'Disculpe, el Total del Tramite es '.$total_ucd.' U.C.D.']);
+            ////UT
+            $con_valor_ut = DB::table('configuraciones')->select('valor')->where('nombre','=','Precio U.T.')->first();
+            foreach ($detalle as $key) {
+                $ucd = $key['ucd'];
+                $cant = $key['cantidad'];
+                
+                if ($ucd == 15) {
+                    $precio_ind = 20 * $con_valor_ut->valor;
+                }elseif ($ucd == 16) {
+                    $precio_ind = 50 * $con_valor_ut->valor;
+                }
+
+                $total_bs_ut = $total_bs_ut + ($precio_ind * $cant);
+            }
         }
+
+        ////
+        // return response($total_bs_ut);
+        if ($alicuota == 7){
+            if ($total_ucd_detalle != $total_ucd) {
+                return response()->json(['success' => false, 'nota' => 'Disculpe, el Total del Tramite es '.$total_ucd.' U.C.D.']);
+            }
+        }else{
+            if ($total_bs_ut < $total_bs_est){
+                return response()->json(['success' => false, 'nota' => 'Disculpe, el Total del Tramite es '.$total_ucd.' U.C.D.']);
+            }
+        }
+        ////
+        
+
+        
+        //  COMPROBAR DISPONIBILIDAD
+        $q1 = DB::table('inv_est_taq_temps')->where('key_taquilla','=', $id_taquilla)->first();
+        foreach ($detalle as $value) {
+            $ucd = $value['ucd'];
+            $cant = $value['cantidad'];
+
+            switch ($ucd) {
+                case 1:
+                    if ($q1->one_ucd < $cant) {
+                        return response()->json(['success' => false, 'nota' => 'No hay suficientes estampillas de 1 U.C.D., en su Inventario.']);
+                    }
+                    break;
+                case 2:
+                    if ($q1->two_ucd < $cant) {
+                        return response()->json(['success' => false, 'nota' => 'No hay suficientes estampillas de 2 U.C.D., en su Inventario.']);
+                    }
+                    break;
+                case 3:
+                    if ($q1->three_ucd < $cant) {
+                        return response()->json(['success' => false, 'nota' => 'No hay suficientes estampillas de 3 U.C.D., en su Inventario.']);
+                    }
+                    break;
+                case 4:
+                    if ($q1->five_ucd < $cant) {
+                        return response()->json(['success' => false, 'nota' => 'No hay suficientes estampillas de 5 U.C.D., en su Inventario.']);
+                    }
+                case 15:
+                    if ($q1->twenty_ut < $cant) {
+                        return response()->json(['success' => false, 'nota' => 'No hay suficientes estampillas de 20 U.T., en su Inventario.']);
+                    }
+                case 16:
+                    if ($q1->fifty_ut < $cant) {
+                        return response()->json(['success' => false, 'nota' => 'No hay suficientes estampillas de 50 U.T., en su Inventario.']);
+                    }
+                    break;    
+                default:
+                    return response()->json(['success' => false]);
+                    break;
+            }  
+        }
+
+
+
+        // ACTUALIZO EL INV TEMP DE LA TAQUILLA
+        foreach ($detalle as $detal) {
+            $ucd = $detal['ucd'];
+            $cant = $detal['cantidad'];
+
+            switch ($ucd) {
+                case 1:
+                    $new_inv = $q1->one_ucd - $cant;
+                    $update = DB::table('inv_est_taq_temps')->where('key_taquilla','=',$id_taquilla)->update(['one_ucd' => $new_inv]);
+                    break;
+                case 2:
+                    $new_inv = $q1->two_ucd - $cant;
+                    $update = DB::table('inv_est_taq_temps')->where('key_taquilla','=',$id_taquilla)->update(['two_ucd' => $new_inv]);
+                    break;
+                case 3:
+                    $new_inv = $q1->three_ucd - $cant;
+                    $update = DB::table('inv_est_taq_temps')->where('key_taquilla','=',$id_taquilla)->update(['three_ucd' => $new_inv]);
+                    break;
+                case 4:
+                    $new_inv = $q1->five_ucd - $cant;
+                    $update = DB::table('inv_est_taq_temps')->where('key_taquilla','=',$id_taquilla)->update(['five_ucd' => $new_inv]);
+                    break; 
+                case 15:
+                    $new_inv = $q1->twenty_ut - $cant;
+                    $update = DB::table('inv_est_taq_temps')->where('key_taquilla','=',$id_taquilla)->update(['twenty_ut' => $new_inv]);
+                    break;   
+                case 16:
+                    $new_inv = $q1->fifty_ut - $cant;
+                    $update = DB::table('inv_est_taq_temps')->where('key_taquilla','=',$id_taquilla)->update(['fifty_ut' => $new_inv]);
+                    break;      
+                default:
+                    return response()->json(['success' => false]);
+                    break;
+            }
+        }
+
+        $input = base64_encode(serialize($detalle));
+        return response()->json(['success' => true, 'detalle' => $input, 'nro' => $nro]);
+
+        
        
     }
 
@@ -546,6 +613,8 @@ class VentaController extends Controller
 
     public function agregar(Request $request){
         $tramite = $request->post('tramite');
+        // $alicuota = $request->post('alicuota');
+        // return response($alicuota);
 
         if ($tramite['forma'] == 'Seleccione' || $tramite['forma'] == '') {
             return response()->json(['success' => false, 'nota' => 'Debe seleccionar la Forma.']);
@@ -688,9 +757,13 @@ class VentaController extends Controller
                     $key_ucd = $key['ucd'];
                     $key_cant = $key['cantidad'];
                     
-                    $cu = DB::table('ucd_denominacions')->select('denominacion')->where('id','=', $key_ucd)->first();
+                    $cu = DB::table('ucd_denominacions')
+                    ->join('tipos', 'ucd_denominacions.alicuota', '=','tipos.id_tipo')
+                    ->select('ucd_denominacions.denominacion','tipos.nombre_tipo')
+                    ->where('ucd_denominacions.id','=', $key_ucd)->first();
+
                     for ($i=0; $i < $key_cant; $i++) { 
-                        $span .= '<span>Est '.$cu->denominacion.' UCD</span>';
+                        $span .= '<span>Est '.$cu->denominacion.' '.$cu->nombre_tipo.'</span>';
                     }
                 }
             }else{
@@ -783,6 +856,20 @@ class VentaController extends Controller
 
                         $cant_new = $cant_inv + $detalle['cantidad'];
                         $upt_1 = DB::table('inv_est_taq_temps')->where('key_taquilla','=',$id_taquilla)->update(['five_ucd' => $cant_new]);
+                        break;
+                    case 15:
+                        $con1 = DB::table('inv_est_taq_temps')->select('twenty_ut')->where('key_taquilla','=',$id_taquilla)->first();
+                        $cant_inv = $con1->twenty_ut;
+
+                        $cant_new = $cant_inv + $detalle['cantidad'];
+                        $upt_1 = DB::table('inv_est_taq_temps')->where('key_taquilla','=',$id_taquilla)->update(['twenty_ut' => $cant_new]);
+                        break;
+                    case 16:
+                        $con1 = DB::table('inv_est_taq_temps')->select('fifty_ut')->where('key_taquilla','=',$id_taquilla)->first();
+                        $cant_inv = $con1->fifty_ut;
+
+                        $cant_new = $cant_inv + $detalle['cantidad'];
+                        $upt_1 = DB::table('inv_est_taq_temps')->where('key_taquilla','=',$id_taquilla)->update(['fifty_ut' => $cant_new]);
                         break;
                     
                     default:
@@ -1968,61 +2055,82 @@ class VentaController extends Controller
                                             $key_deno = $est['ucd'];
                                             $cant_est = $est['cantidad'];
     
-                                            $q5 = DB::table('ucd_denominacions')->select('denominacion','identificador')->where('id','=',$key_deno)->where('alicuota','=',7)->first();
+                                            $q5 = DB::table('ucd_denominacions')
+                                                    ->join('tipos', 'ucd_denominacions.alicuota', '=','tipos.id_tipo')
+                                                    ->select('ucd_denominacions.denominacion','tipos.nombre_tipo','ucd_denominacions.identificador','ucd_denominacions.alicuota')
+                                                    ->where('ucd_denominacions.id','=',$key_deno)->first();
+
                                             $identificador_ucd = $q5->identificador;
     
                                             for ($i=0; $i < $cant_est ; $i++) { 
                                                 $nro_timbre = '';
                                                 $key_detalle_asignacion = '';
-    
-                                                $c5 = DB::table('detalle_venta_estampillas')->select('key_detalle_asignacion','nro_timbre')
-                                                                                            ->where('key_denominacion','=',$key_deno)
-                                                                                            ->where('key_taquilla','=',$id_taquilla)
-                                                                                            ->orderBy('correlativo', 'desc')->first();
-                                                if ($c5) {
-                                                    $nro_hipotetico = $c5->nro_timbre +1;
-    
-                                                    $c6 = DB::table('detalle_asignacion_estampillas')->select('hasta')->where('correlativo','=',$c5->key_detalle_asignacion)->first();
-    
-                                                    if ($nro_hipotetico > $c6->hasta) {
-                                                        $c7 = DB::table('detalle_asignacion_estampillas')->select('desde','correlativo')
-                                                                    ->where('key_taquilla','=',$id_taquilla)
-                                                                    ->where('condicion','=',4)
-                                                                    ->where('key_denominacion','=',$key_deno)
-                                                                    ->first();
-                                                        if ($c7) {
-                                                            $nro_timbre = $c7->desde;
-                                                            $key_detalle_asignacion = $c7->correlativo;
-                                                            $update_2 = DB::table('detalle_asignacion_estampillas')->where('correlativo','=',$c7->correlativo)->update(['condicion' => 3]);
+
+                                                if ($q5->alicuota == 19) {
+                                                    // /////// ESTAMPILLAS UT
+                                                    // $c5 = DB::table('detalle_venta_estampillas')->select('key_detalle_asignacion','nro_timbre')
+                                                    //                                             ->where('key_denominacion','=',$key_deno)
+                                                    //                                             ->where('key_taquilla','=',$id_taquilla)
+                                                    //                                             ->orderBy('correlativo', 'desc')->first();
+                                                    // if ($c5){
+                                                    //     $nro_hipotetico = $c5->nro_timbre +1;
+                                                    // }else{
+                                                    //     /// primera venta de estampilla
+                                                    // }
+
+                                                }else{
+                                                    ////// ESTAMPILLAS UCD
+                                                    $c5 = DB::table('detalle_venta_estampillas')->select('key_detalle_asignacion','nro_timbre')
+                                                                                                ->where('key_denominacion','=',$key_deno)
+                                                                                                ->where('key_taquilla','=',$id_taquilla)
+                                                                                                ->orderBy('correlativo', 'desc')->first();
+                                                    if ($c5) {
+                                                        $nro_hipotetico = $c5->nro_timbre +1;
+        
+                                                        $c6 = DB::table('detalle_asignacion_estampillas')->select('hasta')->where('correlativo','=',$c5->key_detalle_asignacion)->first();
+        
+                                                        if ($nro_hipotetico > $c6->hasta) {
+                                                            $c7 = DB::table('detalle_asignacion_estampillas')->select('desde','correlativo')
+                                                                        ->where('key_taquilla','=',$id_taquilla)
+                                                                        ->where('condicion','=',4)
+                                                                        ->where('key_denominacion','=',$key_deno)
+                                                                        ->first();
+                                                            if ($c7) {
+                                                                $nro_timbre = $c7->desde;
+                                                                $key_detalle_asignacion = $c7->correlativo;
+                                                                $update_2 = DB::table('detalle_asignacion_estampillas')->where('correlativo','=',$c7->correlativo)->update(['condicion' => 3]);
+                                                            }else{
+                                                                // delete venta
+                                                                $delete_venta = DB::table('ventas')->where('id_venta', '=', $id_venta)->delete();
+                                                                return response()->json(['success' => false, 'nota'=> '']);
+                                                            }
+                                                        }else{
+                                                            $nro_timbre = $nro_hipotetico;
+                                                            $key_detalle_asignacion = $c5->key_detalle_asignacion;
+                                                            if ($nro_hipotetico == $c6->hasta) {
+                                                                $update_1 = DB::table('detalle_asignacion_estampillas')->where('correlativo','=',$c5->key_detalle_asignacion)->update(['condicion' => 7]);
+                                                            }
+                                                        }
+                                                    }else{
+                                                    ///// primer registro de venta de la denominacion 
+                                                        $c8 = DB::table('detalle_asignacion_estampillas')->select('desde','correlativo')
+                                                                                                        ->where('key_taquilla','=',$id_taquilla)
+                                                                                                        ->where('condicion','=',4)
+                                                                                                        ->where('key_denominacion','=',$key_deno)
+                                                                                                        ->first();
+                                                        if ($c8) {
+                                                            $nro_timbre = $c8->desde;
+                                                            $key_detalle_asignacion = $c8->correlativo;
+                                                            $update_3 = DB::table('detalle_asignacion_estampillas')->where('correlativo','=',$c8->correlativo)->update(['condicion' => 3]);
                                                         }else{
                                                             // delete venta
                                                             $delete_venta = DB::table('ventas')->where('id_venta', '=', $id_venta)->delete();
-                                                            return response()->json(['success' => false, 'nota'=> '']);
+                                                            return response()->json(['success' => false, 'nota'=> 'No hay timbres disponibles de ']);
                                                         }
-                                                    }else{
-                                                        $nro_timbre = $nro_hipotetico;
-                                                        $key_detalle_asignacion = $c5->key_detalle_asignacion;
-                                                        if ($nro_hipotetico == $c6->hasta) {
-                                                            $update_1 = DB::table('detalle_asignacion_estampillas')->where('correlativo','=',$c5->key_detalle_asignacion)->update(['condicion' => 7]);
-                                                        }
-                                                    }
-                                                }else{
-                                                ///// primer registro de venta de la denominacion 
-                                                    $c8 = DB::table('detalle_asignacion_estampillas')->select('desde','correlativo')
-                                                                                                    ->where('key_taquilla','=',$id_taquilla)
-                                                                                                    ->where('condicion','=',4)
-                                                                                                    ->where('key_denominacion','=',$key_deno)
-                                                                                                    ->first();
-                                                    if ($c8) {
-                                                        $nro_timbre = $c8->desde;
-                                                        $key_detalle_asignacion = $c8->correlativo;
-                                                        $update_3 = DB::table('detalle_asignacion_estampillas')->where('correlativo','=',$c8->correlativo)->update(['condicion' => 3]);
-                                                    }else{
-                                                        // delete venta
-                                                        $delete_venta = DB::table('ventas')->where('id_venta', '=', $id_venta)->delete();
-                                                        return response()->json(['success' => false, 'nota'=> 'No hay timbres disponibles de ']);
                                                     }
                                                 }
+    
+                                                
     
                                                 // SERIAL
                                                 $length = 6;
