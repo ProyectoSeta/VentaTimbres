@@ -2066,70 +2066,55 @@ class VentaController extends Controller
                                                 $nro_timbre = '';
                                                 $key_detalle_asignacion = '';
 
-                                                if ($q5->alicuota == 19) {
-                                                    // /////// ESTAMPILLAS UT
-                                                    // $c5 = DB::table('detalle_venta_estampillas')->select('key_detalle_asignacion','nro_timbre')
-                                                    //                                             ->where('key_denominacion','=',$key_deno)
-                                                    //                                             ->where('key_taquilla','=',$id_taquilla)
-                                                    //                                             ->orderBy('correlativo', 'desc')->first();
-                                                    // if ($c5){
-                                                    //     $nro_hipotetico = $c5->nro_timbre +1;
-                                                    // }else{
-                                                    //     /// primera venta de estampilla
-                                                    // }
+                                                ////// ESTAMPILLAS UCD
+                                                $c5 = DB::table('detalle_venta_estampillas')->select('key_detalle_asignacion','nro_timbre')
+                                                                                            ->where('key_denominacion','=',$key_deno)
+                                                                                            ->where('key_taquilla','=',$id_taquilla)
+                                                                                            ->orderBy('correlativo', 'desc')->first();
+                                                if ($c5) {
+                                                    $nro_hipotetico = $c5->nro_timbre +1;
 
-                                                }else{
-                                                    ////// ESTAMPILLAS UCD
-                                                    $c5 = DB::table('detalle_venta_estampillas')->select('key_detalle_asignacion','nro_timbre')
-                                                                                                ->where('key_denominacion','=',$key_deno)
-                                                                                                ->where('key_taquilla','=',$id_taquilla)
-                                                                                                ->orderBy('correlativo', 'desc')->first();
-                                                    if ($c5) {
-                                                        $nro_hipotetico = $c5->nro_timbre +1;
-        
-                                                        $c6 = DB::table('detalle_asignacion_estampillas')->select('hasta')->where('correlativo','=',$c5->key_detalle_asignacion)->first();
-        
-                                                        if ($nro_hipotetico > $c6->hasta) {
-                                                            $c7 = DB::table('detalle_asignacion_estampillas')->select('desde','correlativo')
-                                                                        ->where('key_taquilla','=',$id_taquilla)
-                                                                        ->where('condicion','=',4)
-                                                                        ->where('key_denominacion','=',$key_deno)
-                                                                        ->first();
-                                                            if ($c7) {
-                                                                $nro_timbre = $c7->desde;
-                                                                $key_detalle_asignacion = $c7->correlativo;
-                                                                $update_2 = DB::table('detalle_asignacion_estampillas')->where('correlativo','=',$c7->correlativo)->update(['condicion' => 3]);
-                                                            }else{
-                                                                // delete venta
-                                                                $delete_venta = DB::table('ventas')->where('id_venta', '=', $id_venta)->delete();
-                                                                return response()->json(['success' => false, 'nota'=> '']);
-                                                            }
-                                                        }else{
-                                                            $nro_timbre = $nro_hipotetico;
-                                                            $key_detalle_asignacion = $c5->key_detalle_asignacion;
-                                                            if ($nro_hipotetico == $c6->hasta) {
-                                                                $update_1 = DB::table('detalle_asignacion_estampillas')->where('correlativo','=',$c5->key_detalle_asignacion)->update(['condicion' => 7]);
-                                                            }
-                                                        }
-                                                    }else{
-                                                    ///// primer registro de venta de la denominacion 
-                                                        $c8 = DB::table('detalle_asignacion_estampillas')->select('desde','correlativo')
-                                                                                                        ->where('key_taquilla','=',$id_taquilla)
-                                                                                                        ->where('condicion','=',4)
-                                                                                                        ->where('key_denominacion','=',$key_deno)
-                                                                                                        ->first();
-                                                        if ($c8) {
-                                                            $nro_timbre = $c8->desde;
-                                                            $key_detalle_asignacion = $c8->correlativo;
-                                                            $update_3 = DB::table('detalle_asignacion_estampillas')->where('correlativo','=',$c8->correlativo)->update(['condicion' => 3]);
+                                                    $c6 = DB::table('detalle_asignacion_estampillas')->select('hasta')->where('correlativo','=',$c5->key_detalle_asignacion)->first();
+
+                                                    if ($nro_hipotetico > $c6->hasta) {
+                                                        $c7 = DB::table('detalle_asignacion_estampillas')->select('desde','correlativo')
+                                                                    ->where('key_taquilla','=',$id_taquilla)
+                                                                    ->where('condicion','=',4)
+                                                                    ->where('key_denominacion','=',$key_deno)
+                                                                    ->first();
+                                                        if ($c7) {
+                                                            $nro_timbre = $c7->desde;
+                                                            $key_detalle_asignacion = $c7->correlativo;
+                                                            $update_2 = DB::table('detalle_asignacion_estampillas')->where('correlativo','=',$c7->correlativo)->update(['condicion' => 3]);
                                                         }else{
                                                             // delete venta
                                                             $delete_venta = DB::table('ventas')->where('id_venta', '=', $id_venta)->delete();
-                                                            return response()->json(['success' => false, 'nota'=> 'No hay timbres disponibles de ']);
+                                                            return response()->json(['success' => false, 'nota'=> '']);
+                                                        }
+                                                    }else{
+                                                        $nro_timbre = $nro_hipotetico;
+                                                        $key_detalle_asignacion = $c5->key_detalle_asignacion;
+                                                        if ($nro_hipotetico == $c6->hasta) {
+                                                            $update_1 = DB::table('detalle_asignacion_estampillas')->where('correlativo','=',$c5->key_detalle_asignacion)->update(['condicion' => 7]);
                                                         }
                                                     }
+                                                }else{
+                                                ///// primer registro de venta de la denominacion 
+                                                    $c8 = DB::table('detalle_asignacion_estampillas')->select('desde','correlativo')
+                                                                                                    ->where('key_taquilla','=',$id_taquilla)
+                                                                                                    ->where('condicion','=',4)
+                                                                                                    ->where('key_denominacion','=',$key_deno)
+                                                                                                    ->first();
+                                                    if ($c8) {
+                                                        $nro_timbre = $c8->desde;
+                                                        $key_detalle_asignacion = $c8->correlativo;
+                                                        $update_3 = DB::table('detalle_asignacion_estampillas')->where('correlativo','=',$c8->correlativo)->update(['condicion' => 3]);
+                                                    }else{
+                                                        // delete venta
+                                                        $delete_venta = DB::table('ventas')->where('id_venta', '=', $id_venta)->delete();
+                                                        return response()->json(['success' => false, 'nota'=> 'No hay timbres disponibles de ']);
+                                                    }
                                                 }
-    
                                                 
     
                                                 // SERIAL
@@ -2151,6 +2136,12 @@ class VentaController extends Controller
                                                 if ($i3) {
                                                     $cant_estampillas = $cant_estampillas + 1;
                                                     $cant_ucd_estampillas = $cant_ucd_estampillas + $q5->denominacion;
+
+                                                    if ($q5->alicuota == 7) {
+                                                        $qr = '<img src="'.asset('assets/qrEstampillas/qrcode_EST'.$nro_timbre.'.png').'" class="img-fluid" alt="" width="110px">';
+                                                    }elseif ($q5->alicuota == 19) {
+                                                        $qr = '';
+                                                    }
     
                                                     $row_timbres .= '<div class="border mb-4 rounded-3">
                                                                         <div class="d-flex justify-content-between px-3 py-2 align-items-center">
@@ -2174,11 +2165,11 @@ class VentaController extends Controller
                                                                             </div>
                                                                             <!-- UCD -->
                                                                             <div class="">
-                                                                                <div class="text-center titulo fw-bold fs-3">'.$q5->denominacion.' UCD</div>
+                                                                                <div class="text-center titulo fw-bold fs-3">'.$q5->denominacion.' '.$q5->nombre_tipo.'</div>
                                                                             </div>
                                                                             <!-- QR -->
                                                                             <div class="text-center">
-                                                                                <img src="'.asset('assets/qrEstampillas/qrcode_EST'.$nro_timbre.'.png').'" class="img-fluid" alt="" width="110px">
+                                                                                '.$qr.'
                                                                             </div>
                                                                         </div>
                                                                     </div>';

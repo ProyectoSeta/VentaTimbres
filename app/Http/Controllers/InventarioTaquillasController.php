@@ -153,7 +153,9 @@ class InventarioTaquillasController extends Controller
         $taquilla = $request->post('taquilla');
         $tr = '';
 
-        $c1 = DB::table('ucd_denominacions')->select('id','denominacion')->where('estampillas','=','true')->get();
+        $c1 = DB::table('ucd_denominacions')->join('tipos', 'ucd_denominacions.alicuota', '=','tipos.id_tipo')
+                        ->select('ucd_denominacions.id','ucd_denominacions.denominacion','tipos.nombre_tipo')
+                        ->where('ucd_denominacions.estampillas','=','true')->get();
         foreach ($c1 as $key) {
             $total = 0;
             $consulta = DB::table('detalle_asignacion_estampillas')->select('cantidad_timbres','vendido')
@@ -170,17 +172,17 @@ class InventarioTaquillasController extends Controller
 
             if ($total < 25) {
                $ucd = '<span class="text-navy fw-bold titulo d-flex align-items-center justify-content-center">
-                            '.$key->denominacion.' UCD 
+                            '.$key->denominacion.' '.$key->nombre_tipo.' 
                             <i class="bx bx-error-circle ms-2 text-danger"></i>
                         </span>';
             }elseif ($total >= 26  && $total <= 50) {
                 $ucd = '<span class="text-navy fw-bold titulo d-flex align-items-center justify-content-center">
-                            '.$key->denominacion.' UCD 
+                            '.$key->denominacion.' '.$key->nombre_tipo.' 
                             <i class="bx bx-minus-circle ms-2" style="color:#f59d11"></i>
                         </span>';
             }else{
                 $ucd = '<span class="text-navy fw-bold titulo d-flex align-items-center justify-content-center">
-                            '.$key->denominacion.' UCD 
+                            '.$key->denominacion.' '.$key->nombre_tipo.' 
                             <i class="bx bx-check-circle ms-2 text-success"></i>
                         </span>';
             }
@@ -204,7 +206,7 @@ class InventarioTaquillasController extends Controller
                     <div class="d-flex justify-content-center">
                         <table class="table w-75 text-center">
                             <tr>
-                                <th class="w-50">UCD</th>
+                                <th class="w-50">Estampillas</th>
                                 <th class="w-50">Cantidad</th>
                             </tr>
                             '.$tr.'

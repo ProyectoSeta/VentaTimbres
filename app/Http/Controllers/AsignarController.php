@@ -652,6 +652,8 @@ class AsignarController extends Controller
                 $inventario = 19;
             }
 
+            
+
         /////////////////////////////////////////////////////////////VERIFICAR DISPONIBILIDAD
             foreach ($emitir as $e) {
                 $deno = $e['denominacion'];
@@ -716,7 +718,7 @@ class AsignarController extends Controller
                                 //// no hay registros
                                 $desde = $key->desde;
                             }
-    
+                            return response($desde);
                             ///HASTA
                             $hasta_prev = ($desde + $timbres_restantes) - 1;
                             if ($hasta_prev > $key->hasta) {
