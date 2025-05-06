@@ -116,5 +116,13 @@ class ClasificacionSeeder extends Seeder
         DB::table('clasificacions')->insert([
             'nombre_clf' => 'Und',
         ]);
+
+        DB::table('clasificacions')->insert([
+            'nombre_clf' => 'emision_est',
+        ]);
+        DB::table('clasificacions')->insert([
+            'nombre_clf' => 'ucd',
+        ]);
+
     }
 }

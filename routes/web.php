@@ -35,6 +35,8 @@ Route::post('/home/ingreso_boveda', [App\Http\Controllers\HomeController::class,
 Route::post('/home/historial_boveda', [App\Http\Controllers\HomeController::class, 'historial_boveda'])->name('home.historial_boveda');
 Route::post('/home/cierre_taquilla', [App\Http\Controllers\HomeController::class, 'cierre_taquilla'])->name('home.cierre_taquilla');
 
+Route::post('/home/imprimir', [App\Http\Controllers\HomeController::class, 'imprimir'])->name('home.imprimir');
+
 
 ///////////////////// PAPEL DE SEGURIDAD
 Route::get('/emision_papel', [App\Http\Controllers\PapelSeguridadController::class, 'index'])->name('emision_papel');

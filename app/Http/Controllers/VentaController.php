@@ -295,11 +295,11 @@ class VentaController extends Controller
 
             // CONSULTA INVENTARIO
             ////comprobar si corresponse UT o UCD
-            $con = DB::table('inventario_ut_estampillas')->select('cantidad_timbres','asignado','key_denominacion')->get();
+            $con = DB::table('detalle_asignacion_estampillas')->select('cantidad_timbres','vendido')->where('key_taquilla','=',$id_taquilla)->where('inventario','=',19)->get();
             $total_dispo = 0;
 
             foreach ($con as $value) {
-                $total_dispo = $total_dispo + ($value->cantidad_timbres - $value->asignado);
+                $total_dispo = $total_dispo + ($value->cantidad_timbres - $value->vendido);
             }
 
             $q1 = DB::table('inv_est_taq_temps')->where('key_taquilla','=', $id_taquilla)->first();
@@ -526,7 +526,7 @@ class VentaController extends Controller
         //  COMPROBAR DISPONIBILIDAD
         $q1 = DB::table('inv_est_taq_temps')->where('key_taquilla','=', $id_taquilla)->first();
         foreach ($detalle as $value) {
-            $ucd = $value['ucd'];
+            $ucd = $value['ucd']; 
             $cant = $value['cantidad'];
 
             switch ($ucd) {
@@ -549,10 +549,12 @@ class VentaController extends Controller
                     if ($q1->five_ucd < $cant) {
                         return response()->json(['success' => false, 'nota' => 'No hay suficientes estampillas de 5 U.C.D., en su Inventario.']);
                     }
+                    break;
                 case 15:
                     if ($q1->twenty_ut < $cant) {
                         return response()->json(['success' => false, 'nota' => 'No hay suficientes estampillas de 20 U.T., en su Inventario.']);
                     }
+                    break;
                 case 16:
                     if ($q1->fifty_ut < $cant) {
                         return response()->json(['success' => false, 'nota' => 'No hay suficientes estampillas de 50 U.T., en su Inventario.']);

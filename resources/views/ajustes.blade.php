@@ -19,7 +19,7 @@
 
         <p class="text-muted fw-semibold fs-4 text-center titulo">Emisión de TFE-14</p>
 
-        <div class="table-responsive" style="font-size:12.7px">
+        <div class="table-responsive mb-4" style="font-size:12.7px">
             <table id="table_ajustes_tfe" class="table text-center border-light-subtle" style="font-size:13px">
                 <thead>
                     <tr>
@@ -58,7 +58,7 @@
                                 @if ($a14->correlativo == 3 && $a14->valor != NULL)
                                     <span class="text-secondary fst-italic">No editable.</span>
                                 @else
-                                    <span class="badge editar" style="background-color: #169131;" i="{{$a14->correlativo}}" role="button" data-bs-toggle="modal" data-bs-target="#modal_editar_valor">
+                                    <span class="badge editar" style="background-color: #169131;" i="{{$a14->correlativo}}" var="ajustes" role="button" data-bs-toggle="modal" data-bs-target="#modal_editar_valor">
                                         <i class="bx bx-pencil fs-6"></i>
                                     </span>
                                 @endif
@@ -74,7 +74,7 @@
 
         <p class="text-muted fw-semibold fs-4 text-center titulo">Venta</p>
 
-        <div class="table-responsive" style="font-size:12.7px">
+        <div class="table-responsive mb-4" style="font-size:12.7px">
             <table id="table_ajustes_venta" class="table text-center border-light-subtle" style="font-size:13px">
                 <thead>
                     <tr>
@@ -97,7 +97,7 @@
                             <td>{{$av->descripcion}}</td>
                             <td> <span class="fw-semibold">{{$av->valor}} {{$av->nombre_clf}}.</span></td>
                             <td>
-                                <span class="badge editar" style="background-color: #169131;" i="{{$av->correlativo}}" role="button" data-bs-toggle="modal" data-bs-target="#modal_editar_valor">
+                                <span class="badge editar" style="background-color: #169131;" i="{{$av->correlativo}}" var="ajustes" role="button" data-bs-toggle="modal" data-bs-target="#modal_editar_valor">
                                     <i class="bx bx-pencil fs-6"></i>
                                 </span>
                             </td>
@@ -106,6 +106,82 @@
                             </td>
                         </tr>
                     @endforeach
+                </tbody>
+            </table>
+        </div>
+
+
+        <p class="text-muted fw-semibold fs-4 text-center titulo">Emisión de Estampillas</p>
+
+        <div class="table-responsive mb-4" style="font-size:12.7px">
+            <table id="table_ajustes_est" class="table text-center border-light-subtle" style="font-size:13px">
+                <thead>
+                    <tr>
+                        <th>#</th>
+                        <th>Nombre</th>
+                        <th>Descripción</th>
+                        <th>Valor</th>
+                        <th>Opción</th>
+                        <th>Ultima actualización</th>
+                    </tr> 
+                </thead>
+                <tbody>
+                    @foreach ($con_est as $est)
+                        @php
+                            $c++;
+                        @endphp
+                        <tr>
+                            <td><span class="text-muted">{{$c}}</span></td>
+                            <td><span class="text-navy fw-semibold">{{$est->nombre}}</span></td>
+                            <td>{{$est->descripcion}}</td>
+                            <td> <span class="fw-semibold">{{$est->valor}} {{$est->nombre_clf}}.</span></td>
+                            <td>
+                                <span class="badge editar" style="background-color: #169131;" i="{{$est->correlativo}}" var="ajustes" role="button" data-bs-toggle="modal" data-bs-target="#modal_editar_valor">
+                                    <i class="bx bx-pencil fs-6"></i>
+                                </span>
+                            </td>
+                            <td>
+                                <span class="text-muted">{{date("d-m-Y | h:i A",strtotime($est->updated_at))}}</span>
+                            </td>
+                        </tr>
+                    @endforeach
+                </tbody>
+            </table>
+        </div>
+
+
+        <p class="text-muted fw-semibold fs-4 text-center titulo">U.C.D</p>
+
+        <div class="table-responsive mb-4" style="font-size:12.7px">
+            <table id="table_ajustes_ucd" class="table text-center border-light-subtle" style="font-size:13px">
+                <thead>
+                    <tr>
+                        <th>#</th>
+                        <th>Nombre</th>
+                        <th>Valor</th>
+                        <th>Moneda</th>
+                        <th>Opción</th>
+                        <th>Ultima actualización</th>
+                    </tr> 
+                </thead>
+                <tbody>
+                    @php
+                        $c++;
+                    @endphp
+                    <tr>
+                        <td><span class="text-muted">{{$c}}</span></td>
+                        <td><span class="text-navy fw-semibold">Precio U.C.D</span></td>
+                        <td>{{$ucd->valor}}</td>
+                        <td> <span class="fw-semibold">{{$ucd->moneda}}</span></td>
+                        <td>
+                            <span class="badge editar" style="background-color: #169131;" i="{{$ucd->id}}" var="ucd" role="button" data-bs-toggle="modal" data-bs-target="#modal_editar_valor">
+                                <i class="bx bx-pencil fs-6"></i>
+                            </span>
+                        </td>
+                        <td>
+                            <span class="text-muted">{{date("d-m-Y | h:i A",strtotime($ucd->fecha))}}</span>
+                        </td>
+                    </tr>
                 </tbody>
             </table>
         </div>
@@ -185,6 +261,38 @@
                     }
                 }
             );
+            $('#table_ajustes_est').DataTable(
+                {
+                    "language": {
+                        "lengthMenu": " Mostrar  _MENU_  Registros por página",
+                        "zeroRecords": "No se encontraron registros",
+                        "info": "Mostrando página _PAGE_ de _PAGES_",
+                        "infoEmpty": "No se encuentran Registros",
+                        "infoFiltered": "(filtered from _MAX_ total records)",
+                        'search':"Buscar",
+                        'paginate':{
+                            'next':'Siguiente',
+                            'previous':'Anterior'
+                        }
+                    }
+                }
+            );
+            $('#table_ajustes_ucd').DataTable(
+                {
+                    "language": {
+                        "lengthMenu": " Mostrar  _MENU_  Registros por página",
+                        "zeroRecords": "No se encontraron registros",
+                        "info": "Mostrando página _PAGE_ de _PAGES_",
+                        "infoEmpty": "No se encuentran Registros",
+                        "infoFiltered": "(filtered from _MAX_ total records)",
+                        'search':"Buscar",
+                        'paginate':{
+                            'next':'Siguiente',
+                            'previous':'Anterior'
+                        }
+                    }
+                }
+            );
 
         });
     </script>
@@ -196,11 +304,12 @@
            $(document).on('click','.editar', function(e) {
                 e.preventDefault(); 
                 var correlativo =  $(this).attr('i');
+                var variable =  $(this).attr('var');
                 $.ajax({
                     headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') },
                     type: 'POST',
                     url: '{{route("ajustes.modal_editar") }}',
-                    data: {correlativo:correlativo},
+                    data: {correlativo:correlativo,variable:variable},
                     success: function(response) {
                         if (response.success) {
                             $('#content_editar_valor').html(response.html);

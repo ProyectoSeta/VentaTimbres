@@ -708,9 +708,10 @@ class AsignarController extends Controller
                         if ($timbres_asignados == $cantidad) {
                             break;
                         }else{
-                            // DESDE
+                            // DESDE                            
                             $q2 = DB::table('detalle_asignacion_estampillas')->select('hasta')
                                                                     ->where('key_inventario_estampilla', '=', $key->id_inventario_estampilla)
+                                                                    ->where('inventario', '=', $inventario)
                                                                     ->orderBy('correlativo', 'desc')->first();
                             if ($q2) {
                                 $desde = $q2->hasta + 1;
@@ -718,7 +719,7 @@ class AsignarController extends Controller
                                 //// no hay registros
                                 $desde = $key->desde;
                             }
-                            return response($desde);
+                            
                             ///HASTA
                             $hasta_prev = ($desde + $timbres_restantes) - 1;
                             if ($hasta_prev > $key->hasta) {

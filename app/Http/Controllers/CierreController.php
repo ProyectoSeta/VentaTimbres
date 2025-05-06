@@ -72,14 +72,19 @@ class CierreController extends Controller
     public function comprobar()
     {
         $hoy = date('Y-m-d');
-        $query = DB::table('apertura_taquillas')->where('fecha','=', $hoy)->get();
-
-        foreach ($query as $key) {
-            if ($key->cierre_taquilla == NULL) {
-                return response()->json(['success' => false, 'nota' => 'Disculpe, la acción no se puede realizar hasta que TODAS las taquillas aperturadas el día de hoy sean cerradas.']); 
+        $query = DB::table('apertura_taquillas')->where('fecha','=', $hoy)->get(); //return response($query);
+        if (!empty($query)) {
+            foreach ($query as $key) {
+                if ($key->cierre_taquilla == NULL) {
+                    return response()->json(['success' => false, 'nota' => 'Disculpe, la acción no se puede realizar hasta que TODAS las taquillas aperturadas el día de hoy sean cerradas.']); 
+                }
             }
+            return response()->json(['success' => true]);
+        }else{
+            return response()->json(['success' => false, 'nota' => 'Hoy no ha sido aperturada ninguna Taquilla.']);
         }
-        return response()->json(['success' => true]);
+
+        
     }
 
     /**

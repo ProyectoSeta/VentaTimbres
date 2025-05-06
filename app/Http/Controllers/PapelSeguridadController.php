@@ -449,7 +449,7 @@ class PapelSeguridadController extends Controller
             $desde = 1;
         }
 
-        $c1 =  DB::table('variables')->select('valor')->where('variable','=','cant_por_emision_tfes')->first();
+        $c1 =  DB::table('configuraciones')->select('valor')->where('correlativo','=',6)->first(); //// 6 => cant. timbres estampillas por lote 
         $cant_timbres_lote = $c1->valor;
         $hasta = ($desde + $cant_timbres_lote) - 1;
 
@@ -532,7 +532,7 @@ class PapelSeguridadController extends Controller
                 $desde = 1;
             }
 
-            $c1 =  DB::table('variables')->select('valor')->where('variable','=','cant_por_emision_tfes')->first();
+            $c1 =  DB::table('configuraciones')->select('valor')->where('correlativo','=',6)->first(); //// 6 => cant. timbres tfe14 por lote 
             $cant_timbres_lote = $c1->valor;
             $hasta = ($desde + $cant_timbres_lote) - 1;
             

@@ -35,14 +35,41 @@ class AjustesSeeder extends Seeder
             'unidad' => 26,
             'module' => 23
         ]);
+        DB::table('configuraciones')->insert([
+            'nombre' => 'Cantidad de Timbres emitidos por Lote',
+            'descripcion' => 'Cantidad de Timbres Fiscales que se emitirán por Lote de Papel de TFE-14.',
+            'valor' => '1000',
+            'unidad' => 26, //und
+            'module' => 23
+        ]);
 
         // VENTA
         DB::table('configuraciones')->insert([
             'nombre' => 'Precio U.T.',
             'descripcion' => 'Precio de la Unidad Tributaria',
-            'valor' => '73.46',
+            'valor' => '9.00',
             'unidad' => 25,
             'module' => 24
+        ]);
+
+
+        // EMISIÓN DE ESTAMPILLAS
+        DB::table('configuraciones')->insert([
+            'nombre' => 'Cantidad de Timbres emitidos por Lote',
+            'descripcion' => 'Cantidad de Timbres Fiscales que se emitirán por Lote de Papel de Estampillas.',
+            'valor' => '1000',
+            'unidad' => 26,
+            'module' => 27
+        ]);
+
+
+        // UCD
+        DB::table('configuraciones')->insert([
+            'nombre' => 'Precio U.C.D',
+            'descripcion' => 'Precio (Bs.) de U.C.D.',
+            'valor' => '100.6',
+            'unidad' => 25,
+            'module' => 28
         ]);
     }
 }

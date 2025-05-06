@@ -162,7 +162,7 @@
                     type: 'POST',
                     url: '{{route("cierre.comprobar") }}',
                     success: function(response) {
-                        // console.log(response);
+                        console.log(response);
                         if (response.success) {
                             // 
                             $.ajax({

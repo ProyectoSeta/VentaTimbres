@@ -252,6 +252,22 @@
 
     <script type="text/javascript">
         $(document).ready(function () {
+            $.ajax({
+                headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') },
+                type: 'POST',
+                url: '{{route("home.imprimir") }}',
+                success: function(response) {
+                    console.log(response);
+                },
+                error: function() {
+                }
+            });
+
+
+
+
+
+
             /////////////////////// SIN FONDO
             $(document).on('click', '#sin_fondo', function(e){ 
                 if($("#sin_fondo").is(':checked')) {

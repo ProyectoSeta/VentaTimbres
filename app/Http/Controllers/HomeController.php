@@ -5,6 +5,11 @@ use DB;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash; 
 
+
+use Mike42\Escpos\PrintConnectors\FilePrintConnector;
+use Mike42\Escpos\PrintConnectors\WindowsPrintConnector;
+use Mike42\Escpos\Printer;
+
 class HomeController extends Controller
 {
     /**
@@ -81,6 +86,22 @@ class HomeController extends Controller
 
     
 
+    public function imprimir(){
+        // $impresora = 'USB001';COMPOSER
+        $nombreImpresora = "USB001";
+        $connector = new WindowsPrintConnector($nombreImpresora);
+        $impresora = new Printer($connector);
+        $impresora->setJustification(Printer::JUSTIFY_CENTER);
+        $impresora->setTextSize(2, 2);
+        $impresora->text("Imprimiendo\n");
+        $impresora->text("ticket\n");
+        $impresora->text("desde\n");
+        $impresora->text("Laravel\n");
+        $impresora->setTextSize(1, 1);
+        $impresora->text("https://parzibyte.me");
+        $impresora->feed(5);
+        $impresora->close();
+    }
 
 
     public function apertura_taquilla(Request $request){
