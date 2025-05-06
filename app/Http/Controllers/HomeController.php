@@ -33,9 +33,12 @@ class HomeController extends Controller
     {
         $user = auth()->id();
         $query = DB::table('users')->select('key_sujeto')->where('id','=',$user)->first();
-        $q2 = DB::table('taquillas')->select('id_taquilla')->where('key_funcionario','=',$query->key_sujeto)->first();
+        $q2 = DB::table('taquillas')->join('sedes', 'taquillas.key_sede', '=','sedes.id_sede')
+                                    ->select('sedes.sede','taquillas.id_taquilla')
+                                    ->where('taquillas.key_funcionario','=',$query->key_sujeto)->first();
 
         $id_taquilla = $q2->id_taquilla;
+        $sede = $q2->sede;
         $hoy = date('Y-m-d');
         $apertura_admin = false;
         $apertura_taquillero = false;
@@ -79,7 +82,7 @@ class HomeController extends Controller
 
         $hoy_view = $dias[date('w')].", ".date('d')." de ".$meses[date('n')-1]. " ".date('Y');
 
-        return view('home', compact('apertura_admin','apertura_taquillero','hora_apertura_admin','hora_apertura_taquillero','cierre_taquilla','hora_cierre_taquilla','hoy_view'));
+        return view('home', compact('apertura_admin','apertura_taquillero','hora_apertura_admin','hora_apertura_taquillero','cierre_taquilla','hora_cierre_taquilla','hoy_view','sede','id_taquilla'));
 
 
     }
@@ -87,20 +90,20 @@ class HomeController extends Controller
     
 
     public function imprimir(){
-        // $impresora = 'USB001';COMPOSER
-        $nombreImpresora = "USB001";
-        $connector = new WindowsPrintConnector($nombreImpresora);
-        $impresora = new Printer($connector);
-        $impresora->setJustification(Printer::JUSTIFY_CENTER);
-        $impresora->setTextSize(2, 2);
-        $impresora->text("Imprimiendo\n");
-        $impresora->text("ticket\n");
-        $impresora->text("desde\n");
-        $impresora->text("Laravel\n");
-        $impresora->setTextSize(1, 1);
-        $impresora->text("https://parzibyte.me");
-        $impresora->feed(5);
-        $impresora->close();
+        // // $impresora = 'USB001';COMPOSER
+        // $nombreImpresora = "4BARCODE4B2054L";
+        // $connector = new WindowsPrintConnector($nombreImpresora);
+        // $impresora = new Printer($connector);
+        // $impresora->setJustification(Printer::JUSTIFY_CENTER);
+        // $impresora->setTextSize(2, 2);
+        // $impresora->text("Imprimiendo\n");
+        // $impresora->text("ticket\n");
+        // $impresora->text("desde\n");
+        // $impresora->text("Laravel\n");
+        // $impresora->setTextSize(1, 1);
+        // $impresora->text("https://parzibyte.me");
+        // $impresora->feed(5);
+        // $impresora->close();
     }
 
 

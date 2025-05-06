@@ -460,46 +460,49 @@ class ExencionesController extends Controller
 
             /////////////////////////////////////////// INSERT DETALLE EXENCION
             foreach ($tramites as $tramite) {
+                // SUMA TOTAL UCD
+                if ($tramite['tramite'] != '') { 
+                    $query = DB::table('tramites')->where('id_tramite','=', $tramite['tramite'])->first();
+                    $ucd_tramite = 0;
+                    switch ($query->alicuota) {
+                        case 13:
+                            // METRADO
+                            if (!empty($metros)) {
+                                // hay metros
+                                if ($metros == '' || $metros == 0) {
+                                    $ucd_tramite = 0;
+                                }else{
+                                    if ($metros <= 150) {
+                                        ////pequeña
+                                        $ucd_tramite = $query->small;
+                                    }elseif ($metros > 150 && $metros < 400) {
+                                        /////mediana
+                                        $ucd_tramite = $query->medium;
+                                    }elseif ($metros >= 400) {
+                                        /////grande
+                                        $ucd_tramite = $query->large;
+                                    }
+                                }
+                            }else{
+                                // no hay metros
+                                $ucd_tramite = 0;
+                            } 
+                            $total_ucd = $total_ucd + $ucd_tramite;
+                        break;
+                            
+                    }
+                }
+
                 ///// INSERT DETALLE
                 $insert_detalle = DB::table('detalle_exenciones')->insert(['key_exencion' => $id_exencion,
                                                                             'key_tramite' => $tramite['tramite'],
                                                                             'forma' => 3,
                                                                             'cantidad' => 1 ,
                                                                             'metros' => $metros,
+                                                                            'ucd' => $ucd_tramite
                                                                         ]);
                 if ($insert_detalle) {
-                    // SUMA TOTAL UCD
-                    if ($tramite['tramite'] != '') { 
-                        $query = DB::table('tramites')->where('id_tramite','=', $tramite['tramite'])->first();
-                        $ucd_tramite = 0;
-                        switch ($query->alicuota) {
-                            case 13:
-                                // METRADO
-                                if (!empty($metros)) {
-                                    // hay metros
-                                    if ($metros == '' || $metros == 0) {
-                                        $ucd_tramite = 0;
-                                    }else{
-                                        if ($metros <= 150) {
-                                            ////pequeña
-                                            $ucd_tramite = $query->small;
-                                        }elseif ($metros > 150 && $metros < 400) {
-                                            /////mediana
-                                            $ucd_tramite = $query->medium;
-                                        }elseif ($metros >= 400) {
-                                            /////grande
-                                            $ucd_tramite = $query->large;
-                                        }
-                                    }
-                                }else{
-                                    // no hay metros
-                                    $ucd_tramite = 0;
-                                } 
-                                $total_ucd = $total_ucd + $ucd_tramite;
-                            break;
-                                
-                        }
-                    }
+                    
                 }else{
                     // delete exencion
                     $delete = DB::table('exenciones')->where('id_exencion', '=', $id_exencion)->delete();
@@ -778,6 +781,261 @@ class ExencionesController extends Controller
             //////delete exencion
             return response()->json(['success' => false]);
         }
+    }
+
+    
+
+
+    public function detalles(Request $request){
+        $exencion = $request->post('exencion');
+        $vista = $request->post('vista');
+
+        $con = DB::table('exenciones')->join('contribuyentes', 'exenciones.key_contribuyente', '=','contribuyentes.id_contribuyente')
+                                    ->select('exenciones.*','contribuyentes.nombre_razon','contribuyentes.identidad_condicion','contribuyentes.identidad_nro')
+                                    ->where('exenciones.id_exencion','=',$exencion)->first();
+        if ($con) {
+            //// buscar tramites de la exencion
+            $tr_tramites = '';
+            $t = 0;
+            $q1 = DB::table('detalle_exenciones')->join('tramites', 'detalle_exenciones.key_tramite', '=','tramites.id_tramite')
+                                        ->select('detalle_exenciones.*','tramites.tramite')
+                                        ->where('detalle_exenciones.key_exencion','=',$exencion)->get();
+            foreach ($q1 as $key) {
+                $t++;
+                $tr_tramites .= '<tr>
+                                    <td>'.$t.'</td>
+                                    <td>'.$key->tramite.'</td>
+                                    <td><span class="text-secondary fst-italic">'.$key->metros.' mt2</span></td>
+                                    <td>'.$key->ucd.' UCD</td> 
+                                </tr>';
+            }
+
+            /// taquilla
+            $taquilla = '';
+            if ($con->key_taquilla != null) {
+                $q2 = DB::table('taquillas')->join('sedes', 'taquillas.key_sede', '=','sedes.id_sede')
+                                        ->join('funcionarios', 'taquillas.key_funcionario', '=','funcionarios.id_funcionario')
+                                        ->select('sedes.sede','funcionarios.nombre')
+                                        ->where('taquillas.id_taquilla','=',$con->key_taquilla)->first();
+                $taquilla = '<div class="d-flex justify-content-center mb-3">
+                                <table class="table w-75 table-sm">
+                                    <tbody>
+                                        <tr>
+                                            <th>Asignado a</th>
+                                            <td class="text-navy fw-semibold" colspan="2">
+                                                <div class="d-flex flex-column">
+                                                    <span>'.$q2->nombre.'</span>
+                                                    <span>'.$q2->sede.'<span class="badge bg-secondary-subtle text-secondary-emphasis ms-2">TAQ'.$con->key_taquilla.'</span></span>
+                                                </div>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <th>Asignado</th>
+                                            <td colspan="2">
+                                                <span class="text-muted">'.date("d-m-Y h:i A",strtotime($con->fecha_asig_taquilla)).'</span>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <th>Impresión de Timbre</th>
+                                            <td colspan="2">
+                                                <span class="text-muted">'.date("d-m-Y h:i A",strtotime($con->fecha_impresion)).'</span>
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>';
+            }else{
+                $taquilla = '<div class="d-flex justify-content-center mb-3">
+                        <table class="table w-75 table-sm">
+                            <tbody>
+                                <tr>
+                                    <th>Asignado a</th>
+                                    <td colspan="2">
+                                        <span class="text-secondary fst-italic">Sin Asignar</span>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <th>Asignado</th>
+                                    <td colspan="2">
+                                        <span class="text-secondary fst-italic">Sin Asignar</span>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <th>Impresión de Timbre</th>
+                                    <td colspan="2">
+                                        <span class="text-secondary fst-italic">Sin Asignar</span>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>';
+            }
+            
+            //comprobante de pago
+            $doc_pago = '';
+            if ($con->doc_pago == null) {
+                $doc_pago = '<span class="text-secondary fst-italic">Pendiente por Pago</span>';
+            }else{
+                $doc_pago = '<a target="_blank" class="ver_pago" href="'.asset(''.$con->doc_pago.'').'">Ver</a>';
+            }
+
+
+            ///pago
+            $exencion_ucd = ($con->total_ucd * $con->porcentaje_exencion)/100;
+            $total_pagar = $con->total_ucd - $exencion_ucd;
+
+            /// fecha de entrega
+            $fecha_entrega = '';
+            if ($con->fecha_entrega == null) {
+                $fecha_entrega = '<span class="text-secondary fst-italic">Sin entregar</span>';
+            }else{
+                $fecha_entrega = date("d-m-Y h:i A",strtotime($con->fecha_entrega));
+            }
+
+            $html = '<div class="modal-header p-2 pt-3 d-flex justify-content-center">
+                    <div class="text-center">
+                        <i class="bx bx-receipt fs-1 text-secondary"></i>
+                        <h1 class="modal-title fs-5 text-navy fw-bold">Detalles Exención</h1>
+                    </div>
+                </div>
+                <div class="modal-body" style="font-size:13px">
+                    <div class="d-flex justify-content-center mb-3">
+                        <table class="table w-75 table-sm">
+                            <tbody>
+                                <tr>
+                                    <th>ID</th>
+                                    <td class="text-secondary" colspan="2">'.$con->id_exencion.'</td>
+                                </tr>
+                                <tr>
+                                    <th>Fecha de Emisión</th>
+                                    <td colspan="2">'.$con->fecha.'</td>
+                                </tr>
+                                <tr>
+                                    <th>Entragado al Contribuyente</th>
+                                    <td colspan="2">
+                                        '.$fecha_entrega.'
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <th>Porcentaje de Exención (%)</th>
+                                    <td colspan="2">
+                                        <span class="text-navy fw-semibold titulo">'.$con->porcentaje_exencion.'%</span>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <th>Doc. Solicitud</th>
+                                    <td colspan="2">
+                                        <a target="_blank" class="ver_pago" href="'.asset(''.$con->doc_solicitud.'').'">Ver</a>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <th>Doc. Aprobación</th>
+                                    <td colspan="2">
+                                        <a target="_blank" class="ver_pago" href="'.asset(''.$con->doc_aprobacion.'').'">Ver</a>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <th>Comprobante de Pago</th>
+                                    <td colspan="2">
+                                        '.$doc_pago.'
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <!-- CONTRIBUYENTE -->
+                    <div class="text-navy fw-semibold text-center fs-6 mb-2">Contribuyente</div>
+                    <div class="d-flex justify-content-center mb-3">
+                        <table class="table w-75 table-sm">
+                            <tbody>
+                                <tr>
+                                    <th>Razón Social</th>
+                                    <td class="" colspan="2">'.$con->nombre_razon.'</td>
+                                </tr>
+                                <tr>
+                                    <th>R.I.F.</th>
+                                    <td colspan="2">'.$con->identidad_condicion.'-'.$con->identidad_nro.'</td>
+                                </tr>
+                                <tr>
+                                    <th>Dirección</th>
+                                    <td colspan="2">
+                                        <span class="">'.$con->direccion.'</span>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <th>Contacto</th>
+                                    <td colspan="2">
+                                        <div class="d-flex flex-column">
+                                            <span>'.$con->tlf_movil.'</span>
+                                            <span>'.$con->tlf_second.'</span>
+                                        </div>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <!-- TAQUILLA -->
+                    <div class="text-navy fw-semibold text-center fs-6 mb-2">Taquilla</div>
+                    '.$taquilla.'
+
+                    <!-- TRAMITE -->
+                    <div class="text-navy fw-semibold text-center fs-6 mb-2">Tramite(s)</div>
+                    <div class="d-flex justify-content-center mb-3">
+                        <table class="table w-75 table-sm">
+                            <thead>
+                                <th>#</th>
+                                <th>Tramite</th>
+                                <th>Metros (mt2)</th>
+                                <th>UCD</th>
+                            </thead>
+                            <tbody>
+                                '.$tr_tramites.'
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <!-- PAGO -->
+                    <div class="text-navy fw-semibold text-center fs-6 mb-2">Pago</div>
+                    <div class="d-flex justify-content-center mb-3">
+                        <table class="table w-75 table-sm">
+                            <tbody>
+                                <tr>
+                                    <th>Sub Total</th>
+                                    <td class="text-muted fw-semibold" colspan="2">'.$con->total_ucd.' UCD</td>
+                                </tr>
+                                <tr>
+                                    <th>Exencion ('.$con->porcentaje_exencion.'%)</th>
+                                    <td colspan="2">
+                                        <span class="text-muted fw-semibold">'.$exencion_ucd.' UCD</span>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <th>Total a Pagar</th>
+                                    <td colspan="2">
+                                        <span class="text-navy fw-semibold">'.$total_pagar.' UCD</span>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <div class="d-flex justify-content-center">
+                        <button type="button" class="btn btn-secondary btn-sm me-2" data-bs-dismiss="modal">Cancelar</button>
+                    </div>                    
+                </div>';
+
+            return response()->json(['success' => true, 'html' => $html]);
+
+        }else{
+            return response()->json(['success' => false]);
+        }
+    }
+
+    public function pago(Request $request){
+        $pago = $request->post('pago');
+        $exencion_pago = $request->post('exencion_pago'); return response($exencion_pago);
     }
 
     /**

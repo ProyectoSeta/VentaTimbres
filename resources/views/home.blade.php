@@ -8,9 +8,14 @@
 
 
     <main>
-        <div class="text-navy fs-3 tituo fw-semibold my-3 ms-4">{{$hoy_view}}</div>
+        <div class="d-flex justify-content-between">
+            <div class="text-navy fs-3 tituo fw-semibold my-3 ms-4">{{$hoy_view}}</div>
 
-        <div class="position-relative overflow-hidden p-3 p-md-5 m-md-3 text-center bg-white container-fluid">
+            <div class="text-navy fs-3 titulo fw-semibold my-3 ms-4">{{$sede}} <span class="text-secondary ps-2">TAQ{{$id_taquilla}}</span></div>
+        </div>
+        
+
+        <div class="position-relative overflow-hidden p-3 p-md-5 m-md-3 text-center bg-white container-fluid bg_arqueo" style="background-image: url({{asset('assets/fondo2.png')}});">
             <div class="p-lg-5 mx-auto my-5">
                 <h1 class="display-5 text-navy fw-bold">FORMA 14 | Estampillas</h1>
                 <h3 class="fw-normal text-muted mb-3 titulo">Venta de Timbres Fiscales</h3>
@@ -64,7 +69,7 @@
         </div>
 
 
-        <div class="position-relative overflow-hidden p-3 p-md-5 m-md-3 text-center bg-white">
+        <!-- <div class="position-relative overflow-hidden p-3 p-md-5 m-md-3 text-center bg-white">
             <div class="p-lg-5 mx-auto my-5">
                 <h1 class="display-5 fw-bold text-navy">FORMA 01 | Venta Online</h1>
                 <h3 class="fw-normal text-muted mb-3">Venta de Timbres Fiscales</h3>
@@ -72,7 +77,7 @@
                     <button type="button btn-sm" class="btn btn-primary  py-1">Ver</button>
                 </div>
             </div>
-        </div>
+        </div> -->
 
 
                  

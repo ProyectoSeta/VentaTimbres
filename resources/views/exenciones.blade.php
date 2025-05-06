@@ -145,7 +145,7 @@
                                         <span class="badge bg-primary-subtle border border-primary-subtle text-primary-emphasis rounded-pill" style="font-size:12.7px">{{$process->porcentaje_exencion}}%</span>
                                     </td>
                                     <td>
-                                        <a class="detalle_solicitud" exencion="" data-bs-toggle="modal" data-bs-target="#modal_detalles_exencion">Ver</a>
+                                        <a href="#" class="detalle_exencion" exencion="{{$process->id_exencion}}" vista="1" data-bs-toggle="modal" data-bs-target="#modal_detalle_exencion">Ver</a>
                                     </td>
                                     <td>
                                         @if ($process->key_taquilla == NULL)
@@ -214,7 +214,7 @@
                                         <span class="badge bg-primary-subtle border border-primary-subtle text-primary-emphasis rounded-pill" style="font-size:12.7px">{{$emitido->porcentaje_exencion}}%</span>
                                     </td>
                                     <td>
-                                        <a class="detalle_solicitud" exencion="" data-bs-toggle="modal" data-bs-target="#modal_detalles_exencion">Ver</a>
+                                        <a href="#" class="detalle_exencion" exencion="{{$emitido->id_exencion}}" vista="1" data-bs-toggle="modal" data-bs-target="#modal_detalle_exencion">Ver</a>
                                     </td>
                                     <td>
                                         <a href="#" class="taquilla" taquilla="{{$emitido->key_taquilla}}" data-bs-toggle="modal" data-bs-target="#modal_info_taquilla">Taquilla ID {{$emitido->key_taquilla}} </a>
@@ -274,7 +274,7 @@
                                         <span class="badge bg-primary-subtle border border-primary-subtle text-primary-emphasis rounded-pill" style="font-size:12.7px">{{$recibido->porcentaje_exencion}}%</span>
                                     </td>
                                     <td>
-                                        <a class="detalle_solicitud" exencion="" data-bs-toggle="modal" data-bs-target="#modal_detalles_exencion">Ver</a>
+                                        <a href="#" class="detalle_exencion" exencion="{{$recibido->id_exencion}}" vista="1" data-bs-toggle="modal" data-bs-target="#modal_detalle_exencion">Ver</a>
                                     </td>
                                     <td>
                                         <a href="#" class="taquilla" taquilla="{{$recibido->key_taquilla}}" data-bs-toggle="modal" data-bs-target="#modal_info_taquilla">Taquilla ID {{$recibido->key_taquilla}} </a>
@@ -334,7 +334,7 @@
                                         <span class="badge bg-primary-subtle border border-primary-subtle text-primary-emphasis rounded-pill" style="font-size:12.7px">{{$pendiente->porcentaje_exencion}}%</span>
                                     </td>
                                     <td>
-                                        <a class="detalle_solicitud" exencion="" data-bs-toggle="modal" data-bs-target="#modal_detalles_exencion">Ver</a>
+                                        <a href="#" class="detalle_exencion" exencion="{{$pendiente->id_exencion}}" vista="1" data-bs-toggle="modal" data-bs-target="#modal_detalle_exencion">Ver</a> 
                                     </td>
                                     <td>
                                         <a href="#" class="taquilla" taquilla="{{$pendiente->key_taquilla}}" data-bs-toggle="modal" data-bs-target="#modal_info_taquilla">Taquilla ID {{$pendiente->key_taquilla}} </a>
@@ -454,14 +454,34 @@
                         <h5 class="modal-title text-muted" id="" style="font-size:14px">Timbre entregado a <span class="fw-bold">Jurídico</span></h5>
                     </div>
                 </div>
-                <div class="modal-body" style="font-size:13px">
-                    <form action="">
+                <div class="modal-body px-5 py-3" style="font-size:13px">
+                    <form  id="form_pago_exencion" method="post" onsubmit="event.preventDefault(); pagoExencion()">
+                        <div class="">
+                            <label for="pago" class="form-label">Comprobante de Pago</label><span class="text-danger">*</span>
+                            <input class="form-control form-control-sm" id="pago" type="file" name="pago" required>
+
+                            <input type="hidden" id="exencion_pago" name="exencion" >
+                        </div>
                         
+
                         <div class="d-flex justify-content-center mt-3 mb-3">
                             <button type="button" class="btn btn-secondary btn-sm me-2" data-bs-dismiss="modal">Cancelar</button>
-                            <button type="submit" class="btn btn-success btn-sm" exencion="'.$exencion.'" id="btn_exencion_recibida">Aceptar</button>
+                            <button type="submit" class="btn btn-success btn-sm">Aceptar</button>
                         </div> 
                     </form>
+                </div>
+            </div>  <!-- cierra modal-content -->
+        </div>  <!-- cierra modal-dialog -->
+    </div>
+
+
+    <!-- ********* DETALLE EXENCION ******** -->
+    <div class="modal" id="modal_detalle_exencion" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content" id="content_detalle_exencion">
+                <div class="my-5 py-5 d-flex flex-column text-center">
+                    <i class='bx bx-loader-alt bx-spin fs-1 mb-3' style='color:#0077e2'  ></i>
+                    <span class="text-muted">Cargando, por favor espere un momento...</span>
                 </div>
             </div>  <!-- cierra modal-content -->
         </div>  <!-- cierra modal-dialog -->
@@ -597,7 +617,7 @@
                                                     response.entes+
                                                 '</select>'+
                                             '</div>'+
-                                            '<div class="col-sm-4">'+
+                                            '<div class="col-sm-6">'+
                                                 '<select class="form-select form-select-sm tramite" name="tramite['+c+'][tramite]" nro="'+c+'" id="tramite_'+c+'" required>'+
                                                     '<option value="">Seleccione el tramite </option>'+
                                                     response.tramites+
@@ -605,11 +625,6 @@
                                             '</div>'+
                                             '<div class="col-sm-2" id="div_ucd_'+c+'">'+
                                                 '<input type="text" class="form-control form-control-sm ucd_tramite" id="ucd_tramite_'+c+'" nro="'+c+'" disabled>'+
-                                            '</div>'+
-                                            '<div class="col-sm-2">'+
-                                                '<select class="form-select form-select-sm forma" nro="'+c+'" name="tramite['+c+'][forma]" id="forma_'+c+'" required>'+
-                                                    '<option value="">Seleccione</option>'+
-                                                '</select>'+
                                             '</div>'+
                                             '<div class="col-sm-1">'+
                                                 '<a  href="javascript:void(0);" class="btn remove_button_tramite" nro="'+c+'">'+
@@ -1029,6 +1044,55 @@
                 }
             });
         });
+
+
+
+        /////////////////////////// DETALLES EXENCION
+        $(document).on('click','.detalle_exencion', function(e) {
+            e.preventDefault(); 
+            var exencion = $(this).attr('exencion');
+            var vista = $(this).attr('vista');
+
+            $.ajax({
+                headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') },
+                type: 'POST',
+                url: '{{route("exenciones.detalles") }}',
+                data: {exencion:exencion,vista:vista},
+                success: function(response) {
+                    console.log(response);
+                    if (response.success) {
+                        $('#content_detalle_exencion').html(response.html);       
+                    }else{
+                        alert('Disculpe, ha ocurrido un error.');
+                    }     
+                },
+                error: function() {
+                }
+            });
+        });
+
+        /////////////////////////// DETALLES EXENCION
+        $(document).on('click','.verificar_pago', function(e) {
+            e.preventDefault(); 
+            var exencion = $(this).attr('exencion');
+            $('#exencion_pago').val(exencion);
+            // $.ajax({
+            //     headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') },
+            //     type: 'POST',
+            //     url: '{{route("exenciones.detalles") }}',
+            //     data: {exencion:exencion,vista:vista},
+            //     success: function(response) {
+            //         console.log(response);
+            //         if (response.success) {
+            //             $('#content_detalle_exencion').html(response.html);       
+            //         }else{
+            //             alert('Disculpe, ha ocurrido un error.');
+            //         }     
+            //     },
+            //     error: function() {
+            //     }
+            // });
+        });
        
 
           
@@ -1104,7 +1168,7 @@
 
 
     ////////////////// CALCULAR TOTAL
-     function calcular(){
+    function calcular(){
         var tramites = [];
         $('.tramite').each(function(){
             var t = $(this).val();
@@ -1179,7 +1243,38 @@
 
 
 
-    
+    //////////////// PAGO EXENCION
+    function pagoExencion(){
+        var formData = new FormData(document.getElementById("form_pago_exencion"));
+        // console.log("alo");
+        $.ajax({
+            headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') },
+            url:'{{route("exenciones.pago") }}',
+            type:'POST',
+            contentType:false,
+            cache:false,
+            processData:false,
+            async: true,
+            data: formData,
+            success: function(response){
+                console.log(response);
+                // if (response.success) {
+                //     alert('SE HA REGISTRADO EL PAGO DE LA EXENCIÓN EXITOSAMENTE.');
+                //     window.location.href = "{{ route('exenciones')}}";
+                // }else{
+                //     if (response.nota) {
+                //         alert(response.nota);
+                //     }else{
+                //         alert('Disculpe, ha ocurrido un error. Vuelva a intentarlo.');
+                //     }
+                // }
+                    
+            },
+            error: function(error){
+                
+            }
+        });
+    }
 
 
     

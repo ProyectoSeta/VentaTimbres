@@ -50,7 +50,7 @@
                                 <span class="badge bg-primary-subtle border border-primary-subtle text-primary-emphasis rounded-pill" style="font-size:12.7px">{{$process->porcentaje_exencion}}%</span>
                             </td>
                             <td>
-                                <a class="detalle_solicitud" exencion="{{$process->id_exencion}}" data-bs-toggle="modal" data-bs-target="#modal_detalles_exencion">Ver</a>
+                                <a href="#" class="detalle_exencion" exencion="{{$process->id_exencion}}" vista="1" data-bs-toggle="modal" data-bs-target="#modal_detalle_exencion">Ver</a>
                             </td>
                             <td>
                                 <span class="text-secondary fst-italic" title="En espera de la asignación de Taquillero">
@@ -115,7 +115,7 @@
                                 <span class="badge bg-primary-subtle border border-primary-subtle text-primary-emphasis rounded-pill" style="font-size:12.7px">{{$asignado->porcentaje_exencion}}%</span>
                             </td>
                             <td>
-                                <a class="detalle_solicitud" exencion="{{$asignado->id_exencion}}" data-bs-toggle="modal" data-bs-target="#modal_detalles_exencion">Ver</a>
+                                <a href="#" class="detalle_exencion" exencion="{{$asignado->id_exencion}}" vista="1" data-bs-toggle="modal" data-bs-target="#modal_detalle_exencion">Ver</a>
                             </td>
                             <td>
                                 @php
@@ -246,7 +246,17 @@
         </div>  <!-- cierra modal-dialog -->
     </div>
 
-
+    <!-- ********* DETALLE EXENCION ******** -->
+    <div class="modal" id="modal_detalle_exencion" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content" id="content_detalle_exencion">
+                <div class="my-5 py-5 d-flex flex-column text-center">
+                    <i class='bx bx-loader-alt bx-spin fs-1 mb-3' style='color:#0077e2'  ></i>
+                    <span class="text-muted">Cargando, por favor espere un momento...</span>
+                </div>
+            </div>  <!-- cierra modal-content -->
+        </div>  <!-- cierra modal-dialog -->
+    </div>
 
 
 
@@ -404,6 +414,30 @@
                 data: {taquillero:taquillero,taquilla:taquilla},
                 success: function(response) {
                     $('#content_info_taquillero').html(response);                 
+                },
+                error: function() {
+                }
+            });
+        });
+
+        /////////////////////////// DETALLES EXENCION
+        $(document).on('click','.detalle_exencion', function(e) {
+            e.preventDefault(); 
+            var exencion = $(this).attr('exencion');
+            var vista = $(this).attr('vista');
+
+            $.ajax({
+                headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') },
+                type: 'POST',
+                url: '{{route("exenciones.detalles") }}',
+                data: {exencion:exencion,vista:vista},
+                success: function(response) {
+                    console.log(response);
+                    if (response.success) {
+                        $('#content_detalle_exencion').html(response.html);       
+                    }else{
+                        alert('Disculpe, ha ocurrido un error.');
+                    }     
                 },
                 error: function() {
                 }
