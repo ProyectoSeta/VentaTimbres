@@ -128,6 +128,7 @@ Route::post('/exenciones/modal_entregado', [App\Http\Controllers\ExencionesContr
 Route::post('/exenciones/entregado', [App\Http\Controllers\ExencionesController::class, 'entregado'])->name('exenciones.entregado');
 
 Route::post('/exenciones/detalles', [App\Http\Controllers\ExencionesController::class, 'detalles'])->name('exenciones.detalles');
+Route::post('/exenciones/modal_pago', [App\Http\Controllers\ExencionesController::class, 'modal_pago'])->name('exenciones.modal_pago');
 Route::post('/exenciones/pago', [App\Http\Controllers\ExencionesController::class, 'pago'])->name('exenciones.pago');
 
 //////////////////////  EXENCIONES (ASIGNAR TAQUILLERO)
@@ -140,6 +141,8 @@ Route::get('/asignado', [App\Http\Controllers\AsignadosController::class, 'index
 Route::post('/asignado/modal', [App\Http\Controllers\AsignadosController::class, 'modal'])->name('asignado.modal');
 Route::post('/asignado/venta', [App\Http\Controllers\AsignadosController::class, 'venta'])->name('asignado.venta');
 
+//////////////////////  EXENCIONES (HISTORIAL SOLVENTES)
+Route::get('/solventes', [App\Http\Controllers\ExencionesSolventesController::class, 'index'])->name('solventes');
 
 
 

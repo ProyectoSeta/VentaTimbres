@@ -406,7 +406,7 @@
         </div>  <!-- cierra modal-dialog -->
     </div>
 
-    <!-- ********* INFO SUJETO ******** -->
+    <!-- ********* INFO TAQUILLA ******** -->
     <div class="modal" id="modal_info_taquilla" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
         <div class="modal-dialog modal-sm">
             <div class="modal-content" id="html_info_taquilla">
@@ -446,29 +446,9 @@
     <div class="modal" id="modal_verificar_pago" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
         <div class="modal-dialog">
             <div class="modal-content" id="content_verificar_pago">
-                <div class="modal-header p-2 pt-3 d-flex justify-content-center">
-                    <div class="text-center">
-                        <!-- <i class="bx bx-archive" ></i> -->
-                        <i class='bx bx-receipt fs-1 text-secondary'></i>
-                        <h1 class="modal-title fs-5 text-navy fw-bold">Verificación de Pago</h1>
-                        <h5 class="modal-title text-muted" id="" style="font-size:14px">Timbre entregado a <span class="fw-bold">Jurídico</span></h5>
-                    </div>
-                </div>
-                <div class="modal-body px-5 py-3" style="font-size:13px">
-                    <form  id="form_pago_exencion" method="post" onsubmit="event.preventDefault(); pagoExencion()">
-                        <div class="">
-                            <label for="pago" class="form-label">Comprobante de Pago</label><span class="text-danger">*</span>
-                            <input class="form-control form-control-sm" id="pago" type="file" name="pago" required>
-
-                            <input type="hidden" id="exencion_pago" name="exencion" >
-                        </div>
-                        
-
-                        <div class="d-flex justify-content-center mt-3 mb-3">
-                            <button type="button" class="btn btn-secondary btn-sm me-2" data-bs-dismiss="modal">Cancelar</button>
-                            <button type="submit" class="btn btn-success btn-sm">Aceptar</button>
-                        </div> 
-                    </form>
+                <div class="my-5 py-5 d-flex flex-column text-center">
+                    <i class='bx bx-loader-alt bx-spin fs-1 mb-3' style='color:#0077e2'  ></i>
+                    <span class="text-muted">Cargando, por favor espere un momento...</span>
                 </div>
             </div>  <!-- cierra modal-content -->
         </div>  <!-- cierra modal-dialog -->
@@ -1071,27 +1051,22 @@
             });
         });
 
-        /////////////////////////// DETALLES EXENCION
+        /////////////////////////// MODAL PAGO EXENCION
         $(document).on('click','.verificar_pago', function(e) {
             e.preventDefault(); 
             var exencion = $(this).attr('exencion');
-            $('#exencion_pago').val(exencion);
-            // $.ajax({
-            //     headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') },
-            //     type: 'POST',
-            //     url: '{{route("exenciones.detalles") }}',
-            //     data: {exencion:exencion,vista:vista},
-            //     success: function(response) {
-            //         console.log(response);
-            //         if (response.success) {
-            //             $('#content_detalle_exencion').html(response.html);       
-            //         }else{
-            //             alert('Disculpe, ha ocurrido un error.');
-            //         }     
-            //     },
-            //     error: function() {
-            //     }
-            // });
+            $.ajax({
+                headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') },
+                type: 'POST',
+                url: '{{route("exenciones.modal_pago") }}',
+                data: {exencion:exencion},
+                success: function(response) {
+                    console.log(response);
+                    $('#content_verificar_pago').html(response);      
+                },
+                error: function() {
+                }
+            });
         });
        
 
@@ -1258,17 +1233,12 @@
             data: formData,
             success: function(response){
                 console.log(response);
-                // if (response.success) {
-                //     alert('SE HA REGISTRADO EL PAGO DE LA EXENCIÓN EXITOSAMENTE.');
-                //     window.location.href = "{{ route('exenciones')}}";
-                // }else{
-                //     if (response.nota) {
-                //         alert(response.nota);
-                //     }else{
-                //         alert('Disculpe, ha ocurrido un error. Vuelva a intentarlo.');
-                //     }
-                // }
-                    
+                if (response.success) {
+                    alert('SE HA REGISTRADO EL PAGO DE LA EXENCIÓN EXITOSAMENTE.');
+                    window.location.href = "{{ route('exenciones')}}";
+                }else{
+                    alert('Disculpe, ha ocurrido un error. Vuelva a intentarlo.');
+                }
             },
             error: function(error){
                 

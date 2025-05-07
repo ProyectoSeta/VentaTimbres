@@ -404,7 +404,7 @@ return [
         ],
         [
             'text'        => 'Historial Solventes',
-            'route'         => '',
+            'route'         => 'solventes',
             'icon'       => 'fas fa-angle-right pe-2',  
         ],
         [

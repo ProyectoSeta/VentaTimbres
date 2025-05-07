@@ -1033,9 +1033,62 @@ class ExencionesController extends Controller
         }
     }
 
+
+    public function modal_pago(Request $request){
+        $exencion = $request->post('exencion');
+        $val_ex = base64_encode(serialize($exencion));
+
+        $html = '<div class="modal-header p-2 pt-3 d-flex justify-content-center">
+                    <div class="text-center">
+                        <!-- <i class="bx bx-archive" ></i> -->
+                        <i class="bx bx-receipt fs-1 text-secondary"></i>
+                        <h1 class="modal-title fs-5 text-navy fw-bold">Verificación de Pago</h1>
+                        <h5 class="modal-title text-muted" id="" style="font-size:14px">Exención <span class="fw-bold">ID'.$exencion.'</span></h5>
+                    </div>
+                </div>
+                <div class="modal-body px-5 py-3" style="font-size:13px">
+                    <form  id="form_pago_exencion" method="post" onsubmit="event.preventDefault(); pagoExencion()">
+                        <div class="">
+                            <label for="pago" class="form-label">Comprobante de Pago</label><span class="text-danger">*</span>
+                            <input class="form-control form-control-sm" id="pago" type="file" name="pago" required>
+
+                            <input type="hidden" id="exencion" name="exencion" value="'.$val_ex.'">
+                        </div>
+                        
+
+                        <div class="d-flex justify-content-center mt-3 mb-3">
+                            <button type="button" class="btn btn-secondary btn-sm me-2" data-bs-dismiss="modal">Cancelar</button>
+                            <button type="submit" class="btn btn-success btn-sm">Aceptar</button>
+                        </div> 
+                    </form>
+                </div>';
+
+        return response($html);
+    }
+
+
     public function pago(Request $request){
-        $pago = $request->post('pago');
-        $exencion_pago = $request->post('exencion_pago'); return response($exencion_pago);
+        $pago = $request->file('pago');
+        $exencion = unserialize(base64_decode($request->post('exencion')));
+        $year = date("Y");
+
+
+        // GUARDAR DOC SOLICITUD
+        $nombre_doc  = 'PAGO_E'.$exencion.'.'.$pago->getClientOriginalExtension();
+        $ruta          = public_path('assets/Exenciones/Pagos/'.$year.'/'.$nombre_doc);
+        $ruta_n        = 'assets/Exenciones/Pagos/'.$year.'/'.$nombre_doc;
+
+        if(copy($pago->getRealPath(),$ruta)){
+            $update_docs = DB::table('exenciones')->where('id_exencion', '=', $exencion)->update(['doc_pago' => $ruta_n,'estado' => 22]);
+            if ($update_docs) {
+                //////////////////////////// TRUE RESPONSE
+                return response()->json(['success' => true]);
+            }else{
+                //////delete exencion
+                return response()->json(['success' => false]);
+            }
+        }
+
     }
 
     /**
