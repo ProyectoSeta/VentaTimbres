@@ -33,6 +33,19 @@
                             <button type="button" class="btn btn-s btn-secondary  py-1" data-bs-toggle="modal" data-bs-target="#modal_cerrar_taquilla">Cierre</button>
                         @endif               
                     </div>
+
+                    <div class="mt-3">
+                        <div class="">
+                            <a href="#" class="">¿Sin nombre?</a>
+                        </div>  
+
+                        <div class="mt-2">
+                            <button type="button" class="btn btn-sm btn-outline-secondary me-3">Papel Bueno</button>
+                            <button type="button" class="btn btn-sm btn-outline-secondary">Papel Dañado</button>
+                        </div>
+                        
+                    </div>
+
                 @else
                      <div class="d-flex flex-column">
                         <h3 class="text-danger titulo fs-3 mb-0 pb-0">Taquilla Cerrada.</h3>
