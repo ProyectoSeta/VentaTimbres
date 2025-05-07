@@ -37,6 +37,9 @@ return new class extends Migration
 
             $table->string('qr')->unique();
 
+            $table->integer('condicion')->unsigned(); ///////VENDIDO - ANULADO - VUELTO A IMPRIMIR
+            $table->foreign('condicion')->references('id_clasificacion')->on('clasificacions')->onDelete('cascade');
+
             
 
 

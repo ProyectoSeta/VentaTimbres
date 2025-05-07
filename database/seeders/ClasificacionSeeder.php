@@ -124,5 +124,14 @@ class ClasificacionSeeder extends Seeder
             'nombre_clf' => 'ucd',
         ]);
 
+
+        // CONDICION DETALLE VENTA TFE14
+        DB::table('clasificacions')->insert([
+            'nombre_clf' => 'Anulado',
+        ]);
+        DB::table('clasificacions')->insert([
+            'nombre_clf' => 'Vuelto a imprimir',
+        ]);
+
     }
 }
