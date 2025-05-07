@@ -37,6 +37,10 @@ Route::post('/home/cierre_taquilla', [App\Http\Controllers\HomeController::class
 
 Route::post('/home/imprimir', [App\Http\Controllers\HomeController::class, 'imprimir'])->name('home.imprimir');
 
+//// PAPEL DAÑADO
+Route::post('/home/modal_clave', [App\Http\Controllers\HomeController::class, 'modal_clave'])->name('home.modal_clave');
+Route::post('/home/clave', [App\Http\Controllers\HomeController::class, 'clave'])->name('home.clave');
+
 
 ///////////////////// PAPEL DE SEGURIDAD
 Route::get('/emision_papel', [App\Http\Controllers\PapelSeguridadController::class, 'index'])->name('emision_papel');

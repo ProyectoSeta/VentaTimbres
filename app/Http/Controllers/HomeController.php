@@ -562,5 +562,66 @@ class HomeController extends Controller
         }
     }
 
+
+
+
+    public function modal_clave(Request $request){
+        $papel = $request->post('papel');
+        $val_papel = base64_encode(serialize($papel));
+
+        $html = '<div class="modal-header p-2 pt-3 d-flex justify-content-center">
+                    <div class="text-center">
+                        <i class="bx bx-lock-open-alt fs-2 text-muted me-2"></i>
+                        <h1 class="modal-title fs-5 fw-bold text-navy">Clave de Taquilla</h1>
+                    </div>
+                </div> 
+                <div class="modal-body px-5 py-3" style="font-size:13px">
+                    <form id="form_clave_taquilla" method="post" onsubmit="event.preventDefault(); claveTaquilla()">
+                        
+                        <label for="clave" class="form-label"><span class="text-danger">* </span>Ingrese la clave de seguridad de la Taquilla:</label>
+                        <input type="password" id="clave" class="form-control form-control-sm" name="clave" required>
+                        <input type="hidden" name="papel" clave="'.$val_papel.'">
+                        <p class="text-muted text-end"><span style="color:red">*</span> Campos requeridos.</p>
+
+                        <div class="d-flex justify-content-center mt-3 mb-3">
+                            <button type="button" class="btn btn-secondary btn-sm me-2" data-bs-dismiss="modal">Cancelar</button>
+                            <button type="submit" class="btn btn-success btn-sm">Aperturar</button>
+                        </div>
+                    </form>
+                </div>';
+
+        return response($html);
+    }
+
+    public function clave(Request $request){
+        $papel = unserialize(base64_decode($request->post('papel')));
+        $pass = $request->post('clave');
+
+        if ($pass == '' || $pass == null) {
+            return response()->json(['success' => false, 'nota' => 'Ingrese la clave de seguridad.']);
+        }else{
+            $user = auth()->id();
+            $query = DB::table('users')->select('key_sujeto')->where('id','=',$user)->first();
+            $q2 = DB::table('taquillas')->select('id_taquilla','clave')->where('key_funcionario','=',$query->key_sujeto)->first();
+            if ($q2) {
+                /// usuario taquillero
+                $id_taquilla = $q2->id_taquilla;
+
+                if (Hash::check($pass, $q2->clave)) {
+                    ///////ACCION PERMITIDA
+                    
+
+
+                    
+                }else{
+                    return response()->json(['success' => false, 'nota' => 'Disculpe, la contraseña ingresada no es válida.']);
+                }
+            }else{
+                return response()->json(['success' => false]);
+            }
+        } 
+    }
+
+
     
 }

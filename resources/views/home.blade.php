@@ -40,8 +40,8 @@
                         </div>  
 
                         <div class="mt-2">
-                            <button type="button" class="btn btn-sm btn-outline-secondary me-3">Papel Bueno</button>
-                            <button type="button" class="btn btn-sm btn-outline-secondary">Papel Dañado</button>
+                            <button type="button" id="btn_papel_bueno" papel="1" class="btn btn-sm btn-outline-secondary btn_modal_papel me-3"     data-bs-toggle="modal" data-bs-target="#modal_papel_bueno">Papel Bueno</button>
+                            <button type="button" id="btn_papel_danado" papel="0" class="btn btn-sm btn-outline-secondary btn_modal_papel"     data-bs-toggle="modal" data-bs-target="#modal_papel_danado">Papel Dañado</button>
                         </div>
                         
                     </div>
@@ -196,7 +196,7 @@
         </div>  <!-- cierra modal-dialog -->
     </div>
 
-     <!-- ************ CERRAR TAQUILLA ************** -->
+    <!-- ************ CERRAR TAQUILLA ************** -->
      <div class="modal fade" id="modal_cerrar_taquilla" tabindex="-1" aria-hidden="true"  data-bs-backdrop="static" data-bs-keyboard="false">
         <div class="modal-dialog">
             <div class="modal-content" id="content_cerrar_taquilla">
@@ -221,6 +221,71 @@
                             <button type="button" class="btn btn-secondary btn-sm " data-bs-dismiss="modal">Cancelar</button>
                         </div>
                     </form>
+                </div>
+            </div>  <!-- cierra modal-content -->
+        </div>  <!-- cierra modal-dialog -->
+    </div>
+
+
+    <!-- ************ CLAVE TAQUILLA ************** -->
+    <div class="modal fade" id="modal_clave_taquilla" tabindex="-1" aria-hidden="true"  data-bs-backdrop="static" data-bs-keyboard="false">
+        <div class="modal-dialog">
+            <div class="modal-content" id="content_clave_taquillas">
+                <div class="my-5 py-5 d-flex flex-column text-center">
+                    <i class='bx bx-loader-alt bx-spin fs-1 mb-3' style='color:#0077e2'  ></i>
+                    <span class="text-muted">Cargando, por favor espere un momento...</span>
+                </div>
+            </div>  <!-- cierra modal-content -->
+        </div>  <!-- cierra modal-dialog -->
+    </div>
+
+
+    <!-- ************ PAPEL BUENO ************** -->
+    <div class="modal fade" id="modal_papel_bueno" tabindex="-1" aria-hidden="true"  data-bs-backdrop="static" data-bs-keyboard="false">
+        <div class="modal-dialog">
+            <div class="modal-content" id="content_papel_bueno">
+                <div class="modal-header p-2 pt-3 d-flex justify-content-center">
+                    <div class="text-center">
+                        <i class="bx bx-receipt fs-2 text-muted me-2"></i>
+                        <h1 class="modal-title fs-5 fw-bold text-navy">Impresión de Timbre TFE-14</h1>
+                    </div>
+                </div> 
+                <div class="modal-body px-5 py-3" style="font-size:13px">
+                    <span class="text-muted">*IMPORTANTE:</span>
+
+                    <div class="d-flex justify-content-center">
+                        <div class="row g-3 align-items-center">
+                            <div class="col-auto">
+                                <span class="text-navy fs-4 fw-bold titulo">No. Timbre</span>
+                            </div>
+                            <div class="col-auto">
+                                <span class="text-danger fs-4 fw-bold titulo">A-000123</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="d-flex justify-content-center my-3">
+                        <table class="table table-sm">
+                            <tbody>
+                                <tr>
+                                    <th>ID Venta</th>
+                                    <td></td>
+                                </tr>
+                                <tr>
+                                    <th>Contribuyente</th>
+                                    <td></td>
+                                </tr>
+                                <tr>
+                                    <th>Tramite</th>
+                                    <td></td>
+                                </tr>
+                                <tr>
+                                    <th>UCD</th>
+                                    <td></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
                 </div>
             </div>  <!-- cierra modal-content -->
         </div>  <!-- cierra modal-dialog -->
@@ -340,6 +405,44 @@
 
             ///////////////// HISTORIAL BOVEDA
             $(document).on('click', '#btn_historial_boveda', function(e){ 
+                $.ajax({
+                    headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') },
+                    type: 'POST',
+                    url: '{{route("home.historial_boveda") }}',
+                    success: function(response) {
+                        $('#historial_boveda').html(response);
+                        if (response == false) {
+                            alert('Disculpe, ha ocurrido un error.');
+                        }
+                    },
+                    error: function() {
+                    }
+                });
+            });
+
+
+            ///////////////// MODAL PAPEL
+            $(document).on('click','.btn_modal_papel', function(e){ 
+                e.preventDefault(); 
+                var papel = $(this).attr('papel');
+                $.ajax({
+                    headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') },
+                    type: 'POST',
+                    url: '{{route("home.modal_clave") }}',
+                    data: {papel:papel},
+                    success: function(response) {
+                        $('#content_clave_taquillas').html(response);
+                    },
+                    error: function() {
+                    }
+                });
+            });
+
+
+            ///////////////// PAPEL BUENO
+            $(document).on('click', '#btn_papel_bueno', function(e){ 
+ 
+
                 $.ajax({
                     headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') },
                     type: 'POST',
@@ -497,6 +600,42 @@
                     }
                 });
         }
+
+        function aperturaTaquilla(){
+            var formData = new FormData(document.getElementById("form_aperturar_taquilla"));
+                $.ajax({
+                    headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') },
+                    url:'{{route("home.apertura_taquilla") }}',
+                    type:'POST',
+                    contentType:false,
+                    cache:false,
+                    processData:false,
+                    async: true,
+                    data: formData,
+                    success: function(response){
+                        console.log(response);
+                        if (response.success) {
+                            alert('TAQUILLA APERTURADA.');
+
+                            $('#modal_apertura_taquilla').modal('hide');
+                            $('#modal_fondo_caja').modal('show');
+
+                        }else{
+                            if (response.nota != '') {
+                                alert(response.nota);
+                            }else{
+                                alert('Disculpe, ha ocurrido un error.');
+                            }
+                            
+                        }  
+
+                    },
+                    error: function(error){
+                        
+                    }
+                });
+        }
+
 
     </script>
   

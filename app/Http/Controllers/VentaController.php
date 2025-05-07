@@ -1615,7 +1615,8 @@ class VentaController extends Controller
                                                                                                 'nro_timbre' => $nro_timbre,
                                                                                                 'key_inventario_tfe' => $key_inventario,
                                                                                                 'serial' => $serial,
-                                                                                                'qr' => 'assets/qrForma14/qrcode_TFE'.$nro_timbre.'.png']); 
+                                                                                                'qr' => 'assets/qrForma14/qrcode_TFE'.$nro_timbre.'.png',
+                                                                                                'condicion' => 7]); 
                                                 if ($i3){
                                                     $cant_tfe = $cant_tfe + 1;
                                                     $cant_ucd_tfe = $cant_ucd_tfe + $ucd_tramite;
@@ -1763,7 +1764,8 @@ class VentaController extends Controller
                                                                                                 'nro_timbre' => $nro_timbre,
                                                                                                 'key_inventario_tfe' => $key_inventario,
                                                                                                 'serial' => $serial,
-                                                                                                'qr' => 'assets/qrForma14/qrcode_TFE'.$nro_timbre.'.png']); 
+                                                                                                'qr' => 'assets/qrForma14/qrcode_TFE'.$nro_timbre.'.png',
+                                                                                                'condicion' => 7]); 
                                                 if ($i3){
                                                     $cant_tfe = $cant_tfe + 1;
                                                     $cant_ucd_tfe = $cant_ucd_tfe;
@@ -1927,7 +1929,8 @@ class VentaController extends Controller
                                                                                                 'nro_timbre' => $nro_timbre,
                                                                                                 'key_inventario_tfe' => $key_inventario,
                                                                                                 'serial' => $serial,
-                                                                                                'qr' => 'assets/qrForma14/qrcode_TFE'.$nro_timbre.'.png']); 
+                                                                                                'qr' => 'assets/qrForma14/qrcode_TFE'.$nro_timbre.'.png',
+                                                                                                'condicion' => 7]); 
                                                 if ($i3){
                                                     $cant_tfe = $cant_tfe + 1;
                                                     $cant_ucd_tfe = $cant_ucd_tfe + $ucd_tramite;
