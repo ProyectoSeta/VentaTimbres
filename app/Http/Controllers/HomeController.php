@@ -89,7 +89,7 @@ class HomeController extends Controller
 
     
 
-    public function imprimir(){
+    public function timbre(){
         // // $impresora = 'USB001';COMPOSER
         // $nombreImpresora = "4BARCODE4B2054L";
         // $connector = new WindowsPrintConnector($nombreImpresora);
@@ -567,7 +567,7 @@ class HomeController extends Controller
 
     public function modal_clave(Request $request){
         $papel = $request->post('papel');
-        $val_papel = base64_encode(serialize($papel));
+        $val_papel = base64_encode(serialize($papel)); 
 
         $html = '<div class="modal-header p-2 pt-3 d-flex justify-content-center">
                     <div class="text-center">
@@ -580,7 +580,7 @@ class HomeController extends Controller
                         
                         <label for="clave" class="form-label"><span class="text-danger">* </span>Ingrese la clave de seguridad de la Taquilla:</label>
                         <input type="password" id="clave" class="form-control form-control-sm" name="clave" required>
-                        <input type="hidden" name="papel" clave="'.$val_papel.'">
+                        <input type="hidden" name="papel" value="'.$val_papel.'">
                         <p class="text-muted text-end"><span style="color:red">*</span> Campos requeridos.</p>
 
                         <div class="d-flex justify-content-center mt-3 mb-3">
@@ -595,7 +595,7 @@ class HomeController extends Controller
 
     public function clave(Request $request){
         // $papel = unserialize(base64_decode($request->post('papel')));
-        $papel = $request->post('papel');
+        $papel = $request->post('papel'); 
         $pass = $request->post('clave');
 
         if ($pass == '' || $pass == null) {
@@ -640,7 +640,7 @@ class HomeController extends Controller
                                         <td><span class="text-muted">'.$key->tramite.'</span></td>
                                         <td><span class="fw-semibold">'.$monto.'</span></td>
                                         <td>
-                                            <button type="button" class="btn btn-secondary btn-sm py-0 imprimir_timbre" style="font-size:12.7px" venta ="" timbre="'.$timbre.'" papel="'.$papel.'">Imprimir</button>
+                                            <button type="button" class="btn btn-secondary btn-sm py-0 imprimir_timbre" style="font-size:12.7px" venta="" timbre="'.$timbre.'" papel="'.$papel.'">Imprimir</button>
                                         </td>
                                     </tr>';
                         }
@@ -678,7 +678,7 @@ class HomeController extends Controller
                                             <tr>
                                                 <th>No. Timbre</th>
                                                 <th>Tramite</th>
-                                                <th>UCD</th>
+                                                <th>UCD|Bs.</th>
                                                 <th>Imprimir</th>
                                             </tr>
                                         </thead>
@@ -712,16 +712,112 @@ class HomeController extends Controller
 
     public function modal_imprimir(Request $request){
         $papel = unserialize(base64_decode($request->post('papel')));
-        $timbre = $request->post('timbre');
+        $timbre =unserialize(base64_decode($request->post('timbre'))); 
+
+        $val_papel = $request->post('papel');
+        $val_timbre = $request->post('timbre');
+
+        $length = 6;
 
         if ($papel == 1) {
-            //// PAPEL EN BUEN ESTADO 
+            //// PAPEL EN BUEN ESTADO | MISMO NRO DE TIMBRE
+            $con1 = DB::table('detalle_venta_tfes')->select('key_venta','nro_timbre')->where('nro_timbre','=',$timbre)->first();
+            if ($con1) {
+                $con2 = DB::table('detalle_ventas')->join('tramites', 'detalle_ventas.key_tramite', '=','tramites.id_tramite')
+                                    ->select('detalle_ventas.ucd','detalle_ventas.bs','tramites.tramite')
+                                    ->where('detalle_ventas.key_venta','=',$con1->key_venta)->first();
+                $con3 =  DB::table('ventas')->join('contribuyentes', 'ventas.key_contribuyente', '=','contribuyentes.id_contribuyente')
+                                    ->select('contribuyentes.nombre_razon','contribuyentes.identidad_condicion','contribuyentes.identidad_nro')
+                                    ->where('ventas.id_venta','=',$con1->key_venta)->first();
+                if ($con2 && $con3) {
+                    $formato_nro = substr(str_repeat(0, $length).$timbre, - $length);
 
+                    if ($con2->ucd == null) {
+                        $monto = $con2->bs.' Bs.';
+                    }else{
+                        $monto = $con2->ucd.' U.C.D.';
+                    }
 
-            return response()->json(['success' => true, 'html' => $html]);
+                    $html = '<div class="modal-header p-2 pt-3 d-flex justify-content-center">
+                                <div class="text-center">
+                                    <i class="bx bx-receipt fs-2 text-muted me-2"></i>
+                                    <h1 class="modal-title fs-5 fw-bold text-navy">Impresión TFE-14 <span class="text-secondary">| Papel en Buen Estado</span> </h1>
+                                </div>
+                            </div> 
+                            <div class="modal-body px-5 py-3" style="font-size:13px">
+                                <span class="text-muted">*IMPORTANTE:</span>
+
+                                <div class="d-flex justify-content-center">
+                                    <div class="row g-3 align-items-center">
+                                        <div class="col-auto">
+                                            <span class="text-navy fs-4 fw-bold titulo">No. Timbre</span>
+                                        </div>
+                                        <div class="col-auto">
+                                            <span class="text-danger fs-4 fw-bold titulo">A-'.$formato_nro.'</span>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="d-flex justify-content-center my-3">
+                                    <table class="table table-sm">
+                                        <tbody>
+                                            <tr>
+                                                <th>ID Venta</th>
+                                                <td>'.$con1->key_venta.'</td>
+                                            </tr>
+                                            <tr>
+                                                <th>Contribuyente</th>
+                                                <td>
+                                                    <div class="d-flex flex-column">
+                                                        <span class="fw-semibold">'.$con3->nombre_razon.'</span>
+                                                        <span class="text-muted">'.$con3->identidad_condicion.'-'.$con3->identidad_nro.'</span>
+                                                    </div>
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <th>Tramite</th>
+                                                <td>'.$con2->tramite.'</td>
+                                            </tr>
+                                            <tr>
+                                                <th>UCD|Bs.</th>
+                                                <td>'.$monto.'</td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+
+                                <form id="form_imprmir_timbre" method="post" onsubmit="event.preventDefault(); imprimirTimbre()">
+                                    <input type="hidden" name="timbre" value="'.$val_timbre.'">
+                                    <input type="hidden" name="papel" value="'.$val_papel.'">
+
+                                    <div class="d-flex justify-content-center mt-3 mb-3">
+                                        <button type="button" class="btn btn-secondary btn-sm me-2" data-bs-dismiss="modal">Cancelar</button>
+                                        <button type="submit" class="btn btn-success btn-sm">Imprimir</button>
+                                    </div>
+
+                                </form>
+                            </div>';
+
+                    return response()->json(['success' => true, 'html' => $html, 'papel' => 1]);
+                }else{
+                    return response()->json(['success' => false]); 
+                }
+            }else{
+                return response()->json(['success' => false]);
+            }
+            
         }else{
-            //// PAPEL DAÑADO
+            //// PAPEL DAÑADO | IMPRIMIR EN OTRO NRO TIMBRE
         }
+    }
+
+
+
+    public function imprimir(Request $request){
+        $papel = unserialize(base64_decode($request->post('papel')));
+        $timbre =unserialize(base64_decode($request->post('timbre'))); 
+
+
     }
 
     

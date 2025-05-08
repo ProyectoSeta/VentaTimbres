@@ -35,12 +35,14 @@ Route::post('/home/ingreso_boveda', [App\Http\Controllers\HomeController::class,
 Route::post('/home/historial_boveda', [App\Http\Controllers\HomeController::class, 'historial_boveda'])->name('home.historial_boveda');
 Route::post('/home/cierre_taquilla', [App\Http\Controllers\HomeController::class, 'cierre_taquilla'])->name('home.cierre_taquilla');
 
-Route::post('/home/imprimir', [App\Http\Controllers\HomeController::class, 'imprimir'])->name('home.imprimir');
+/////PRUEBA IMPRESION DE TIMBRE
+Route::post('/home/timbre', [App\Http\Controllers\HomeController::class, 'timbre'])->name('home.timbre');
 
 //// PAPEL DAÑADO
 Route::post('/home/modal_clave', [App\Http\Controllers\HomeController::class, 'modal_clave'])->name('home.modal_clave');
 Route::post('/home/clave', [App\Http\Controllers\HomeController::class, 'clave'])->name('home.clave');
 Route::post('/home/modal_imprimir', [App\Http\Controllers\HomeController::class, 'modal_imprimir'])->name('home.modal_imprimir');
+Route::post('/home/imprimir', [App\Http\Controllers\HomeController::class, 'imprimir'])->name('home.imprimir');
 
 
 ///////////////////// PAPEL DE SEGURIDAD
