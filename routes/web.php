@@ -40,6 +40,7 @@ Route::post('/home/imprimir', [App\Http\Controllers\HomeController::class, 'impr
 //// PAPEL DAÑADO
 Route::post('/home/modal_clave', [App\Http\Controllers\HomeController::class, 'modal_clave'])->name('home.modal_clave');
 Route::post('/home/clave', [App\Http\Controllers\HomeController::class, 'clave'])->name('home.clave');
+Route::post('/home/modal_imprimir', [App\Http\Controllers\HomeController::class, 'modal_imprimir'])->name('home.modal_imprimir');
 
 
 ///////////////////// PAPEL DE SEGURIDAD

@@ -585,7 +585,7 @@ class HomeController extends Controller
 
                         <div class="d-flex justify-content-center mt-3 mb-3">
                             <button type="button" class="btn btn-secondary btn-sm me-2" data-bs-dismiss="modal">Cancelar</button>
-                            <button type="submit" class="btn btn-success btn-sm">Aperturar</button>
+                            <button type="submit" class="btn btn-success btn-sm">Aceptar</button>
                         </div>
                     </form>
                 </div>';
@@ -594,7 +594,8 @@ class HomeController extends Controller
     }
 
     public function clave(Request $request){
-        $papel = unserialize(base64_decode($request->post('papel')));
+        // $papel = unserialize(base64_decode($request->post('papel')));
+        $papel = $request->post('papel');
         $pass = $request->post('clave');
 
         if ($pass == '' || $pass == null) {
@@ -610,9 +611,95 @@ class HomeController extends Controller
                 if (Hash::check($pass, $q2->clave)) {
                     ///////ACCION PERMITIDA
                     
+                    /// consultar ultima venta
+                    $con1 =  DB::table('ventas')->join('contribuyentes', 'ventas.key_contribuyente', '=','contribuyentes.id_contribuyente')
+                                ->select('ventas.id_venta','contribuyentes.nombre_razon','contribuyentes.identidad_condicion','contribuyentes.identidad_nro')
+                                ->where('ventas.key_taquilla','=',$id_taquilla)
+                                ->orderBy('ventas.id_venta', 'desc')->first();
+                    if ($con1) {
+                        $tr = '';
+                        $length = 6;
+
+                        $con2 = DB::table('detalle_ventas')->join('tramites', 'detalle_ventas.key_tramite', '=','tramites.id_tramite')
+                                    ->select('detalle_ventas.correlativo','detalle_ventas.ucd','detalle_ventas.bs','tramites.tramite')
+                                    ->where('detalle_ventas.key_venta','=',$con1->id_venta)->get();
+
+                        foreach ($con2 as $key) {
+                            $con3 = DB::table('detalle_venta_tfes')->select('nro_timbre')->where('key_venta','=',$con1->id_venta)->where('key_detalle_venta','=',$key->correlativo)->first();
+                            
+                            $formato_nro = substr(str_repeat(0, $length).$con3->nro_timbre, - $length);
+                            if ($key->ucd == null) {
+                                $monto = $key->bs.' Bs.';
+                            }else{
+                                $monto = $key->ucd.' U.C.D.';
+                            }
+
+                            $timbre =  base64_encode(serialize($con3->nro_timbre));;
+                            $tr .= '<tr>
+                                        <td><span class="text-danger fs-6 fw-bold titulo">A-'.$formato_nro.'</span></td>
+                                        <td><span class="text-muted">'.$key->tramite.'</span></td>
+                                        <td><span class="fw-semibold">'.$monto.'</span></td>
+                                        <td>
+                                            <button type="button" class="btn btn-secondary btn-sm py-0 imprimir_timbre" style="font-size:12.7px" venta ="" timbre="'.$timbre.'" papel="'.$papel.'">Imprimir</button>
+                                        </td>
+                                    </tr>';
+                        }
+
+                        $html = '<div class="modal-header p-2 pt-3 d-flex justify-content-center">
+                                    <div class="text-center">
+                                        <i class="bx bx-detail fs-2 text-muted me-2"></i>
+                                        <h1 class="modal-title fs-5 fw-bold text-navy">Última Venta <span class="text-muted ">| TAQ'.$id_taquilla.'</span></h1>
+                                    </div>
+                                </div>  
+                                <div class="modal-body px-5 py-3" style="font-size:13px">
+                                    <div class="d-flex justify-content-center my-2">
+                                        <table class="table table-sm w-75">
+                                            <tbody>
+                                                <tr>
+                                                    <th>ID Venta</th>
+                                                    <td class="fw-bold text-navy">'.$con1->id_venta.'</td>
+                                                </tr>
+                                                <tr>
+                                                    <th>Contribuyente</th>
+                                                    <td>
+                                                        <div class="d-flex flex-column">
+                                                            <span class="fw-semibold">'.$con1->nombre_razon.'</span>
+                                                            <span class="text-muted">'.$con1->identidad_condicion.'-'.$con1->identidad_nro.'</span>
+                                                        </div>
+                                                    </td>
+                                                </tr>
+                                            </tbody>
+                                        </table>
+                                    </div>
+
+                                    <div class="fw-semibold text-muted fs-5 text-center mb-3">Trimbres TFE-14</div>
+                                    <table class="table table-sm text-center">
+                                        <thead>
+                                            <tr>
+                                                <th>No. Timbre</th>
+                                                <th>Tramite</th>
+                                                <th>UCD</th>
+                                                <th>Imprimir</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            '.$tr.'
+                                        </tbody>
+                                    </table>
+                                    
+                                    <div class="d-flex justify-content-center mt-3 mb-3">
+                                        <button type="button" class="btn btn-secondary btn-sm " data-bs-dismiss="modal">Cancelar</button>
+                                    </div>
+                                </div>';
+
+                        return response()->json(['success' => true, 'html' => $html]);
 
 
-                    
+
+
+                    }else{
+                        return response()->json(['success' => false]);
+                    }                    
                 }else{
                     return response()->json(['success' => false, 'nota' => 'Disculpe, la contraseña ingresada no es válida.']);
                 }
@@ -622,6 +709,20 @@ class HomeController extends Controller
         } 
     }
 
+
+    public function modal_imprimir(Request $request){
+        $papel = unserialize(base64_decode($request->post('papel')));
+        $timbre = $request->post('timbre');
+
+        if ($papel == 1) {
+            //// PAPEL EN BUEN ESTADO 
+
+
+            return response()->json(['success' => true, 'html' => $html]);
+        }else{
+            //// PAPEL DAÑADO
+        }
+    }
 
     
 }

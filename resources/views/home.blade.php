@@ -40,8 +40,8 @@
                         </div>  
 
                         <div class="mt-2">
-                            <button type="button" id="btn_papel_bueno" papel="1" class="btn btn-sm btn-outline-secondary btn_modal_papel me-3"     data-bs-toggle="modal" data-bs-target="#modal_papel_bueno">Papel Bueno</button>
-                            <button type="button" id="btn_papel_danado" papel="0" class="btn btn-sm btn-outline-secondary btn_modal_papel"     data-bs-toggle="modal" data-bs-target="#modal_papel_danado">Papel Dañado</button>
+                            <button type="button" id="btn_papel_bueno" papel="1" class="btn btn-sm btn-outline-secondary btn_modal_papel me-3"     data-bs-toggle="modal" data-bs-target="#modal_clave_taquilla">Papel Bueno</button>
+                            <button type="button" id="btn_papel_danado" papel="0" class="btn btn-sm btn-outline-secondary btn_modal_papel"     data-bs-toggle="modal" data-bs-target="#modal_ultima_venta">Papel Dañado</button>
                         </div>
                         
                     </div>
@@ -240,6 +240,23 @@
     </div>
 
 
+    <!-- ************ ULTIMA VENTA ************** -->
+    <div class="modal fade" id="modal_ultima_venta" tabindex="-1" aria-hidden="true"  data-bs-backdrop="static" data-bs-keyboard="false">
+        <div class="modal-dialog">
+            <div class="modal-content" id="content_ultima_venta">
+                <div class="my-5 py-5 d-flex flex-column text-center">
+                    <i class='bx bx-loader-alt bx-spin fs-1 mb-3' style='color:#0077e2'  ></i>
+                    <span class="text-muted">Cargando, por favor espere un momento...</span>
+                </div>
+            </div>  <!-- cierra modal-content -->
+        </div>  <!-- cierra modal-dialog -->
+    </div>
+
+
+
+
+
+
     <!-- ************ PAPEL BUENO ************** -->
     <div class="modal fade" id="modal_papel_bueno" tabindex="-1" aria-hidden="true"  data-bs-backdrop="static" data-bs-keyboard="false">
         <div class="modal-dialog">
@@ -290,6 +307,9 @@
             </div>  <!-- cierra modal-content -->
         </div>  <!-- cierra modal-dialog -->
     </div>
+
+
+    
 
 
 <!-- ************************************************************************** -->
@@ -421,7 +441,7 @@
             });
 
 
-            ///////////////// MODAL PAPEL
+            /////////////////// MODAL CLAVE - VOLVER A IMPRIMIR
             $(document).on('click','.btn_modal_papel', function(e){ 
                 e.preventDefault(); 
                 var papel = $(this).attr('papel');
@@ -438,25 +458,59 @@
                 });
             });
 
-
-            ///////////////// PAPEL BUENO
-            $(document).on('click', '#btn_papel_bueno', function(e){ 
- 
-
+            /////////////////// IMPRIMIR TIMBRE - MODAL
+            $(document).on('click','.imprimir_timbre', function(e){ 
+                e.preventDefault(); 
+                var papel = $(this).attr('papel');
+                var timbre = $(this).attr('timbre');
                 $.ajax({
                     headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') },
                     type: 'POST',
-                    url: '{{route("home.historial_boveda") }}',
+                    url: '{{route("home.modal_imprimir") }}',
+                    data: {papel:papel,timbre:timbre},
                     success: function(response) {
-                        $('#historial_boveda').html(response);
-                        if (response == false) {
-                            alert('Disculpe, ha ocurrido un error.');
-                        }
+                        if (response.success) {
+                            console.log(response);
+                            if (response.papel == 1) {
+                                ///BUEN ESTADO
+                                $('#modal_ultima_venta').modal('hide');
+                                $('#modal_papel_bueno').modal('show');
+                                $('#content_papel_bueno').html(response.html);
+                            }else{
+                                ///DAÑADO
+                            }
+                        }else{
+                            if (response.nota != '') {
+                                alert(response.nota);
+                            }else{
+                                alert('Disculpe, ha ocurrido un error.');
+                            }
+                        }  
                     },
                     error: function() {
                     }
                 });
             });
+
+
+            ///////////////// PAPEL BUENO
+            // $(document).on('click', '#btn_papel_bueno', function(e){ 
+ 
+
+            //     $.ajax({
+            //         headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') },
+            //         type: 'POST',
+            //         url: '{{route("home.historial_boveda") }}',
+            //         success: function(response) {
+            //             $('#historial_boveda').html(response);
+            //             if (response == false) {
+            //                 alert('Disculpe, ha ocurrido un error.');
+            //             }
+            //         },
+            //         error: function() {
+            //         }
+            //     });
+            // });
 
 
 
@@ -601,11 +655,11 @@
                 });
         }
 
-        function aperturaTaquilla(){
-            var formData = new FormData(document.getElementById("form_aperturar_taquilla"));
+        function claveTaquilla(){
+            var formData = new FormData(document.getElementById("form_clave_taquilla"));
                 $.ajax({
                     headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') },
-                    url:'{{route("home.apertura_taquilla") }}',
+                    url:'{{route("home.clave") }}',
                     type:'POST',
                     contentType:false,
                     cache:false,
@@ -615,10 +669,10 @@
                     success: function(response){
                         console.log(response);
                         if (response.success) {
-                            alert('TAQUILLA APERTURADA.');
 
-                            $('#modal_apertura_taquilla').modal('hide');
-                            $('#modal_fondo_caja').modal('show');
+                            $('#modal_clave_taquilla').modal('hide');
+                            $('#modal_ultima_venta').modal('show');
+                            $('#content_ultima_venta').html(response.html);
 
                         }else{
                             if (response.nota != '') {
