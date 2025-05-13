@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 use DB;
+use SimpleSoftwareIO\QrCode\Facades\QrCode;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash; 
 
@@ -569,28 +570,48 @@ class HomeController extends Controller
         $papel = $request->post('papel');
         $val_papel = base64_encode(serialize($papel)); 
 
-        $html = '<div class="modal-header p-2 pt-3 d-flex justify-content-center">
-                    <div class="text-center">
-                        <i class="bx bx-lock-open-alt fs-2 text-muted me-2"></i>
-                        <h1 class="modal-title fs-5 fw-bold text-navy">Clave de Taquilla</h1>
-                    </div>
-                </div> 
-                <div class="modal-body px-5 py-3" style="font-size:13px">
-                    <form id="form_clave_taquilla" method="post" onsubmit="event.preventDefault(); claveTaquilla()">
-                        
-                        <label for="clave" class="form-label"><span class="text-danger">* </span>Ingrese la clave de seguridad de la Taquilla:</label>
-                        <input type="password" id="clave" class="form-control form-control-sm" name="clave" required>
-                        <input type="hidden" name="papel" value="'.$val_papel.'">
-                        <p class="text-muted text-end"><span style="color:red">*</span> Campos requeridos.</p>
+        ////ID TAQUILLA
+        $user = auth()->id();
+        $query = DB::table('users')->select('key_sujeto')->where('id','=',$user)->first();
+        $q2 = DB::table('taquillas')->select('id_taquilla')->where('key_funcionario','=',$query->key_sujeto)->first();
+        if ($q2) {
+            $id_taquilla = $q2->id_taquilla;
+        }else{
+            return response()->json(['success' => false]);
+        }
 
-                        <div class="d-flex justify-content-center mt-3 mb-3">
-                            <button type="button" class="btn btn-secondary btn-sm me-2" data-bs-dismiss="modal">Cancelar</button>
-                            <button type="submit" class="btn btn-success btn-sm">Aceptar</button>
+        ////VERIFICAR APERTURA DE TAQUILLA
+        $hoy = date('Y').''.date('m').''.date('d');
+        $con_apertura = DB::table('apertura_taquillas')->where('key_taquilla','=',$id_taquilla)->where('fecha','=',$hoy)->first();
+        if ($con_apertura){
+            $html = '<div class="modal-header p-2 pt-3 d-flex justify-content-center">
+                        <div class="text-center">
+                            <i class="bx bx-lock-open-alt fs-2 text-muted me-2"></i>
+                            <h1 class="modal-title fs-5 fw-bold text-navy">Clave de Taquilla</h1>
                         </div>
-                    </form>
-                </div>';
+                    </div> 
+                    <div class="modal-body px-5 py-3" style="font-size:13px">
+                        <form id="form_clave_taquilla" method="post" onsubmit="event.preventDefault(); claveTaquilla()">
+                            
+                            <label for="clave" class="form-label"><span class="text-danger">* </span>Ingrese la clave de seguridad de la Taquilla:</label>
+                            <input type="password" id="clave" class="form-control form-control-sm" name="clave" required>
+                            <input type="hidden" name="papel" value="'.$val_papel.'">
+                            <p class="text-muted text-end"><span style="color:red">*</span> Campos requeridos.</p>
 
-        return response($html);
+                            <div class="d-flex justify-content-center mt-3 mb-3">
+                                <button type="button" class="btn btn-secondary btn-sm me-2" data-bs-dismiss="modal">Cancelar</button>
+                                <button type="submit" class="btn btn-success btn-sm">Aceptar</button>
+                            </div>
+                        </form>
+                    </div>';
+
+            return response()->json(['success' => true, 'html' => $html]);
+        }else{
+            /////no hay registro, ADMIN no ha aperturado taquilla.
+            // BITACORA = INTENTO DE VENTA SIN APERTURA DE TAQUILLA
+            return response()->json(['success' => false, 'nota'=> 'Acción invalida. La taquilla no ha sido aperturada.']);
+        }
+        
     }
 
     public function clave(Request $request){
@@ -625,24 +646,32 @@ class HomeController extends Controller
                                     ->where('detalle_ventas.key_venta','=',$con1->id_venta)->get();
 
                         foreach ($con2 as $key) {
-                            $con3 = DB::table('detalle_venta_tfes')->select('nro_timbre')->where('key_venta','=',$con1->id_venta)->where('key_detalle_venta','=',$key->correlativo)->first();
-                            
-                            $formato_nro = substr(str_repeat(0, $length).$con3->nro_timbre, - $length);
-                            if ($key->ucd == null) {
-                                $monto = $key->bs.' Bs.';
-                            }else{
-                                $monto = $key->ucd.' U.C.D.';
-                            }
+                            $con3 = DB::table('detalle_venta_tfes')->select('nro_timbre')->where('key_venta','=',$con1->id_venta)->where('key_detalle_venta','=',$key->correlativo)->where('condicion','=',7)->where('sustituto','=',NULL)->first();
+                            if ($con3) {
+                                $formato_nro = substr(str_repeat(0, $length).$con3->nro_timbre, - $length);
+                                if ($key->ucd == null) {
+                                    $monto = $key->bs.' Bs.';
+                                }else{
+                                    $monto = $key->ucd.' U.C.D.';
+                                }
 
-                            $timbre =  base64_encode(serialize($con3->nro_timbre));;
-                            $tr .= '<tr>
-                                        <td><span class="text-danger fs-6 fw-bold titulo">A-'.$formato_nro.'</span></td>
-                                        <td><span class="text-muted">'.$key->tramite.'</span></td>
-                                        <td><span class="fw-semibold">'.$monto.'</span></td>
-                                        <td>
-                                            <button type="button" class="btn btn-secondary btn-sm py-0 imprimir_timbre" style="font-size:12.7px" venta="" timbre="'.$timbre.'" papel="'.$papel.'">Imprimir</button>
-                                        </td>
-                                    </tr>';
+                                $timbre =  base64_encode(serialize($con3->nro_timbre));
+                                $tr .= '<tr>
+                                            <td><span class="text-danger fs-6 fw-bold titulo">A-'.$formato_nro.'</span></td>
+                                            <td><span class="text-muted">'.$key->tramite.'</span></td>
+                                            <td><span class="fw-semibold">'.$monto.'</span></td>
+                                            <td>
+                                                <button type="button" class="btn btn-secondary btn-sm py-0 imprimir_timbre" style="font-size:12.7px" venta="" timbre="'.$timbre.'" papel="'.$papel.'">Imprimir</button>
+                                            </td>
+                                        </tr>';
+                            }else{
+                                $tr = '<tr>
+                                            <td colspan="4" ><span class="text-secondary fst-italic">No hay timbres para re-imprimir.</span></td>
+                                        </tr>';
+                            }   
+                            
+
+                            
                         }
 
                         $html = '<div class="modal-header p-2 pt-3 d-flex justify-content-center">
@@ -712,102 +741,211 @@ class HomeController extends Controller
 
     public function modal_imprimir(Request $request){
         $papel = unserialize(base64_decode($request->post('papel')));
-        $timbre =unserialize(base64_decode($request->post('timbre'))); 
+        $timbre = unserialize(base64_decode($request->post('timbre')));
 
         $val_papel = $request->post('papel');
         $val_timbre = $request->post('timbre');
 
         $length = 6;
 
-        if ($papel == 1) {
-            //// PAPEL EN BUEN ESTADO | MISMO NRO DE TIMBRE
-            $con1 = DB::table('detalle_venta_tfes')->select('key_venta','nro_timbre')->where('nro_timbre','=',$timbre)->first();
-            if ($con1) {
-                $con2 = DB::table('detalle_ventas')->join('tramites', 'detalle_ventas.key_tramite', '=','tramites.id_tramite')
+        ////ID TAQUILLA
+        $user = auth()->id();
+        $query = DB::table('users')->select('key_sujeto')->where('id','=',$user)->first();
+        $q2 = DB::table('taquillas')->select('id_taquilla')->where('key_funcionario','=',$query->key_sujeto)->first();
+        if ($q2) {
+            $id_taquilla = $q2->id_taquilla;
+        }else{
+            return response()->json(['success' => false]);
+        }
+
+    
+        //// DATOS GENERALES DE LA VENTA
+        $con1 = DB::table('detalle_venta_tfes')->select('key_venta','nro_timbre')->where('nro_timbre','=',$timbre)->first();
+        if ($con1) {
+            $con2 = DB::table('detalle_ventas')->join('tramites', 'detalle_ventas.key_tramite', '=','tramites.id_tramite')
                                     ->select('detalle_ventas.ucd','detalle_ventas.bs','tramites.tramite')
                                     ->where('detalle_ventas.key_venta','=',$con1->key_venta)->first();
-                $con3 =  DB::table('ventas')->join('contribuyentes', 'ventas.key_contribuyente', '=','contribuyentes.id_contribuyente')
+            $con3 =  DB::table('ventas')->join('contribuyentes', 'ventas.key_contribuyente', '=','contribuyentes.id_contribuyente')
                                     ->select('contribuyentes.nombre_razon','contribuyentes.identidad_condicion','contribuyentes.identidad_nro')
                                     ->where('ventas.id_venta','=',$con1->key_venta)->first();
-                if ($con2 && $con3) {
-                    $formato_nro = substr(str_repeat(0, $length).$timbre, - $length);
+            if ($con2 && $con3) {
+                $formato_nro = substr(str_repeat(0, $length).$timbre, - $length);
 
-                    if ($con2->ucd == null) {
-                        $monto = $con2->bs.' Bs.';
-                    }else{
-                        $monto = $con2->ucd.' U.C.D.';
-                    }
-
-                    $html = '<div class="modal-header p-2 pt-3 d-flex justify-content-center">
-                                <div class="text-center">
-                                    <i class="bx bx-receipt fs-2 text-muted me-2"></i>
-                                    <h1 class="modal-title fs-5 fw-bold text-navy">Impresión TFE-14 <span class="text-secondary">| Papel en Buen Estado</span> </h1>
-                                </div>
-                            </div> 
-                            <div class="modal-body px-5 py-3" style="font-size:13px">
-                                <span class="text-muted">*IMPORTANTE:</span>
-
-                                <div class="d-flex justify-content-center">
-                                    <div class="row g-3 align-items-center">
-                                        <div class="col-auto">
-                                            <span class="text-navy fs-4 fw-bold titulo">No. Timbre</span>
-                                        </div>
-                                        <div class="col-auto">
-                                            <span class="text-danger fs-4 fw-bold titulo">A-'.$formato_nro.'</span>
-                                        </div>
-                                    </div>
-                                </div>
-
-                                <div class="d-flex justify-content-center my-3">
-                                    <table class="table table-sm">
-                                        <tbody>
-                                            <tr>
-                                                <th>ID Venta</th>
-                                                <td>'.$con1->key_venta.'</td>
-                                            </tr>
-                                            <tr>
-                                                <th>Contribuyente</th>
-                                                <td>
-                                                    <div class="d-flex flex-column">
-                                                        <span class="fw-semibold">'.$con3->nombre_razon.'</span>
-                                                        <span class="text-muted">'.$con3->identidad_condicion.'-'.$con3->identidad_nro.'</span>
-                                                    </div>
-                                                </td>
-                                            </tr>
-                                            <tr>
-                                                <th>Tramite</th>
-                                                <td>'.$con2->tramite.'</td>
-                                            </tr>
-                                            <tr>
-                                                <th>UCD|Bs.</th>
-                                                <td>'.$monto.'</td>
-                                            </tr>
-                                        </tbody>
-                                    </table>
-                                </div>
-
-                                <form id="form_imprmir_timbre" method="post" onsubmit="event.preventDefault(); imprimirTimbre()">
-                                    <input type="hidden" name="timbre" value="'.$val_timbre.'">
-                                    <input type="hidden" name="papel" value="'.$val_papel.'">
-
-                                    <div class="d-flex justify-content-center mt-3 mb-3">
-                                        <button type="button" class="btn btn-secondary btn-sm me-2" data-bs-dismiss="modal">Cancelar</button>
-                                        <button type="submit" class="btn btn-success btn-sm">Imprimir</button>
-                                    </div>
-
-                                </form>
-                            </div>';
-
-                    return response()->json(['success' => true, 'html' => $html, 'papel' => 1]);
+                if ($con2->ucd == null) {
+                    $monto = $con2->bs.' Bs.';
                 }else{
-                    return response()->json(['success' => false]); 
+                    $monto = $con2->ucd.' U.C.D.';
+                }
+            }else{
+                return response()->json(['success' => false]); 
+            }
+        }else{
+            return response()->json(['success' => false]);
+        }
+
+
+        ////// TIPO DE IMPRESIÓN
+        if ($papel == 1) {
+            //// PAPEL EN BUEN ESTADO | MISMO NRO DE TIMBRE
+            $html = '<div class="modal-header p-2 pt-3 d-flex justify-content-center">
+                        <div class="text-center">
+                            <i class="bx bx-receipt fs-2 text-muted me-2"></i>
+                            <h1 class="modal-title fs-5 fw-bold text-navy">Impresión TFE-14 <span class="text-secondary">| Papel en Buen Estado</span> </h1>
+                        </div>
+                    </div> 
+                    <div class="modal-body px-5 py-3" style="font-size:13px">
+                        <span class="text-muted">*IMPORTANTE:</span>
+
+                        <div class="d-flex justify-content-center">
+                            <div class="row g-3 align-items-center">
+                                <div class="col-auto">
+                                    <span class="text-navy fs-4 fw-bold titulo">No. Timbre</span>
+                                </div>
+                                <div class="col-auto">
+                                    <span class="text-danger fs-4 fw-bold titulo">A-'.$formato_nro.'</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="d-flex justify-content-center my-3">
+                            <table class="table table-sm">
+                                <tbody>
+                                    <tr>
+                                        <th>ID Venta</th>
+                                        <td>'.$con1->key_venta.'</td>
+                                    </tr>
+                                    <tr>
+                                        <th>Contribuyente</th>
+                                        <td>
+                                            <div class="d-flex flex-column">
+                                                <span class="fw-semibold">'.$con3->nombre_razon.'</span>
+                                                <span class="text-muted">'.$con3->identidad_condicion.'-'.$con3->identidad_nro.'</span>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <th>Tramite</th>
+                                        <td>'.$con2->tramite.'</td>
+                                    </tr>
+                                    <tr>
+                                        <th>UCD|Bs.</th>
+                                        <td>'.$monto.'</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+
+                        <form id="form_imprmir_timbre" method="post" onsubmit="event.preventDefault(); imprimirTimbre()">
+                            <input type="hidden" name="timbre" value="'.$val_timbre.'">
+                            <input type="hidden" name="papel" value="'.$val_papel.'">
+
+                            <div class="d-flex justify-content-center mt-3 mb-3">
+                                <button type="button" class="btn btn-secondary btn-sm me-2" data-bs-dismiss="modal">Cancelar</button>
+                                <button type="submit" class="btn btn-success btn-sm">Imprimir</button>
+                            </div>
+
+                        </form>
+                    </div>';
+
+            return response()->json(['success' => true, 'html' => $html, 'papel' => 1]);   
+            
+        }else{
+            //// PAPEL DAÑADO | IMPRIMIR EN OTRO NRO TIMBRE
+
+            /// BUSCAR EL CORRELATIVO DEL PROXIMO TIMBRE
+            $con4 = DB::table('detalle_venta_tfes')->select('key_inventario_tfe')->where('nro_timbre','=',$timbre)->first();
+            if ($con4) {
+                $detalle_last_id = $con4->key_inventario_tfe;
+
+                $con5 = DB::table('inventario_tfes')->select('hasta')->where('correlativo','=',$detalle_last_id)->first();
+                if ($detalle_last_id < $con5->hasta) {
+                    $next_nro_timbre = $timbre + 1;
+                }else{
+                    //lego al limite del lote asignado
+                    $con6 = DB::table('inventario_tfes')->select('desde')->where('key_taquilla','=',$id_taquilla)->where('condicion','=',4)->first();
+                    if ($con6) {
+                        $next_nro_timbre = $con6->desde;
+                    }else{
+                        return response()->json(['success' => false, 'nota' => 'No tiene disponible Timbre Fiscales TFE-14 en la taquilla. Por favor, comunicarse con el coordinador.']);
+                    }
                 }
             }else{
                 return response()->json(['success' => false]);
             }
-            
-        }else{
-            //// PAPEL DAÑADO | IMPRIMIR EN OTRO NRO TIMBRE
+
+            $formato_nro_next = substr(str_repeat(0, $length).$next_nro_timbre, - $length);
+
+            $html = '<div class="modal-header p-2 pt-3 d-flex justify-content-center">
+                        <div class="text-center">
+                            <i class="bx bx-receipt fs-2 text-muted me-2"></i>
+                            <h1 class="modal-title fs-5 fw-bold text-navy">Impresión TFE-14 <span class="text-secondary">| Papel Dañado</span></h1>
+                        </div>
+                    </div> 
+                    <div class="modal-body px-5 py-3" style="font-size:13px">
+                        <span class="text-muted">*IMPORTANTE:</span>
+
+                        <div class="">
+                            <div class="row align-items-center text-center">
+                                <div class="col-sm-6">
+                                    <div class="d-flex flex-column">
+                                        <span class="text-muted fw-bold titulo" style="font-size:13px">No. Timbre</span>
+                                        <span class="fw-bold text-navy fs-5">Papel Dañado</span>
+                                        <span class="text-muted fs-4 fw-bold titulo">A-'.$formato_nro.'</span>
+                                    </div>
+                                </div>
+                                <div class="col-sm-6">
+                                    <div class="d-flex flex-column">
+                                        <span class="text-muted fw-bold titulo" style="font-size:13px">No. Timbre</span>
+                                        <span class="fw-bold text-navy fs-5">A Imprimir</span>
+                                        <span class="text-danger fs-4 fw-bold titulo">A-'.$formato_nro_next.'</span>
+                                    </div>
+                                </div>
+                            </div> 
+                        </div>
+
+                        <div class="d-flex justify-content-center my-3">
+                            <table class="table table-sm">
+                                <tbody>
+                                    <tr>
+                                        <th>ID Venta</th>
+                                        <td>'.$con1->key_venta.'</td>
+                                    </tr>
+                                    <tr>
+                                        <th>Contribuyente</th>
+                                        <td>
+                                            <div class="d-flex flex-column">
+                                                <span class="fw-semibold">'.$con3->nombre_razon.'</span>
+                                                <span class="text-muted">'.$con3->identidad_condicion.'-'.$con3->identidad_nro.'</span>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <th>Tramite</th>
+                                        <td>'.$con2->tramite.'</td>
+                                    </tr>
+                                    <tr>
+                                        <th>UCD|Bs.</th>
+                                        <td>'.$monto.'</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+
+
+                        <form id="form_imprmir_timbre" method="post" onsubmit="event.preventDefault(); imprimirTimbre()">
+                            <input type="hidden" name="timbre" value="'.$val_timbre.'">
+                            <input type="hidden" name="papel" value="'.$val_papel.'">
+
+                            <div class="d-flex justify-content-center mt-3 mb-3">
+                                <button type="button" class="btn btn-secondary btn-sm me-2" data-bs-dismiss="modal">Cancelar</button>
+                                <button type="submit" class="btn btn-success btn-sm">Imprimir</button>
+                            </div>
+
+                        </form>
+                    </div>';
+            return response()->json(['success' => true, 'html' => $html, 'papel' => 0]); 
+
+
         }
     }
 
@@ -816,6 +954,245 @@ class HomeController extends Controller
     public function imprimir(Request $request){
         $papel = unserialize(base64_decode($request->post('papel')));
         $timbre =unserialize(base64_decode($request->post('timbre'))); 
+
+        $length = 6;
+
+        if ($papel == 1) {
+            /// PAPEL BUENO
+
+            $upd1 = DB::table('detalle_venta_tfes')->where('nro_timbre','=',$timbre)->update(['condicion' => 30]); //vuelto a imprimir
+            if ($upd1) {
+                $con1 = DB::table('detalle_venta_tfes')->select('key_venta','serial')->where('nro_timbre','=',$timbre)->first();
+                if ($con1) {
+                    $con2 = DB::table('detalle_ventas')->join('tramites', 'detalle_ventas.key_tramite', '=','tramites.id_tramite')
+                                            ->select('detalle_ventas.ucd','detalle_ventas.bs','tramites.tramite','tramites.key_ente')
+                                            ->where('detalle_ventas.key_venta','=',$con1->key_venta)->first();
+                    $con3 =  DB::table('ventas')->join('contribuyentes', 'ventas.key_contribuyente', '=','contribuyentes.id_contribuyente')
+                                            ->select('contribuyentes.nombre_razon','contribuyentes.identidad_condicion','contribuyentes.identidad_nro')
+                                            ->where('ventas.id_venta','=',$con1->key_venta)->first();
+                    if ($con2 && $con3) {
+                        $formato_nro = substr(str_repeat(0, $length).$timbre, - $length);
+        
+                        if ($con2->ucd == null) {
+                            $monto = number_format($con2->bs, 2, ',', '.').' Bs.';
+                        }else{
+                            $monto = $con2->ucd.' U.C.D.';
+                        }
+                    }else{ 
+                        $update = DB::table('detalle_venta_tfes')->where('nro_timbre','=',$timbre)->update(['condicion' => 7]);
+                        return response()->json(['success' => false]); 
+                    }
+                }else{
+                    $update = DB::table('detalle_venta_tfes')->where('nro_timbre','=',$timbre)->update(['condicion' => 7]);
+                    return response()->json(['success' => false]);
+                }
+
+                $con_ente = DB::table('entes')->select('ente')->where('id_ente','=',$con2->key_ente)->first();
+
+                $html = '<div class="modal-header">
+                            <h1 class="modal-title fs-5 fw-bold text-navy">Timbre Re-Impreso<span class="text-muted"></span></h1>
+                        </div>
+                        <div class="modal-body px-4 py-3" style="font-size:12.7px">
+                            <div class="row">
+                                <!-- DETALLE TIMBRE(S) -->
+                                <div class="col-lg-12">
+                                    <div class="border mb-4 rounded-3">
+                                        <div class="d-flex justify-content-between px-3 py-2 align-items-center">
+                                            <!-- DATOS -->
+                                            <div class="w-50">
+                                                <div class="text-danger fw-bold fs-4" id="">A-'.$formato_nro.'<span class="text-muted ms-2">TFE-14</span></div> 
+                                                <table class="table table-borderless table-sm lh-1 text_12">
+                                                    <tr>
+                                                        <th>Ente:</th>
+                                                        <td>'.$con_ente->ente.'</td>
+                                                    </tr>
+                                                    <tr>
+                                                        <th>Tramite:</th>
+                                                        <td>'.$con2->tramite.'</td>
+                                                    </tr>
+                                                    <tr>
+                                                        <th>Serial:</th>
+                                                        <td>'.$con1->serial.'</td>
+                                                    </tr>
+                                                </table>
+                                            </div>
+                                            <!-- UCD -->
+                                            <div class="">
+                                                <div class="text-center titulo fw-bold fs-3">'.$monto.'</div>
+                                            </div>
+                                            <!-- QR -->
+                                            <div class="text-center">
+                                                <img src="'.asset('assets/qrForma14/qrcode_TFE'.$timbre.'.png').'" class="img-fluid" alt="" width="110px">
+                                            </div>
+                                        </div>
+                                    </div>
+                                    
+                                </div>
+                            </div>  <!--  cierra div.row   -->
+                            <div class="d-flex justify-content-center mt-3 mb-3">
+                                <a href="'.route("home").'" class="btn btn-secondary btn-sm me-2">Cerrar</a>
+                            </div>
+                        </div>';
+
+                /////LLAMAR A LA FUNCIUON DE IMPRIMIR Y PASAR DATOS DE IMPRESION
+                return response()->json(['success' => true, 'html' => $html, 'papel' => 1]);   
+
+            }else{
+                $update = DB::table('detalle_venta_tfes')->where('nro_timbre','=',$timbre)->update(['condicion' => 7]);
+                return response()->json(['success' => false]);
+            }
+
+        }else{
+            /// PAPEL DAÑADO
+
+            /// BUSCAR EL CORRELATIVO DEL PROXIMO TIMBRE
+            
+            $con4 = DB::table('detalle_venta_tfes')->join('ucd_denominacions', 'detalle_venta_tfes.key_denominacion', '=','ucd_denominacions.id')
+                                                    ->select('detalle_venta_tfes.key_inventario_tfe','detalle_venta_tfes.key_venta','detalle_venta_tfes.key_taquilla','detalle_venta_tfes.key_detalle_venta','detalle_venta_tfes.key_denominacion','detalle_venta_tfes.bolivares','ucd_denominacions.identificador')
+                                                    ->where('detalle_venta_tfes.nro_timbre','=',$timbre)->first();
+            if ($con4) {
+                $detalle_last_id = $con4->key_inventario_tfe;
+
+                $con5 = DB::table('inventario_tfes')->select('hasta','key_lote_papel')->where('correlativo','=',$detalle_last_id)->first();
+                if ($detalle_last_id < $con5->hasta) {
+                    $next_nro_timbre = $timbre + 1;
+                    $key_lote = $con5->key_lote_papel;
+                    $key_inventario = $detalle_last_id;
+                }else{
+                    //lego al limite del lote asignado
+                    $con6 = DB::table('inventario_tfes')->select('desde','correlativo','key_lote_papel')->where('key_taquilla','=',$id_taquilla)->where('condicion','=',4)->first();
+                    if ($con6) {
+                        $next_nro_timbre = $con6->desde;
+                        $key_lote = $con6->key_lote_papel;
+                        $key_inventario = $con6->correlativo;
+                        
+                        /// actualizar condicion (en uso) del lote
+                        $upd = DB::table('inventario_tfes')->where('correlativo','=',$con6->correlativo)->update(['condicion' => 3]); // en uso
+                    }else{
+                        return response()->json(['success' => false, 'nota' => 'No tiene disponible Timbre Fiscales TFE-14 en la taquilla. Por favor, comunicarse con el coordinador.']);
+                    }
+                }
+            }else{
+                return response('llego');
+                return response()->json(['success' => false]);
+            }
+
+            /////////
+            $con2 = DB::table('detalle_ventas')->join('tramites', 'detalle_ventas.key_tramite', '=','tramites.id_tramite')
+                                                ->select('detalle_ventas.ucd','detalle_ventas.bs','tramites.tramite','tramites.key_ente')
+                                                ->where('detalle_ventas.key_venta','=',$con4->key_venta)->first();
+            $con_ente = DB::table('entes')->select('ente')->where('id_ente','=',$con2->key_ente)->first();
+
+            if ($con_ente && $con2) {
+                $upd1 = DB::table('detalle_venta_tfes')->where('nro_timbre','=',$timbre)->update(['condicion' => 29]); //anulado
+                if ($upd1) {
+                    //// NUEVO DETALLE VENTA TFES
+                    // SERIAL
+                    $length = 6;
+                    $formato_nro = substr(str_repeat(0, $length).$next_nro_timbre, - $length);
+
+                    //////// IDENTIFICACION DE FORMA
+                    $c_forma = DB::table('formas')->select('identificador')->where('forma','=','Forma14')->first();
+                    $identificador_forma = $c_forma->identificador;
+
+                    $serial = $con4->identificador.''.$identificador_forma.''.$formato_nro;
+
+                    // QR
+                    $url = 'https://tfe14.tributosaragua.com.ve/?id='.$next_nro_timbre.'?lp='.$key_lote; 
+                    QrCode::format('png')->size(180)->eye('circle')->generate($url, public_path('assets/qrForma14/qrcode_TFE'.$next_nro_timbre.'.png'));
+
+
+                    if ($con2->ucd == null) {
+                        ///bs
+                        $monto = number_format($con2->bs, 2, ',', '.').' Bs.';
+                        $bs = $con2->bs;
+                    }else{
+                        ///ucd
+                        $monto = $con2->ucd.' U.C.D.';
+                        $bs = null;
+                    }
+
+
+                    // insert detalle_venta_estampilla
+                    $insert = DB::table('detalle_venta_tfes')->insert(['key_venta' => $con4->key_venta, 
+                                                                    'key_taquilla' => $con4->key_taquilla,  
+                                                                    'key_detalle_venta' => $con4->key_detalle_venta, 
+                                                                    'key_denominacion' =>$con4->key_denominacion,
+                                                                    'bolivares' => $bs,
+                                                                    'nro_timbre' => $next_nro_timbre,
+                                                                    'key_inventario_tfe' => $key_inventario,
+                                                                    'serial' => $serial,
+                                                                    'qr' => 'assets/qrForma14/qrcode_TFE'.$next_nro_timbre.'.png',
+                                                                    'condicion' => 7,
+                                                                    'sustituto' => null]); 
+                    if ($insert) {
+                        $upd2 = DB::table('detalle_venta_tfes')->where('nro_timbre','=',$timbre)->update(['sustituto' => $next_nro_timbre]); //timbre sustituto del anulado
+                        if ($upd2) {
+                                $html = '<div class="modal-header">
+                                        <h1 class="modal-title fs-5 fw-bold text-navy">Timbre Re-Impreso<span class="text-muted"></span></h1>
+                                    </div>
+                                    <div class="modal-body px-4 py-3" style="font-size:12.7px">
+                                        <div class="row">
+                                            <!-- DETALLE TIMBRE(S) -->
+                                            <div class="col-lg-12">
+                                                <div class="border mb-4 rounded-3">
+                                                    <div class="d-flex justify-content-between px-3 py-2 align-items-center">
+                                                        <!-- DATOS -->
+                                                        <div class="w-50">
+                                                            <div class="text-danger fw-bold fs-4" id="">A-'.$formato_nro.' <span class="badge text-bg-secondary ms-2" style="font-size:13px">Nuevo</span> <span class="text-muted ms-2">TFE-14</span></div> 
+                                                            <table class="table table-borderless table-sm lh-1 text_12">
+                                                                <tr>
+                                                                    <th>Ente:</th>
+                                                                    <td>'.$con_ente->ente.'</td>
+                                                                </tr>
+                                                                <tr>
+                                                                    <th>Tramite:</th>
+                                                                    <td>'.$con2->tramite.'</td>
+                                                                </tr>
+                                                                <tr>
+                                                                    <th>Serial:</th>
+                                                                    <td>'.$serial.'</td>
+                                                                </tr>
+                                                            </table>
+                                                        </div>
+                                                        <!-- UCD -->
+                                                        <div class="">
+                                                            <div class="text-center titulo fw-bold fs-3">'.$monto.'</div>
+                                                        </div>
+                                                        <!-- QR -->
+                                                        <div class="text-center">
+                                                            <img src="'.asset('assets/qrForma14/qrcode_TFE'.$next_nro_timbre.'.png').'" class="img-fluid" alt="" width="110px">
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                
+                                            </div>
+                                        </div>  <!--  cierra div.row   -->
+                                        <div class="d-flex justify-content-center mt-3 mb-3">
+                                            <a href="'.route("home").'"  class="btn btn-secondary btn-sm me-2">Cerrar</a>
+                                        </div>
+                                    </div>';
+
+                            /////LLAMAR A LA FUNCIUON DE IMPRIMIR Y PASAR DATOS DE IMPRESION
+                            return response()->json(['success' => true, 'html' => $html,'papel' => 0]); 
+                        }else{
+                            return response()->json(['success' => false]);
+                        }
+                         
+                    }else{
+                        $update = DB::table('detalle_venta_tfes')->where('nro_timbre','=',$timbre)->update(['condicion' => 7]); 
+                        return response()->json(['success' => false]);
+                    }
+                }else{
+                    $update = DB::table('detalle_venta_tfes')->where('nro_timbre','=',$timbre)->update(['condicion' => 7]); 
+                    return response()->json(['success' => false]);
+                }
+                
+            }else{
+                return response()->json(['success' => false]);
+            }
+
+        }
 
 
     }

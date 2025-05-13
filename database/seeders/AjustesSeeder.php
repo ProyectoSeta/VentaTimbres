@@ -17,7 +17,7 @@ class AjustesSeeder extends Seeder
         DB::table('configuraciones')->insert([
             'nombre' => 'Timbres por Rollo',
             'descripcion' => 'Cantidad de Timbres Fiscales TFE-14 que contiene un (1) rollo.',
-            'valor' => '60',
+            'valor' => '160',
             'unidad' => 26,
             'module' => 23
         ]);

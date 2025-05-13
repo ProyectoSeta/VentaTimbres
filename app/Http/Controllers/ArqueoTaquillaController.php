@@ -298,47 +298,50 @@ class ArqueoTaquillaController extends Controller
                 $i++;
                 if ($value->forma == 3) {
                     /// FORMA 14
-                    $c2 = DB::table('detalle_venta_tfes')->select('serial')->where('key_detalle_venta','=',$value->correlativo)->first();
-                    switch ($value->alicuota) {
-                        case 7:
-                            // UCD
-                            if ($value->folios != NULL) {
-                                $anexo = '<span class="text-muted fst-italic">+ '.$value->folios.' Folios</span>';
-                            }else{
-                                $anexo = '<span class="text-muted fst-italic">S/A</span>';
-                            }                            
-                            $tr_tramites .= '<tr>
-                                                <td>'.$i.'</td>
-                                                <td>'.$value->tramite.'</td>
-                                                <td>'.$anexo.'</td>
-                                                <td>'.$value->ucd.' UCD</td>
-                                                <td>TFE-14 ('.$c2->serial.')</td>
-                                            </tr>';
-                            break;
-                        case 8:
-                            // PORCENTAJE
-                            $tr_tramites .= '<tr>
-                                                <td>'.$i.'</td>
-                                                <td>'.$value->tramite.'</td>
-                                                <td><span class="text-muted fst-italic">Capital: '.number_format($value->capital, 2, ',', '.').' Bs.</span></td>
-                                                <td>'.number_format($value->bs, 2, ',', '.').' Bs.</td>
-                                                <td>TFE-14 ('.$c2->serial.')</td>
-                                            </tr>';
-                            break;
-                        case 13:
-                            // METRADO
-                            $tr_tramites .= '<tr>
-                                                <td>'.$i.'</td>
-                                                <td>'.$value->tramite.'</td>
-                                                <td><span class="text-muted fst-italic">'.$value->metros.' mt2.</span></td>
-                                                <td>'.$value->ucd.' UCD</td>
-                                                <td>TFE-14 ('.$c2->serial.')</td>
-                                            </tr>';
-                            break;
-                        default:
-                            return response()->json(['success' => false]);
-                            break;
+                    $c2 = DB::table('detalle_venta_tfes')->select('serial')->where('key_detalle_venta','=',$value->correlativo)->get();
+                    foreach ($c2 as $de) {
+                        switch ($value->alicuota) {
+                            case 7:
+                                // UCD
+                                if ($value->folios != NULL) {
+                                    $anexo = '<span class="text-muted fst-italic">+ '.$value->folios.' Folios</span>';
+                                }else{
+                                    $anexo = '<span class="text-muted fst-italic">S/A</span>';
+                                }                            
+                                $tr_tramites .= '<tr>
+                                                    <td>'.$i.'</td>
+                                                    <td>'.$value->tramite.'</td>
+                                                    <td>'.$anexo.'</td>
+                                                    <td>'.$value->ucd.' UCD</td>
+                                                    <td>TFE-14 ('.$de->serial.')</td>
+                                                </tr>';
+                                break;
+                            case 8:
+                                // PORCENTAJE
+                                $tr_tramites .= '<tr>
+                                                    <td>'.$i.'</td>
+                                                    <td>'.$value->tramite.'</td>
+                                                    <td><span class="text-muted fst-italic">Capital: '.number_format($value->capital, 2, ',', '.').' Bs.</span></td>
+                                                    <td>'.number_format($value->bs, 2, ',', '.').' Bs.</td>
+                                                    <td>TFE-14 ('.$de->serial.')</td>
+                                                </tr>';
+                                break;
+                            case 13:
+                                // METRADO
+                                $tr_tramites .= '<tr>
+                                                    <td>'.$i.'</td>
+                                                    <td>'.$value->tramite.'</td>
+                                                    <td><span class="text-muted fst-italic">'.$value->metros.' mt2.</span></td>
+                                                    <td>'.$value->ucd.' UCD</td>
+                                                    <td>TFE-14 ('.$de->serial.')</td>
+                                                </tr>';
+                                break;
+                            default:
+                                return response()->json(['success' => false]);
+                                break;
+                        }
                     }
+                    
                 }else{
                     /// ESTAMPILLAS
                     $est_c = '';
@@ -441,8 +444,24 @@ class ArqueoTaquillaController extends Controller
             $c1 = DB::table('tipos')->select('nombre_tipo')->where('id_tipo','=',$venta->condicion_sujeto)->first();
             if ($forma == 3) {
                 ////FORMA 14
-                $q1 = DB::table('detalle_venta_tfes')->select('nro_timbre','serial')->where('key_venta','=',$venta->id_venta)->get();
+                $q1 = DB::table('detalle_venta_tfes')->select('nro_timbre','serial','condicion','sustituto')->where('key_venta','=',$venta->id_venta)->get();
                 foreach ($q1 as $key) {
+                    switch ($key->condicion) {
+                        case 7:
+                            $nota = '<span class="text-muted fst-italic">S/N</span>';
+                            break;
+                        case 29:
+                            $formato_sustituto = substr(str_repeat(0, $length).$key->sustituto, - $length);
+                            $nota = '<div class="d-flex flex-column">
+                                        <span class="badge text-bg-danger" style="font-size:13px" >Anulado</span>
+                                        <span class="text-muted">Sustituto: <span class="text-danger">A-'.$formato_sustituto.'</span> </span>
+                                    </div>';
+                            break;
+                        case 30:
+                            $nota = '<span class="badge text-bg-secondary" style="font-size:13px" >Re-Impreso</span>';
+                            break;
+                    }
+
                     $formato_nro = substr(str_repeat(0, $length).$key->nro_timbre, - $length);
                     $tr .=   '<tr>
                                 <td><span class="text-danger fw-bold fs-6">A-'.$formato_nro.'</span></td>
@@ -451,8 +470,8 @@ class ArqueoTaquillaController extends Controller
                                 <td>
                                     '.$venta->nombre_razon.'<span class="badge bg-secondary-subtle text-secondary-emphasis ms-2">'.$c1->nombre_tipo.'</span><br>
                                     <span class="text-muted">'.$venta->identidad_condicion.'-'.$venta->identidad_nro.'</span>
-    
                                 </td>
+                                <td class="w-25">'.$nota.'</td>
                             </tr>';
                 }
             }else{
@@ -469,7 +488,6 @@ class ArqueoTaquillaController extends Controller
                                 <td>
                                     '.$venta->nombre_razon.'<span class="badge bg-secondary-subtle text-secondary-emphasis ms-2">'.$c1->nombre_tipo.'</span><br>
                                     <span class="text-muted">'.$venta->identidad_condicion.'-'.$venta->identidad_nro.'</span>
-    
                                 </td>
                             </tr>';
                 }
@@ -491,6 +509,7 @@ class ArqueoTaquillaController extends Controller
                             <th>Serial</th>
                             <th>Id. Venta</th>
                             <th>Contribuyente</th>
+                            <th>Nota</th>
                         </tr>
                     </thead>';
         }else{

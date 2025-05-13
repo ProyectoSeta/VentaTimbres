@@ -777,15 +777,17 @@
                 $(document).on('click', '.add_button_estampilla', function(e){ //Once add button is clicked
                     if(h < maxFieldeEst){ //Check maximum number of input fields
                         h++; //Increment field counter
-                        $('#content_detalle_est').append('<div class="d-flex justify-content-center pb-1">'+
+                        $.ajax({
+                            headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') },
+                            type: 'POST',
+                            url: '{{route("venta.add_estampilla") }}',
+                            success: function(response) {
+                                console.log(response);
+                                $('#content_detalle_est').append('<div class="d-flex justify-content-center pb-1">'+
                                         '<div class="row">'+
                                             '<div class="col-5">'+
                                                 '<select class="form-select form-select-sm ucd_est" aria-label="Small select example"id="ucd_est_'+h+'" nro="'+h+'"  name="detalle['+h+'][ucd]" required>'+
-                                                    '<option value="Seleccione">Seleccione</option>'+
-                                                    '<option value="1">1 UCD</option>'+
-                                                    '<option value="2">2 UCD</option>'+
-                                                    '<option value="3">3 UCD</option>'+
-                                                    '<option value="3">5 UCD</option>'+
+                                                    response+
                                                 '</select>'+
                                             '</div>'+
                                             '<div class="col-5">'+
@@ -798,6 +800,11 @@
                                             '</div>'+
                                         '</div>'+
                                     '</div>'); // Add field html
+                            },
+                            error: function() {
+                            }
+                        });
+                        
                     }
                 });
 

@@ -258,6 +258,43 @@ class VentaController extends Controller
 
 
 
+    public function add_estampilla(){
+        $user = auth()->id();
+        $query = DB::table('users')->select('key_sujeto')->where('id','=',$user)->first();
+        $q2 = DB::table('taquillas')->select('id_taquilla')->where('key_funcionario','=',$query->key_sujeto)->first();
+        if ($q2){
+            $id_taquilla = $q2->id_taquilla;
+        }
+        $options = '<option value="Seleccione">Seleccione</option>';
+
+        ////comprobar si corresponse UT o UCD
+        $con = DB::table('detalle_asignacion_estampillas')->select('cantidad_timbres','vendido')->where('key_taquilla','=',$id_taquilla)->where('inventario','=',19)->get();
+        $total_dispo = 0;
+
+        foreach ($con as $value) {
+            $total_dispo = $total_dispo + ($value->cantidad_timbres - $value->vendido);
+        }
+        if ($total_dispo == 0){
+            ///UCD
+            $alicuota = 7;
+        }else{
+            ///UT
+            $alicuota = 19;
+        }
+
+        // OPTION UCD ESTAMPILLAS  
+        $q2 = DB::table('ucd_denominacions')->join('tipos', 'ucd_denominacions.alicuota', '=','tipos.id_tipo')
+                                            ->select('ucd_denominacions.id','ucd_denominacions.denominacion','tipos.nombre_tipo')
+                                            ->where('ucd_denominacions.estampillas','=', 'true')
+                                            ->where('ucd_denominacions.alicuota','=', $alicuota)->get();
+        foreach ($q2 as $key) {
+            $options .= '<option value="'.$key->id.'">'.$key->denominacion.' '.$key->nombre_tipo.'</option>';
+        }
+
+        return response($options);
+    }
+
+
     public function estampillas(Request $request)
     {
         $user = auth()->id();
@@ -1677,8 +1714,9 @@ class VentaController extends Controller
                                             $consulta = DB::table('tramites')->select('porcentaje')->where('id_tramite','=', $key_tramite)->first();
                                             $porcentaje = $consulta->porcentaje;
     
-                                            $cons_ident = DB::table('ucd_denominacions')->select('identificador')->where('denominacion','=', $porcentaje)->where('alicuota','=', 8)->first();
-                                            $identificador_ali =$cons_ident->identificador;
+                                            $cons_ident = DB::table('ucd_denominacions')->select('identificador','id')->where('denominacion','=', $porcentaje)->where('alicuota','=', 8)->first();
+                                            $identificador_ali = $cons_ident->identificador;
+                                            $key_denominacion = $cons_ident->id;
     
                                             $total_bs_capital = ($capital * $porcentaje) / 100;
                                             $total_bolivares = $total_bolivares + $total_bs_capital; 
@@ -1759,7 +1797,7 @@ class VentaController extends Controller
                                                 $i3 = DB::table('detalle_venta_tfes')->insert(['key_venta' => $id_venta, 
                                                                                                 'key_taquilla' => $id_taquilla,  
                                                                                                 'key_detalle_venta' => $id_detalle_venta, 
-                                                                                                'key_denominacion' => null,
+                                                                                                'key_denominacion' => $key_denominacion,
                                                                                                 'bolivares' => $total_bs_capital,
                                                                                                 'nro_timbre' => $nro_timbre,
                                                                                                 'key_inventario_tfe' => $key_inventario,

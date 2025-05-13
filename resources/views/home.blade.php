@@ -31,20 +31,25 @@
                             <button type="button" class="btn btn-s btn-dark py-1" id="btn_boveda" data-bs-toggle="modal" data-bs-target="#modal_ingresar_boveda">Bóveda</button>
                             <a href="{{ route('venta') }}" class="btn btn-s btn-success py-1">Vender (F2)</a>
                             <button type="button" class="btn btn-s btn-secondary  py-1" data-bs-toggle="modal" data-bs-target="#modal_cerrar_taquilla">Cierre</button>
+
+                            
                         @endif               
                     </div>
+                    @if ($apertura_taquillero == true)
+                        <div class="mt-3">
+                            <div class="">
+                                <a href="#" class="" id="btn_falla_impresion">¿Falla en la Impresión?</a>
+                            </div>   
 
-                    <div class="mt-3">
-                        <div class="">
-                            <a href="#" class="">¿Sin nombre?</a>
-                        </div>  
-
-                        <div class="mt-2">
-                            <button type="button" id="btn_papel_bueno" papel="1" class="btn btn-sm btn-outline-secondary btn_modal_papel me-3" data-bs-toggle="modal" data-bs-target="#modal_clave_taquilla">Papel Bueno</button>
-                            <button type="button" id="btn_papel_danado" papel="0" class="btn btn-sm btn-outline-secondary btn_modal_papel" data-bs-toggle="modal" data-bs-target="#modal_papel_danado">Papel Dañado</button>
+                            <div class="mt-2 d-none" id="opctions_falla_impresion">
+                                <button type="button" id="btn_papel_bueno" papel="1" class="btn btn-sm btn-outline-secondary btn_modal_papel me-3" data-bs-toggle="modal" data-bs-target="#modal_clave_taquilla">Papel Bueno</button>
+                                <button type="button" id="btn_papel_danado" papel="0" class="btn btn-sm btn-outline-secondary btn_modal_papel" data-bs-toggle="modal" data-bs-target="#modal_clave_taquilla">Papel Dañado</button>
+                            </div>
+                            
                         </div>
-                        
-                    </div>
+                    @endif
+                            
+                    
 
                 @else
                      <div class="d-flex flex-column">
@@ -274,67 +279,21 @@
     <div class="modal fade" id="modal_papel_danado" tabindex="-1" aria-hidden="true"  data-bs-backdrop="static" data-bs-keyboard="false">
         <div class="modal-dialog">
             <div class="modal-content" id="content_papel_danado">
-                <div class="modal-header p-2 pt-3 d-flex justify-content-center">
-                    <div class="text-center">
-                        <i class="bx bx-receipt fs-2 text-muted me-2"></i>
-                        <h1 class="modal-title fs-5 fw-bold text-navy">Impresión TFE-14 <span class="text-secondary">| Papel Dañado</span></h1>
-                    </div>
-                </div> 
-                <div class="modal-body px-5 py-3" style="font-size:13px">
-                    <span class="text-muted">*IMPORTANTE:</span>
+                <div class="my-5 py-5 d-flex flex-column text-center">
+                    <i class='bx bx-loader-alt bx-spin fs-1 mb-3' style='color:#0077e2'  ></i>
+                    <span class="text-muted">Cargando, por favor espere un momento...</span>
+                </div>
+            </div>  <!-- cierra modal-content -->
+        </div>  <!-- cierra modal-dialog -->
+    </div>
 
-                    <div class="d-flex justify-content-center">
-                        <div class="row g-3 align-items-center">
-                            <div class="col-sm-6">
-                                <div class="d-flex flex-column">
-                                    <span class="text-muted fs-5 fw-bold titulo">No. Timbre</span>
-                                    <span class="fw-bold text-navy">Papel Dañado</span>
-                                    <span class="text-danger fs-4 fw-bold titulo">A-000123</span>
-                                </div>
-                            </div>
-                            <div class="col-sm-6">
-                                <div class="d-flex flex-column">
-                                    <span class="text-muted fs-5 fw-bold titulo">No. Timbre | <span class="fw-bold text-navy">A Imprimir</span></span>
-                                    <span class="text-danger fs-4 fw-bold titulo">A-000124</span>
-                                </div>
-                            </div>
-                        </div> 
-                    </div>
-
-                    <div class="d-flex justify-content-center my-3">
-                        <table class="table table-sm">
-                            <tbody>
-                                <tr>
-                                    <th>ID Venta</th>
-                                    <td></td>
-                                </tr>
-                                <tr>
-                                    <th>Contribuyente</th>
-                                    <td></td>
-                                </tr>
-                                <tr>
-                                    <th>Tramite</th>
-                                    <td></td>
-                                </tr>
-                                <tr>
-                                    <th>UCD</th>
-                                    <td></td>
-                                </tr>
-                            </tbody>
-                        </table>
-                    </div>
-
-
-                    <form id="form_imprmir_timbre" method="post" onsubmit="event.preventDefault(); imprimirTimbre()">
-                        <input type="hidden" name="timbre" value="'.$val_timbre.'">
-                        <input type="hidden" name="papel" value="'.$val_papel.'">
-
-                        <div class="d-flex justify-content-center mt-3 mb-3">
-                            <button type="button" class="btn btn-secondary btn-sm me-2" data-bs-dismiss="modal">Cancelar</button>
-                            <button type="submit" class="btn btn-success btn-sm">Imprimir</button>
-                        </div>
-
-                    </form>
+    <!-- *************  TIMBRE RE IMPRESO************** -->
+    <div class="modal fade" id="modal_timbre_reimpreso" tabindex="-1" data-bs-backdrop="static" data-bs-keyboard="false" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content" id="content_timbre_reimpreso">
+                <div class="my-5 py-5 d-flex flex-column text-center">
+                    <i class='bx bx-loader-alt bx-spin fs-1 mb-3' style='color:#0077e2'  ></i>
+                    <span class="text-muted">Cargando, por favor espere un momento...</span>
                 </div>
             </div>  <!-- cierra modal-content -->
         </div>  <!-- cierra modal-dialog -->
@@ -483,7 +442,17 @@
                     url: '{{route("home.modal_clave") }}',
                     data: {papel:papel},
                     success: function(response) {
-                        $('#content_clave_taquillas').html(response);
+                        if (response.success) {
+                            $('#content_clave_taquillas').html(response.html);
+                        }else{
+                            if (response.nota != '') {
+                                alert(response.nota);
+                            }else{
+                                alert('Disculpe, ha ocurrido un error.');
+                            }
+                            window.location.href = "{{ route('home')}}";
+                        }  
+                        
                     },
                     error: function() {
                     }
@@ -494,7 +463,7 @@
             $(document).on('click','.imprimir_timbre', function(e){ 
                 e.preventDefault(); 
                 var papel = $(this).attr('papel'); 
-                var timbre = $(this).attr('timbre');
+                var timbre = $(this).attr('timbre'); console.log(timbre);
                 $.ajax({
                     headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') },
                     type: 'POST',
@@ -520,11 +489,17 @@
                             }else{
                                 alert('Disculpe, ha ocurrido un error.');
                             }
+                            window.location.href = "{{ route('home')}}";
                         }  
                     },
                     error: function() {
                     }
                 });
+            });
+
+            /////////////////// BOTONES OPCIONES FALLA IMPRESION
+            $(document).on('click','#btn_falla_impresion', function(e){ 
+                $('#opctions_falla_impresion').removeClass('d-none'); 
             });
 
 
@@ -722,22 +697,23 @@
                     data: formData,
                     success: function(response){
                         console.log(response);
-
-
-                        // if (response.success) {
-
-                        //     $('#modal_clave_taquilla').modal('hide');
-                        //     $('#modal_ultima_venta').modal('show');
-                        //     $('#content_ultima_venta').html(response.html);
-
-                        // }else{
-                        //     if (response.nota != '') {
-                        //         alert(response.nota);
-                        //     }else{
-                        //         alert('Disculpe, ha ocurrido un error.');
-                        //     }
+                        
+                        if (response.success) {
+                           
+                            $('#modal_papel_bueno').modal('hide');
+                            $('#modal_papel_danado').modal('hide');
                             
-                        // }  
+                            $('#modal_timbre_reimpreso').modal('show');
+                            $('#content_timbre_reimpreso').html(response.html);
+
+                        }else{
+                            if (response.nota != '') {
+                                alert(response.nota);
+                            }else{
+                                alert('Disculpe, ha ocurrido un error.');
+                            }
+                            // window.location.href = "{{ route('home')}}";
+                        }  
 
                     },
                     error: function(error){
