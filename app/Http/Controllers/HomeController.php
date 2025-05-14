@@ -1046,34 +1046,49 @@ class HomeController extends Controller
             /// PAPEL DAÑADO
 
             /// BUSCAR EL CORRELATIVO DEL PROXIMO TIMBRE
-            
+            ////ID TAQUILLA
+            $user = auth()->id();
+            $query = DB::table('users')->select('key_sujeto')->where('id','=',$user)->first();
+            $q2 = DB::table('taquillas')->select('id_taquilla')->where('key_funcionario','=',$query->key_sujeto)->first();
+            if ($q2) {
+                $id_taquilla = $q2->id_taquilla;
+            }else{
+                return response()->json(['success' => false]);
+            }
+            //
             $con4 = DB::table('detalle_venta_tfes')->join('ucd_denominacions', 'detalle_venta_tfes.key_denominacion', '=','ucd_denominacions.id')
-                                                    ->select('detalle_venta_tfes.key_inventario_tfe','detalle_venta_tfes.key_venta','detalle_venta_tfes.key_taquilla','detalle_venta_tfes.key_detalle_venta','detalle_venta_tfes.key_denominacion','detalle_venta_tfes.bolivares','ucd_denominacions.identificador')
+                                                    ->select('detalle_venta_tfes.key_venta','detalle_venta_tfes.key_taquilla','detalle_venta_tfes.key_detalle_venta','detalle_venta_tfes.key_denominacion','detalle_venta_tfes.bolivares','ucd_denominacions.identificador')
                                                     ->where('detalle_venta_tfes.nro_timbre','=',$timbre)->first();
-            if ($con4) {
-                $detalle_last_id = $con4->key_inventario_tfe;
 
-                $con5 = DB::table('inventario_tfes')->select('hasta','key_lote_papel')->where('correlativo','=',$detalle_last_id)->first();
-                if ($detalle_last_id < $con5->hasta) {
-                    $next_nro_timbre = $timbre + 1;
-                    $key_lote = $con5->key_lote_papel;
-                    $key_inventario = $detalle_last_id;
-                }else{
-                    //lego al limite del lote asignado
-                    $con6 = DB::table('inventario_tfes')->select('desde','correlativo','key_lote_papel')->where('key_taquilla','=',$id_taquilla)->where('condicion','=',4)->first();
-                    if ($con6) {
-                        $next_nro_timbre = $con6->desde;
-                        $key_lote = $con6->key_lote_papel;
-                        $key_inventario = $con6->correlativo;
-                        
-                        /// actualizar condicion (en uso) del lote
-                        $upd = DB::table('inventario_tfes')->where('correlativo','=',$con6->correlativo)->update(['condicion' => 3]); // en uso
+            $c5 = DB::table('detalle_venta_tfes')->select('key_inventario_tfe','nro_timbre')->where('key_taquilla','=',$id_taquilla)->orderBy('correlativo', 'desc')->first();
+            if ($con4 && $c5) {
+                $nro_hipotetico = $c5->nro_timbre +1;
+    
+                $c6 = DB::table('inventario_tfes')->select('hasta','key_lote_papel')->where('correlativo','=',$c5->key_inventario_tfe)->first();
+
+                if ($nro_hipotetico > $c6->hasta) {
+                    $c7 = DB::table('inventario_tfes')->select('desde','correlativo','key_lote_papel')
+                                                        ->where('key_taquilla','=',$id_taquilla)
+                                                        ->where('condicion','=',4)
+                                                        ->first();
+                    if ($c7) {
+                        $next_nro_timbre = $c7->desde;
+                        $key_inventario = $c7->correlativo;
+                        $key_lote = $c7->key_lote_papel;
+                        $update_2 = DB::table('inventario_tfes')->where('correlativo','=',$c7->correlativo)->update(['condicion' => 3]);
                     }else{
-                        return response()->json(['success' => false, 'nota' => 'No tiene disponible Timbre Fiscales TFE-14 en la taquilla. Por favor, comunicarse con el coordinador.']);
+                        return response()->json(['success' => false, 'nota'=> 'No tiene disponible Timbre Fiscales TFE-14 en la taquilla. Por favor, comunicarse con el coordinador.']);
+                    }
+                }else{
+                    $next_nro_timbre = $nro_hipotetico;
+                    $key_inventario = $c5->key_inventario_tfe;
+                    $key_lote = $c6->key_lote_papel;
+                    if ($nro_hipotetico == $c6->hasta) {
+                        $update_1 = DB::table('inventario_tfes')->where('correlativo','=',$c5->key_inventario_tfe)->update(['condicion' => 7]);
                     }
                 }
+
             }else{
-                return response('llego');
                 return response()->json(['success' => false]);
             }
 
