@@ -1,6 +1,6 @@
 @extends('adminlte::page')
 
-@section('title', 'Principal')
+@section('title', 'Consulta')
 
 
 @section('content')
@@ -12,6 +12,7 @@
            <h1 class="display-6 text-navy text-center fw-bold">Consultar Timbre Fiscal</h1> 
         </div>
         <div class="d-flex flex-column align-items-center justify-content-center">
+            <!-- btns -->
             <ul class="nav nav-pills mb-3" id="pills-tab" role="tablist" style="font-size:15px">
                 <li class="nav-item" role="presentation">
                     <button class="nav-link active" id="pills-tfe-tab" data-bs-toggle="pill" data-bs-target="#pills-tfe" type="button" role="tab" aria-controls="pills-tfe" aria-selected="true">TFE14</button>
@@ -20,9 +21,26 @@
                     <button class="nav-link" id="pills-estampilla-tab" data-bs-toggle="pill" data-bs-target="#pills-estampilla" type="button" role="tab" aria-controls="pills-estampilla" aria-selected="false">Estampilla</button>
                 </li>
             </ul>
-            <div class="tab-content" id="pills-tabContent">
-                <div class="tab-pane fade show active" id="pills-tfe" role="tabpanel" aria-labelledby="pills-tfe-tab" tabindex="0">...</div>
-                <div class="tab-pane fade" id="pills-estampilla" role="tabpanel" aria-labelledby="pills-estampilla-tab" tabindex="0">...</div>
+
+            <!-- content -->
+            <div class="tab-content" id="pills-tabContent" style="font-size:13px">
+                <!-- FORM SEARCH TFE14 -->
+                <div class="tab-pane fade show active" id="pills-tfe" role="tabpanel" aria-labelledby="pills-tfe-tab" tabindex="0">
+                    <form action="">
+                        <label for="timbre" class="form-label"><span class="text-danger">*</span> Ingresa el número de timbre (Correlativo de papel) o serial como se muestra en la imagen.</label>
+                        <div class="d-flex mb-0 pb-0">
+                            <input type="text" id="timbre" class="form-control">
+                            <button type="submit" class="btn btn-primary mb-3 ms-3"> <i class=" bx bx-search-alt"></i> </button>
+                        </div>
+                        <span class="text-muted">El número de timbre o serial debe estar sin guión o algun carecter especial.</span>
+                    </form>
+                </div>
+
+
+                <!-- FORM SEARCH ESTAMPILLAS -->
+                <div class="tab-pane fade" id="pills-estampilla" role="tabpanel" aria-labelledby="pills-estampilla-tab" tabindex="0">
+
+                </div>
             </div>
         </div>
         
@@ -32,7 +50,17 @@
 
         <div class="position-relative overflow-hidden p-3 p-md-5 m-md-3 text-center bg-white container-fluid bg_arqueo" style="background-image: url({{asset('assets/fondo2.png')}});">
             <div class="p-lg-5 mx-auto my-5">
-                
+                <div class="row">
+                    <div class="col-lg-4">
+
+                    </div>
+                    <div class="col-lg-4">
+
+                    </div>
+                    <div class="col-lg-4">
+
+                    </div>
+                </div>
                 
                 
                    
