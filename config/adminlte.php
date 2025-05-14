@@ -335,6 +335,12 @@ return [
         //     'label'       => 4,
         //     'label_color' => 'success',
         // ],
+        ['header' => 'Consulta'],
+        [
+            'text'        => 'Timbre Fiscal',
+            'route'         => 'consulta',
+            'icon'       => 'fas fa-angle-right pe-2',   
+        ],
         ['header' => 'Reporte'],
         [
             'text'        => 'Diario',

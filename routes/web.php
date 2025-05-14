@@ -268,5 +268,14 @@ Route::post('/ajustes/modal_editar', [App\Http\Controllers\AjustesController::cl
 Route::post('/ajustes/update', [App\Http\Controllers\AjustesController::class, 'update'])->name('ajustes.update');
 
 
+
+
+
+
+
+///////////////////// CONSULTA
+Route::get('/consulta', [App\Http\Controllers\ConsultaTimbresController::class, 'index'])->name('consulta');
+
+
 // Route::post('/sede_taquilla/taquilleros', [App\Http\Controllers\SedeTaquillaController::class, 'taquilleros'])->name('sede_taquilla.taquilleros');
 
