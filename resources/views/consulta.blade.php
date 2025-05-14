@@ -8,17 +8,32 @@
 
 
     <main>
-        <h1 class="display-5 text-navy text-center fw-bold">Consultar Timbre Fiscal</h1>
-
-        <div class="d-flex justify-content-between">
-            
+        <div class="my-4">
+           <h1 class="display-6 text-navy text-center fw-bold">Consultar Timbre Fiscal</h1> 
         </div>
+        <div class="d-flex flex-column align-items-center justify-content-center">
+            <ul class="nav nav-pills mb-3" id="pills-tab" role="tablist" style="font-size:15px">
+                <li class="nav-item" role="presentation">
+                    <button class="nav-link active" id="pills-tfe-tab" data-bs-toggle="pill" data-bs-target="#pills-tfe" type="button" role="tab" aria-controls="pills-tfe" aria-selected="true">TFE14</button>
+                </li>
+                <li class="nav-item" role="presentation">
+                    <button class="nav-link" id="pills-estampilla-tab" data-bs-toggle="pill" data-bs-target="#pills-estampilla" type="button" role="tab" aria-controls="pills-estampilla" aria-selected="false">Estampilla</button>
+                </li>
+            </ul>
+            <div class="tab-content" id="pills-tabContent">
+                <div class="tab-pane fade show active" id="pills-tfe" role="tabpanel" aria-labelledby="pills-tfe-tab" tabindex="0">...</div>
+                <div class="tab-pane fade" id="pills-estampilla" role="tabpanel" aria-labelledby="pills-estampilla-tab" tabindex="0">...</div>
+            </div>
+        </div>
+        
+        <!-- <h3 class="fw-normal text-muted mb-3 titulo">Ingresa el nímero de Timbre (Correlativo de Papel)</h3> -->
+
         
 
         <div class="position-relative overflow-hidden p-3 p-md-5 m-md-3 text-center bg-white container-fluid bg_arqueo" style="background-image: url({{asset('assets/fondo2.png')}});">
             <div class="p-lg-5 mx-auto my-5">
-                <h1 class="display-5 text-navy fw-bold">FORMA 14 | Estampillas</h1>
-                <h3 class="fw-normal text-muted mb-3 titulo">Venta de Timbres Fiscales</h3>
+                
+                
                 
                    
                 
