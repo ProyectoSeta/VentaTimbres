@@ -138,9 +138,18 @@
                                         </td>
                                         <td class="text-navy fw-bold">{{$taquillero->nombre}}</td>
                                         <td>
-                                            <div class="form-check form-switch">
+                                            @if ($taquillero->estado == 16)
+                                                <div class="form-check form-switch">
+                                                    <input class="form-check-input fs-6 check_habilitar_taquillero" type="checkbox" role="switch" id="taquillero_check_{{$taquillero->id_funcionario}}" funcionario="{{$taquillero->id_funcionario}}" checked title="Habilitado">
+                                                </div> 
+                                            @else
+                                                <div class="form-check form-switch">
+                                                    <input class="form-check-input fs-6 check_habilitar_taquillero" type="checkbox" role="switch" id="taquillero_check_{{$taquillero->id_funcionario}}" funcionario="{{$taquillero->id_funcionario}}" title="Deshabilitado">
+                                                </div>
+                                            @endif
+                                            <!-- <div class="form-check form-switch">
                                                 <input class="form-check-input fs-6" type="checkbox" role="switch" id="taquillero_{{$taquillero->id_funcionario}}" funcionario="{{$taquillero->id_funcionario}}" checked title="Taquillero activo">
-                                            </div>
+                                            </div> -->
                                         </td>
                                     </tr> 
                                 @endforeach
@@ -444,63 +453,126 @@
             });
 
 
-            // ///////////////// CHECK HABILITAR/DESHABILITAR TAQUILA
-            // $(document).on('click', '.check_habilitar_taquilla', function(e){ 
-            //     var taquilla = $(this).attr('taquilla');
-            //     var checked = '';
-            //     if($(this).is(':checked')) {
-            //         //////////////////// HABILITAR TAQUILLA
-            //         if (confirm('¿Desea Habilitar la taquilla ID '+taquilla+'?')) {
-            //             checked = true;
-            //             $.ajax({
-            //                 headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') },
-            //                 type: 'POST',
-            //                 url: '{{route("sede_taquilla.habilitar_taquilla") }}',
-            //                 data: {taquilla:taquilla,checked:checked},
-            //                 success: function(response) {
-            //                     console.log(response);
-            //                     if (response) {
-            //                         alert('SE HA HABILITADO LA TAQUILLA EXITOSAMENTE.');
-            //                         window.location.href = "{{ route('sede_taquilla')}}";
-            //                     }else{
-            //                         $("#taquilla_check_"+taquilla).attr("checked", false);
-            //                         alert('Disculpe, ha ocurrido un error.');
-            //                     }
-            //                 },
-            //                 error: function() {
-            //                 }
-            //             });
-            //         }else{
-            //             $("#taquilla_check_"+taquilla).prop ("checked", false);
-            //         }
-            //     }else{
-            //         /////////////////////// DESHABILITAR TAQUILLA
-            //         if (confirm('¿Desea Deshabilitar la taquilla ID '+taquilla+'?')) {
-            //             checked = false;
-            //             $.ajax({
-            //                 headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') },
-            //                 type: 'POST',
-            //                 url: '{{route("sede_taquilla.habilitar_taquilla") }}',
-            //                 data: {taquilla:taquilla,checked:checked},
-            //                 success: function(response) {
-            //                     console.log(response);
-            //                     // if (response) {
-            //                     //     alert('SE HA DESHABILITADO LA TAQUILLA EXITOSAMENTE.');
-            //                     //     window.location.href = "{{ route('sede_taquilla')}}";
-            //                     // }else{
-            //                     //     $("#taquilla_check_"+taquilla).attr("checked", true);
-            //                     //     alert('Disculpe, ha ocurrido un error.');
-            //                     // }
-            //                 },
-            //                 error: function() {
-            //                 }
-            //             });
-            //         }else{
-            //             $("#taquilla_check_"+taquilla).prop ("checked", true);
-            //         }
-            //     }
+            ///////////////// CHECK HABILITAR/DESHABILITAR TAQUILLA
+            $(document).on('click', '.check_habilitar_taquilla', function(e){ 
+                var taquilla = $(this).attr('taquilla');
+                var checked = '';
+                if($(this).is(':checked')) {
+                    //////////////////// HABILITAR TAQUILLA
+                    if (confirm('¿Desea Habilitar la taquilla ID '+taquilla+'?')) {
+                        checked = true;
+                        $.ajax({
+                            headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') },
+                            type: 'POST',
+                            url: '{{route("sede_taquilla.habilitar_taquilla") }}',
+                            data: {taquilla:taquilla,checked:checked},
+                            success: function(response) {
+                                console.log(response);
+                                if (response.success) {
+                                    alert('SE HA HABILITADO LA TAQUILLA EXITOSAMENTE.');
+                                    window.location.href = "{{ route('sede_taquilla')}}";
+                                }else{
+                                    $("#taquilla_check_"+taquilla).attr("checked", false);
+                                    alert('Disculpe, ha ocurrido un error.');
+                                }
+                            },
+                            error: function() {
+                            }
+                        });
+                    }else{
+                        $("#taquilla_check_"+taquilla).prop ("checked", false);
+                    }
+                }else{
+                    /////////////////////// DESHABILITAR TAQUILLA
+                    if (confirm('¿Desea Deshabilitar la taquilla ID '+taquilla+'?')) {
+                        checked = false;
+                        $.ajax({
+                            headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') },
+                            type: 'POST',
+                            url: '{{route("sede_taquilla.habilitar_taquilla") }}',
+                            data: {taquilla:taquilla,checked:checked},
+                            success: function(response) {
+                                console.log(response);
+                                if (response.success) {
+                                    alert('SE HA DESHABILITADO LA TAQUILLA EXITOSAMENTE.');
+                                    window.location.href = "{{ route('sede_taquilla')}}";
+                                }else{
+                                    $("#taquilla_check_"+taquilla).attr("checked", true);
+                                    alert('Disculpe, ha ocurrido un error.');
+                                }
+                            },
+                            error: function() {
+                            }
+                        });
+                    }else{
+                        $("#taquilla_check_"+taquilla).prop ("checked", true);
+                    }
+                }
 
-            // });
+            });
+
+
+
+
+
+
+            ///////////////// CHECK HABILITAR/DESHABILITAR TAQUILLERO
+            $(document).on('click', '.check_habilitar_taquillero', function(e){ 
+                var funcionario = $(this).attr('funcionario');
+                var checked = '';
+                if($(this).is(':checked')) {
+                    //////////////////// HABILITAR TAQUILLA
+                    if (confirm('¿Desea Habilitar al Taquillero?')) {
+                        checked = true;
+                        $.ajax({
+                            headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') },
+                            type: 'POST',
+                            url: '{{route("sede_taquilla.habilitar_taquillero") }}',
+                            data: {funcionario:funcionario,checked:checked},
+                            success: function(response) {
+                                console.log(response);
+                                if (response.success) {
+                                    alert('SE HA HABILITADO AL TAQUILLERO EXITOSAMENTE.');
+                                    window.location.href = "{{ route('sede_taquilla')}}";
+                                }else{
+                                    $("#taquilla_check_"+funcionario).attr("checked", false);
+                                    alert('Disculpe, ha ocurrido un error.');
+                                }
+                            },
+                            error: function() {
+                            }
+                        });
+                    }else{
+                        $("#taquilla_check_"+funcionario).prop ("checked", false);
+                    }
+                }else{
+                    /////////////////////// DESHABILITAR TAQUILLA
+                    if (confirm('¿Desea Deshabilitar al Taquillero?')) {
+                        checked = false;
+                        $.ajax({
+                            headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') },
+                            type: 'POST',
+                            url: '{{route("sede_taquilla.habilitar_taquillero") }}',
+                            data: {funcionario:funcionario,checked:checked},
+                            success: function(response) {
+                                console.log(response);
+                                if (response.success) {
+                                    alert('SE HA DESHABILITADO AL TAQUILLERO EXITOSAMENTE.');
+                                    window.location.href = "{{ route('sede_taquilla')}}";
+                                }else{
+                                    $("#taquilla_check_"+funcionario).attr("checked", true);
+                                    alert('Disculpe, ha ocurrido un error.');
+                                }
+                            },
+                            error: function() {
+                            }
+                        });
+                    }else{
+                        $("#taquilla_check_"+funcionario).prop ("checked", true);
+                    }
+                }
+
+            });
             
 
 
@@ -609,17 +681,17 @@
                     data: formData,
                     success: function(response){
                         console.log(response);
-                        // if (response.success) {
-                        //     alert('REGISTRO DE TAQUILLERO EXITOSO.');
-                        //     window.location.href = "{{ route('sede_taquilla')}}";
-                        // }else{
-                        //     if (response.error != '') {
-                        //         alert(response.error);
-                        //     }else{
-                        //         alert('Disculpe, ha ocurrido un error.');
-                        //     }
+                        if (response.success) {
+                            alert('ACTUALIZACÍON DE CLAVE EXITOSO.');
+                            window.location.href = "{{ route('sede_taquilla')}}";
+                        }else{
+                            if (response.error != '') {
+                                alert(response.error);
+                            }else{
+                                alert('Disculpe, ha ocurrido un error.');
+                            }
                             
-                        // }  
+                        }  
                     },
                     error: function(error){
                         

@@ -120,7 +120,7 @@ class SedeTaquillaController extends Controller
     {
         $ubicacion = $request->post('ubicacion');
 
-        $insert = DB::table('sedes')->insert(['sede' => $ubicacion]); 
+        $insert = DB::table('sedes')->insert(['sede' => $ubicacion, 'estado' => 16]); 
         if ($insert) {
             ///////BITACORA
 
@@ -158,7 +158,8 @@ class SedeTaquillaController extends Controller
                 $insert = DB::table('taquillas')->insert([
                             'key_sede' => $sede,
                             'key_funcionario' => $taquillero,
-                            'clave' => bcrypt($request->post('password'))]);
+                            'clave' => bcrypt($request->post('password')), 
+                            'estado' => 16]);
                 if ($insert) {
                     return response()->json(['success' => true]);
                 }else{
@@ -200,7 +201,8 @@ class SedeTaquillaController extends Controller
                                             'ci_condicion' => $ci_condicion,
                                             'ci_nro' => $ci_nro,
                                             'nombre' => $nombre,
-                                            'cargo' => 'Taquillero']);
+                                            'cargo' => 'Taquillero', 
+                                            'estado' => 16]);
     
                 if ($insert_func) {
                     $id_funcionario = DB::table('funcionarios')->max('id_funcionario');
@@ -240,7 +242,7 @@ class SedeTaquillaController extends Controller
             return response()->json(['success' => false, 'error' => $validator->errors()]);
         }else{
             $id_taquilla = $request->post('id');
-            $update = DB::table('taquillas')->where('key_taquilla', '=', $id_taquilla)->update(['clave' => bcrypt($request->post('password'))]);
+            $update = DB::table('taquillas')->where('id_taquilla', '=', $id_taquilla)->update(['clave' => bcrypt($request->post('password'))]);
             if ($update) {
                 ///////////////////BITACORA
                 return response()->json(['success' => true]);
@@ -258,21 +260,18 @@ class SedeTaquillaController extends Controller
         $id_taquilla = $request->post('taquilla'); 
         $checked = $request->post('checked');
         // return response($checked);
-        if ($checked == true) {
+        if ($checked == 'true') {
             // habilitar
-            echo('otro entro');
-            $update = DB::table('taquillas')->where('id_taquilla', '=', $id_taquilla)->update(['estado' => 16]);
+            $update = DB::table('taquillas')->where('id_taquilla','=', $id_taquilla)->update(['estado' => 16]);
             if ($update) {
                 ///////////////////BITACORA
                 return response()->json(['success' => true]);
             }else{
                 return response()->json(['success' => false]);
             }
-        }
-        if ($checked == false) {
+        }else{
             // return response('deshabilitar');
             // // deshabilitar
-            echo('entro');
             $update = DB::table('taquillas')->where('id_taquilla', '=', $id_taquilla)->update(['estado' => 17]);
             if ($update) {
                 ///////////////////BITACORA
@@ -281,8 +280,36 @@ class SedeTaquillaController extends Controller
                 return response()->json(['success' => false]);
             }
         }
-        
-       
+    }
+
+
+
+
+    public function habilitar_taquillero(Request $request)
+    {
+        $id_funcionario = $request->post('funcionario'); 
+        $checked = $request->post('checked');
+        // return response($checked);
+        if ($checked == 'true') {
+            // habilitar
+            $update = DB::table('funcionarios')->where('id_funcionario','=', $id_funcionario)->update(['estado' => 16]);
+            if ($update) {
+                ///////////////////BITACORA
+                return response()->json(['success' => true]);
+            }else{
+                return response()->json(['success' => false]);
+            }
+        }else{
+            // return response('deshabilitar');
+            // // deshabilitar
+            $update = DB::table('funcionarios')->where('id_funcionario', '=',$id_funcionario)->update(['estado' => 17]);
+            if ($update) {
+                ///////////////////BITACORA
+                return response()->json(['success' => true]);
+            }else{
+                return response()->json(['success' => false]);
+            }
+        }
     }
 
     /**

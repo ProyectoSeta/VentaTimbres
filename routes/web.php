@@ -234,6 +234,7 @@ Route::post('/sede_taquilla/new_taquilla', [App\Http\Controllers\SedeTaquillaCon
 
 Route::post('/sede_taquilla/update_clave', [App\Http\Controllers\SedeTaquillaController::class, 'update_clave'])->name('sede_taquilla.update_clave');
 Route::post('/sede_taquilla/habilitar_taquilla', [App\Http\Controllers\SedeTaquillaController::class, 'habilitar_taquilla'])->name('sede_taquilla.habilitar_taquilla');
+Route::post('/sede_taquilla/habilitar_taquillero', [App\Http\Controllers\SedeTaquillaController::class, 'habilitar_taquillero'])->name('sede_taquilla.habilitar_taquillero');
 
 
 
@@ -275,6 +276,8 @@ Route::post('/ajustes/update', [App\Http\Controllers\AjustesController::class, '
 
 ///////////////////// CONSULTA
 Route::get('/consulta', [App\Http\Controllers\ConsultaTimbresController::class, 'index'])->name('consulta');
+Route::post('/consulta/search_tfe', [App\Http\Controllers\ConsultaTimbresController::class, 'search_tfe'])->name('consulta.search_tfe');
+Route::post('/consulta/search_est', [App\Http\Controllers\ConsultaTimbresController::class, 'search_est'])->name('consulta.search_est');
 
 
 // Route::post('/sede_taquilla/taquilleros', [App\Http\Controllers\SedeTaquillaController::class, 'taquilleros'])->name('sede_taquilla.taquilleros');

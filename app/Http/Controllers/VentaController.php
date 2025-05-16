@@ -1399,9 +1399,19 @@ class VentaController extends Controller
         ///////////////////////////////////// USER Y TAQUILLA
             $user = auth()->id();
             $query = DB::table('users')->select('key_sujeto')->where('id','=',$user)->first();
-            $q2 = DB::table('taquillas')->select('id_taquilla')->where('key_funcionario','=',$query->key_sujeto)->first();
+            $q2 = DB::table('taquillas')->select('id_taquilla','estado')->where('key_funcionario','=',$query->key_sujeto)->first();
+            $con_taq = DB::table('funcionarios')->select('estado')->where('key_funcionario','=',$query->key_sujeto)->first();
 
-            if ($q2) {
+            if ($q2 && $con_taq) {
+                ///// verificar si estan deshabilitados
+                if ($q2->estado == 17) {
+                    return response()->json(['success' => false, 'nota'=> 'Taquilla Deshabilitada..']);
+                }
+                if ($con_taq->estado == 17) {
+                    return response()->json(['success' => false, 'nota'=> 'Funcionario Deshabilitado.']);
+                }
+                
+                /// id taquilla
                 $id_taquilla = $q2->id_taquilla;
             }else{
                 //////// BITACORA : ACCIÓN DE VENTA SIN SER TAQUILLERO

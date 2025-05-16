@@ -26,10 +26,10 @@
             <div class="tab-content" id="pills-tabContent" style="font-size:13px">
                 <!-- FORM SEARCH TFE14 -->
                 <div class="tab-pane fade show active" id="pills-tfe" role="tabpanel" aria-labelledby="pills-tfe-tab" tabindex="0">
-                    <form action="">
-                        <label for="timbre" class="form-label"><span class="text-danger">*</span> Ingresa el número de timbre (Correlativo de papel) o serial como se muestra en la imagen.</label>
+                    <form id="form_search_tfe" method="post" onsubmit="event.preventDefault(); searchTFE()">
+                        <label for="timbre" class="form-label"><span class="text-danger">*</span> Ingresa el SERIAL como se muestra en la imagen.</label>
                         <div class="d-flex mb-0 pb-0">
-                            <input type="text" id="timbre" class="form-control">
+                            <input type="text" id="timbre" class="form-control" name="timbre" required>
                             <button type="submit" class="btn btn-primary mb-3 ms-3"> <i class=" bx bx-search-alt"></i> </button>
                         </div>
                         <span class="text-muted">El número de timbre o serial debe estar sin guión o algun carecter especial.</span>
@@ -39,7 +39,14 @@
 
                 <!-- FORM SEARCH ESTAMPILLAS -->
                 <div class="tab-pane fade" id="pills-estampilla" role="tabpanel" aria-labelledby="pills-estampilla-tab" tabindex="0">
-
+                    <form id="form_search_est" method="post" onsubmit="event.preventDefault(); searchEST()">
+                        <label for="timbre" class="form-label"><span class="text-danger">*</span> Ingresa el número de timbre (Correlativo de papel) o serial como se muestra en la imagen.</label>
+                        <div class="d-flex mb-0 pb-0">
+                            <input type="text" id="timbre" class="form-control" name="timbre" required>
+                            <button type="submit" class="btn btn-primary mb-3 ms-3"> <i class=" bx bx-search-alt"></i> </button>
+                        </div>
+                        <span class="text-muted">El número de timbre o serial debe estar sin guión o algun carecter especial.</span>
+                    </form>
                 </div>
             </div>
         </div>
@@ -49,140 +56,26 @@
         
 
         <div class="position-relative overflow-hidden p-3 p-md-5 m-md-3 bg-white container-fluid bg_arqueo" style="background-image: url({{asset('assets/fondo2.png')}});">
-            <div class="p-lg-5 mx-auto">
-                <div class="row">
-                    <div class="col-lg-3">
-                        <div class="d-flex flex-column my-2">
-                            <span>No Timbre (Correlativo de Papel)</span>
-                            <span class="text-danger fs-5 fw-bold titulo">A-081001</span>
-                        </div>
-                        <div class="d-flex flex-column my-2">
-                            <span>Serial</span>
-                            <span class="fw-semibold fs-5">B2081001</span>
-                        </div>
-                        <div class="d-flex flex-column my-2">
-                            <span>Monto (UCD|Bs)</span>
-                            <span class="fs-4 text-navy fw-bold">2 UCD</span>
-                        </div>
-                        <div class="d-flex flex-column my-2">
-                            <span>Fecha de Emisión (Venta)</span>
-                            <span class="fs-5 text-muted fw-bold">12-5-2025 3:00 PM</span>
-                        </div>
-                        <div class=" my-2">
-                            <img src="{{asset('assets/qrForma14/qrcode_TFE1.png')}}" class="img-fluid" alt="" width="110px">
-                        </div>
-                    </div>
-                    <div class="col-lg-4">
-                        <div class="d-flex flex-column my-2">
-                            <span>Contribuyente</span>
-                            <div class="d-flex flex-column">
-                                <span class="text-navy fs-5 fw-bold titulo">El nombre de Comercio mas largo de la Historia, S.A.<span class="badge ms-2 fs-6 text-bg-secondary">Ente Gubernamental</span></span>
-                                <span class="text-muted fs-5 fw-bold titulo">G-200108240</span>
-                            </div>
-                        </div>
-                        <div class="d-flex flex-column my-2">
-                            <span>Tramite</span>
-                            <span class="fs-5 text-muted">Protocolización </span>
-                        </div>
-
-                    </div>
-                    <div class="col-lg-2">
-                        <div class="fw-bold titulo fs-5">Origen</div>
-                        <div class="d-flex flex-column my-2">
-                            <span>ID Venta</span>
-                            <a href="#" class="fs-5">#52 </a>
-                        </div>
-                        <div class="d-flex flex-column my-2">
-                            <span>ID Lote de Papel</span>
-                            <a href="#" class="fs-5">#1 </a>
-                        </div>
-                    </div>
-                    <div class="col-lg-3">
-                        <img src="{{asset('assets/timbre.svg')}}" class="shadow-sm mx-auto img-fluid" alt="" style="width: 100%; height: 300px;">
-                    </div>
-                </div>
+            <div class="p-lg-5 mx-auto" id="content_info_search">
                 
-                
-                   
                 
 
                 
             </div>
-
-            
-
-            
         </div>
 
-
-        <!-- <div class="position-relative overflow-hidden p-3 p-md-5 m-md-3 text-center bg-white">
-            <div class="p-lg-5 mx-auto my-5">
-                <h1 class="display-5 fw-bold text-navy">FORMA 01 | Venta Online</h1>
-                <h3 class="fw-normal text-muted mb-3">Venta de Timbres Fiscales</h3>
-                <div class="d-flex gap-3 justify-content-center fw-normal titulo" style="font-size:12.7px">
-                    <button type="button btn-sm" class="btn btn-primary  py-1">Ver</button>
-                </div>
-            </div>
-        </div> -->
-
-
-                 
-        <!-- <div class="row g-0">
-            <div class="col-md-6">
-                <div class="bg-body-tertiary me-md-3 pt-3 px-3 pt-md-5 px-md-5 text-center overflow-hidden">
-                    <div class="my-3 py-3">
-                        <h2 class="display-5">FORMA 14</h2>
-                        <p class="lead">Timbre Fiscal Electrónico.</p>
-                    </div>
-                    <img src="{{asset('assets/timbre.svg')}}" class="shadow-sm mx-auto img-fluid" alt="" style="width: 80%; height: 300px;">
-                    
-                </div>
-            </div>
-            <div class="col-md-6">
-                <div class="bg-body-tertiary me-md-3 pt-3 px-3 pt-md-5 px-md-5 text-center overflow-hidden" role="button">
-                    <div class="my-3 p-3">
-                        <h2 class="display-5">Estampilla</h2>
-                        <p class="lead">Timbre Movil.</p>
-                    </div>
-                    <div class="bg-dark shadow-sm mx-auto" style="width: 80%; height: 300px; border-radius: 21px 21px 0 0;"></div>
-                </div>
-            </div>
-        </div> -->
 
     </main>
     
 <!-- *********************************  MODALES ******************************* -->
-    <!-- ************ APERTURA DE TAQUILLA ************** -->
-    <div class="modal fade" id="modal_apertura_taquilla" tabindex="-1" aria-hidden="true"  data-bs-backdrop="static" data-bs-keyboard="false">
-        <div class="modal-dialog">
-            <div class="modal-content" id="content_apertura_taquillas">
-                <div class="modal-header p-2 pt-3 d-flex justify-content-center">
-                    <div class="text-center">
-                        <i class="bx bx-lock-open-alt fs-2 text-muted me-2"></i>
-                        <h1 class="modal-title fs-5 fw-bold text-navy">Apertura Taquilla</h1>
-                    </div>
-                </div> 
-                <div class="modal-body px-5 py-3" style="font-size:13px">
-                    <form id="form_aperturar_taquilla" method="post" onsubmit="event.preventDefault(); aperturaTaquilla()">
-                        
-                        <label for="clave" class="form-label"><span class="text-danger">* </span>Ingrese la clave de seguridad de la Taquilla:</label>
-                        <input type="password" id="clave" class="form-control form-control-sm" name="clave" required>
-
-                        <p class="text-muted text-end"><span style="color:red">*</span> Campos requeridos.</p>
-
-                        <div class="d-flex justify-content-center mt-3 mb-3">
-                            <button type="button" class="btn btn-secondary btn-sm me-2" data-bs-dismiss="modal">Cancelar</button>
-                            <button type="submit" class="btn btn-success btn-sm">Aperturar</button>
-                        </div>
-                    </form>
-                </div>
+    <!-- DETALLE VENTA -->
+    <div class="modal fade" id="modal_detalle_venta" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content" id="content_detalle_venta">
+                
             </div>  <!-- cierra modal-content -->
         </div>  <!-- cierra modal-dialog -->
     </div>
-
-
-
-    
 
 
 <!-- ************************************************************************** -->
@@ -221,10 +114,97 @@
 
     <script type="text/javascript">
         $(document).ready(function () {
-           
+           /////////////////////// DETALLE VENTA
+            $(document).on('click','.detalle_venta', function(e) {
+                e.preventDefault();
+                var venta = $(this).attr('venta');
+
+                $.ajax({
+                    headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') },
+                    type: 'POST',
+                    url: '{{route("arqueo.detalle_venta") }}',
+                    data: {venta:venta},
+                    success: function(response) {
+                        console.log(response);
+                        if (response.success) {
+                            $('#content_detalle_venta').html(response.html);
+                        }else{
+                            alert('Disculpe, vuelva a cargar la pagina.');
+                        }
+                        
+                    },
+                    error: function() {
+                    }
+                });
+            });
+
+            /////LIMPIAR CONTENT
+            $(document).on('click','.nav-link', function(e) {
+                $('#content_info_search').html('');
+            });
         });
 
-        
+        function searchTFE(){
+            var formData = new FormData(document.getElementById("form_search_tfe"));
+            $.ajax({
+                headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') },
+                url:'{{route("consulta.search_tfe") }}',
+                type:'POST',
+                contentType:false,
+                cache:false,
+                processData:false,
+                async: true,
+                data: formData,
+                success: function(response){
+                    console.log(response);
+                    if (response.success) {
+                        $('#content_info_search').html(response.html);
+                    }else{
+                        if (response.html != '')  {
+                            $('#content_info_search').html(response.html);
+                        }else{
+                            alert('Disculpe, ha ocurrido un error. Vuelva a intentarlo.');
+                            window.location.href = "{{ route('consulta')}}";
+                        }
+                        
+                    }
+                },
+                error: function(error){
+                    
+                }
+            });
+        }
+
+        function searchEST(){
+            var formData = new FormData(document.getElementById("form_search_est"));
+            $.ajax({
+                headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') },
+                url:'{{route("consulta.search_est") }}',
+                type:'POST',
+                contentType:false,
+                cache:false,
+                processData:false,
+                async: true,
+                data: formData,
+                success: function(response){
+                    console.log(response);
+                    if (response.success) {
+                        $('#content_info_search').html(response.html);
+                    }else{
+                        if (response.html != '')  {
+                            alert(response.html);
+                        }else{
+                            alert('Disculpe, ha ocurrido un error. Vuelva a intentarlo.');
+                            window.location.href = "{{ route('consulta')}}";
+                        }
+                        
+                    }
+                },
+                error: function(error){
+                    
+                }
+            });
+        }
 
 
     </script>

@@ -68,6 +68,7 @@ class AperturaTaquillasController extends Controller
         $query = DB::table('taquillas')->join('sedes', 'taquillas.key_sede', '=','sedes.id_sede')
                                         ->join('funcionarios', 'taquillas.key_funcionario', '=','funcionarios.id_funcionario')
                                         ->select('sedes.sede','funcionarios.nombre','taquillas.id_taquilla')
+                                        ->where('taquillas.estado','!=',17)
                                         ->get();
         foreach ($query as $taquilla) {
             $input = '';
@@ -140,7 +141,23 @@ class AperturaTaquillasController extends Controller
         $apertura = $request->post('apertura');
 
         foreach ($apertura as $id_taquilla) {
-            $insert = DB::table('apertura_taquillas')->insert(['key_taquilla' => $id_taquilla,'fondo_caja' => 0]);
+            $q2 = DB::table('taquillas')->select('key_funcionario','estado')->where('id_taquilla','=',$id_taquilla)->first();
+            if ($q2){
+                ///// verificar si estan deshabilitados
+                $con_taq = DB::table('funcionarios')->select('estado')->where('id_funcionario','=',$q2->key_funcionario)->first();
+                if ($q2->estado == 17) {
+                    return response()->json(['success' => false, 'nota'=> 'La Taquilla ID'.$id_taquilla.' se encuentra Deshabilitada..']);
+                }
+                if ($con_taq->estado == 17) {
+                    return response()->json(['success' => false, 'nota'=> 'El Funcionario asignado a la Taquilla ID'.$id_taquilla.' se encuentra Deshabilitado.']);
+                }
+
+                //// insert
+                $insert = DB::table('apertura_taquillas')->insert(['key_taquilla' => $id_taquilla,'fondo_caja' => 0]);
+            }else{
+                 return response()->json(['success' => false]); 
+            }
+            
         }
         
         return response()->json(['success' => true]); 

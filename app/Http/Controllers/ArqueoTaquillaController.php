@@ -346,10 +346,14 @@ class ArqueoTaquillaController extends Controller
                     /// ESTAMPILLAS
                     $est_c = '';
                     $c3 = DB::table('detalle_venta_estampillas')->join('ucd_denominacions', 'detalle_venta_estampillas.key_denominacion','=','ucd_denominacions.id')
-                                                                ->select('detalle_venta_estampillas.serial','ucd_denominacions.denominacion')
+                                                                ->select('detalle_venta_estampillas.serial','ucd_denominacions.denominacion','detalle_venta_estampillas.key_denominacion')
                                                                 ->where('detalle_venta_estampillas.key_detalle_venta','=',$value->correlativo)->get();
                     foreach ($c3 as $est) {
-                        $est_c .= '<span>Est '.$est->denominacion.' UCD ('.$est->serial.')</span>';
+                        $query = DB::table('ucd_denominacions')->join('tipos', 'ucd_denominacions.alicuota', '=','tipos.id_tipo')
+                                                        ->select('tipos.nombre_tipo')
+                                                        ->where('id','=',$est->key_denominacion)->first();
+
+                        $est_c .= '<span>Est '.$est->denominacion.' '.$query->nombre_tipo.' ('.$est->serial.')</span>';
                     }
                     $div_est = '<div class="d-flex flex-column">'.$est_c.'</div>';
 

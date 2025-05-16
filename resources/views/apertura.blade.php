@@ -249,7 +249,12 @@
                             alert('SE HAN APERTURADO LAS TAQUILLAS CORRECTAMENTE.');
                             window.location.href = "{{ route('apertura')}}";
                         }else{
-                            alert('Disculpe, ha ocurrido un error.');
+                            if (response.nota != '') {
+                                alert(response.nota);
+                            }else{
+                                alert('Disculpe, ha ocurrido un error.');
+                            }
+                            
                         }  
 
                     },

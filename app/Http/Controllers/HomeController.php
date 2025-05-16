@@ -118,8 +118,18 @@ class HomeController extends Controller
 
             $user = auth()->id();
             $query = DB::table('users')->select('key_sujeto')->where('id','=',$user)->first();
-            $q2 = DB::table('taquillas')->select('id_taquilla','clave')->where('key_funcionario','=',$query->key_sujeto)->first();
-            if ($q2) {
+            $q2 = DB::table('taquillas')->select('id_taquilla','clave','estado')->where('key_funcionario','=',$query->key_sujeto)->first();
+            $con_taq = DB::table('funcionarios')->select('estado')->where('key_funcionario','=',$query->key_sujeto)->first();
+
+            if ($q2 && $con_taq) {
+                ///// verificar si estan deshabilitados
+                if ($q2->estado == 17) {
+                    return response()->json(['success' => false, 'nota'=> 'Taquilla Deshabilitada..']);
+                }
+                if ($con_taq->estado == 17) {
+                    return response()->json(['success' => false, 'nota'=> 'Funcionario Deshabilitado.']);
+                }
+
                 /// usuario taquillero
                 $id_taquilla = $q2->id_taquilla;
 
