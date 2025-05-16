@@ -48,17 +48,57 @@
 
         
 
-        <div class="position-relative overflow-hidden p-3 p-md-5 m-md-3 text-center bg-white container-fluid bg_arqueo" style="background-image: url({{asset('assets/fondo2.png')}});">
-            <div class="p-lg-5 mx-auto my-5">
+        <div class="position-relative overflow-hidden p-3 p-md-5 m-md-3 bg-white container-fluid bg_arqueo" style="background-image: url({{asset('assets/fondo2.png')}});">
+            <div class="p-lg-5 mx-auto">
                 <div class="row">
-                    <div class="col-lg-4">
-
+                    <div class="col-lg-3">
+                        <div class="d-flex flex-column my-2">
+                            <span>No Timbre (Correlativo de Papel)</span>
+                            <span class="text-danger fs-5 fw-bold titulo">A-081001</span>
+                        </div>
+                        <div class="d-flex flex-column my-2">
+                            <span>Serial</span>
+                            <span class="fw-semibold fs-5">B2081001</span>
+                        </div>
+                        <div class="d-flex flex-column my-2">
+                            <span>Monto (UCD|Bs)</span>
+                            <span class="fs-4 text-navy fw-bold">2 UCD</span>
+                        </div>
+                        <div class="d-flex flex-column my-2">
+                            <span>Fecha de Emisión (Venta)</span>
+                            <span class="fs-5 text-muted fw-bold">12-5-2025 3:00 PM</span>
+                        </div>
+                        <div class=" my-2">
+                            <img src="{{asset('assets/qrForma14/qrcode_TFE1.png')}}" class="img-fluid" alt="" width="110px">
+                        </div>
                     </div>
                     <div class="col-lg-4">
+                        <div class="d-flex flex-column my-2">
+                            <span>Contribuyente</span>
+                            <div class="d-flex flex-column">
+                                <span class="text-navy fs-5 fw-bold titulo">El nombre de Comercio mas largo de la Historia, S.A.<span class="badge ms-2 fs-6 text-bg-secondary">Ente Gubernamental</span></span>
+                                <span class="text-muted fs-5 fw-bold titulo">G-200108240</span>
+                            </div>
+                        </div>
+                        <div class="d-flex flex-column my-2">
+                            <span>Tramite</span>
+                            <span class="fs-5 text-muted">Protocolización </span>
+                        </div>
 
                     </div>
-                    <div class="col-lg-4">
-
+                    <div class="col-lg-2">
+                        <div class="fw-bold titulo fs-5">Origen</div>
+                        <div class="d-flex flex-column my-2">
+                            <span>ID Venta</span>
+                            <a href="#" class="fs-5">#52 </a>
+                        </div>
+                        <div class="d-flex flex-column my-2">
+                            <span>ID Lote de Papel</span>
+                            <a href="#" class="fs-5">#1 </a>
+                        </div>
+                    </div>
+                    <div class="col-lg-3">
+                        <img src="{{asset('assets/timbre.svg')}}" class="shadow-sm mx-auto img-fluid" alt="" style="width: 100%; height: 300px;">
                     </div>
                 </div>
                 
