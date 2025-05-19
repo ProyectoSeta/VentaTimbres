@@ -260,15 +260,18 @@ Route::post('/arqueo/timbres', [App\Http\Controllers\ArqueoTaquillaController::c
 Route::post('/arqueo/detalle_venta', [App\Http\Controllers\ArqueoTaquillaController::class, 'detalle_venta'])->name('arqueo.detalle_venta');
 Route::post('/arqueo/detalle_forma', [App\Http\Controllers\ArqueoTaquillaController::class, 'detalle_forma'])->name('arqueo.detalle_forma');
 Route::post('/arqueo/cierre_punto', [App\Http\Controllers\ArqueoTaquillaController::class, 'cierre_punto'])->name('arqueo.cierre_punto');
-Route::get('/pdf_cierre_taquilla/{year?}/', [App\Http\Controllers\ArqueoTaquillaController::class, 'pdf_cierre_taquilla'])->name('pdf_cierre_taquilla');
+Route::get('/pdf_cierre_taquilla/{id?}/', [App\Http\Controllers\ArqueoTaquillaController::class, 'pdf_cierre_taquilla'])->name('pdf_cierre_taquilla');
 
 
 ///////////////////// CIERRE
 Route::get('/cierre', [App\Http\Controllers\CierreController::class, 'index'])->name('cierre');
 Route::post('/cierre/comprobar', [App\Http\Controllers\CierreController::class, 'comprobar'])->name('cierre.comprobar');
 Route::post('/cierre/registro_cierre', [App\Http\Controllers\CierreController::class, 'registro_cierre'])->name('cierre.registro_cierre');
+Route::get('/cierre/arqueo/{id?}/', [App\Http\Controllers\CierreController::class, 'arqueo'])->name('cierre.arqueo');
+
 ///////CIERRE DIARIO
 Route::get('/cierre_diario', [App\Http\Controllers\CierreDiarioController::class, 'index'])->name('cierre_diario');
+Route::get('/pdf_cierre_diario/{id?}/', [App\Http\Controllers\CierreDiarioController::class, 'pdf_cierre_diario'])->name('pdf_cierre_diario');
 
 
 

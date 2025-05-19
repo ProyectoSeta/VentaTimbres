@@ -15,7 +15,7 @@
             <!-- RECAUDACION HOY -->
             <div class="row text-center d-flex align-items-center my-3 mb-5"  >
                 <div class="col-md-6">
-                    <span class="display-6 fw-bold text-navy">Recaudación | Taquilla</span>
+                    <span class="display-6 fw-bold text-navy">Recaudación | TAQ{{$id_taquilla}}</span>
                     <div class="text-muted fs-4">{{$hoy_view}}</div>
                 </div>
                 <div class="col-md-6">
@@ -29,7 +29,7 @@
                     <div class="col-md-6">
                         <h5 class="fw-bold fs-3">Punto</h5>
                         <h4 class="fw-semibold">@php echo(number_format($arqueo->punto, 2, ',', '.')) @endphp Bs.</h4>
-                        <a href="#" data-bs-toggle="modal" data-bs-target="#modal_cierre_punto" id="cierre_punto">Cierre de Punto</a>
+                        <a href="#" data-bs-toggle="modal" data-bs-target="#modal_cierre_punto" id="cierre_punto" taquilla="{{$id_taquilla}}">Cierre de Punto</a>
                     </div>
                     
                     <div class="col-md-6">
@@ -66,7 +66,7 @@
                         <div class="d-flex flex-column">
                             <div class="fs-4 fw-semibold text-secondary">@php echo(number_format($arqueo->recaudado_tfe, 2, ',', '.')) @endphp Bs.</div>  
                             <span class="text-muted">{{$arqueo->cantidad_tfe}} Unidades</span>
-                            <a href="#" class="detalle_forma" data-bs-toggle="modal" data-bs-target="#modal_detalle_formas" forma="3">Ver detalles</a>
+                            <a href="#" class="detalle_forma" data-bs-toggle="modal" data-bs-target="#modal_detalle_formas" forma="3" taquilla="{{$id_taquilla}}">Ver detalles</a>
                         </div>
                     </div>
                 </div>
@@ -78,7 +78,7 @@
                         <div class="d-flex flex-column">
                             <div class="fs-4 fw-semibold text-secondary">@php echo(number_format($arqueo->recaudado_est, 2, ',', '.')) @endphp Bs.</div>  
                             <span class="text-muted">{{$arqueo->cantidad_est}} Unidades</span>
-                            <a href="#" class="detalle_forma" data-bs-toggle="modal" data-bs-target="#modal_detalle_formas" forma="4">Ver detalles</a>
+                            <a href="#" class="detalle_forma" data-bs-toggle="modal" data-bs-target="#modal_detalle_formas" forma="4" taquilla="{{$id_taquilla}}">Ver detalles</a>
                         </div>
                     </div>
                 </div>
@@ -317,12 +317,13 @@
             $(document).on('click','.detalle_forma', function(e) {
                 e.preventDefault();
                 var forma = $(this).attr('forma');
+                var taquilla = $(this).attr('taquilla');
 
                 $.ajax({
                     headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') },
                     type: 'POST',
                     url: '{{route("arqueo.detalle_forma") }}',
-                    data: {forma:forma},
+                    data: {forma:forma,taquilla:taquilla},
                     success: function(response) {
                         console.log(response);
                         $('#content_detalle_formas').html(response);
@@ -352,11 +353,13 @@
             /////////////////////// CIERRE PUNTO
             $(document).on('click','#cierre_punto', function(e) {
                 e.preventDefault();
+                var taquilla = $(this).attr('taquilla');
 
                 $.ajax({
                     headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') },
                     type: 'POST',
                     url: '{{route("arqueo.cierre_punto") }}',
+                    data: {taquilla:taquilla},
                     success: function(response) {
                         console.log(response);
                         $('#content_cierre_punto').html(response);
