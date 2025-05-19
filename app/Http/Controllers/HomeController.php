@@ -50,7 +50,7 @@ class HomeController extends Controller
 
         $q3 = DB::table('apertura_taquillas')->select('apertura_admin','apertura_taquillero','cierre_taquilla')
                                             ->where('key_taquilla','=', $id_taquilla)
-                                            ->where('fecha','=', $hoy)->first();
+                                            ->whereDate('fecha', $hoy)->first();
         if ($q3) {
             //////hay registro, admin aperturo taquilla
             if ($q3->apertura_taquillero == null) {

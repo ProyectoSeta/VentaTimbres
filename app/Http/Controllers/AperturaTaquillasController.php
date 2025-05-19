@@ -23,7 +23,7 @@ class AperturaTaquillasController extends Controller
         $hoy_view = $dias[date('w')].", ".date('d')." de ".$meses[date('n')-1]. " ".date('Y');
         $hoy = date('Y-m-d');
         $aperturas = [];
-        $query = DB::table('apertura_taquillas')->where('fecha','=', $hoy)->get();
+        $query = DB::table('apertura_taquillas')->whereDate('fecha', $hoy)->get();
 
         foreach ($query as $q1) {
             $q2 = DB::table('taquillas')->where('id_taquilla','=', $q1->key_taquilla)->first();
