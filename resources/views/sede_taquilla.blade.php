@@ -33,27 +33,7 @@
 			</div>
 
 
-            <!-- NUEVA TAQUILLA -->
-            <div class="col-sm-6 col-lg-4 mb-4" id="new_taquilla">
-				<div class="card text-center rounded-4 p-4 pb-0 position-relative car_trasit shadow-none" role="button" data-bs-toggle="modal" data-bs-target="#modal_nueva_taquilla">
-                    <!--  -->
-                    <div class="position-absolute top-0 start-50 translate-middle">
-                        <span class="badge bg-warning rounded-circle p-3">
-                            <i class='bx bxs-carousel fs-1 text-white'></i>
-                        </span>
-                    </div>
-
-					<!-- Card body -->
-					<div class="card-footer border-0 bg-transparent pt-4 pb-2">
-						<h6 class="mb-3 titulo fw-bold text-navy fs-4">Nueva Taquilla</h6>
-                        <p class="text-muted">Haz clic y crea una nueva taquilla de la institución.</p>
-						<!-- <a href="#" class="btn btn-sm btn-secondary">Crear</a> -->
-					</div>
-				</div>
-                <!-- <div class="text-center">
-                    <button type="button" class="btn btn-secondary btn-sm">Ver Taquillas</button>
-                </div> -->
-			</div>
+           
 
               <!-- NUEVO TAQUILLERO -->
               <div class="col-sm-6 col-lg-4 mb-4">
@@ -76,8 +56,30 @@
                     <button type="button" class="btn btn-secondary btn-sm">Ver Taquilleros</button>
                 </div> -->
 			</div>
-		</div>
+	
 
+         <!-- NUEVA TAQUILLA -->
+            <div class="col-sm-6 col-lg-4 mb-4" id="new_taquilla">
+				<div class="card text-center rounded-4 p-4 pb-0 position-relative car_trasit shadow-none" role="button" data-bs-toggle="modal" data-bs-target="#modal_nueva_taquilla">
+                    <!--  -->
+                    <div class="position-absolute top-0 start-50 translate-middle">
+                        <span class="badge bg-warning rounded-circle p-3">
+                            <i class='bx bxs-carousel fs-1 text-white'></i>
+                        </span>
+                    </div>
+
+					<!-- Card body -->
+					<div class="card-footer border-0 bg-transparent pt-4 pb-2">
+						<h6 class="mb-3 titulo fw-bold text-navy fs-4">Nueva Taquilla</h6>
+                        <p class="text-muted">Haz clic y crea una nueva taquilla de la institución.</p>
+						<!-- <a href="#" class="btn btn-sm btn-secondary">Crear</a> -->
+					</div>
+				</div>
+                <!-- <div class="text-center">
+                    <button type="button" class="btn btn-secondary btn-sm">Ver Taquillas</button>
+                </div> -->
+			</div>
+	</div>
 
         <div id="content_ver_registros" class=" mt-5">
             <div class="row">
@@ -198,8 +200,9 @@
                         <p class="text-muted text-end"><span style="color:red">*</span> Campo requerido.</p>
 
                         <div class="d-flex justify-content-center mt-3 mb-3">
-                            <button type="button" class="btn btn-secondary btn-sm me-2" data-bs-dismiss="modal">Cancelar</button>
-                            <button type="submit" class="btn btn-success btn-sm">Aceptar</button>
+                             <button type="submit" class="btn btn-success btn-sm me-2">Aceptar</button>
+                            <button type="button" class="btn btn-secondary btn-sm" data-bs-dismiss="modal">Cancelar</button>
+                           
                         </div>
                     </form>
                 </div>
@@ -281,8 +284,8 @@
                         </div>
 
                         <div class="d-flex justify-content-center mt-3 mb-3">
-                            <button type="button" class="btn btn-secondary btn-sm me-2" data-bs-dismiss="modal">Cancelar</button>
-                            <button type="submit" class="btn btn-success btn-sm">Aceptar</button>
+                            <button type="submit" class="btn btn-success btn-sm me-2">Aceptar</button>
+                            <button type="button" class="btn btn-secondary btn-sm" data-bs-dismiss="modal">Cancelar</button>      
                         </div>
                     </form>
                 </div>
@@ -311,7 +314,7 @@
                 <div class="modal-header p-2 pt-3 d-flex justify-content-center">
                     <div class="text-center">
                         <i class='bx bx-edit fs-2 text-muted me-2'></i>
-                        <h1 class="modal-title fs-5 fw-bold text-navy">Actualizar clave</h1>
+                        <h1 class="modal-title fs-5 fw-bold text-navy">Actualizar Clave</h1>
                         <span>Clave de Taquilla <span class="text-secondary">| Apertura y Cierre.</span></span>
                     </div>
                 </div> 
@@ -340,8 +343,8 @@
                         </div>
 
                         <div class="d-flex justify-content-center mt-3 mb-3">
-                            <button type="button" class="btn btn-secondary btn-sm me-2" data-bs-dismiss="modal">Cancelar</button>
-                            <button type="submit" class="btn btn-success btn-sm">Aceptar</button>
+                            <button type="submit" class="btn btn-success btn-sm me-2">Aceptar</button>
+                            <button type="button" class="btn btn-secondary btn-sm" data-bs-dismiss="modal">Cancelar</button>    
                         </div>
                     </form>
                 </div>

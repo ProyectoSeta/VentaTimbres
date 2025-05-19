@@ -104,8 +104,9 @@ class SedeTaquillaController extends Controller
                         </div>
 
                         <div class="d-flex justify-content-center mt-3 mb-3">
-                            <button type="button" class="btn btn-secondary btn-sm me-2" data-bs-dismiss="modal">Cancelar</button>
-                            <button type="submit" class="btn btn-success btn-sm">Aceptar</button>
+                        <button type="submit" class="btn btn-success btn-sm me-2">Aceptar</button>
+                            <button type="button" class="btn btn-secondary btn-sm" data-bs-dismiss="modal">Cancelar</button>
+                            
                         </div>
                     </form>
                 </div>';
