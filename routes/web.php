@@ -267,6 +267,9 @@ Route::get('/pdf_cierre_taquilla/{year?}/', [App\Http\Controllers\ArqueoTaquilla
 Route::get('/cierre', [App\Http\Controllers\CierreController::class, 'index'])->name('cierre');
 Route::post('/cierre/comprobar', [App\Http\Controllers\CierreController::class, 'comprobar'])->name('cierre.comprobar');
 Route::post('/cierre/registro_cierre', [App\Http\Controllers\CierreController::class, 'registro_cierre'])->name('cierre.registro_cierre');
+///////CIERRE DIARIO
+Route::get('/cierre_diario', [App\Http\Controllers\CierreDiarioController::class, 'index'])->name('cierre_diario');
+
 
 
 ///////////////////// REPORTE ANUAL

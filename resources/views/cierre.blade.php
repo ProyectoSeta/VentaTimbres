@@ -1,6 +1,6 @@
 @extends('adminlte::page')
 
-@section('title', 'Cierre')
+@section('title', 'Cierre Diario')
 
 @section('content_header')
     
@@ -164,17 +164,21 @@
                     success: function(response) {
                         console.log(response);
                         if (response.success) {
-                            // 
+                            var taquillas = response.taquillas;
+
                             $.ajax({
                                 headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') },
                                 type: 'POST',
                                 url: '{{route("cierre.registro_cierre") }}',
+                                data: {taquillas:taquillas},
                                 success: function(response) {
                                     console.log(response);
                                     if (response.success) {
-                                        
+                                        alert('CIERRE DIARIO EXITOSO');
+                                        window.location.href = "{{ route('cierre_diario')}}";
                                     }else{
-                                        alert();
+                                        alert('Disculpe, ha ocurrido un error. Vuelva a intentarlo.');
+                                        window.location.href = "{{ route('cierre')}}";
                                     }
                                 },
                                 error: function() {

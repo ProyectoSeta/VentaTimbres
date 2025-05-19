@@ -341,10 +341,10 @@ return [
             'route'         => 'consulta',
             'icon'       => 'fas fa-angle-right pe-2',   
         ],
-        ['header' => 'Reporte'],
+        ['header' => 'Cierre'],
         [
             'text'        => 'Diario',
-            'route'         => '',
+            'route'         => 'cierre',
             'icon'       => 'fas fa-angle-right pe-2', 
         ],
         [
@@ -438,11 +438,11 @@ return [
             'route'         => 'apertura',
             'icon'       => 'fas fa-angle-right pe-2',  
         ],
-        [
-            'text'        => 'Cierre',
-            'route'         => 'cierre',
-            'icon'       => 'fas fa-angle-right pe-2',  
-        ],
+        // [
+        //     'text'        => 'Cierre',
+        //     'route'         => 'cierre',
+        //     'icon'       => 'fas fa-angle-right pe-2',  
+        // ],
         [
             'text'        => 'Inventario',
             'route'         => 'inventario_taquillas',

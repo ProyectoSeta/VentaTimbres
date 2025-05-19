@@ -13,7 +13,7 @@ return new class extends Migration
     {
         Schema::create('cierre_taquillas', function (Blueprint $table) {
             $table->increments('id');
-            $table->date('fecha')->unique();
+            $table->date('fecha');
 
             $table->integer('key_taquilla')->unsigned();
             $table->foreign('key_taquilla')->references('id_taquilla')->on('taquillas')->onDelete('cascade');
