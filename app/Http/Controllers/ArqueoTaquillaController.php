@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 use DB;
 use Illuminate\Http\Request;
+use Barryvdh\DomPDF\Facade\Pdf;
 
 class ArqueoTaquillaController extends Controller
 {
@@ -114,6 +115,8 @@ class ArqueoTaquillaController extends Controller
 
         return response($html);
     }
+
+
 
     /**
      * Display the specified resource.
@@ -603,4 +606,36 @@ class ArqueoTaquillaController extends Controller
 
         return response($html);
     }
+
+
+    public function pdf_cierre_taquilla(Request $request)
+    {
+        $id_cierre = $request->id;
+       
+        $c1 = DB::table('cierre_taquillas')->where('id', '=', $id_cierre)->first();
+        
+        $c2 = DB::table('taquillas')
+                            ->join('funcionarios', 'taquillas.key_funcionario', '=', 'funcionarios.id_funcionario')
+                            ->select('funcionarios.nombre','funcionarios.ci_condicion','funcionarios.ci_nro','taquillas.key_sede')
+                            ->where('taquillas.id_taquilla','=', $c1->key_taquilla)->first();
+        
+        $c3 = DB::table('sedes')->select('sede')->where('id_sede','=', $c2->key_sede)->first(); 
+        
+        $taquillero = $c2->nombre;
+        $sede = $c3->sede;
+        $ci_taquillero = $c2->ci_condicion.''.$c2->ci_nro;
+        $id_taquilla = $c1->key_taquilla;
+
+
+        $dias = array("Domingo","Lunes","Martes","Miercoles","Jueves","Viernes","Sábado");
+        $meses = array("Enero","Febrero","Marzo","Abril","Mayo","Junio","Julio","Agosto","Septiembre","Octubre","Noviembre","Diciembre"); 
+        $fecha = $dias[date('w',strtotime($c1->fecha))].", ".date('d',strtotime($c1->fecha))." de ".$meses[date('n',strtotime($c1->fecha))-1]. " ".date('Y');
+
+        $pdf = PDF::loadView('pdf/cierre_taquilla', compact('c1','taquillero','sede','ci_taquillero','id_taquilla','fecha'));
+
+        return $pdf->download('CierreTAQ'.$id_taquilla.'('.$c1->fecha.').pdf');
+
+    }
+
+
 }

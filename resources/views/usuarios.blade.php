@@ -48,8 +48,8 @@
                             <td><span class="text-muted">{{ $admin->ci_condicion }}-{{ $admin->ci_nro}}</span></td>
                             <td>{{ $admin->email }}</td>
                             <td><span class="text-muted fst-italic">{{ $admin->cargo }}</span></td>
-                            <td class="text-secondary fst-italic">{{ date("m-d-Y h:i A",strtotime($admin->created_at)) }}</td>
-                            <td class="text-secondary fst-italic">{{ date("m-d-Y h:i A",strtotime($admin->updated_at)) }}</td>
+                            <td class="text-secondary fst-italic">{{ date("d-m-Y h:i A",strtotime($admin->created_at)) }}</td>
+                            <td class="text-secondary fst-italic">{{ date("d-m-Y h:i A",strtotime($admin->updated_at)) }}</td>
 
                             {{-- @if(auth()->user()->can('usuarios.editar') || auth()->user()->can('usuarios.destroy')) --}}
                                 <td>

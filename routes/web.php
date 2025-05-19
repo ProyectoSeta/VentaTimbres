@@ -260,6 +260,8 @@ Route::post('/arqueo/timbres', [App\Http\Controllers\ArqueoTaquillaController::c
 Route::post('/arqueo/detalle_venta', [App\Http\Controllers\ArqueoTaquillaController::class, 'detalle_venta'])->name('arqueo.detalle_venta');
 Route::post('/arqueo/detalle_forma', [App\Http\Controllers\ArqueoTaquillaController::class, 'detalle_forma'])->name('arqueo.detalle_forma');
 Route::post('/arqueo/cierre_punto', [App\Http\Controllers\ArqueoTaquillaController::class, 'cierre_punto'])->name('arqueo.cierre_punto');
+Route::get('/pdf_cierre_taquilla/{year?}/', [App\Http\Controllers\ArqueoTaquillaController::class, 'pdf_cierre_taquilla'])->name('pdf_cierre_taquilla');
+
 
 ///////////////////// CIERRE
 Route::get('/cierre', [App\Http\Controllers\CierreController::class, 'index'])->name('cierre');

@@ -54,10 +54,10 @@ class VentaController extends Controller
             if ($con < 6) {
                 return response()->json(['success' => true, 'nombre' => $query->nombre_razon]);
             }else{
-                return response()->json(['success' => false, 'nota' => 'Se han excedido las ventas para este contribuyente por el día de hoy.']);
+                return response()->json(['success' => false, 'nota' => 'Se han excedido las ventas para este contribuyente por el día de hoy.', 'alert' => 'true']);
             }
         }else{
-            return response()->json(['success' => false]);
+            return response()->json(['success' => false, 'alert' => 'false']);
         }
     }
 

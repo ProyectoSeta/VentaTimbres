@@ -84,6 +84,15 @@
                 </div>
             </div>
 
+
+            <!-- BTN DESCARGAR REPORTE -->
+            <div class="d-flex justify-content-center align-items-center flex-column">
+                <div class="fs-5 fw-semibold titulo text-navy mb-2">Descargar Reporte</div>
+                <a href="{{ route('pdf_cierre_taquilla', ['id' => $arqueo->id] ) }}" class="btn btn-sm btn-secondary d-inline-flex align-items-center"  role="button">
+                    Reporte
+                </a>
+            </div>
+
             <div class="table-responsive py-3 pt-5 px-4"  style="font-size:12.7px">
                 <table class="table table-sm border-light-subtle text-center" id="table_venta_taquilla"  style="font-size:13px">
                     <thead>

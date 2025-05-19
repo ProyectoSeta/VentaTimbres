@@ -905,7 +905,7 @@
                             // $('#btn_submit_venta').attr('disabled', false);
 
                         }else{
-                            if (response.nota != '') {
+                            if (response.alert == 'false') {
                                 $('#btns_add_contribuyente').removeClass('d-none');
                                 $('#nombre').attr('disabled', false);
                                 $('#nombre').val('');
@@ -924,6 +924,7 @@
                                 $('#btn_submit_venta').attr('disabled', true);
                             }else{
                                 alert(response.nota);
+                                window.location.href = "{{ route('venta')}}";
                             }
                             
                         }
