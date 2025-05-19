@@ -119,7 +119,7 @@ class HomeController extends Controller
             $user = auth()->id();
             $query = DB::table('users')->select('key_sujeto')->where('id','=',$user)->first();
             $q2 = DB::table('taquillas')->select('id_taquilla','clave','estado')->where('key_funcionario','=',$query->key_sujeto)->first();
-            $con_taq = DB::table('funcionarios')->select('estado')->where('key_funcionario','=',$query->key_sujeto)->first();
+            $con_taq = DB::table('funcionarios')->select('estado')->where('id_funcionario','=',$query->key_sujeto)->first();
 
             if ($q2 && $con_taq) {
                 ///// verificar si estan deshabilitados

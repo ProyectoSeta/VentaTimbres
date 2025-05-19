@@ -7,6 +7,11 @@ use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 
+use Spatie\Permission\Models\Role;
+use Spatie\Permission\Models\Permission;
+use App\Models\User;
+
+
 class UserSeeder extends Seeder
 {
     /**
@@ -15,12 +20,36 @@ class UserSeeder extends Seeder
     public function run(): void
     {
         $pass = 'Admin852.';
-        DB::table('users')->insert([
+        $adminUser = User::query()->create([
             'email' => 'administrador@gmail.com',
             'password' => Hash::make($pass),
             'type' => 2,
             'key_sujeto' => 1, /////funcionario id 1 admin
         ]);
+
+        // CREAR EL ROL
+        $roleAdmin = Role::create(['name' => 'Admin Master']);
+        // ASIGNAR EL ROL AL USUARIO
+        $adminUser->assignRole($roleAdmin);
+
+
+        /////////SUJETOS TAQUILLEROS PRUEBA 
+        $pass1 = '123456';
+        $user1 = User::query()->create([
+            'email' => 'taquillero1@gmail.com',
+            'password' => Hash::make($pass1),
+            'type' => 2,
+            'key_sujeto' => 2, //////funcionario id 2
+        ]);
+        $user1->assignRole('Taquillero');
+
+        $user2 = User::query()->create([
+            'email' => 'taquillero2@gmail.com',
+            'password' => Hash::make($pass1),
+            'type' => 2,
+            'key_sujeto' => 3,/////funcionario id 3
+        ]);
+        $user2->assignRole('Taquillero');
 
 
 
@@ -33,31 +62,16 @@ class UserSeeder extends Seeder
             'nombre_razon' => 'Prueba Uno'
         ]);
 
-        $pass = 'Hola45.';
+        $pass2 = 'Hola45.';
         DB::table('users')->insert([
             'email' => 'prueba_uno@gmail.com',
-            'password' => Hash::make($pass),
+            'password' => Hash::make($pass2),
             'type' => 1,
             'key_sujeto' => 1,
         ]);
 
 
-        /////////SUJETOS TAQUILLEROS PRUEBA 
-        $pass = '123456';
-        DB::table('users')->insert([
-            'email' => 'taquillero1@gmail.com',
-            'password' => Hash::make($pass),
-            'type' => 2,
-            'key_sujeto' => 2, //////funcionario id 2
-        ]);
-
-        $pass = '123456';
-        DB::table('users')->insert([
-            'email' => 'taquillero2@gmail.com',
-            'password' => Hash::make($pass),
-            'type' => 2,
-            'key_sujeto' => 3,/////funcionario id 3
-        ]);
+        
        
     }
 }

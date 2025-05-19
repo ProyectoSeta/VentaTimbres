@@ -463,6 +463,20 @@ return [
             'route'         => 'ajustes',
             'icon'       => 'fas fa-angle-right pe-2',  
         ],
+        [
+            'text' => 'Usuarios',
+            'url'  => '/usuarios',
+            'icon'       => 'fas fa-angle-right pe-2',
+        ],
+
+         // MI CUENTA
+        [   'header' => 'Mi Cuenta',
+        ],         
+        [
+            'text' => 'Nueva Contraseña',
+            'url'  => '/new_pass',
+            'icon'       => 'fas fa-angle-right pe-2',
+        ],
 
 
 

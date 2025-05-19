@@ -37,14 +37,25 @@ class VentaController extends Controller
         $value = $request->post('value');
         $condicion = $request->post('condicion');
         $condicion_sujeto = $request->post('condicion_sujeto');
+        $hoy = date('Y-m-d');
+
+        $total_ventas = 0;
         // return response($condicion);
-        $query = DB::table('contribuyentes')->select('nombre_razon')
+        $query = DB::table('contribuyentes')->select('id_contribuyente','nombre_razon')
                                             ->where('condicion_sujeto','=', $condicion_sujeto)
                                             ->where('identidad_condicion','=', $condicion)
                                             ->where('identidad_nro','=', $value)
                                             ->first();
         if($query){
-            return response()->json(['success' => true, 'nombre' => $query->nombre_razon]);
+            $id_contribuyente = $query->id_contribuyente;
+            $con = DB::table('ventas')->where('key_contribuyente','=', $id_contribuyente)
+                                    ->where('fecha','=',$hoy)
+                                    ->count();
+            if ($con < 6) {
+                return response()->json(['success' => true, 'nombre' => $query->nombre_razon]);
+            }else{
+                return response()->json(['success' => false, 'nota' => 'Se han excedido las ventas para este contribuyente por el día de hoy.']);
+            }
         }else{
             return response()->json(['success' => false]);
         }
@@ -1400,7 +1411,7 @@ class VentaController extends Controller
             $user = auth()->id();
             $query = DB::table('users')->select('key_sujeto')->where('id','=',$user)->first();
             $q2 = DB::table('taquillas')->select('id_taquilla','estado')->where('key_funcionario','=',$query->key_sujeto)->first();
-            $con_taq = DB::table('funcionarios')->select('estado')->where('key_funcionario','=',$query->key_sujeto)->first();
+            $con_taq = DB::table('funcionarios')->select('estado')->where('id_funcionario','=',$query->key_sujeto)->first();
 
             if ($q2 && $con_taq) {
                 ///// verificar si estan deshabilitados

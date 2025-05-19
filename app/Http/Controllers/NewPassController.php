@@ -29,7 +29,7 @@ class NewPassController extends Controller
         $cargo = $q2->cargo;
         $ci = $q2->ci_condicion.'-'.$q2->ci_nro;
 
-        $update = date("m-d-Y h:i A",strtotime($q1->updated_at));
+        $update = date("d-m-Y h:i A",strtotime($q1->updated_at));
     
         return view('new_pass', compact('cargo','nombre','ci','update'));
     }
@@ -76,7 +76,7 @@ class NewPassController extends Controller
                         $pass_new = bcrypt($request->post('password'));
                         $hoy = date('Y-n-d');
                         $update = DB::table('users')->where('id', '=', $id_user)
-                                                    ->update(['password' => $pass_new, 'updated_at' => $hoy]);
+                                                    ->update(['password' => $pass_new, 'updated_at' =>now()]);
                         if ($update) {
                             // $accion = 'CONTRASEÑA DEL USUARIO: '.$hash_pass->name.' ACTUALIZADA.';
                             // $bitacora = DB::table('bitacoras')->insert(['id_user' => $id_user, 'module' => 11, 'accion'=> $accion]);

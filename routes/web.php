@@ -25,6 +25,21 @@ Route::get('/user', [App\Http\Controllers\UserController::class, 'index'])->name
 Route::post('/user', [App\Http\Controllers\UserController::class, 'store'])->name('user.store');
 
 
+
+//////////////////NUEVA CONTRASEÑA
+Route::get('/new_pass', [App\Http\Controllers\NewPassController::class, 'index'])->name('new_pass');
+Route::post('/new_pass/update', [App\Http\Controllers\NewPassController::class, 'update'])->name('new_pass.update');
+
+
+///////////USUARIOS
+Route::get('/usuarios', [App\Http\Controllers\UsuariosController::class, 'index'])->name('usuarios');
+Route::post('/usuarios/store', [App\Http\Controllers\UsuariosController::class, 'store'])->name('usuarios.store');
+Route::post('/usuarios/modal_edit', [App\Http\Controllers\UsuariosController::class, 'modal_edit'])->name('usuarios.modal_edit');
+Route::post('/usuarios/editar', [App\Http\Controllers\UsuariosController::class, 'editar'])->name('usuarios.editar');
+
+
+
+
 /////////////////////  HOME
 Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
 Route::post('/home/apertura_taquilla', [App\Http\Controllers\HomeController::class, 'apertura_taquilla'])->name('home.apertura_taquilla');

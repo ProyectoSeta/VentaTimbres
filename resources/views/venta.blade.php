@@ -884,7 +884,7 @@
                     url: '{{route("venta.search") }}',
                     data: {value:value,condicion:condicion,condicion_sujeto:condicion_sujeto},
                     success: function(response) {
-                        // console.log(response);               
+                        console.log(response);               
                         if (response.success) {
                             $('#btns_add_contribuyente').addClass('d-none');
                             $('#nombre').val(response.nombre);
@@ -905,22 +905,27 @@
                             // $('#btn_submit_venta').attr('disabled', false);
 
                         }else{
-                            $('#btns_add_contribuyente').removeClass('d-none');
-                            $('#nombre').attr('disabled', false);
-                            $('#nombre').val('');
+                            if (response.nota != '') {
+                                $('#btns_add_contribuyente').removeClass('d-none');
+                                $('#nombre').attr('disabled', false);
+                                $('#nombre').val('');
+                                
+                                $('.ente').attr('disabled', true);
+                                $('.tramite').attr('disabled', true);
+                                $('.forma').attr('disabled', true);
+
+                                $('.metodo').attr('disabled', true);
+                                $('.comprobante').attr('disabled', true);
+                                $('.debitado').attr('disabled', true);
+
+                                $('.add_button_tramite').addClass('disabled');
+                                $('.add_button').addClass('disabled');
+
+                                $('#btn_submit_venta').attr('disabled', true);
+                            }else{
+                                alert(response.nota);
+                            }
                             
-                            $('.ente').attr('disabled', true);
-                            $('.tramite').attr('disabled', true);
-                            $('.forma').attr('disabled', true);
-
-                            $('.metodo').attr('disabled', true);
-                            $('.comprobante').attr('disabled', true);
-                            $('.debitado').attr('disabled', true);
-
-                            $('.add_button_tramite').addClass('disabled');
-                            $('.add_button').addClass('disabled');
-
-                            $('#btn_submit_venta').attr('disabled', true);
                         }
                     },
                     error: function() {

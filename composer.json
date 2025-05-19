@@ -18,7 +18,7 @@
         "phpmailer/phpmailer": "^6.9",
         "phpoffice/phpword": "^1.2",
         "simplesoftwareio/simple-qrcode": "^4.2",
-        "spatie/laravel-permission": "^6.3"
+        "spatie/laravel-permission": "^6.18"
     },
     "require-dev": {
         "fakerphp/faker": "^1.9.1",
