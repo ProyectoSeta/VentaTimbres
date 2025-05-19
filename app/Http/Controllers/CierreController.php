@@ -63,7 +63,15 @@ class CierreController extends Controller
         }
 
 
-        return view('cierre', compact('hoy_view','aperturas'));
+        $con_cierre = DB::table('cierre_diarios')->where('fecha','=', $hoy)->first();
+        if ($con_cierre) {
+           $condicion = 'false';
+        }else{
+            $condicion = 'true';
+        }
+
+
+        return view('cierre', compact('hoy_view','aperturas','condicion'));
     }
 
     /**
@@ -107,7 +115,7 @@ class CierreController extends Controller
         $cantidad_est = 0;
 
         foreach ($taquillas as $taquilla) {
-            $id_taquilla = $taquillas;
+            $id_taquilla = $taquilla;
 
             $q1 = DB::table('ventas')->select('id_venta','total_bolivares','key_ucd')
                                     ->where('key_taquilla','=',$id_taquilla)
@@ -186,9 +194,42 @@ class CierreController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(string $id)
+    public function arqueo(Request $request)
     {
-        //
+        $id_taquilla = $request->id;
+        $hoy = date('Y-m-d');
+
+        $c1 = DB::table('apertura_taquillas')->select('cierre_taquilla','fondo_caja')->where('fecha','=',$hoy)->where('key_taquilla','=',$id_taquilla)->first();
+        $dias = array("Domingo","Lunes","Martes","Miercoles","Jueves","Viernes","Sábado");
+        $meses = array("Enero","Febrero","Marzo","Abril","Mayo","Junio","Julio","Agosto","Septiembre","Octubre","Noviembre","Diciembre"); 
+        $hoy_view = $dias[date('w')].", ".date('d')." de ".$meses[date('n')-1]. " ".date('Y');
+
+        // VENTAS DEL DÍA
+        $ventas = DB::table('ventas')->join('contribuyentes', 'ventas.key_contribuyente', '=','contribuyentes.id_contribuyente')
+                                ->select('ventas.*','contribuyentes.identidad_condicion','contribuyentes.identidad_nro')
+                                ->where('ventas.key_taquilla','=',$id_taquilla)
+                                ->where('ventas.fecha','=',$hoy)
+                                ->get();
+        
+        // DETALLE ARQUEO
+        $arqueo = DB::table('cierre_taquillas')->where('fecha','=',$hoy)->where('key_taquilla','=',$id_taquilla)->first();
+
+        // DETALLE_EFECTIVO
+        $fondo_caja = $c1->fondo_caja;
+        $bs_boveda = 0;
+
+        $c2 = DB::table('boveda_ingresos')->select('monto')->where('fecha','=',$hoy)->where('key_taquilla','=',$id_taquilla)->get();
+        if ($c2) {
+            foreach ($c2 as $key) {
+                $bs_boveda = $bs_boveda + $key->monto;
+            }
+            
+        }
+
+        $efectivo_taq = ($arqueo->efectivo + $fondo_caja) - $bs_boveda;
+
+
+        return view('arqueo',compact('hoy_view','ventas','arqueo','bs_boveda','efectivo_taq','fondo_caja','id_taquilla'));
     }
 
     /**

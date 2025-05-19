@@ -57,7 +57,7 @@ class ArqueoTaquillaController extends Controller
                 $efectivo_taq = ($arqueo->efectivo + $fondo_caja) - $bs_boveda;
 
 
-                return view('arqueo',compact('hoy_view','ventas','arqueo','bs_boveda','efectivo_taq','fondo_caja'));
+                return view('arqueo',compact('hoy_view','ventas','arqueo','bs_boveda','efectivo_taq','fondo_caja','id_taquilla'));
             }else{
                 //no ha cerrado taquilla
                 return redirect()->action([HomeController::class, 'index']);
@@ -432,6 +432,7 @@ class ArqueoTaquillaController extends Controller
     {
         $hoy = date('Y-m-d');
         $forma = $request->post('forma');
+        $id_taquilla = $request->post('taquilla');
 
         $modal_header = "";
         $tr = "";
@@ -439,14 +440,14 @@ class ArqueoTaquillaController extends Controller
         $length = 6;
 
         $user = auth()->id();
-        $query = DB::table('users')->select('key_sujeto')->where('id','=',$user)->first();
-        $q2 = DB::table('taquillas')->select('id_taquilla')->where('key_funcionario','=',$query->key_sujeto)->first();
+        // $query = DB::table('users')->select('key_sujeto')->where('id','=',$user)->first();
+        // $q2 = DB::table('taquillas')->select('id_taquilla')->where('key_funcionario','=',$query->key_sujeto)->first();
 
-        $id_taquilla = $q2->id_taquilla;
+        // $id_taquilla = $q2->id_taquilla;
 
         $query = DB::table('ventas')->join('contribuyentes', 'ventas.key_contribuyente', '=','contribuyentes.id_contribuyente')
                                     ->select('ventas.id_venta','contribuyentes.identidad_condicion','contribuyentes.identidad_nro','contribuyentes.nombre_razon','contribuyentes.condicion_sujeto')
-                                    ->where('ventas.fecha','=',$hoy)->get();
+                                    ->where('ventas.fecha','=',$hoy)->where('ventas.key_taquilla','=',$id_taquilla)->get();
         foreach ($query as $venta) {
             $c1 = DB::table('tipos')->select('nombre_tipo')->where('id_tipo','=',$venta->condicion_sujeto)->first();
             if ($forma == 3) {
@@ -558,13 +559,15 @@ class ArqueoTaquillaController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function cierre_punto()
+    public function cierre_punto(Request $request)
     {
-        $user = auth()->id();
-        $query = DB::table('users')->select('key_sujeto')->where('id','=',$user)->first();
-        $q2 = DB::table('taquillas')->select('id_taquilla')->where('key_funcionario','=',$query->key_sujeto)->first();
+        $id_taquilla = $request->post('taquilla');
 
-        $id_taquilla = $q2->id_taquilla;
+        $user = auth()->id();
+        // $query = DB::table('users')->select('key_sujeto')->where('id','=',$user)->first();
+        // $q2 = DB::table('taquillas')->select('id_taquilla')->where('key_funcionario','=',$query->key_sujeto)->first();
+
+        // $id_taquilla = $q2->id_taquilla;
         $hoy = date('Y-m-d');
         $tr = '';
 
