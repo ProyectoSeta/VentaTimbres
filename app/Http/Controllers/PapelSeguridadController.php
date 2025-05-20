@@ -155,8 +155,8 @@ class PapelSeguridadController extends Controller
                         </div>
 
                         <div class="d-flex justify-content-center mt-4 mb-3">
-                            <button type="button" class="btn btn-secondary btn-sm me-2" data-bs-dismiss="modal">Cancelar</button>
-                            <button type="submit" class="btn btn-success btn-sm">Emitir</button>
+                            <button type="submit" class="btn btn-success btn-sm me-2">Emitir</button>
+                            <button type="button" class="btn btn-secondary btn-sm" data-bs-dismiss="modal">Cancelar</button>   
                         </div>
                     </form>
                     
@@ -248,8 +248,9 @@ class PapelSeguridadController extends Controller
                             </div>
 
                             <div class="d-flex justify-content-center mb-3">
-                                <a href="'.route("emision_papel").'" class="btn btn-secondary btn-sm me-2">Cancelar</a>
-                                <a href="'.route("papel.pdf_tfes", ["emision" => $id_emision]).'" class="btn btn-dark btn-sm"  style="font-size:12.7px">Imprimir</a>
+                                <a href="'.route("papel.pdf_tfes", ["emision" => $id_emision]).'" class="btn btn-dark btn-sm me-2"  style="font-size:12.7px">Imprimir</a>
+                                <a href="'.route("emision_papel").'" class="btn btn-secondary btn-sm">Cancelar</a>
+                                
                             </div>
                         </div>';
                 return response()->json(['success' => true, 'html' => $html]);
@@ -497,8 +498,9 @@ class PapelSeguridadController extends Controller
                         </div>
 
                         <div class="d-flex justify-content-center mt-3 mb-3">
-                            <button type="button" class="btn btn-secondary btn-sm me-2" data-bs-dismiss="modal">Cancelar</button>
-                            <button type="submit" class="btn btn-success btn-sm">Emitir</button>
+                            <button type="submit" class="btn btn-success btn-sm me-2">Emitir</button>
+                            <button type="button" class="btn btn-secondary btn-sm" data-bs-dismiss="modal">Cancelar</button>
+                            
                         </div>
                     </form>
                     
@@ -585,8 +587,9 @@ class PapelSeguridadController extends Controller
                             </div>
 
                             <div class="d-flex justify-content-center mb-3">
-                                <a href="'.route("emision_papel").'" class="btn btn-secondary btn-sm me-2">Cancelar</a>
-                                <a href="'.route("papel.pdf_estampillas", ["emision" => $id_emision]).'" class="btn btn-dark btn-sm"  style="font-size:12.7px">Imprimir</a>
+                                <a href="'.route("papel.pdf_estampillas", ["emision" => $id_emision]).'" class="btn btn-dark btn-sm me-2"  style="font-size:12.7px">Imprimir</a>
+                                <a href="'.route("emision_papel").'" class="btn btn-secondary btn-sm">Cancelar</a>
+                                
                             </div>
                         </div>';
                 return response()->json(['success' => true, 'html' => $html]);
