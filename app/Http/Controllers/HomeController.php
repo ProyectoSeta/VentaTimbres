@@ -772,7 +772,7 @@ $printer->close();
                                         </table>
                                     </div>
 
-                                    <div class="fw-semibold text-muted fs-5 text-center mb-3">Trimbres TFE-14</div>
+                                    <div class="fw-semibold text-muted fs-5 text-center mb-3">Timbres TFE-14</div>
                                     <table class="table table-sm text-center">
                                         <thead>
                                             <tr>
