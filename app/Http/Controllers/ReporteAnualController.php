@@ -1,7 +1,7 @@
 <?php
 
 namespace App\Http\Controllers;
-
+use DB;
 use Illuminate\Http\Request;
 
 class ReporteAnualController extends Controller
@@ -11,8 +11,34 @@ class ReporteAnualController extends Controller
      */
     public function index()
     {
+        $con1 = DB::table('cierre_diarios')->select('fecha')->first();
+        $con2 = DB::table('cierre_diarios')->select('fecha')->orderBy('id', 'desc')->first();
 
-        return view('reporte_anual');
+        $inicio = date("Y",strtotime($con1->fecha));
+        $fin = date("Y",strtotime($con2->fecha));
+
+        $years = [];
+
+        if ($inicio == $fin) {
+            $years = [$inicio];
+        }else{
+            //////// hay mas años
+            $c = 1;
+            $new_year = '';
+
+            for ($i=$inicio; $i <= $fin; $i++) { 
+                if ($c == 1) {
+                    $new_year = $inicio;
+                    array_push($years,$inicio);
+                }else{
+                    $new_year = $new_year + 1;
+                    array_push($years,$new_year);
+                }
+                $c++;
+            }
+        }
+
+        return view('reporte_anual', compact('years'));
     }
 
     /**

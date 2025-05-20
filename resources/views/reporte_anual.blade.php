@@ -13,6 +13,9 @@
     
     <div class="container rounded-4 p-3 px-0" style="background-color:#ffff;">
         
+    @foreach ($years as $year)
+        {{$year}}
+    @endforeach
         <div class="d-flex justify-content-between align-items-center mb-4">
             <h3 class="mb-3 text-navy titulo fw-bold">Reporte Anual <span class="text-secondary fs-4">| Recaudación </span></h3>
         </div>

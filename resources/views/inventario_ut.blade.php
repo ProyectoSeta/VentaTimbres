@@ -13,7 +13,7 @@
     
     <div class="container rounded-4 p-3" style="background-color:#ffff;">
         <div class="d-flex justify-content-center align-items-center mb-2">
-            <h3 class="mb-3 text-navy titulo fw-bold fs-2">Estampillas | Undidad Tributaria</h3>
+            <h3 class="mb-3 text-navy titulo fw-bold fs-2">Estampillas | Unidad Tributaria</h3>
         </div>
 
         <div class="row my-5">

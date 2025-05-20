@@ -34,48 +34,7 @@ class HomeController extends Controller
     {
         $user = auth()->id();
         $query = DB::table('users')->select('key_sujeto')->where('id','=',$user)->first();
-        $q2 = DB::table('taquillas')->join('sedes', 'taquillas.key_sede', '=','sedes.id_sede')
-                                    ->select('sedes.sede','taquillas.id_taquilla')
-                                    ->where('taquillas.key_funcionario','=',$query->key_sujeto)->first();
-
-        $id_taquilla = $q2->id_taquilla;
-        $sede = $q2->sede;
-        $hoy = date('Y-m-d');
-        $apertura_admin = false;
-        $apertura_taquillero = false;
-        $cierre_taquilla = false;
-        $hora_apertura_admin = '';
-        $hora_apertura_taquillero = '';
-        $hora_cierre_taquilla = '';
-
-        $q3 = DB::table('apertura_taquillas')->select('apertura_admin','apertura_taquillero','cierre_taquilla')
-                                            ->where('key_taquilla','=', $id_taquilla)
-                                            ->whereDate('fecha', $hoy)->first();
-        if ($q3) {
-            //////hay registro, admin aperturo taquilla
-            if ($q3->apertura_taquillero == null) {
-                ///////taquillero no ha aperturado
-                $apertura_admin = true;
-                $apertura_taquillero = false;
-                $hora = date("h:i A",strtotime($q3->apertura_admin));
-                $hora_apertura_admin = $hora;
-
-            }else{
-                //////taquillero aperturo 
-                $apertura_admin = true;
-                $apertura_taquillero = true;
-                $hora_apertura_admin = date("h:i A",strtotime($q3->apertura_admin));
-                $hora_apertura_taquillero = date("h:i A",strtotime($q3->apertura_taquillero));
-            }
-            
-            if ($q3->cierre_taquilla != null) {
-                $cierre_taquilla = true;
-                $hora_cierre_taquilla = date("h:i A",strtotime($q3->cierre_taquilla));
-            }
-        }else{
-            /////no hay registro, admin no ha aperturado taquilla
-            $apertura_admin = false;
-        }
+        $con_fun = DB::table('funcionarios')->select('cargo')->where('id_funcionario','=',$query->key_sujeto)->first();
 
 
         $dias = array("Domingo","Lunes","Martes","Miercoles","Jueves","Viernes","Sábado");
@@ -83,7 +42,62 @@ class HomeController extends Controller
 
         $hoy_view = $dias[date('w')].", ".date('d')." de ".$meses[date('n')-1]. " ".date('Y');
 
-        return view('home', compact('apertura_admin','apertura_taquillero','hora_apertura_admin','hora_apertura_taquillero','cierre_taquilla','hora_cierre_taquilla','hoy_view','sede','id_taquilla'));
+
+        if ($con_fun->cargo == 'Taquillero') {
+            $vista = 'Taquillero';
+
+            $q2 = DB::table('taquillas')->join('sedes', 'taquillas.key_sede', '=','sedes.id_sede')
+                                        ->select('sedes.sede','taquillas.id_taquilla')
+                                        ->where('taquillas.key_funcionario','=',$query->key_sujeto)->first();
+
+            $id_taquilla = $q2->id_taquilla;
+            $sede = $q2->sede;
+            $hoy = date('Y-m-d');
+            $apertura_admin = false;
+            $apertura_taquillero = false;
+            $cierre_taquilla = false;
+            $hora_apertura_admin = '';
+            $hora_apertura_taquillero = '';
+            $hora_cierre_taquilla = '';
+
+            $q3 = DB::table('apertura_taquillas')->select('apertura_admin','apertura_taquillero','cierre_taquilla')
+                                                ->where('key_taquilla','=', $id_taquilla)
+                                                ->whereDate('fecha', $hoy)->first();
+            if ($q3) {
+                //////hay registro, admin aperturo taquilla
+                if ($q3->apertura_taquillero == null) {
+                    ///////taquillero no ha aperturado
+                    $apertura_admin = true;
+                    $apertura_taquillero = false;
+                    $hora = date("h:i A",strtotime($q3->apertura_admin));
+                    $hora_apertura_admin = $hora;
+
+                }else{
+                    //////taquillero aperturo 
+                    $apertura_admin = true;
+                    $apertura_taquillero = true;
+                    $hora_apertura_admin = date("h:i A",strtotime($q3->apertura_admin));
+                    $hora_apertura_taquillero = date("h:i A",strtotime($q3->apertura_taquillero));
+                }
+                
+                if ($q3->cierre_taquilla != null) {
+                    $cierre_taquilla = true;
+                    $hora_cierre_taquilla = date("h:i A",strtotime($q3->cierre_taquilla));
+                }
+            }else{
+                /////no hay registro, admin no ha aperturado taquilla
+                $apertura_admin = false;
+            }
+
+            return view('home', compact('vista','apertura_admin','apertura_taquillero','hora_apertura_admin','hora_apertura_taquillero','cierre_taquilla','hora_cierre_taquilla','hoy_view','sede','id_taquilla'));
+
+        }else{
+            $vista = 'Administrativo';
+
+            return view('home', compact('vista','hoy_view'));
+
+        }
+        
 
 
     }
@@ -217,7 +231,7 @@ class HomeController extends Controller
 
 
                         $update = DB::table('apertura_taquillas')->where('key_taquilla', '=', $id_taquilla)
-                                                                ->where('fecha','=', $hoy)
+                                                                ->whereDate('fecha', $hoy)
                                                                 ->update(['apertura_taquillero' => $hora]);
                         if ($update) {
                             return response()->json(['success' => true]);
@@ -257,7 +271,7 @@ class HomeController extends Controller
                 return response()->json(['success' => true]);
             }else{
                 $update = DB::table('apertura_taquillas')->where('key_taquilla', '=', $id_taquilla)
-                                                    ->where('fecha','=', $hoy)
+                                                    ->whereDate('fecha', $hoy)
                                                     ->update(['fondo_caja' => $fondo]);
                 if ($update) {
                     return response()->json(['success' => true]);
@@ -312,7 +326,7 @@ class HomeController extends Controller
             $hoy = date('Y-m-d');
 
             $q3 = DB::table('efectivo_taquillas_temps')->select('efectivo')->where('key_taquilla','=',$id_taquilla)->first();
-            $q4 = DB::table('apertura_taquillas')->select('fondo_caja')->where('fecha','=',$hoy)->where('key_taquilla','=',$id_taquilla)->first();
+            $q4 = DB::table('apertura_taquillas')->select('fondo_caja')->whereDate('fecha', $hoy)->where('key_taquilla','=',$id_taquilla)->first();
 
             $html = '<div class="modal-header p-2 pt-3 d-flex justify-content-center">
                     <div class="text-center">
@@ -551,7 +565,7 @@ class HomeController extends Controller
                                                                 ]); 
                     if ($insert) {
                         $update = DB::table('apertura_taquillas')->where('key_taquilla', '=', $id_taquilla)
-                                                                    ->where('fecha','=', $hoy)
+                                                                    ->whereDate('fecha', $hoy)
                                                                     ->update(['cierre_taquilla' => $hora]);
                         if ($update) {
                             return response()->json(['success' => true]);
@@ -592,7 +606,7 @@ class HomeController extends Controller
 
         ////VERIFICAR APERTURA DE TAQUILLA
         $hoy = date('Y').''.date('m').''.date('d');
-        $con_apertura = DB::table('apertura_taquillas')->where('key_taquilla','=',$id_taquilla)->where('fecha','=',$hoy)->first();
+        $con_apertura = DB::table('apertura_taquillas')->where('key_taquilla','=',$id_taquilla)->whereDate('fecha', $hoy)->first();
         if ($con_apertura){
             $html = '<div class="modal-header p-2 pt-3 d-flex justify-content-center">
                         <div class="text-center">

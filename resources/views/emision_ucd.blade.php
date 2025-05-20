@@ -197,12 +197,7 @@
     <script>
         const tooltipTriggerList = document.querySelectorAll('[data-bs-toggle="tooltip"]');
         const tooltipList = [...tooltipTriggerList].map(tooltipTriggerEl => new bootstrap.Tooltip(tooltipTriggerEl));
-        // const myModal = document.getElementById('myModal');
-        // const myInput = document.getElementById('myInput');
-
-        // myModal.addEventListener('shown.bs.modal', () => {
-        //     myInput.focus();
-        // });
+        
     </script>
     <script src="{{ asset('jss/jquery-3.5.1.js') }}" ></script>
     <script src="{{ asset('jss/datatable.min.js') }}" defer ></script>

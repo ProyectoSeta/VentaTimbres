@@ -11,74 +11,85 @@
         <div class="d-flex justify-content-between">
             <div class="text-navy fs-3 tituo fw-semibold my-3 ms-4">{{$hoy_view}}</div>
 
-            <div class="text-navy fs-3 titulo fw-semibold my-3 ms-4">{{$sede}} <span class="text-secondary ps-2">TAQ{{$id_taquilla}}</span></div>
+            @if ($vista == 'Taquillero')
+                <div class="text-navy fs-3 titulo fw-semibold my-3 ms-4">{{$sede}} <span class="text-secondary ps-2">TAQ{{$id_taquilla}}</span></div>
+            @endif
+            
         </div>
         
 
         <div class="position-relative overflow-hidden p-3 p-md-5 m-md-3 text-center bg-white container-fluid bg_arqueo" style="background-image: url({{asset('assets/fondo2.png')}});">
             <div class="p-lg-5 mx-auto my-5">
-                <h1 class="display-5 text-navy fw-bold">FORMA 14 | Estampillas</h1>
-                <h3 class="fw-normal text-muted mb-3 titulo">Venta de Timbres Fiscales</h3>
-                @if ($cierre_taquilla == null)
-                    <div class="d-flex gap-3 justify-content-center fw-normal titulo" style="font-size:12.7px">
-                        @if ($apertura_admin == false)
-                            <p class="text-muted titulo fs-5">Disculpe, el usuario Coordinador no ha aperturado esta Taquilla todavia. Ante cualquier duda, 
-                                comuniquese con su Supervisor.</p>
-                        @elseif ($apertura_admin == true && $apertura_taquillero == false)
-                            <button type="button" class="btn btn-s btn-primary py-1" data-bs-toggle="modal" data-bs-target="#modal_apertura_taquilla">Aperturar Taquilla</button>
-                        @elseif ($apertura_taquillero == true)
-                            <button type="button" class="btn btn-s btn-dark py-1" id="btn_historial_boveda" data-bs-toggle="offcanvas" data-bs-target="#historial_boveda" aria-controls="historial_boveda">Historial Bv.</button>
-                            <button type="button" class="btn btn-s btn-dark py-1" id="btn_boveda" data-bs-toggle="modal" data-bs-target="#modal_ingresar_boveda">Bóveda</button>
-                            <a href="{{ route('venta') }}" class="btn btn-s btn-success py-1">Vender (F2)</a>
-                            <button type="button" class="btn btn-s btn-secondary  py-1" data-bs-toggle="modal" data-bs-target="#modal_cerrar_taquilla">Cierre</button>
 
-                            
-                        @endif               
-                    </div>
-                    @if ($apertura_taquillero == true)
-                        <div class="mt-3">
-                            <div class="">
-                                <a href="#" class="" id="btn_falla_impresion">¿Falla en la Impresión?</a>
-                            </div>   
+                @if ($vista == 'Taquillero')
+                    <h1 class="display-5 text-navy fw-bold">FORMA 14 | Estampillas</h1>
+                    <h3 class="fw-normal text-muted mb-3 titulo">Venta de Timbres Fiscales</h3>
+                    @if ($cierre_taquilla == null)
+                        <div class="d-flex gap-3 justify-content-center fw-normal titulo" style="font-size:12.7px">
+                            @if ($apertura_admin == false)
+                                <p class="text-muted titulo fs-5">Disculpe, el usuario Coordinador no ha aperturado esta Taquilla todavia. Ante cualquier duda, 
+                                    comuniquese con su Supervisor.</p>
+                            @elseif ($apertura_admin == true && $apertura_taquillero == false)
+                                <button type="button" class="btn btn-s btn-primary py-1" data-bs-toggle="modal" data-bs-target="#modal_apertura_taquilla">Aperturar Taquilla</button>
+                            @elseif ($apertura_taquillero == true)
+                                <button type="button" class="btn btn-s btn-dark py-1" id="btn_historial_boveda" data-bs-toggle="offcanvas" data-bs-target="#historial_boveda" aria-controls="historial_boveda">Historial Bv.</button>
+                                <button type="button" class="btn btn-s btn-dark py-1" id="btn_boveda" data-bs-toggle="modal" data-bs-target="#modal_ingresar_boveda">Bóveda</button>
+                                <a href="{{ route('venta') }}" class="btn btn-s btn-success py-1">Vender (F2)</a>
+                                <button type="button" class="btn btn-s btn-secondary  py-1" data-bs-toggle="modal" data-bs-target="#modal_cerrar_taquilla">Cierre</button>
 
-                            <div class="mt-2 d-none" id="opctions_falla_impresion">
-                                <button type="button" id="btn_papel_bueno" papel="1" class="btn btn-sm btn-outline-secondary btn_modal_papel me-3" data-bs-toggle="modal" data-bs-target="#modal_clave_taquilla">Papel Bueno</button>
-                                <button type="button" id="btn_papel_danado" papel="0" class="btn btn-sm btn-outline-secondary btn_modal_papel" data-bs-toggle="modal" data-bs-target="#modal_clave_taquilla">Papel Dañado</button>
+                                
+                            @endif               
+                        </div>
+                        @if ($apertura_taquillero == true)
+                            <div class="mt-3">
+                                <div class="">
+                                    <a href="#" class="" id="btn_falla_impresion">¿Falla en la Impresión?</a>
+                                </div>   
+
+                                <div class="mt-2 d-none" id="opctions_falla_impresion">
+                                    <button type="button" id="btn_papel_bueno" papel="1" class="btn btn-sm btn-outline-secondary btn_modal_papel me-3" data-bs-toggle="modal" data-bs-target="#modal_clave_taquilla">Papel Bueno</button>
+                                    <button type="button" id="btn_papel_danado" papel="0" class="btn btn-sm btn-outline-secondary btn_modal_papel" data-bs-toggle="modal" data-bs-target="#modal_clave_taquilla">Papel Dañado</button>
+                                </div>
+                                
                             </div>
-                            
+                        @endif
+                                
+                        
+
+                    @else
+                        <div class="d-flex flex-column">
+                            <h3 class="text-danger titulo fs-3 mb-0 pb-0">Taquilla Cerrada.</h3>
+                            <span class="">Hora de Cierre: {{$hora_cierre_taquilla}}</span>
                         </div>
+                        
+                        <a href="{{ route('arqueo') }}" class="btn btn-s btn-secondary mt-3">Arqueo</a>
                     @endif
-                            
+                    
                     
 
-                @else
-                     <div class="d-flex flex-column">
-                        <h3 class="text-danger titulo fs-3 mb-0 pb-0">Taquilla Cerrada.</h3>
-                        <span class="">Hora de Cierre: {{$hora_cierre_taquilla}}</span>
+                    <div class="my-4">
+                        @if ($apertura_admin == true && $apertura_taquillero == false)
+                            <div class="fw-bold">
+                                <span>Apertura Administrador: <span class="text-muted">{{$hora_apertura_admin}}</span> </span>
+                            </div>       
+                        @elseif ($apertura_taquillero == true)
+                            <div class="fw-bold">
+                                <span>
+                                    APERTURA ADMINISTRADOR: <span class="badge bg-primary-subtle border border-primary-subtle text-primary-emphasis rounded-pill" style="font-size:13px">{{$hora_apertura_admin}}</span>
+                                </span>
+                                <br>
+                                <span>
+                                    APERTURA TAQUILLERO: <span class="badge bg-primary-subtle border border-primary-subtle text-primary-emphasis rounded-pill" style="font-size:13px">{{$hora_apertura_taquillero}}</span>
+                                </span>
+                            </div>
+                        @endif 
                     </div>
-                    
-                    <a href="{{ route('arqueo') }}" class="btn btn-s btn-secondary mt-3">Arqueo</a>
+                @else
+                    <h1 class="display-5 text-navy fw-bold">TRIBUTAR PARA SERVIR</h1>
+                    <h3 class="fw-normal text-muted mb-3 titulo">Sistema de Venta | Timbres Fiscales</h3>
                 @endif
-                   
-                
 
-                <div class="my-4">
-                    @if ($apertura_admin == true && $apertura_taquillero == false)
-                        <div class="fw-bold">
-                            <span>Apertura Administrador: <span class="text-muted">{{$hora_apertura_admin}}</span> </span>
-                        </div>       
-                    @elseif ($apertura_taquillero == true)
-                        <div class="fw-bold">
-                            <span>
-                                APERTURA ADMINISTRADOR: <span class="badge bg-primary-subtle border border-primary-subtle text-primary-emphasis rounded-pill" style="font-size:13px">{{$hora_apertura_admin}}</span>
-                            </span>
-                            <br>
-                            <span>
-                                APERTURA TAQUILLERO: <span class="badge bg-primary-subtle border border-primary-subtle text-primary-emphasis rounded-pill" style="font-size:13px">{{$hora_apertura_taquillero}}</span>
-                            </span>
-                        </div>
-                    @endif 
-                </div>
+                
             </div>
 
             
