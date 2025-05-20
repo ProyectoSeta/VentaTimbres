@@ -7,9 +7,13 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash; 
 
 
-use Mike42\Escpos\PrintConnectors\FilePrintConnector;
-use Mike42\Escpos\PrintConnectors\WindowsPrintConnector;
+// use Mike42\Escpos\PrintConnectors\FilePrintConnector;
+// use Mike42\Escpos\PrintConnectors\WindowsPrintConnector;
+// use Mike42\Escpos\Printer;
+
 use Mike42\Escpos\Printer;
+use Mike42\Escpos\EscposImage;
+use Mike42\Escpos\PrintConnectors\WindowsPrintConnector;
 
 class HomeController extends Controller
 {
@@ -105,8 +109,8 @@ class HomeController extends Controller
     
 
     public function timbre(){
-        // // $impresora = 'USB001';COMPOSER
-        // $nombreImpresora = "4BARCODE4B2054L";
+        // $impresora = 'USB001';COMPOSER
+        $nombreImpresora = "EPSON TM-U220 Receipt";
         // $connector = new WindowsPrintConnector($nombreImpresora);
         // $impresora = new Printer($connector);
         // $impresora->setJustification(Printer::JUSTIFY_CENTER);
@@ -119,6 +123,45 @@ class HomeController extends Controller
         // $impresora->text("https://parzibyte.me");
         // $impresora->feed(5);
         // $impresora->close();
+
+
+        $connector = new WindowsPrintConnector($nombreImpresora);
+$printer = new Printer($connector);
+ 
+/*
+	Imprimimos un mensaje. Podemos usar
+	el salto de lÃ­nea o llamar muchas
+	veces a $printer->text()
+*/
+$printer->text("Hola mundo\nParzibyte.me");
+ 
+/*
+	Hacemos que el papel salga. Es como 
+	dejar muchos saltos de línea sin escribir nada
+*/
+$printer->feed();
+ 
+/*
+	Cortamos el papel. Si nuestra impresora
+	no tiene soporte para ello, no generará
+	ningún error
+*/
+$printer->cut();
+ 
+/*
+	Por medio de la impresora mandamos un pulso.
+	Esto es útil cuando la tenemos conectada
+	por ejemplo a un cajón
+*/
+$printer->pulse();
+ 
+/*
+	Para imprimir realmente, tenemos que "cerrar"
+	la conexión con la impresora. Recuerda incluir esto al final de todos los archivos
+*/
+$printer->close();
+
+
     }
 
 
