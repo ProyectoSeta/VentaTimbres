@@ -85,7 +85,6 @@
                             <th>Desde</th>
                             <th>Hasta</th>
                             <th>Detalle</th>  <!-- fecha entrega, emitidos en ucd, user -->
-                            <th>Asignaciones</th>
                             <th>Estado</th>  
                         </thead>
                         <tbody id="" class="border-light-subtle"> 
@@ -99,13 +98,7 @@
                                     <td>
                                         <a href="#" class="detalle_emision_lote_tfes" lote="{{$q1->id_lote_papel}}" data-bs-toggle="modal" data-bs-target="#modal_detalle_lote_tfes">Ver</a> 
                                     </td>
-                                    <td>
-                                        @if ($q1->estado == 18)
-                                            <span class="fst-italic text-secondary">No Aplica</span>
-                                        @else
-                                            
-                                        @endif
-                                    </td>
+                                    
                                     <td>
                                         @if ($q1->estado == 18)
                                             <!-- EN PROCESO -->
@@ -137,7 +130,6 @@
                             <th>Desde</th>
                             <th>Hasta</th>
                             <th>Detalle</th>  <!-- fecha entrega, emitidos en ucd, user -->
-                            <th>Emisiones UCD</th> 
                             <th>Estado</th> 
                         </thead>
                         <tbody id="" class="border-light-subtle"> 
@@ -151,13 +143,7 @@
                                     <td>
                                         <a href="#" class="detalle_emision_lote_estampillas" lote="{{$q2->id_lote_papel}}" data-bs-toggle="modal" data-bs-target="#modal_detalle_lote_estampillas">Ver</a> 
                                     </td>
-                                    <td>
-                                        @if ($q2->estado == 18)
-                                            <span class="fst-italic text-secondary">No Aplica</span>
-                                        @else
-                                            
-                                        @endif
-                                    </td>
+                                    
                                     <td>
                                         @if ($q2->estado == 18)
                                             <!-- EN PROCESO -->

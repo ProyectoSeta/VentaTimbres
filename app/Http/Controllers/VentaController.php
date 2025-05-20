@@ -1431,7 +1431,7 @@ class VentaController extends Controller
         
         // VERIFICAR LA APERTURA DE LA TAQUILLA
         $hoy = date('Y').''.date('m').''.date('d');
-        $con_apertura = DB::table('apertura_taquillas')->where('key_taquilla','=',$id_taquilla)->where('fecha','=',$hoy)->first();
+        $con_apertura = DB::table('apertura_taquillas')->where('key_taquilla','=',$id_taquilla)->whereDate('fecha', $hoy)->first();
         if ($con_apertura) {
             ///// ADMIN aperturo taquilla
             if ($con_apertura->apertura_taquillero != null) {

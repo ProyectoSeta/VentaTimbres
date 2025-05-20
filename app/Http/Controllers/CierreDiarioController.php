@@ -7,6 +7,10 @@ use Barryvdh\DomPDF\Facade\Pdf;
 
 class CierreDiarioController extends Controller
 {
+    public function __construct()
+    {
+        $this->middleware('auth');
+    }
     /**
      * Display a listing of the resource.
      */
@@ -24,7 +28,7 @@ class CierreDiarioController extends Controller
         $ventas = [];
         $con_ventas = DB::table('ventas')->join('contribuyentes', 'ventas.key_contribuyente', '=','contribuyentes.id_contribuyente')
                                 ->select('ventas.*','contribuyentes.identidad_condicion','contribuyentes.identidad_nro')
-                                ->where('ventas.fecha','=',$hoy)
+                                ->whereDate('ventas.fecha', $hoy)
                                 ->get();
         foreach ($con_ventas as $key) {
             $con = DB::table('taquillas')->join('sedes', 'taquillas.key_sede', '=','sedes.id_sede')
@@ -55,7 +59,7 @@ class CierreDiarioController extends Controller
 
         
         // DETALLE ARQUEO
-        $arqueo = DB::table('cierre_diarios')->where('fecha','=',$hoy)->first();
+        $arqueo = DB::table('cierre_diarios')->whereDate('fecha', $hoy)->first();
 
     
 

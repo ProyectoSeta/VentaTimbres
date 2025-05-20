@@ -22,7 +22,7 @@ class CierreController extends Controller
 
         $hoy = date('Y-m-d');
         $aperturas = [];
-        $query = DB::table('apertura_taquillas')->where('fecha','=', $hoy)->get();
+        $query = DB::table('apertura_taquillas')->whereDate('fecha', $hoy)->get();
 
         foreach ($query as $q1) {
             $q2 = DB::table('taquillas')->where('id_taquilla','=', $q1->key_taquilla)->first();
@@ -81,7 +81,7 @@ class CierreController extends Controller
     {
         $hoy = date('Y-m-d');
         $taquillas = [];
-        $query = DB::table('apertura_taquillas')->select('key_taquilla','cierre_taquilla')->where('fecha','=', $hoy)->get(); //return response($query);
+        $query = DB::table('apertura_taquillas')->select('key_taquilla','cierre_taquilla')->whereDate('fecha', $hoy)->get(); //return response($query);
         if (!empty($query)) {
             foreach ($query as $key) {
                 if ($key->cierre_taquilla == NULL) {
@@ -119,7 +119,7 @@ class CierreController extends Controller
 
             $q1 = DB::table('ventas')->select('id_venta','total_bolivares','key_ucd')
                                     ->where('key_taquilla','=',$id_taquilla)
-                                    ->where('fecha','=',$hoy)->get();
+                                    ->whereDate('fecha', $hoy)->get();
             if ($q1) {
                 foreach ($q1 as $key) {
                     $recaudado = $recaudado + $key->total_bolivares;
@@ -199,7 +199,7 @@ class CierreController extends Controller
         $id_taquilla = $request->id;
         $hoy = date('Y-m-d');
 
-        $c1 = DB::table('apertura_taquillas')->select('cierre_taquilla','fondo_caja')->where('fecha','=',$hoy)->where('key_taquilla','=',$id_taquilla)->first();
+        $c1 = DB::table('apertura_taquillas')->select('cierre_taquilla','fondo_caja')->whereDate('fecha', $hoy)->where('key_taquilla','=',$id_taquilla)->first();
         $dias = array("Domingo","Lunes","Martes","Miercoles","Jueves","Viernes","Sábado");
         $meses = array("Enero","Febrero","Marzo","Abril","Mayo","Junio","Julio","Agosto","Septiembre","Octubre","Noviembre","Diciembre"); 
         $hoy_view = $dias[date('w')].", ".date('d')." de ".$meses[date('n')-1]. " ".date('Y');
@@ -208,17 +208,17 @@ class CierreController extends Controller
         $ventas = DB::table('ventas')->join('contribuyentes', 'ventas.key_contribuyente', '=','contribuyentes.id_contribuyente')
                                 ->select('ventas.*','contribuyentes.identidad_condicion','contribuyentes.identidad_nro')
                                 ->where('ventas.key_taquilla','=',$id_taquilla)
-                                ->where('ventas.fecha','=',$hoy)
+                                ->whereDate('ventas.fecha', $hoy)
                                 ->get();
         
         // DETALLE ARQUEO
-        $arqueo = DB::table('cierre_taquillas')->where('fecha','=',$hoy)->where('key_taquilla','=',$id_taquilla)->first();
+        $arqueo = DB::table('cierre_taquillas')->whereDate('fecha', $hoy)->where('key_taquilla','=',$id_taquilla)->first();
 
         // DETALLE_EFECTIVO
         $fondo_caja = $c1->fondo_caja;
         $bs_boveda = 0;
 
-        $c2 = DB::table('boveda_ingresos')->select('monto')->where('fecha','=',$hoy)->where('key_taquilla','=',$id_taquilla)->get();
+        $c2 = DB::table('boveda_ingresos')->select('monto')->whereDate('fecha', $hoy)->where('key_taquilla','=',$id_taquilla)->get();
         if ($c2) {
             foreach ($c2 as $key) {
                 $bs_boveda = $bs_boveda + $key->monto;

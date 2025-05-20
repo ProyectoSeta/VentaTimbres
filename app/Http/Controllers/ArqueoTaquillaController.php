@@ -24,7 +24,7 @@ class ArqueoTaquillaController extends Controller
 
         $id_taquilla = $q2->id_taquilla;
 
-        $c1 = DB::table('apertura_taquillas')->select('cierre_taquilla','fondo_caja')->where('fecha','=',$hoy)->where('key_taquilla','=',$id_taquilla)->first();
+        $c1 = DB::table('apertura_taquillas')->select('cierre_taquilla','fondo_caja')->whereDate('fecha', $hoy)->where('key_taquilla','=',$id_taquilla)->first();
         if ($c1) {
             if ($c1->cierre_taquilla != NULL) {
                 // FECHA HOY (FORMATO)
@@ -36,17 +36,17 @@ class ArqueoTaquillaController extends Controller
                 $ventas = DB::table('ventas')->join('contribuyentes', 'ventas.key_contribuyente', '=','contribuyentes.id_contribuyente')
                                         ->select('ventas.*','contribuyentes.identidad_condicion','contribuyentes.identidad_nro')
                                         ->where('ventas.key_taquilla','=',$id_taquilla)
-                                        ->where('ventas.fecha','=',$hoy)
+                                        ->whereDate('ventas.fecha', $hoy)
                                         ->get();
                 
                 // DETALLE ARQUEO
-                $arqueo = DB::table('cierre_taquillas')->where('fecha','=',$hoy)->where('key_taquilla','=',$id_taquilla)->first();
+                $arqueo = DB::table('cierre_taquillas')->whereDate('fecha', $hoy)->where('key_taquilla','=',$id_taquilla)->first();
 
                 // DETALLE_EFECTIVO
                 $fondo_caja = $c1->fondo_caja;
                 $bs_boveda = 0;
 
-                $c2 = DB::table('boveda_ingresos')->select('monto')->where('fecha','=',$hoy)->where('key_taquilla','=',$id_taquilla)->get();
+                $c2 = DB::table('boveda_ingresos')->select('monto')->whereDate('fecha', $hoy)->where('key_taquilla','=',$id_taquilla)->get();
                 if ($c2) {
                     foreach ($c2 as $key) {
                         $bs_boveda = $bs_boveda + $key->monto;
@@ -447,7 +447,7 @@ class ArqueoTaquillaController extends Controller
 
         $query = DB::table('ventas')->join('contribuyentes', 'ventas.key_contribuyente', '=','contribuyentes.id_contribuyente')
                                     ->select('ventas.id_venta','contribuyentes.identidad_condicion','contribuyentes.identidad_nro','contribuyentes.nombre_razon','contribuyentes.condicion_sujeto')
-                                    ->where('ventas.fecha','=',$hoy)->where('ventas.key_taquilla','=',$id_taquilla)->get();
+                                    ->whereDate('ventas.fecha', $hoy)->where('ventas.key_taquilla','=',$id_taquilla)->get();
         foreach ($query as $venta) {
             $c1 = DB::table('tipos')->select('nombre_tipo')->where('id_tipo','=',$venta->condicion_sujeto)->first();
             if ($forma == 3) {
@@ -571,7 +571,7 @@ class ArqueoTaquillaController extends Controller
         $hoy = date('Y-m-d');
         $tr = '';
 
-        $q1 = DB::table('ventas')->select('id_venta','hora')->where('key_taquilla','=',$id_taquilla)->where('fecha','=',$hoy)->get();
+        $q1 = DB::table('ventas')->select('id_venta','hora')->where('key_taquilla','=',$id_taquilla)->whereDate('fecha', $hoy)->get();
         foreach ($q1 as $value) {
             $con = DB::table('pago_ventas')->where('key_venta','=',$value->id_venta)->where('metodo','=',5)->get();
             foreach ($con as $key) {

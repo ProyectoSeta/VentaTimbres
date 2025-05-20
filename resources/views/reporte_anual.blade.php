@@ -13,9 +13,7 @@
     
     <div class="container rounded-4 p-3 px-0" style="background-color:#ffff;">
         
-    @foreach ($years as $year)
-        {{$year}}
-    @endforeach
+    
         <div class="d-flex justify-content-between align-items-center mb-4">
             <h3 class="mb-3 text-navy titulo fw-bold">Reporte Anual <span class="text-secondary fs-4">| Recaudación </span></h3>
         </div>
@@ -28,42 +26,21 @@
                             <th scope="col">#</th>
                             <th scope="col">Año</th>
                             <th scope="col">Imprimir Reporte</th>
-                            <th scope="col">Trimestres</th>
                         </tr>
                 </thead>
                 <tbody>
-                    <tr>
-                        <th>1</th>
-                        <th>2025</th>
-                        <th>
-                            <div class="">
-                                <a href="{{ route('pdf_reporte', ['year' =>2025] ) }}" class="badge bg-dark" style="" role="button">
-                                    <i class='bx bx-printer fs-6'></i>
+                    @foreach ($years as $year)
+                        <tr>
+                            <td>#</td>
+                            <td class="text-navy fw-bold fs-6">{{$year}}</td>
+                            <td>
+                                <a href="{{ route('reporte_anual.pdf_reporte', ['year' =>$year]) }}" class="btn btn-primary btn-sm px-3 rounded-4" >
+                                    <span>Imprimir Reporte</span>
                                 </a>
-                            </div>
-                        </th>
-                        <th>
-                            <a href="{{ route('trimestres', ['year' =>2025]) }}" class="btn btn-primary btn-sm px-3 rounded-4" >
-                                <span>Ver</span>
-                            </a>
-                        </th>
-                    </tr>
-                    <tr>
-                        <th>2</th>
-                        <th>2024</th>
-                        <th>
-                            <div class="">
-                                <a href="{{ route('pdf_reporte', ['year' =>2024] ) }}" class="badge bg-dark" style="" role="button">
-                                    <i class='bx bx-printer fs-6'></i>
-                                </a>
-                            </div>
-                        </th>
-                        <th>
-                            <a href="{{ route('trimestres', ['year' =>2024]) }}" class="btn btn-primary btn-sm px-3 rounded-4" >
-                                <span>Ver</span>
-                            </a>
-                        </th>
-                    </tr>
+                            </td>
+                        </tr>
+                    @endforeach
+
                 </tbody>
             </table>
         </div>

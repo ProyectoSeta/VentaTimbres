@@ -3,9 +3,14 @@
 namespace App\Http\Controllers;
 use DB;
 use Illuminate\Http\Request;
+use Barryvdh\DomPDF\Facade\Pdf;
 
 class ReporteAnualController extends Controller
 {
+    public function __construct()
+    {
+        $this->middleware('auth');
+    }
     /**
      * Display a listing of the resource.
      */
@@ -47,13 +52,76 @@ class ReporteAnualController extends Controller
     public function pdf_reporte(Request $request)
     {
         $year = $request->year;
-        if ($year == '2024') {
-            $pdf = \PDF::loadView('pdf/reporte_2024');
-            return $pdf->download('REPORTE_2024.pdf');
-        }else{
-            $pdf = \PDF::loadView('pdf/reporte_2025');
-            return $pdf->download('REPORTE_2025.pdf');
+        $meses = [
+                1 => "Enero",
+                2 => "Febrero",
+                3 => "Marzo",
+                4 => "Abril",
+                5 => "Mayo",
+                6 => "Junio",
+                7 => "Julio",
+                8 => "Agosto",
+                9 => "Septiembre",
+                10 => "Octubre",
+                11 => "Noviembre",
+                12 => "Diciembre"
+            ];
+
+        $recaudacion_total = 0;
+        $recaudacion_total_tfe = 0;
+        $recaudacion_total_est = 0;
+
+        $content_meses = [];
+
+
+        foreach ($meses as $numero => $nombre) {
+            $recaudado_mes = 0;
+            $recaudado_tfe = 0;
+            $recaudado_est = 0;
+            $recaudado_punto = 0;
+            $recaudado_efectivo = 0;
+
+            $actividad = true;
+
+            $c2 = DB::table('cierre_diarios')->whereMonth('fecha', $numero)->whereYear('fecha', $year)->get();
+            if ($c2) {
+                foreach ($c2 as $key) {
+                    $recaudado_mes = $recaudado_mes + $key->recaudado;
+                    $recaudado_tfe = $recaudado_tfe + $key->recaudado_tfe;
+                    $recaudado_est = $recaudado_est + $key->recaudado_est;
+                    $recaudado_punto = $recaudado_punto + $key->punto;
+                    $recaudado_efectivo = $recaudado_efectivo + $key->efectivo;
+                }
+            }else{
+                /// sin actividad
+                $actividad = false;
+            }
+
+
+            $array = array(
+                        'mes' => $nombre,
+                        'recaudado_tfe' => $recaudado_tfe,
+                        'recaudado_est' => $recaudado_est,
+                        'recaudado_punto' => $recaudado_punto,
+                        'recaudado_efectivo' => $recaudado_efectivo,
+                        'recaudado_mes' => $recaudado_mes,
+                        'actividad' => $actividad
+                    );
+                
+            $a = (object) $array;
+            array_push($content_meses,$a);
+
+
+            $recaudacion_total = $recaudacion_total + $recaudado_mes;
+            $recaudacion_total_tfe = $recaudacion_total_tfe + $recaudado_tfe;
+            $recaudacion_total_est = $recaudacion_total_est + $recaudado_est;
         }
+
+        
+
+        $pdf = PDF::loadView('pdf/reporte_anual', compact('content_meses','recaudacion_total','recaudacion_total_tfe','recaudacion_total_est','year'));
+
+        return $pdf->download('Reporte Anual '.$year.'.pdf');
     }
 
     /**

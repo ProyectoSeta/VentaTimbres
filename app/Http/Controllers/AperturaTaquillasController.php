@@ -170,7 +170,7 @@ class AperturaTaquillasController extends Controller
     {
         $fecha = $request->post('fecha');
         $tr = '';
-        $query = DB::table('apertura_taquillas')->where('fecha','=', $fecha)->get();
+        $query = DB::table('apertura_taquillas')->whereDate('fecha', $fecha)->get();
 
         foreach ($query as $q1) {
             $q2 = DB::table('taquillas')->where('id_taquilla','=', $q1->key_taquilla)->first();
@@ -186,6 +186,13 @@ class AperturaTaquillasController extends Controller
                 $apertura_taquillero = '<span class="badge bg-danger-subtle border border-danger-subtle text-danger-emphasis rounded-pill" style="font-size:12.7px">Taquillero no aperturo</span>';
             }
 
+            $cierre_taquillero = '';
+            if ($q1->cierre_taquilla != null) {
+                $cierre_taquillero = date("h:i A",strtotime($q1->cierre_taquilla));
+            }else{
+                $cierre_taquillero = '<span class="badge bg-danger-subtle border border-danger-subtle text-danger-emphasis rounded-pill" style="font-size:12.7px">Taquillero no aperturo</span>';
+            }
+
 
             $tr .= '<tr>
                         <td>
@@ -196,7 +203,7 @@ class AperturaTaquillasController extends Controller
                         <td>'.$q4->nombre.'</td>
                         <td><span class="badge bg-primary-subtle border border-primary-subtle text-primary-emphasis rounded-pill" style="font-size:12.7px">'.$hora_apertura.'</span></td>
                         <td>'.$apertura_taquillero.'</td>
-                        <td></td>
+                        <td>'.$cierre_taquillero.'</td>
                     </tr>';
         }
 

@@ -277,7 +277,7 @@ Route::get('/pdf_cierre_diario/{id?}/', [App\Http\Controllers\CierreDiarioContro
 
 ///////////////////// REPORTE ANUAL
 Route::get('/reporte_anual', [App\Http\Controllers\ReporteAnualController::class, 'index'])->name('reporte_anual');
-Route::get('/pdf_reporte/{year?}/', [App\Http\Controllers\ReporteAnualController::class, 'pdf_reporte'])->name('pdf_reporte');
+Route::get('/reporte_anual/pdf_reporte/{year?}/', [App\Http\Controllers\ReporteAnualController::class, 'pdf_reporte'])->name('reporte_anual.pdf_reporte');
 
 //////////////////// REPORTE TRIMESTRAL
 Route::get('/trimestres/{year?}/', [App\Http\Controllers\ReporteTrimestralController::class, 'index'])->name('trimestres');

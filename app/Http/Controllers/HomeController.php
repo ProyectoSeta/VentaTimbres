@@ -419,7 +419,7 @@ class HomeController extends Controller
         if ($q2) {
             $id_taquilla = $q2->id_taquilla;
             $q3 = DB::table('boveda_ingresos')->select('hora','monto')->where('key_taquilla','=',$id_taquilla)
-                                                                    ->where('fecha','=',$hoy)->get();
+                                                                    ->whereDate('fecha', $hoy)->get();
             $c = 0;
             $count = count($q3);
             if ($count != 0){
@@ -502,7 +502,7 @@ class HomeController extends Controller
 
                     $q1 = DB::table('ventas')->select('id_venta','total_bolivares','key_ucd')
                                             ->where('key_taquilla','=',$id_taquilla)
-                                            ->where('fecha','=',$hoy)->get();
+                                            ->whereDate('fecha', $hoy)->get();
                     if ($q1) {
                         foreach ($q1 as $key) {
                             $recaudado = $recaudado + $key->total_bolivares;
@@ -567,6 +567,10 @@ class HomeController extends Controller
                         $update = DB::table('apertura_taquillas')->where('key_taquilla', '=', $id_taquilla)
                                                                     ->whereDate('fecha', $hoy)
                                                                     ->update(['cierre_taquilla' => $hora]);
+                        $con_temp = DB::table('efectivo_taquillas_temps')->select('efectivo')->where('key_taquilla','=',$id_taquilla)->first();
+                        if ($con_temp->efectivo != 0) {
+                            $update_temp = DB::table('efectivo_taquillas_temps')->where('key_taquilla','=',$id_taquilla)->update(['efectivo' => '0']);
+                        }
                         if ($update) {
                             return response()->json(['success' => true]);
                         }else{
