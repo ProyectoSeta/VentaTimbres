@@ -486,13 +486,16 @@ class ArqueoTaquillaController extends Controller
                 ////ESTAMPILLAS
                 $q1 = DB::table('detalle_venta_estampillas')->select('key_denominacion','nro_timbre','serial')->where('key_venta','=',$venta->id_venta)->get();
                 foreach ($q1 as $key) {
-                    $c2 = DB::table('ucd_denominacions')->select('denominacion')->where('id','=',$key->key_denominacion)->first();
+                    $c2 = DB::table('ucd_denominacions')->join('tipos', 'ucd_denominacions.alicuota', '=','tipos.id_tipo')
+                    ->select('ucd_denominacions.denominacion','tipos.nombre_tipo')
+                    ->where('ucd_denominacions.id','=',$key->key_denominacion)->first();
+
                     $formato_nro = substr(str_repeat(0, $length).$key->nro_timbre, - $length);
                     $tr .=   '<tr>
                                 <td><span class="text-danger fw-bold fs-6">'.$formato_nro.'</span></td>
                                 <td><span class="text-navy fw-semibold fw-6">'.$key->serial.'</span></td>
                                 <td class="text-muted">'.$venta->id_venta.'</td>
-                                <td class="">'.$c2->denominacion.' UCD</td>
+                                <td class="">'.$c2->denominacion.' '.$c2->nombre_tipo.'</td>
                                 <td>
                                     '.$venta->nombre_razon.'<span class="badge bg-secondary-subtle text-secondary-emphasis ms-2">'.$c1->nombre_tipo.'</span><br>
                                     <span class="text-muted">'.$venta->identidad_condicion.'-'.$venta->identidad_nro.'</span>
