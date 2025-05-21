@@ -8,7 +8,7 @@
 
 
     <main>
-        <div class="my-4">
+        <div class="my-4 pt-5">
            <h1 class="display-6 text-navy text-center fw-bold">Consultar Timbre Fiscal</h1> 
         </div>
         <div class="d-flex flex-column align-items-center justify-content-center">
@@ -57,6 +57,7 @@
 
         <div class="position-relative overflow-hidden p-3 p-md-5 m-md-3 bg-white container-fluid bg_arqueo" style="background-image: url({{asset('assets/fondo2.png')}});">
             <div class="p-lg-5 mx-auto" id="content_info_search">
+                
                 
                 
 

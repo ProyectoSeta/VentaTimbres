@@ -13,10 +13,10 @@ return new class extends Migration
     {
         Schema::create('bitacoras', function (Blueprint $table) {
             $table->increments('correlativo');
-            $table->integer('id_user')->unsigned();
-            $table->foreign('id_user')->references('id')->on('users')->onDelete('cascade');
-            $table->integer('modulo')->unsigned();
-            $table->foreign('modulo')->references('id_clasificacion')->on('clasificacions')->onDelete('cascade');
+            $table->integer('key_user')->unsigned();
+            $table->foreign('key_user')->references('id')->on('users')->onDelete('cascade');
+            $table->integer('key_modulo')->unsigned();
+            $table->foreign('key_modulo')->references('id_modulo')->on('modulos')->onDelete('cascade');
             $table->date('fecha');
             $table->string('accion');
 

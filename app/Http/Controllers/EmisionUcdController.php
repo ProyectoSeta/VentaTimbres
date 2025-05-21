@@ -342,13 +342,43 @@ class EmisionUcdController extends Controller
     public function pdf_emision(Request $request)
     {
         $asignacion = $request->asignacion;
+        $estampillas = [];
+        $length = 6;
+
+        $c_forma = DB::table('formas')->select('identificador')->where('forma','=','Estampillas')->first();
+        $identificador_forma = $c_forma->identificador;
 
         $query =  DB::table('inventario_estampillas')->join('ucd_denominacions', 'inventario_estampillas.key_denominacion', '=','ucd_denominacions.id')
                                                     ->select('inventario_estampillas.*','ucd_denominacions.denominacion','ucd_denominacions.identificador')
                                                     ->where('inventario_estampillas.key_asignacion_ucd', '=', $asignacion)->get();
 
+        foreach ($query as $key) {
+            $denominacion = $key->denominacion;
+            $identificador_deno = $key->identificador;
 
-        $pdf = PDF::setPaper([0,0,283.5,141.7])->loadView('pdfAsignacionUcdEstampillas', compact('query'));
+            $c2 = DB::table('ucd_denominacions')->join('tipos', 'ucd_denominacions.alicuota', '=','tipos.id_tipo')
+                    ->select('tipos.nombre_tipo')
+                    ->where('ucd_denominacions.id','=',$key->key_denominacion)->first();
+
+            for ($i=$key->desde; $i <= $key->hasta; $i++) { 
+                $formato_nro = substr(str_repeat(0, $length).$i, - $length);
+
+                $serial = $identificador_deno.''.$identificador_forma.''.$formato_nro;
+                $ruta = '../public/assets/qrEstampillas/qrcode_EST'.$i.'.png';
+                $deno = $denominacion.' '.$c2->nombre_tipo;
+
+                $array = array(
+                        'serial' => $serial,
+                        'ruta' => $ruta,
+                        'denominacion' => $deno
+                    );
+            $a = (object) $array;
+            array_push($estampillas,$a);
+            }
+        }
+        
+
+        $pdf = PDF::setPaper([0,0,283.5,141.7])->loadView('pdfAsignacionUcdEstampillas', compact('estampillas'));
 
         return $pdf->download('ESTAMPILLAS_UCD_A'.$asignacion.'.pdf');
 
