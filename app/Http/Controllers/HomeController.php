@@ -7,7 +7,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash; 
 
 
-// use Mike42\Escpos\PrintConnectors\FilePrintConnector;
+use Mike42\Escpos\PrintConnectors\FilePrintConnector;
 // use Mike42\Escpos\PrintConnectors\WindowsPrintConnector;
 // use Mike42\Escpos\Printer;
 
@@ -109,8 +109,27 @@ class HomeController extends Controller
     
 
     public function timbre(){
+
+        // try {
+        // // Enter the share name for your USB printer here
+
+
+        // $connector = null;
+        //     $connector = new WindowsPrintConnector("EPSON_TM_U220_Receipt");
+        //     /* Print a "Hello world" receipt" */
+        //     $printer = new Printer($connector);
+        //     $printer -> text("Hello World\n");
+        //     $printer -> cut();
+
+        //     /* Close printer */
+        //     $printer -> close();
+        // } catch (Exception $e) {
+        //     echo "Couldn't print to this printer: " . $e -> getMessage() . "\n";
+        // }
+
+
         // $impresora = 'USB001';COMPOSER
-        $nombreImpresora = "EPSON TM-U220 Receipt";
+        // $nombreImpresora = "EPSON TM-U220 Receipt";
         // $connector = new WindowsPrintConnector($nombreImpresora);
         // $impresora = new Printer($connector);
         // $impresora->setJustification(Printer::JUSTIFY_CENTER);
@@ -125,41 +144,17 @@ class HomeController extends Controller
         // $impresora->close();
 
 
-        $connector = new WindowsPrintConnector($nombreImpresora);
-$printer = new Printer($connector);
- 
-/*
-	Imprimimos un mensaje. Podemos usar
-	el salto de lÃ­nea o llamar muchas
-	veces a $printer->text()
-*/
-$printer->text("Hola mundo\nParzibyte.me");
- 
-/*
-	Hacemos que el papel salga. Es como 
-	dejar muchos saltos de línea sin escribir nada
-*/
-$printer->feed();
- 
-/*
-	Cortamos el papel. Si nuestra impresora
-	no tiene soporte para ello, no generará
-	ningún error
-*/
-$printer->cut();
- 
-/*
-	Por medio de la impresora mandamos un pulso.
-	Esto es útil cuando la tenemos conectada
-	por ejemplo a un cajón
-*/
-$printer->pulse();
- 
-/*
-	Para imprimir realmente, tenemos que "cerrar"
-	la conexión con la impresora. Recuerda incluir esto al final de todos los archivos
-*/
-$printer->close();
+        if (($handle = @fopen("COM2","w")) === FALSE) {
+            die('No se puede imprimir, verifique la conexion con el terminal');
+        }
+-
+        fwrite($handle,chr(27). chr(64)); /// reinicio?
+        fwrite($handle,chr(27). chr(100). chr(0));
+        fwrite($handle,chr(27). chr(33). chr(8));
+        fwrite($handle,"HOLA MUNDO");
+        fclose($handle);
+        $salida = shell_exec('lpr COM2');
+
 
 
     }

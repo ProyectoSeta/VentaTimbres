@@ -36,7 +36,7 @@ class ConsultaTimbresController extends Controller
 
         $length = 6;
 
-        $con1 = DB::table('detalle_venta_tfes')->select('key_venta','nro_timbre','key_denominacion','key_inventario_tfe','serial','qr')->where('serial','=',$timbre)->first();
+        $con1 = DB::table('detalle_venta_tfes')->select('key_venta','nro_timbre','key_denominacion','key_inventario_tfe','serial','qr','condicion','sustituto')->where('serial','=',$timbre)->first();
         if ($con1) {
             $con2 = DB::table('detalle_ventas')->join('tramites', 'detalle_ventas.key_tramite', '=','tramites.id_tramite')
                                     ->select('detalle_ventas.ucd','detalle_ventas.bs','tramites.tramite')
@@ -55,6 +55,24 @@ class ConsultaTimbresController extends Controller
                     $monto = $con2->ucd.' '.$query->nombre_tipo.'';
                 }
 
+                //////CONDICION
+                if ($con1->condicion == 29) {
+                    /// ANULADO
+                    $formato_sustituto = substr(str_repeat(0, $length).$con1->sustituto, - $length);
+                    $div_condicion = '<div class="d-flex flex-column my-2">
+                                        <span>Observación</span>
+                                        <span class="w-75 badge fs-6 text-bg-danger">TIMBRE ANULADO</span>
+                                        <span class="text-muted">Sustituido por: <span class="fw-bold">A-'.$formato_sustituto.'</span></span>
+                                    </div>';
+                }elseif ($con1->condicion == 30) {
+                    /// RE IMPRESO
+                    $div_condicion = '<div class="d-flex flex-column my-2">
+                                        <span>Observación</span>
+                                        <span class="badge ms-2 fs-6 text-bg-secondary">TIMBRE REIMPRESO</span>
+                                    </div>';
+                }
+
+
                 ///ID LOTE PAPEL
                 $con4 = DB::table('inventario_tfes')->select('key_lote_papel')->where('correlativo','=',$con1->key_inventario_tfe)->first();
 
@@ -65,8 +83,9 @@ class ConsultaTimbresController extends Controller
                         <div class="col-lg-3">
                             <div class="d-flex flex-column my-2">
                                 <span>No Timbre (Correlativo de Papel)</span>
-                                <span class="text-danger fs-5 fw-bold titulo">A-'.$formato_nro.'</span>
+                                <span class="text-danger fs-5 fw-bold titulo">A-'.$formato_nro.' </span>
                             </div>
+                            '.$div_condicion.'
                             <div class="d-flex flex-column my-2">
                                 <span>Serial</span>
                                 <span class="fw-semibold fs-5">'.$con1->serial.'</span>
