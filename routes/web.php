@@ -222,6 +222,10 @@ Route::post('/timbres_asignados/modal_estampillas', [App\Http\Controllers\Asigna
 Route::post('/timbres_asignados/recibido_estampillas', [App\Http\Controllers\AsignadoTaquillasController::class, 'recibido_estampillas'])->name('timbres_asignados.recibido_estampillas');
 
 
+///////////////////// HISTORIAL ASIGNACIONES
+Route::get('/historial_asignaciones', [App\Http\Controllers\HistorialAsignacionesController::class, 'index'])->name('historial_asignaciones');
+
+
 
 ///////////////////// TAQUILLAS - INVENTARIO
 Route::get('/inventario_taquillas', [App\Http\Controllers\InventarioTaquillasController::class, 'index'])->name('inventario_taquillas');
@@ -270,13 +274,14 @@ Route::post('/cierre/registro_cierre', [App\Http\Controllers\CierreController::c
 Route::get('/cierre/arqueo/{id?}/', [App\Http\Controllers\CierreController::class, 'arqueo'])->name('cierre.arqueo');
 
 ///////CIERRE DIARIO
-Route::get('/cierre_diario', [App\Http\Controllers\CierreDiarioController::class, 'index'])->name('cierre_diario');
+Route::get('/cierre_diario/{fecha?}/', [App\Http\Controllers\CierreDiarioController::class, 'index'])->name('cierre_diario');
 Route::get('/pdf_cierre_diario/{id?}/', [App\Http\Controllers\CierreDiarioController::class, 'pdf_cierre_diario'])->name('pdf_cierre_diario');
 
 
 
 ///////HISTORIAL CIERRES
 Route::get('/historial_cierre', [App\Http\Controllers\HistorialCierresController::class, 'index'])->name('historial_cierre');
+Route::post('/historial_cierre/search', [App\Http\Controllers\HistorialCierresController::class, 'search'])->name('historial_cierre.search');
 
 
 
@@ -308,5 +313,8 @@ Route::post('/consulta/search_tfe', [App\Http\Controllers\ConsultaTimbresControl
 Route::post('/consulta/search_est', [App\Http\Controllers\ConsultaTimbresController::class, 'search_est'])->name('consulta.search_est');
 
 
-// Route::post('/sede_taquilla/taquilleros', [App\Http\Controllers\SedeTaquillaController::class, 'taquilleros'])->name('sede_taquilla.taquilleros');
+
+
+///////////BITACORA
+Route::get('/bitacora', [App\Http\Controllers\BitacoraController::class, 'index'])->name('bitacora');
 

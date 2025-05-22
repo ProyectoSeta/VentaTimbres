@@ -340,7 +340,6 @@ return [
         ],
         [
             'text'        => 'Inventario',
-            // 'route'         => 'inventario_papel',
             'icon'       => 'fas fa-angle-right pe-2', 
             'submenu' => [
                             [
@@ -359,11 +358,6 @@ return [
             'route'         => 'emision_ucd',
             'icon'       => 'fas fa-angle-right pe-2',   
         ],
-        // [
-        //     'text'        => 'Inventario',
-        //     'route'         => '',
-        //     'icon'       => 'fas fa-angle-right pe-2',   
-        // ],
         
         ['header' => 'Asignaciones'],
         [
@@ -374,6 +368,11 @@ return [
         [
             'text'        => 'Timbres asignados',
             'route'         => 'timbres_asignados',
+            'icon'       => 'fas fa-angle-right pe-2',  
+        ],
+        [
+            'text'        => 'Historial',
+            'route'         => 'historial_asignaciones',
             'icon'       => 'fas fa-angle-right pe-2',  
         ],
 
@@ -399,18 +398,7 @@ return [
             'icon'       => 'fas fa-angle-right pe-2',  
         ],
 
-        // ['header' => 'Emisión'],
-        // [
-    //     'text'        => 'Rollos TFE 14',
-        //     'route'         => 'emision_rollos',
-        //     'icon'       => 'fas fa-angle-right pe-2',   
-        // ],
-        // [
-        //     'text'        => 'Estampillas',
-        //     'route'         => 'emision_estampillas',
-        //     'icon'       => 'fas fa-angle-right pe-2',   
-        // ],
-
+      
         
         ['header' => 'Taquillas'],
         [
@@ -418,11 +406,6 @@ return [
             'route'         => 'apertura',
             'icon'       => 'fas fa-angle-right pe-2',  
         ],
-        // [
-        //     'text'        => 'Cierre',
-        //     'route'         => 'cierre',
-        //     'icon'       => 'fas fa-angle-right pe-2',  
-        // ],
         [
             'text'        => 'Inventario',
             'route'         => 'inventario_taquillas',
@@ -446,6 +429,11 @@ return [
         [
             'text' => 'Usuarios',
             'url'  => '/usuarios',
+            'icon'       => 'fas fa-angle-right pe-2',
+        ],
+        [
+            'text' => 'Bitácoras',
+            'url'  => '/bitacora',
             'icon'       => 'fas fa-angle-right pe-2',
         ],
 

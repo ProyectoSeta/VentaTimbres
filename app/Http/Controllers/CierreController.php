@@ -16,11 +16,15 @@ class CierreController extends Controller
      */
     public function index()
     {
+        
+
         $dias = array("Domingo","Lunes","Martes","Miercoles","Jueves","Viernes","Sábado");
         $meses = array("Enero","Febrero","Marzo","Abril","Mayo","Junio","Julio","Agosto","Septiembre","Octubre","Noviembre","Diciembre"); 
-        $hoy_view = $dias[date('w')].", ".date('d')." de ".$meses[date('n')-1]. " ".date('Y');
 
         $hoy = date('Y-m-d');
+
+        $hoy_view = $dias[date('w')].", ".date('d')." de ".$meses[date('n')-1]. " ".date('Y');
+
         $aperturas = [];
         $query = DB::table('apertura_taquillas')->whereDate('fecha', $hoy)->get();
 

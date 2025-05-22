@@ -15,7 +15,7 @@
 @section('content')
     
     <div class="container rounded-4 p-3 px-0" style="background-color:#ffff;">
-        <div class="row mb-4 align-items-cente">
+        <div class="row mb-5 align-items-cente">
             <div class="col-lg-4 pe-5">
                 <div class="text-center">
                     <h4 class="fw-bold titulo text-nay " style="color: #004cbd"><span class="text-muted">Lote | </span>TFE 14 </h4>
@@ -60,7 +60,7 @@
 
 
         <div class="d-flex justify-content-between align-items-center mb-4">
-            <h3 class="mb-3 text-navy titulo fw-bold">Asignación de Timbres <span class="text-secondary fs-4">| Taquillas</span></h3>
+            <h3 class="mb-3 text-navy titulo fw-bold">Asignaciones a Taquillas<span class="text-secondary fs-4"> | En Proceso</span></h3>
             <div class="mb-3">
                 <button type="button" class="btn bg-navy rounded-pill px-3 btn-sm fw-bold d-flex align-items-center" id="" data-bs-toggle="modal" data-bs-target="#modal_asignar_timbres">
                     <i class='bx bx-plus fw-bold fs-6 pe-2'></i>

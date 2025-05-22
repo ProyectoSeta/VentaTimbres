@@ -30,7 +30,7 @@ class AsignarController extends Controller
                             ->where('taquillas.id_taquilla','=',$q1->key_taquilla)->first();
             $array = array(
                         'id_asignacion' => $q1->id_asignacion,
-                        'fecha' => $q1->fecha,
+                        'fecha' => date("d-m-Y h:i A",strtotime($q1->fecha)),
                         'key_taquilla' => $q1->key_taquilla,
                         'sede' => $consulta->sede,
                     );
@@ -48,7 +48,7 @@ class AsignarController extends Controller
                             ->where('taquillas.id_taquilla','=',$q2->key_taquilla)->first();
             $array = array(
                         'id_asignacion' => $q2->id_asignacion,
-                        'fecha' => $q2->fecha,
+                        'fecha' => date("d-m-Y h:i A",strtotime($q2->fecha)),
                         'key_taquilla' => $q2->key_taquilla,
                         'sede' => $consulta->sede,
                     );
@@ -392,7 +392,7 @@ class AsignarController extends Controller
         if ($query->fecha_recibido == NULL) {
             $fecha_recibido = '<span class="text-secondary">Sin Recibir</span>';
         }else{
-            $fecha_recibido = $query->fecha_recibido;
+            $fecha_recibido = date("d-m-Y h:i A",strtotime($query->fecha_recibido));
         }
 
         $q3 = DB::table('taquillas')
@@ -425,7 +425,7 @@ class AsignarController extends Controller
                             </tr>
                             <tr>
                                 <th colspan="2">Fecha asignación:</th>
-                                <td colspan="2">'.$query->fecha.'</td>
+                                <td colspan="2">'.date("d-m-Y h:i A",strtotime($query->fecha)).'</td>
                             </tr>
                             <tr>
                                 <th colspan="2">Fecha recepción:</th>
@@ -967,7 +967,7 @@ class AsignarController extends Controller
         if ($q3->fecha_recibido == NULL) {
             $fecha_recibido = '<span class="text-secondary">Sin Recibir</span>';
         }else{
-            $fecha_recibido = $q3->fecha_recibido;
+            $fecha_recibido = date("d-m-Y h:i A",strtotime($q3->fecha_recibido));
         }
 
         $q4 = DB::table('taquillas')
@@ -1000,7 +1000,7 @@ class AsignarController extends Controller
                             </tr>
                             <tr>
                                 <th colspan="2">Fecha asignación:</th>
-                                <td colspan="2">'.$q3->fecha.'</td>
+                                <td colspan="2">'.date("d-m-Y h:i A",strtotime($q3->fecha)).'</td>
                             </tr>
                             <tr>
                                 <th colspan="2">Fecha recepción:</th>

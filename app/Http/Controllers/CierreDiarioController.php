@@ -14,15 +14,27 @@ class CierreDiarioController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(Request $request)
     {
-        // comprobar que la taquilla ha sio cerrada para mostrar el arqueo PENDIENTE
-        $hoy = date('Y-m-d');
-        
-        // FECHA HOY (FORMATO)
+
+        $fecha = $request->fecha;
+        $hoy = '';
+
         $dias = array("Domingo","Lunes","Martes","Miercoles","Jueves","Viernes","Sábado");
         $meses = array("Enero","Febrero","Marzo","Abril","Mayo","Junio","Julio","Agosto","Septiembre","Octubre","Noviembre","Diciembre"); 
-        $hoy_view = $dias[date('w')].", ".date('d')." de ".$meses[date('n')-1]. " ".date('Y');
+
+
+        if (isset($fecha)) {
+            //// viene la variable: consulta
+            $hoy = $fecha;
+
+            $hoy_view = $dias[date('w',strtotime($fecha))].", ".date('d',strtotime($fecha))." de ".$meses[date('n',strtotime($fecha))-1]. " ".date('Y');
+        }else{
+            /// no viene la variable: vista
+            $hoy = date('Y-m-d');
+
+            $hoy_view = $dias[date('w')].", ".date('d')." de ".$meses[date('n')-1]. " ".date('Y');
+        }
 
         // VENTAS DEL DÍA
         $ventas = [];

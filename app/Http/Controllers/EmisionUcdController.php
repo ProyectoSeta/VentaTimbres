@@ -434,7 +434,7 @@ class EmisionUcdController extends Controller
                                 </tr>
                                 <tr>
                                     <th>Fecha - Hora</th>
-                                    <td colspan="2">'.$query->fecha.' - '.$hora.'</td>
+                                    <td colspan="2">'.date("d-m-Y h:i A",strtotime($query->fecha)).'</td>
                                 </tr>
                                 <tr>
                                     <th>Emitido Por:</th>

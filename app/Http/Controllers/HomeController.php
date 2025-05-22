@@ -740,14 +740,13 @@ class HomeController extends Controller
                                                 <button type="button" class="btn btn-secondary btn-sm py-0 imprimir_timbre" style="font-size:12.7px" venta="" timbre="'.$timbre.'" papel="'.$papel.'">Imprimir</button>
                                             </td>
                                         </tr>';
-                            }else{
-                                $tr = '<tr>
-                                            <td colspan="4" ><span class="text-secondary fst-italic">No hay timbres para re-imprimir.</span></td>
-                                        </tr>';
-                            }   
-                            
+                            }  
+                        }
 
-                            
+                        if ($tr == '') {
+                            $tr = '<tr>
+                                    <td colspan="4" ><span class="text-secondary fst-italic">No hay timbres para re-imprimir.</span></td>
+                                </tr>';
                         }
 
                         $html = '<div class="modal-header p-2 pt-3 d-flex justify-content-center">

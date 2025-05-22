@@ -10,35 +10,29 @@
 @stop
 
 @section('content')
-    <div class="mx-5">
-        
+    <div class="mx-5 bg_arqueo" style="background-image: url({{asset('assets/fondo2.png')}});">
+        <div class="container rounded-4 p-3 px-0">
+            <div class="d-flex justify-content-between mb-2">
+                <p class="text-navy fw-bold fs-3 titulo">Historial de Cierres | <span class="text-muted">Buscar</span></p>
 
-        <div class="d-flex justify-content-between mb-2">
-            <p class="text-navy fw-bold fs-4 titulo">Historial de Cierres | <span class="text-muted">Buscar</span></p>
-
-            <div class="d-flex align-items-center" >
-                <input type="date" class="form-control me-2" style="font-size:13px" id="fecha_search_apertura">  
-                <button type="button" class="btn btn-secondary pb-1" id="btn_search_apertura"><i class='bx bx-search fs-6 m-0'></i></button>
+                <div class="d-flex align-items-center" >
+                    <input type="date" class="form-control me-2" style="font-size:13px" id="fecha_search_cierre">  
+                    <button type="button" class="btn btn-secondary pb-1" id="btn_search_cierre"><i class='bx bx-search fs-6 m-0'></i></button>
+                </div>
             </div>
-        </div>
+
+            <div id="content_table_search">
+                
+            </div>
+
+        </div> 
+
         
-        
-        <p class="text-navy fw-bold fs-4 titulo">Taquillas aperturadas | <span class="text-muted">Hoy</span></p>
-        <div id="content_table_search">
-           
-        </div>
     </div>
     
 
 <!-- *********************************  MODALES ******************************* -->
-    <!-- ************ APERTURA DE TAQUILLAS ************** -->
-    <div class="modal fade" id="modal_apertura_taquillas" tabindex="-1" aria-hidden="true">
-        <div class="modal-dialog modal-lg">
-            <div class="modal-content" id="content_apertura_taquillas">
-                
-            </div>  <!-- cierra modal-content -->
-        </div>  <!-- cierra modal-dialog -->
-    </div>
+
 <!-- ************************************************************************** -->
 
 @stop
@@ -64,12 +58,10 @@
     
     <script src="{{ asset('jss/jquery-3.5.1.js') }}" ></script>
     <script src="{{ asset('jss/datatable.min.js') }}" defer ></script>
-    <!-- <script src="{{ asset('jss/datatable.bootstrap.js') }}" ></script>
-    <script src="{{ asset('jss/toastr.js') }}" integrity="sha512-VEd+nq25CkR676O+pLBnDW09R7VQX9Mdiij052gVCp5yVH3jGtH70Ho/UUv4mJDsEdTvqRCFZg0NKGiojGnUCw==" ></script> -->
-   
+    
     <script type="text/javascript">
         $(document).ready(function () {
-            $('#table_apertura_hoy').DataTable(
+            $('#table_historial_cierre').DataTable(
                 {
                     // "order": [[ 0, "desc" ]],
                     "language": {
@@ -87,41 +79,7 @@
                 }
             );
 
-            $('#table_apertura').DataTable(
-                {
-                    // "order": [[ 0, "desc" ]],
-                    "language": {
-                        "lengthMenu": " Mostrar  _MENU_  Registros por página",
-                        "zeroRecords": "No se encontraron registros",
-                        "info": "Mostrando página _PAGE_ de _PAGES_",
-                        "infoEmpty": "No se encuentran Registros",
-                        "infoFiltered": "(filtered from _MAX_ total records)",
-                        'search':"Buscar",
-                        'paginate':{
-                            'next':'Siguiente',
-                            'previous':'Anterior'
-                        }
-                    }
-                }
-            );
-
-            // $('#table_apertura_fecha').DataTable(
-            //     {
-            //         // "order": [[ 0, "desc" ]],
-            //         "language": {
-            //             "lengthMenu": " Mostrar  _MENU_  Registros por página",
-            //             "zeroRecords": "No se encontraron registros",
-            //             "info": "Mostrando página _PAGE_ de _PAGES_",
-            //             "infoEmpty": "No se encuentran Registros",
-            //             "infoFiltered": "(filtered from _MAX_ total records)",
-            //             'search':"Buscar",
-            //             'paginate':{
-            //                 'next':'Siguiente',
-            //                 'previous':'Anterior'
-            //             }
-            //         }
-            //     }
-            // );
+        
 
         });
     </script>
@@ -129,48 +87,22 @@
 
     <script type="text/javascript">
         $(document).ready(function () {
-            /////////////////////////// MODAL APETURAR
-            $(document).on('click','#apertura_taquillas', function(e) {
-                e.preventDefault();
-
-                $.ajax({
-                    headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') },
-                    type: 'POST',
-                    url: '{{route("apertura.modal_apertura") }}',
-                    success: function(response) {
-                        // console.log(response);
-                        $('#content_apertura_taquillas').html(response);
-                    },
-                    error: function() {
-                    }
-                });
-            });
-
-            /////////////////////////// CLICK EN APERTURAR
-            $(document).on('click','.check_apertura', function(e) {
-                var taquilla = $(this).attr('taquilla');
-
-                if($("#apertura_"+taquilla).is(':checked')) {
-                    $('#label_'+taquilla).html('Si');
-                } else {
-                    $('#label_'+taquilla).html('No');
-                }
-            });
+            
 
             /////////////////////////// CONTENT: TABLE SEARCH POR FECHA
-            $(document).on('click','#btn_search_apertura', function(e) {
+            $(document).on('click','#btn_search_cierre', function(e) {
                 e.preventDefault();
-                var fecha = $('#fecha_search_apertura').val();
+                var fecha = $('#fecha_search_cierre').val();
 
                 $.ajax({
                     headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') },
                     type: 'POST',
-                    url: '{{route("apertura.search_fecha") }}',
+                    url: '{{route("historial_cierre.search") }}',
                     data: {fecha:fecha},
                     success: function(response) {
                         console.log(response);
                         $('#content_table_search').html(response);
-                        $('#table_apertura_fecha').DataTable();
+                        $('#table_historial_cierre').DataTable();
                     },
                     error: function() {
                     }
@@ -179,37 +111,6 @@
 
         });
 
-        function aperturaTaquillas(){
-            var formData = new FormData(document.getElementById("form_aperturar_taquillas"));
-                $.ajax({
-                    headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') },
-                    url:'{{route("apertura.apertura_taquillas") }}',
-                    type:'POST',
-                    contentType:false,
-                    cache:false,
-                    processData:false,
-                    async: true,
-                    data: formData,
-                    success: function(response){
-                        console.log(response);
-                        if (response.success) {
-                            alert('SE HAN APERTURADO LAS TAQUILLAS CORRECTAMENTE.');
-                            window.location.href = "{{ route('apertura')}}";
-                        }else{
-                            if (response.nota != '') {
-                                alert(response.nota);
-                            }else{
-                                alert('Disculpe, ha ocurrido un error.');
-                            }
-                            
-                        }  
-
-                    },
-                    error: function(error){
-                        
-                    }
-                });
-        }
     </script>
   
 @stop

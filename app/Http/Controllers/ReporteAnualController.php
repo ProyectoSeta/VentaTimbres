@@ -15,35 +15,41 @@ class ReporteAnualController extends Controller
      * Display a listing of the resource.
      */
     public function index()
-    {
+    {   
+        $years = [];
         $con1 = DB::table('cierre_diarios')->select('fecha')->first();
         $con2 = DB::table('cierre_diarios')->select('fecha')->orderBy('id', 'desc')->first();
 
-        $inicio = date("Y",strtotime($con1->fecha));
-        $fin = date("Y",strtotime($con2->fecha));
+        if ($con1 && $con2) {
+            $inicio = date("Y",strtotime($con1->fecha));
+            $fin = date("Y",strtotime($con2->fecha));
 
-        $years = [];
+            
 
-        if ($inicio == $fin) {
-            $years = [$inicio];
-        }else{
-            //////// hay mas años
-            $c = 1;
-            $new_year = '';
+            if ($inicio == $fin) {
+                $years = [$inicio];
+            }else{
+                //////// hay mas años
+                $c = 1;
+                $new_year = '';
 
-            for ($i=$inicio; $i <= $fin; $i++) { 
-                if ($c == 1) {
-                    $new_year = $inicio;
-                    array_push($years,$inicio);
-                }else{
-                    $new_year = $new_year + 1;
-                    array_push($years,$new_year);
+                for ($i=$inicio; $i <= $fin; $i++) { 
+                    if ($c == 1) {
+                        $new_year = $inicio;
+                        array_push($years,$inicio);
+                    }else{
+                        $new_year = $new_year + 1;
+                        array_push($years,$new_year);
+                    }
+                    $c++;
                 }
-                $c++;
             }
-        }
 
+            
+
+        }
         return view('reporte_anual', compact('years'));
+        
     }
 
     /**
