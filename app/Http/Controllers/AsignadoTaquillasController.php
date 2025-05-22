@@ -129,6 +129,8 @@ class AsignadoTaquillasController extends Controller
 
         if ($update && $update_inv && $update_condicion) {
             /////bitacora
+            $accion = 'ESTAMPILLAS RECIBIDAS EN LA TAQ'.$c2->id_taquilla.', ID ASIGNACIÓN: '.$asignacion.'.';
+            $bitacora = DB::table('bitacoras')->insert(['key_user' => $user, 'key_modulo' => 5, 'accion'=> $accion]);
             return response()->json(['success' => true]);
         }else{
             return response()->json(['success' => false]);
@@ -239,6 +241,8 @@ class AsignadoTaquillasController extends Controller
 
         if ($update && $update_inv && $update_condicion) {
             /////bitacora
+            $accion = 'TIMBRES FISCALES ELECTRONICOS FORMA 14 RECIBIDOS EN LA TAQ'.$c2->id_taquilla.', ID ASIGNACIÓN: '.$asignacion.'.';
+            $bitacora = DB::table('bitacoras')->insert(['key_user' => $user, 'key_modulo' => 5, 'accion'=> $accion]);
             return response()->json(['success' => true]);
         }else{
             return response()->json(['success' => false]);

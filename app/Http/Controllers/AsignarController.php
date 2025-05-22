@@ -272,6 +272,10 @@ class AsignarController extends Controller
                                                                 ->select('funcionarios.nombre')
                                                                 ->where('taquillas.id_taquilla','=', $taquilla)->first();
 
+                    /////BITACORA
+                    $accion = 'TIMBRES FISCALES ELECTRONICOS FORMA 14 ASIGNADOS A LA TAQ'.$taquilla.', ID ASIGNACIÓN: '.$id_asignacion.'.';
+                    $bitacora = DB::table('bitacoras')->insert(['key_user' => $user, 'key_modulo' => 5, 'accion'=> $accion]);
+
                     $html = '<div class="modal-header p-2 pt-3 d-flex justify-content-center">
                                 <div class="text-center">
                                     <i class="bx bxs-layer-plus fs-2 text-muted me-2"></i>
@@ -775,6 +779,12 @@ class AsignarController extends Controller
                 $consulta_taquillero = DB::table('taquillas')->join('funcionarios', 'taquillas.key_funcionario', '=', 'funcionarios.id_funcionario')
                                                             ->select('funcionarios.nombre')
                                                             ->where('taquillas.id_taquilla','=', $taquilla)->first();
+
+
+                /////BITACORA
+                $accion = 'ESTAMPILLAS ASIGNADAS A LA TAQ'.$taquilla.', ID ASIGNACIÓN: '.$id_asignacion.'.';
+                $bitacora = DB::table('bitacoras')->insert(['key_user' => $user, 'key_modulo' => 5, 'accion'=> $accion]);
+
 
                 $html = '<div class="modal-header p-2 pt-3 d-flex justify-content-center">
                             <div class="text-center">

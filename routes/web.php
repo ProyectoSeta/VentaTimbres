@@ -275,6 +275,11 @@ Route::get('/pdf_cierre_diario/{id?}/', [App\Http\Controllers\CierreDiarioContro
 
 
 
+///////HISTORIAL CIERRES
+Route::get('/historial_cierre', [App\Http\Controllers\HistorialCierresController::class, 'index'])->name('historial_cierre');
+
+
+
 ///////////////////// REPORTE ANUAL
 Route::get('/reporte_anual', [App\Http\Controllers\ReporteAnualController::class, 'index'])->name('reporte_anual');
 Route::get('/reporte_anual/pdf_reporte/{year?}/', [App\Http\Controllers\ReporteAnualController::class, 'pdf_reporte'])->name('reporte_anual.pdf_reporte');

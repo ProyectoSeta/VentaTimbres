@@ -137,12 +137,16 @@ class AjustesController extends Controller
         $variable = $request->post('variable'); 
         $valor = $request->post('valor'); 
         $hoy = date('Y-m-d h:i:s');
+        $user = auth()->id();
 
         if ($variable == 'ucd') {
             $moneda = $request->post('moneda'); 
             $insert = DB::table('ucds')->insert(['valor' => $valor, 'moneda' => $moneda]); 
             if ($insert) {
                 ////BITACORA
+                $accion = 'VALOR DEL UCD ACTUALIZADO.';
+                $bitacora = DB::table('bitacoras')->insert(['key_user' => $user, 'key_modulo' => 8, 'accion'=> $accion]);
+
                 return response()->json(['success' => true]);
             }else{
                 return response()->json(['success' => false]);
@@ -155,18 +159,27 @@ class AjustesController extends Controller
                     $update = DB::table('configuraciones')->where('correlativo','=',$correlativo)->update(['valor' => $valor, 'updated_at' => $hoy]);
                     if ($update) {
                         ////BITACORA
+                        $accion = 'NO. DE INICIO DEL CORRELATIVO DE PAPEL PARA TIMBRE FISCAL ELECTRONICO ACTUALIZADO.';
+                        $bitacora = DB::table('bitacoras')->insert(['key_user' => $user, 'key_modulo' => 8, 'accion'=> $accion]);
                         return response()->json(['success' => true]);
                     }else{
                         return response()->json(['success' => false]);
                     }
                 }else{
                     /// BITACORA
+                    $accion = 'IMPORTANTE: INTENTO DE MODIFICAR EL NO. DE INICIO DEL CORRELATIVO DE PAPEL PARA TIMBRE FISCAL ELECTRONICO ACTUALIZADO.';
+                    $bitacora = DB::table('bitacoras')->insert(['key_user' => $user, 'key_modulo' => 8, 'accion'=> $accion]);
                     return response()->json(['success' => false, 'nota' => 'Disculpe, este valor solo es modificable una (1) sola vez.']);
                 }
             }else{
                 $update = DB::table('configuraciones')->where('correlativo','=',$correlativo)->update(['valor' => $valor, 'updated_at' => $hoy]);
                 if ($update) {
                     ////BITACORA
+                    /// consulta
+                    $con = DB::table('configuraciones')->select('nombre')->where('correlativo', '=', $correlativo)->first();
+                    
+                    $accion = 'VARIABLE MODIFICADA: '.$con->nombre.'.';
+                    $bitacora = DB::table('bitacoras')->insert(['key_user' => $user, 'key_modulo' => 8, 'accion'=> $accion]);
                     return response()->json(['success' => true]);
                 }else{
                     return response()->json(['success' => false]);

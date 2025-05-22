@@ -121,6 +121,11 @@ class ReporteAnualController extends Controller
 
         $pdf = PDF::loadView('pdf/reporte_anual', compact('content_meses','recaudacion_total','recaudacion_total_tfe','recaudacion_total_est','year'));
 
+        $user = auth()->id();
+        /////BITACORA
+        $accion = 'REPORTE ANUAL '.$year.' DESCARGADO';
+        $bitacora = DB::table('bitacoras')->insert(['key_user' => $user, 'key_modulo' => 2, 'accion'=> $accion]);
+
         return $pdf->download('Reporte Anual '.$year.'.pdf');
     }
 

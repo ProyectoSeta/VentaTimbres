@@ -124,7 +124,10 @@ class SedeTaquillaController extends Controller
         $insert = DB::table('sedes')->insert(['sede' => $ubicacion, 'estado' => 16]); 
         if ($insert) {
             ///////BITACORA
-
+            $user = auth()->id();
+            /////BITACORA
+            $accion = 'SEDE CREADA: '.$ubicacion.'';
+            $bitacora = DB::table('bitacoras')->insert(['key_user' => $user, 'key_modulo' => 7, 'accion'=> $accion]);
             return response()->json(['success' => true]);
         }else{
             return response()->json(['success' => false]);
@@ -162,6 +165,12 @@ class SedeTaquillaController extends Controller
                             'clave' => bcrypt($request->post('password')), 
                             'estado' => 16]);
                 if ($insert) {
+                    $id_taquilla = DB::table('taquillas')->max('id_taquilla');
+                    $user = auth()->id();
+                    /////BITACORA
+                    $accion = 'TAQUILLA CREADA: ID'.$id_taquilla.'';
+                    $bitacora = DB::table('bitacoras')->insert(['key_user' => $user, 'key_modulo' => 7, 'accion'=> $accion]);
+
                     return response()->json(['success' => true]);
                 }else{
                     return response()->json(['success' => false]);
@@ -215,6 +224,11 @@ class SedeTaquillaController extends Controller
                     ]);
     
                     if($usuario->save()){
+                        $user = auth()->id();
+                        /////BITACORA
+                        $accion = 'TAQUILLERO CREADO: ID'.$id_funcionario.'';
+                        $bitacora = DB::table('bitacoras')->insert(['key_user' => $user, 'key_modulo' => 7, 'accion'=> $accion]);
+
                         return response()->json(['success' => true]);
                     }
                 }
@@ -246,6 +260,10 @@ class SedeTaquillaController extends Controller
             $update = DB::table('taquillas')->where('id_taquilla', '=', $id_taquilla)->update(['clave' => bcrypt($request->post('password'))]);
             if ($update) {
                 ///////////////////BITACORA
+                $user = auth()->id();
+                /////BITACORA
+                $accion = 'CLAVE DE TAQUILLA ACTUALIZADA: TAQ'.$id_taquilla.'';
+                $bitacora = DB::table('bitacoras')->insert(['key_user' => $user, 'key_modulo' => 7, 'accion'=> $accion]);
                 return response()->json(['success' => true]);
             }else{
                 return response()->json(['success' => false]);
@@ -266,6 +284,10 @@ class SedeTaquillaController extends Controller
             $update = DB::table('taquillas')->where('id_taquilla','=', $id_taquilla)->update(['estado' => 16]);
             if ($update) {
                 ///////////////////BITACORA
+                $user = auth()->id();
+                /////BITACORA
+                $accion = 'TAQUILLA HABILITADA: TAQ'.$id_taquilla.'';
+                $bitacora = DB::table('bitacoras')->insert(['key_user' => $user, 'key_modulo' => 7, 'accion'=> $accion]);
                 return response()->json(['success' => true]);
             }else{
                 return response()->json(['success' => false]);
@@ -276,6 +298,10 @@ class SedeTaquillaController extends Controller
             $update = DB::table('taquillas')->where('id_taquilla', '=', $id_taquilla)->update(['estado' => 17]);
             if ($update) {
                 ///////////////////BITACORA
+                $user = auth()->id();
+                /////BITACORA
+                $accion = 'TAQUILLA DESHABILITADA: TAQ'.$id_taquilla.'';
+                $bitacora = DB::table('bitacoras')->insert(['key_user' => $user, 'key_modulo' => 7, 'accion'=> $accion]);
                 return response()->json(['success' => true]);
             }else{
                 return response()->json(['success' => false]);
@@ -296,6 +322,10 @@ class SedeTaquillaController extends Controller
             $update = DB::table('funcionarios')->where('id_funcionario','=', $id_funcionario)->update(['estado' => 16]);
             if ($update) {
                 ///////////////////BITACORA
+                $user = auth()->id();
+                /////BITACORA
+                $accion = 'TAQUILLERO HABILITADO: TAQUILLERO ID'.$id_funcionario.'';
+                $bitacora = DB::table('bitacoras')->insert(['key_user' => $user, 'key_modulo' => 7, 'accion'=> $accion]);
                 return response()->json(['success' => true]);
             }else{
                 return response()->json(['success' => false]);
@@ -306,6 +336,10 @@ class SedeTaquillaController extends Controller
             $update = DB::table('funcionarios')->where('id_funcionario', '=',$id_funcionario)->update(['estado' => 17]);
             if ($update) {
                 ///////////////////BITACORA
+                $user = auth()->id();
+                /////BITACORA
+                $accion = 'TAQUILLERO DESHABILITADO: TAQUILLERO ID'.$id_funcionario.'';
+                $bitacora = DB::table('bitacoras')->insert(['key_user' => $user, 'key_modulo' => 7, 'accion'=> $accion]);
                 return response()->json(['success' => true]);
             }else{
                 return response()->json(['success' => false]);

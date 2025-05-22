@@ -81,7 +81,7 @@ class CierreController extends Controller
     {
         $hoy = date('Y-m-d');
         $taquillas = [];
-        $query = DB::table('apertura_taquillas')->select('key_taquilla','cierre_taquilla')->whereDate('fecha', $hoy)->get(); //return response($query);
+        $query = DB::table('apertura_taquillas')->select('key_taquilla','cierre_taquilla')->whereDate('fecha', $hoy)->get(); 
         if (!empty($query)) {
             foreach ($query as $key) {
                 if ($key->cierre_taquilla == NULL) {
@@ -183,6 +183,10 @@ class CierreController extends Controller
                                                         'cantidad_est' => $cantidad_est
                                                     ]); 
         if ($insert) {
+            ////BITACORA
+            $user = auth()->id();
+            $accion = 'CIERRE GENERAL ('.$hoy.') REALIZADO, USER ID:'.$user.' ';
+            $bitacora = DB::table('bitacoras')->insert(['key_user' => $user, 'key_modulo' => 2, 'accion'=> $accion]);
            return response()->json(['success' => true]);
         }else{
             return response()->json(['success' => false]);

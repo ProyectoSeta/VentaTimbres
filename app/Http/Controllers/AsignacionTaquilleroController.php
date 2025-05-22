@@ -73,6 +73,7 @@ class AsignacionTaquilleroController extends Controller
         $sede = $request->post('sede');
         $taquilla = $request->post('taquilla');
         $exencion = $request->post('exencion');
+        $user = auth()->id();
 
         if ($sede == 'Seleccionar' || $sede == '') {
             return response()->json(['success' => false, 'nota'=> 'Debe seleccionar la Sede.']);
@@ -92,6 +93,8 @@ class AsignacionTaquilleroController extends Controller
         $update = DB::table('exenciones')->where('id_exencion','=',$exencion)->update(['key_taquilla' => $taquilla,'fecha_asig_taquilla' => $hoy]);
         if ($update) {
             /////BITACORA
+            // $accion = 'IMPORTANTE: INTENTO DE MODIFICAR EL NO. DE INICIO DEL CORRELATIVO DE PAPEL PARA TIMBRE FISCAL ELECTRONICO ACTUALIZADO.';
+            // $bitacora = DB::table('bitacoras')->insert(['key_user' => $user, 'key_modulo' => 8, 'accion'=> $accion]);
             return response()->json(['success' => true]);
         }else{
             return response()->json(['success' => false]);

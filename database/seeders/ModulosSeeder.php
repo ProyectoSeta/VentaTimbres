@@ -14,7 +14,34 @@ class ModulosSeeder extends Seeder
     public function run(): void
     {
         DB::table('modulos')->insert([
-            'modulo' => '',  
+            'modulo' => 'Consulta',  
+        ]);
+        DB::table('modulos')->insert([
+            'modulo' => 'Cierre',  
+        ]);
+        DB::table('modulos')->insert([
+            'modulo' => 'Papel de Seguridad',  
+        ]);
+        DB::table('modulos')->insert([
+            'modulo' => 'Estampillas',  
+        ]);
+        DB::table('modulos')->insert([
+            'modulo' => 'Asignaciones',  
+        ]);
+        DB::table('modulos')->insert([
+            'modulo' => 'Taquillas',  
+        ]);
+        DB::table('modulos')->insert([
+            'modulo' => 'Sedes | Taquillas',  
+        ]);
+        DB::table('modulos')->insert([
+            'modulo' => 'Configuraciones',  
+        ]);
+        DB::table('modulos')->insert([
+            'modulo' => 'Mi Cuenta',  
+        ]);
+        DB::table('modulos')->insert([
+            'modulo' => 'Ventas',  
         ]);
     }
 }

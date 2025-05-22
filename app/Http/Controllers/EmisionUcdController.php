@@ -323,6 +323,10 @@ class EmisionUcdController extends Controller
                             </div>
                         </div>';
 
+                $user = auth()->id();
+                $accion = 'ASIGNACIÓN DE UCD A ESTAMPILLAS REALIZADA, ASIGNACION ID'.$id_asignacion.'';
+                $bitacora = DB::table('bitacoras')->insert(['key_user' => $user, 'key_modulo' => 4, 'accion'=> $accion]);
+
                 return response()->json(['success' => true, 'html' => $html]);
             
             }else{
@@ -501,6 +505,9 @@ class EmisionUcdController extends Controller
             }
 
             ///////////INCLUIR BITACORA
+            $user = auth()->id();
+            $accion = 'ASIGNACIÓN DE UCD A ESTAMPILLAS ELIMINADA, ASIGNACION ID'.$id_asignacion.'';
+            $bitacora = DB::table('bitacoras')->insert(['key_user' => $user, 'key_modulo' => 4, 'accion'=> $accion]);
             return response()->json(['success' => true]);
         }else{
             return response()->json(['success' => false]);

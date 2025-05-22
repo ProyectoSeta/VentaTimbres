@@ -139,8 +139,9 @@ class UsuariosController extends Controller
                     $usuario->assignRole($rol);
                     
                     $user = auth()->id();
-                    // $accion = 'NUEVO USUARIO ADMINISTRATIVO CREADO: '.$request->post('nombre').'.';
-                    // $bitacora = DB::table('bitacoras')->insert(['id_user' => $user, 'module' => 13, 'accion'=> $accion]);
+                    /////BITACORA
+                    $accion = 'NUEVO USUARIO CREADO ID'.$id_funcionario.'';
+                    $bitacora = DB::table('bitacoras')->insert(['key_user' => $user, 'key_modulo' => 8, 'accion'=> $accion]);
                     return response()->json(['success' => true]);
                 }else{
                     ////delete funcionario
@@ -206,9 +207,10 @@ class UsuariosController extends Controller
                                                     'password' => $pass]);
                 if ($update) {
                     $user = auth()->id();
-                    // $sp =  DB::table('users')->select('name')->where('id','=',$idUser)->first(); 
-                    // $accion = 'DATOS DEL USUARIO: '.$sp->name.' ACTUALIZADOS.';
-                    // $bitacora = DB::table('bitacoras')->insert(['id_user' => $user, 'module' => 13, 'accion'=> $accion]);
+                    
+                    /////BITACORA
+                    $accion = 'USUARIO ACTUALIZADO, USER ID'.$idUser.'';
+                    $bitacora = DB::table('bitacoras')->insert(['key_user' => $user, 'key_modulo' => 8, 'accion'=> $accion]);
 
                     return response()->json(['success' => true]);
                 }else{
@@ -232,19 +234,5 @@ class UsuariosController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(Request $request)
-    {
-        $user = $request->post('user');
-        $delete = DB::table('users')->where('id', '=', $user)->delete();
-        if($delete){
-            $user = auth()->id();
-            $sp =  DB::table('users')->select('name')->where('id','=',$user)->first(); 
-            $accion = 'USUARIO ELIMINADO: '.$sp->name.'.';
-            $bitacora = DB::table('bitacoras')->insert(['id_user' => $user, 'module' => 13, 'accion'=> $accion]);
-
-            return response()->json(['success' => true]);
-        }else{
-            return response()->json(['success' => false]);
-        }
-    }
+    
 }

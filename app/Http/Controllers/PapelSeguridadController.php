@@ -253,6 +253,10 @@ class PapelSeguridadController extends Controller
                                 
                             </div>
                         </div>';
+                $user = auth()->id();
+                /////BITACORA
+                $accion = 'LOTE DE PAPEL DE SEGURIDAD PARA TIMBRES FISCALES ELECTRONICOS FORMA 14 EMITIDO, EMISIÓN ID:'.$id_emision.'.';
+                $bitacora = DB::table('bitacoras')->insert(['key_user' => $user, 'key_modulo' => 3, 'accion'=> $accion]);
                 return response()->json(['success' => true, 'html' => $html]);
             }else{
                 return response()->json(['success' => false]);
@@ -305,6 +309,10 @@ class PapelSeguridadController extends Controller
         $delete = DB::table('emision_papel_tfes')->where('id_lote_papel', '=', $id_lote)->delete();
         if ($delete) {
             ///////////INCLUIR BITACORA
+            $user = auth()->id();
+            /////BITACORA
+            $accion = 'LOTE DE PAPEL DE SEGURIDAD PARA TIMBRES FISCALES ELECTRONICOS FORMA 14 ELIMINADO, LOTE ID:'.$id_lote.'.';
+            $bitacora = DB::table('bitacoras')->insert(['key_user' => $user, 'key_modulo' => 3, 'accion'=> $accion]);
             return response()->json(['success' => true]);
         }else{
             return response()->json(['success' => false]);
@@ -320,6 +328,9 @@ class PapelSeguridadController extends Controller
         $update = DB::table('emision_papel_tfes')->where('id_lote_papel', '=', $id_lote)->update(['fecha_entrega' => $hoy, 'estado' => 1]);
         if ($update) {
             //////BITACORA
+            $user = auth()->id();
+            $accion = 'LOTE DE PAPEL DE SEGURIDAD PARA TIMBRES FISCALES ELECTRONICOS FORMA 14 ENVIADO A INVENTARIO, LOTE ID:'.$id_lote.'.';
+            $bitacora = DB::table('bitacoras')->insert(['key_user' => $user, 'key_modulo' => 3, 'accion'=> $accion]);
             return response()->json(['success' => true]);
         }else{
             return response()->json(['success' => false]);
@@ -592,6 +603,12 @@ class PapelSeguridadController extends Controller
                                 
                             </div>
                         </div>';
+
+                $user = auth()->id();
+                /////BITACORA
+                $accion = 'LOTE DE PAPEL DE SEGURIDAD PARA ESTAMPILLAS EMITIDO, EMISIÓN ID:'.$id_emision.'.';
+                $bitacora = DB::table('bitacoras')->insert(['key_user' => $user, 'key_modulo' => 3, 'accion'=> $accion]);
+
                 return response()->json(['success' => true, 'html' => $html]);
             }else{
                 return response()->json(['success' => false]);
@@ -644,6 +661,10 @@ class PapelSeguridadController extends Controller
         $delete = DB::table('emision_papel_estampillas')->where('id_lote_papel', '=', $id_lote)->delete();
         if ($delete) {
             ///////////INCLUIR BITACORA
+            $user = auth()->id();
+            /////BITACORA
+            $accion = 'LOTE DE PAPEL DE SEGURIDAD PARA ESTAMPILLAS ELIMINADO, LOTE ID:'.$id_lote.'.';
+            $bitacora = DB::table('bitacoras')->insert(['key_user' => $user, 'key_modulo' => 3, 'accion'=> $accion]);
             return response()->json(['success' => true]);
         }else{
             return response()->json(['success' => false]);
@@ -658,6 +679,10 @@ class PapelSeguridadController extends Controller
         $update = DB::table('emision_papel_estampillas')->where('id_lote_papel', '=', $id_lote)->update(['fecha_entrega' => $hoy, 'estado' => 1]);
         if ($update) {
             //////BITACORA
+            $user = auth()->id();
+            /////BITACORA
+            $accion = 'LOTE DE PAPEL DE SEGURIDAD PARA ESTAMPILLAS ENVIADO A INVENTARIO, LOTE ID:'.$id_lote.'.';
+            $bitacora = DB::table('bitacoras')->insert(['key_user' => $user, 'key_modulo' => 3, 'accion'=> $accion]);
             return response()->json(['success' => true]);
         }else{
             return response()->json(['success' => false]);

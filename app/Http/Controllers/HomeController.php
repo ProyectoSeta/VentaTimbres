@@ -285,6 +285,8 @@ class HomeController extends Controller
             }else{
                 ////no esta asignado a ninguna taquilla
                 /////BITACORA 
+                $accion = 'IMPORTANTE: INTENTO DE APERTURAR TAQUILLA SIN EL CARGO DE TAQUILLERO.';
+                $bitacora = DB::table('bitacoras')->insert(['key_user' => $user, 'key_modulo' => 10, 'accion'=> $accion]);
                 return response()->json(['success' => false, 'nota' => 'Disculpe, usted no se encuentra asociado a ninguna taquilla.']);
             }
         }
@@ -320,6 +322,8 @@ class HomeController extends Controller
         }else{
             ////no esta asignado a ninguna taquilla
             /////BITACORA 
+            $accion = 'IMPORTANTE: INTENTO DE APERTURAR TAQUILLA SIN EL CARGO DE TAQUILLERO.';
+            $bitacora = DB::table('bitacoras')->insert(['key_user' => $user, 'key_modulo' => 10, 'accion'=> $accion]);
             return response()->json(['success' => false, 'nota' => 'Disculpe, usted no se encuentra asociado a ninguna taquilla.']);
         }
 
@@ -439,6 +443,8 @@ class HomeController extends Controller
         }else{
             ////no esta asignado a ninguna taquilla
             /////BITACORA 
+            $accion = 'IMPORTANTE: INTENTO DE INGRESO A BÓVEDA SIN EL CARGO DE TAQUILLERO.';
+            $bitacora = DB::table('bitacoras')->insert(['key_user' => $user, 'key_modulo' => 10, 'accion'=> $accion]);
             return response()->json(['success' => false]);
         }
     }
@@ -624,6 +630,8 @@ class HomeController extends Controller
             }else{
                 ////no esta asignado a ninguna taquilla
                 /////BITACORA 
+                $accion = 'IMPORTANTE: INTENTO DE CIERRE DE TAQUILLA SIN EL CARGO DE TAQUILLERO.';
+                $bitacora = DB::table('bitacoras')->insert(['key_user' => $user, 'key_modulo' => 10, 'accion'=> $accion]);
                 return response()->json(['success' => false, 'nota' => 'Disculpe, usted no se encuentra asociado a ninguna taquilla.']);
             }
         }
@@ -674,7 +682,9 @@ class HomeController extends Controller
             return response()->json(['success' => true, 'html' => $html]);
         }else{
             /////no hay registro, ADMIN no ha aperturado taquilla.
-            // BITACORA = INTENTO DE VENTA SIN APERTURA DE TAQUILLA
+            // BITACORA =  
+            $accion = 'IMPORTANTE: INTENTO DE VENTA SIN APERTURA DE TAQUILLA.';
+            $bitacora = DB::table('bitacoras')->insert(['key_user' => $user, 'key_modulo' => 10, 'accion'=> $accion]);
             return response()->json(['success' => false, 'nota'=> 'Acción invalida. La taquilla no ha sido aperturada.']);
         }
         
@@ -1022,6 +1032,7 @@ class HomeController extends Controller
         $timbre =unserialize(base64_decode($request->post('timbre'))); 
 
         $length = 6;
+        $user = auth()->id();
 
         if ($papel == 1) {
             /// PAPEL BUENO
@@ -1100,6 +1111,10 @@ class HomeController extends Controller
                             </div>
                         </div>';
 
+                /////BITACORA
+                $accion = 'TIMBRE '.$timbre.' REIMPRESO.';
+                $bitacora = DB::table('bitacoras')->insert(['key_user' => $user, 'key_modulo' => 10, 'accion'=> $accion]);
+                
                 /////LLAMAR A LA FUNCIUON DE IMPRIMIR Y PASAR DATOS DE IMPRESION
                 return response()->json(['success' => true, 'html' => $html, 'papel' => 1]);   
 
@@ -1253,6 +1268,11 @@ class HomeController extends Controller
                                             <a href="'.route("home").'"  class="btn btn-secondary btn-sm me-2">Cerrar</a>
                                         </div>
                                     </div>';
+
+                            /////BITACORA
+                            $accion = 'ANULACIÓN DE TIMBRE '.$timbre.'.';
+                            $bitacora = DB::table('bitacoras')->insert(['key_user' => $user, 'key_modulo' => 10, 'accion'=> $accion]);
+
 
                             /////LLAMAR A LA FUNCIUON DE IMPRIMIR Y PASAR DATOS DE IMPRESION
                             return response()->json(['success' => true, 'html' => $html,'papel' => 0]); 

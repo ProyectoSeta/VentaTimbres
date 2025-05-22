@@ -309,32 +309,7 @@ return [
             'text'         => 'search',
             'topnav_right' => false,
         ],
-        // [
-        //     'type'         => 'fullscreen-widget',
-        //     'topnav_right' => true,
-        // ],
-        // [
-        //     'text' => 'Mis datos',
-        //     'url'  => '/actualizar_datos',
-        //     // 'icon'       => 'fas fa-user pe-2 ps-2 text-muted',
-        //     'topnav_user' => true,
-        //     'classes'      => 'text-secondary py-2 fw-semibold pb-1',
-        // ],
-        // [
-        //     'text' => 'Cambiar contraseña',
-        //     'url'  => '/new_pass',
-        //     // 'icon'       => 'fas fa-sliders pe-2 ps-2 text-muted',
-        //     'topnav_user' => true,
-        //     'classes'      => 'text-secondary py-2 fw-semibold pt-1',
-        // ],
         
-        // [
-        //     'text'        => 'Principal',
-        //     'url'         => 'admin/pages',
-        //     // 'icon'        => 'fas fa-fw fa-user',   
-        //     'label'       => 4,
-        //     'label_color' => 'success',
-        // ],
         ['header' => 'Consulta'],
         [
             'text'        => 'Timbre Fiscal',
@@ -346,6 +321,11 @@ return [
             'text'        => 'Diario',
             'route'         => 'cierre',
             'icon'       => 'fas fa-angle-right pe-2', 
+        ],
+        [
+            'text'        => 'Historial',
+            'route'         => 'historial_cierre',
+            'icon'       => 'fas fa-angle-right pe-2',  
         ],
         [
             'text'        => 'Anual',
