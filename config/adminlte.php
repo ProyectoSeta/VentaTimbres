@@ -309,13 +309,14 @@ return [
             'text'         => 'search',
             'topnav_right' => false,
         ],
-        
+        //CONSULTA
         ['header' => 'Consulta'],
         [
             'text'        => 'Timbre Fiscal',
             'route'         => 'consulta',
             'icon'       => 'fas fa-angle-right pe-2',   
         ],
+        //CIERRE
         ['header' => 'Cierre'],
         [
             'text'        => 'Diario',
@@ -332,6 +333,7 @@ return [
             'route'         => 'reporte_anual',
             'icon'       => 'fas fa-angle-right pe-2',  
         ],
+        //PAPEL DE SEGURIDAD
         ['header' => 'Papel de Seguridad'],
         [
             'text'        => 'Emisión',
@@ -352,13 +354,14 @@ return [
                             ],
                         ],
         ],
+        //ESTAMPILLAS
         ['header' => 'Estampillas'],
         [
             'text'        => 'Asignación UCD | Inventario',
             'route'         => 'emision_ucd',
             'icon'       => 'fas fa-angle-right pe-2',   
         ],
-        
+        //ASIGNACIONES
         ['header' => 'Asignaciones'],
         [
             'text'        => 'Asignar Timbres',
@@ -375,31 +378,7 @@ return [
             'route'         => 'historial_asignaciones',
             'icon'       => 'fas fa-angle-right pe-2',  
         ],
-
-        ['header' => 'Exenciones'],
-        [
-            'text'        => 'Nueva | Casos abiertos',
-            'route'         => 'exenciones',
-            'icon'       => 'fas fa-angle-right pe-2', 
-        ],
-        [
-            'text'        => 'Asignar taquillero',
-            'route'         => 'asignar_taquillero',
-            'icon'       => 'fas fa-angle-right pe-2', 
-        ],
-        [
-            'text'        => 'Historial Solventes',
-            'route'         => 'solventes',
-            'icon'       => 'fas fa-angle-right pe-2',  
-        ],
-        [
-            'text'        => 'Asignado',
-            'route'         => 'asignado',
-            'icon'       => 'fas fa-angle-right pe-2',  
-        ],
-
-      
-        
+        //TAQUILLAS        
         ['header' => 'Taquillas'],
         [
             'text'        => 'Aperturar',
@@ -411,15 +390,14 @@ return [
             'route'         => 'inventario_taquillas',
             'icon'       => 'fas fa-angle-right pe-2',  
         ],
-
-        
+        //SEDES-TAQUILLAS
         ['header' => 'Sedes | Taquillas '],
         [
             'text'        => 'Agregar y/o Modificar',
             'route'         => 'sede_taquilla',
             'icon'       => 'fas fa-angle-right pe-2',  
         ],
-
+        //CONFIGURACIONES
         ['header' => 'Configuraciones'],
         [
             'text'        => 'Ajustes',
@@ -436,8 +414,7 @@ return [
             'url'  => '/bitacora',
             'icon'       => 'fas fa-angle-right pe-2',
         ],
-
-         // MI CUENTA
+        // MI CUENTA
         [   'header' => 'Mi Cuenta',
         ],         
         [

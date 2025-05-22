@@ -21,22 +21,8 @@ Route::get('/', function () {
 Auth::routes();
 
 
-Route::get('/user', [App\Http\Controllers\UserController::class, 'index'])->name('user');
-Route::post('/user', [App\Http\Controllers\UserController::class, 'store'])->name('user.store');
-
-
-
-//////////////////NUEVA CONTRASEÑA
-Route::get('/new_pass', [App\Http\Controllers\NewPassController::class, 'index'])->name('new_pass');
-Route::post('/new_pass/update', [App\Http\Controllers\NewPassController::class, 'update'])->name('new_pass.update');
-
-
-///////////USUARIOS
-Route::get('/usuarios', [App\Http\Controllers\UsuariosController::class, 'index'])->name('usuarios');
-Route::post('/usuarios/store', [App\Http\Controllers\UsuariosController::class, 'store'])->name('usuarios.store');
-Route::post('/usuarios/modal_edit', [App\Http\Controllers\UsuariosController::class, 'modal_edit'])->name('usuarios.modal_edit');
-Route::post('/usuarios/editar', [App\Http\Controllers\UsuariosController::class, 'editar'])->name('usuarios.editar');
-
+// Route::get('/user', [App\Http\Controllers\UserController::class, 'index'])->name('user');
+// Route::post('/user', [App\Http\Controllers\UserController::class, 'store'])->name('user.store');
 
 
 
@@ -58,6 +44,50 @@ Route::post('/home/modal_clave', [App\Http\Controllers\HomeController::class, 'm
 Route::post('/home/clave', [App\Http\Controllers\HomeController::class, 'clave'])->name('home.clave');
 Route::post('/home/modal_imprimir', [App\Http\Controllers\HomeController::class, 'modal_imprimir'])->name('home.modal_imprimir');
 Route::post('/home/imprimir', [App\Http\Controllers\HomeController::class, 'imprimir'])->name('home.imprimir');
+
+
+
+
+
+///////////////////// CONSULTA
+Route::get('/consulta', [App\Http\Controllers\ConsultaTimbresController::class, 'index'])->name('consulta');
+Route::post('/consulta/search_tfe', [App\Http\Controllers\ConsultaTimbresController::class, 'search_tfe'])->name('consulta.search_tfe');
+Route::post('/consulta/search_est', [App\Http\Controllers\ConsultaTimbresController::class, 'search_est'])->name('consulta.search_est');
+
+
+
+
+///////////////////// CIERRE
+Route::get('/cierre', [App\Http\Controllers\CierreController::class, 'index'])->name('cierre');
+Route::post('/cierre/comprobar', [App\Http\Controllers\CierreController::class, 'comprobar'])->name('cierre.comprobar');
+Route::post('/cierre/registro_cierre', [App\Http\Controllers\CierreController::class, 'registro_cierre'])->name('cierre.registro_cierre');
+Route::get('/cierre/arqueo/{id?}/', [App\Http\Controllers\CierreController::class, 'arqueo'])->name('cierre.arqueo');
+
+/////// CIERRE DIARIO
+Route::get('/cierre_diario/{fecha?}/', [App\Http\Controllers\CierreDiarioController::class, 'index'])->name('cierre_diario');
+Route::get('/pdf_cierre_diario/{id?}/', [App\Http\Controllers\CierreDiarioController::class, 'pdf_cierre_diario'])->name('pdf_cierre_diario');
+
+/////////////////// HISTORIAL CIERRES
+Route::get('/historial_cierre', [App\Http\Controllers\HistorialCierresController::class, 'index'])->name('historial_cierre');
+Route::post('/historial_cierre/search', [App\Http\Controllers\HistorialCierresController::class, 'search'])->name('historial_cierre.search');
+
+///////////////////// REPORTE ANUAL
+Route::get('/reporte_anual', [App\Http\Controllers\ReporteAnualController::class, 'index'])->name('reporte_anual');
+Route::get('/reporte_anual/pdf_reporte/{year?}/', [App\Http\Controllers\ReporteAnualController::class, 'pdf_reporte'])->name('reporte_anual.pdf_reporte');
+
+
+//////////////////// REPORTE TRIMESTRAL
+// Route::get('/trimestres/{year?}/', [App\Http\Controllers\ReporteTrimestralController::class, 'index'])->name('trimestres');
+// Route::get('/reportes_trimestral/{tri?}/{year?}/', [App\Http\Controllers\ReporteTrimestralController::class, 'reportes_trimestral'])->name('reportes_trimestral');
+
+
+
+
+
+
+
+
+
 
 
 ///////////////////// PAPEL DE SEGURIDAD
@@ -133,39 +163,6 @@ Route::post('/venta/quitar', [App\Http\Controllers\VentaController::class, 'quit
 
 Route::post('/venta/venta', [App\Http\Controllers\VentaController::class, 'venta'])->name('venta.venta');
 
-
-
-
-
-
-//////////////////////  EXENCIONES
-Route::get('/exenciones', [App\Http\Controllers\ExencionesController::class, 'index'])->name('exenciones');
-Route::post('/exenciones/modal_new', [App\Http\Controllers\ExencionesController::class, 'modal_new'])->name('exenciones.modal_new');
-Route::post('/exenciones/tramites', [App\Http\Controllers\ExencionesController::class, 'tramites'])->name('exenciones.tramites');
-Route::post('/exenciones/total', [App\Http\Controllers\ExencionesController::class, 'total'])->name('exenciones.total');
-Route::post('/exenciones/nueva', [App\Http\Controllers\ExencionesController::class, 'nueva'])->name('exenciones.nueva');
-Route::post('/exenciones/sujeto', [App\Http\Controllers\ExencionesController::class, 'sujeto'])->name('exenciones.sujeto');
-Route::post('/exenciones/modal_recibido', [App\Http\Controllers\ExencionesController::class, 'modal_recibido'])->name('exenciones.modal_recibido');
-Route::post('/exenciones/recibido', [App\Http\Controllers\ExencionesController::class, 'recibido'])->name('exenciones.recibido');
-Route::post('/exenciones/modal_entregado', [App\Http\Controllers\ExencionesController::class, 'modal_entregado'])->name('exenciones.modal_entregado');
-Route::post('/exenciones/entregado', [App\Http\Controllers\ExencionesController::class, 'entregado'])->name('exenciones.entregado');
-
-Route::post('/exenciones/detalles', [App\Http\Controllers\ExencionesController::class, 'detalles'])->name('exenciones.detalles');
-Route::post('/exenciones/modal_pago', [App\Http\Controllers\ExencionesController::class, 'modal_pago'])->name('exenciones.modal_pago');
-Route::post('/exenciones/pago', [App\Http\Controllers\ExencionesController::class, 'pago'])->name('exenciones.pago');
-
-//////////////////////  EXENCIONES (ASIGNAR TAQUILLERO)
-Route::get('/asignar_taquillero', [App\Http\Controllers\AsignacionTaquilleroController::class, 'index'])->name('asignar_taquillero');
-Route::post('/asignar_taquillero/asignar', [App\Http\Controllers\AsignacionTaquilleroController::class, 'asignar'])->name('asignar_taquillero.asignar');
-Route::post('/asignar_taquillero/info_taquillero', [App\Http\Controllers\AsignacionTaquilleroController::class, 'info_taquillero'])->name('asignar_taquillero.info_taquillero');
-
-//////////////////////  EXENCIONES (ASIGNADO A TAQUILLA)
-Route::get('/asignado', [App\Http\Controllers\AsignadosController::class, 'index'])->name('asignado');
-Route::post('/asignado/modal', [App\Http\Controllers\AsignadosController::class, 'modal'])->name('asignado.modal');
-Route::post('/asignado/venta', [App\Http\Controllers\AsignadosController::class, 'venta'])->name('asignado.venta');
-
-//////////////////////  EXENCIONES (HISTORIAL SOLVENTES)
-Route::get('/solventes', [App\Http\Controllers\ExencionesSolventesController::class, 'index'])->name('solventes');
 
 
 
@@ -267,32 +264,6 @@ Route::post('/arqueo/cierre_punto', [App\Http\Controllers\ArqueoTaquillaControll
 Route::get('/pdf_cierre_taquilla/{id?}/', [App\Http\Controllers\ArqueoTaquillaController::class, 'pdf_cierre_taquilla'])->name('pdf_cierre_taquilla');
 
 
-///////////////////// CIERRE
-Route::get('/cierre', [App\Http\Controllers\CierreController::class, 'index'])->name('cierre');
-Route::post('/cierre/comprobar', [App\Http\Controllers\CierreController::class, 'comprobar'])->name('cierre.comprobar');
-Route::post('/cierre/registro_cierre', [App\Http\Controllers\CierreController::class, 'registro_cierre'])->name('cierre.registro_cierre');
-Route::get('/cierre/arqueo/{id?}/', [App\Http\Controllers\CierreController::class, 'arqueo'])->name('cierre.arqueo');
-
-///////CIERRE DIARIO
-Route::get('/cierre_diario/{fecha?}/', [App\Http\Controllers\CierreDiarioController::class, 'index'])->name('cierre_diario');
-Route::get('/pdf_cierre_diario/{id?}/', [App\Http\Controllers\CierreDiarioController::class, 'pdf_cierre_diario'])->name('pdf_cierre_diario');
-
-
-
-///////HISTORIAL CIERRES
-Route::get('/historial_cierre', [App\Http\Controllers\HistorialCierresController::class, 'index'])->name('historial_cierre');
-Route::post('/historial_cierre/search', [App\Http\Controllers\HistorialCierresController::class, 'search'])->name('historial_cierre.search');
-
-
-
-///////////////////// REPORTE ANUAL
-Route::get('/reporte_anual', [App\Http\Controllers\ReporteAnualController::class, 'index'])->name('reporte_anual');
-Route::get('/reporte_anual/pdf_reporte/{year?}/', [App\Http\Controllers\ReporteAnualController::class, 'pdf_reporte'])->name('reporte_anual.pdf_reporte');
-
-//////////////////// REPORTE TRIMESTRAL
-Route::get('/trimestres/{year?}/', [App\Http\Controllers\ReporteTrimestralController::class, 'index'])->name('trimestres');
-Route::get('/reportes_trimestral/{tri?}/{year?}/', [App\Http\Controllers\ReporteTrimestralController::class, 'reportes_trimestral'])->name('reportes_trimestral');
-
 
 
 
@@ -307,14 +278,21 @@ Route::post('/ajustes/update', [App\Http\Controllers\AjustesController::class, '
 
 
 
-///////////////////// CONSULTA
-Route::get('/consulta', [App\Http\Controllers\ConsultaTimbresController::class, 'index'])->name('consulta');
-Route::post('/consulta/search_tfe', [App\Http\Controllers\ConsultaTimbresController::class, 'search_tfe'])->name('consulta.search_tfe');
-Route::post('/consulta/search_est', [App\Http\Controllers\ConsultaTimbresController::class, 'search_est'])->name('consulta.search_est');
-
-
-
 
 ///////////BITACORA
 Route::get('/bitacora', [App\Http\Controllers\BitacoraController::class, 'index'])->name('bitacora');
+
+
+//////////////////NUEVA CONTRASEÑA
+Route::get('/new_pass', [App\Http\Controllers\NewPassController::class, 'index'])->name('new_pass');
+Route::post('/new_pass/update', [App\Http\Controllers\NewPassController::class, 'update'])->name('new_pass.update');
+
+
+///////////USUARIOS
+Route::get('/usuarios', [App\Http\Controllers\UsuariosController::class, 'index'])->name('usuarios');
+Route::post('/usuarios/store', [App\Http\Controllers\UsuariosController::class, 'store'])->name('usuarios.store');
+Route::post('/usuarios/modal_edit', [App\Http\Controllers\UsuariosController::class, 'modal_edit'])->name('usuarios.modal_edit');
+Route::post('/usuarios/editar', [App\Http\Controllers\UsuariosController::class, 'editar'])->name('usuarios.editar');
+
+
 

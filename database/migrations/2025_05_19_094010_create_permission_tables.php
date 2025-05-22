@@ -22,8 +22,14 @@ return new class extends Migration
 
         Schema::create($tableNames['permissions'], static function (Blueprint $table) {
             // $table->engine('InnoDB');
+            // $table->engine('InnoDB');
             $table->bigIncrements('id'); // permission id
             $table->string('name');       // For MyISAM use string('name', 225); // (or 166 for InnoDB with Redundant/Compact row format)
+            $table->string('description');
+            $table->integer('module')->unsigned();
+            $table->foreign('module')->references('id_modulo')->on('modulos')->onDelete('cascade');
+            $table->enum('priority',['1','2']);
+            
             $table->string('guard_name'); // For MyISAM use string('guard_name', 25);
             $table->timestamps();
 
