@@ -234,178 +234,208 @@ class PermissionsSeeder extends Seeder
 
 
         /////// ASIGNACIÓN DE TIMBRES
-        Permission::create(['name' => '',
-                        'description' => 'Principal',
-                        'module' => 1,
+        Permission::create(['name' => 'asignar',
+                        'description' => 'Ver Asignación de Timbres | Taquillas',
+                        'module' => 5,
                         'priority'=> 1]);
-        Permission::create(['name' => '',
-                        'description' => 'Principal',
-                        'module' => 1,
+        Permission::create(['name' => 'asignar.taquillas',
+                        'description' => 'Taquillas',
+                        'module' => 5,
+                        'priority'=> 2]);
+        Permission::create(['name' => 'asignar.funcionario',
+                        'description' => 'Funcionario',
+                        'module' => 5,
+                        'priority'=> 2]);                
+        Permission::create(['name' => 'asignar.asignar_forma_14',
+                        'description' => 'Asignar Timbres Fiscales a Taquillas (TFE-14)',
+                        'module' => 5,
                         'priority'=> 1]);
-        Permission::create(['name' => '',
-                        'description' => 'Principal',
-                        'module' => 1,
-                        'priority'=> 1]);                
-        Permission::create(['name' => '',
-                        'description' => 'Principal',
-                        'module' => 1,
+        Permission::create(['name' => 'asignar.content_estampillas',
+                        'description' => 'Modal Estampillas',
+                        'module' => 5,
+                        'priority'=> 2]);
+        Permission::create(['name' => 'asignar.denominacions',
+                        'description' => 'Denominaciones',
+                        'module' => 5,
+                        'priority'=> 2]);
+        Permission::create(['name' => 'asignar.asignar_estampillas',
+                        'description' => 'Asignar Timbres Fiscales a Taquillas (Estampillas)',
+                        'module' => 5,
                         'priority'=> 1]);
-        Permission::create(['name' => '',
-                        'description' => 'Principal',
-                        'module' => 1,
+        Permission::create(['name' => 'asignar.info_taquilla',
+                        'description' => 'Info Taquilla',
+                        'module' => 5,
+                        'priority'=> 2]);
+        Permission::create(['name' => 'asignar.detalle_estampillas',
+                        'description' => 'Detalle Asignación',
+                        'module' => 5,
+                        'priority'=> 2]);
+        Permission::create(['name' => 'asignar.detalle_rollos',
+                        'description' => 'Detalle Asignación Rollos',
+                        'module' => 5,
+                        'priority'=> 2]);
+        Permission::create(['name' => 'asignar.pdf_forma14',
+                        'description' => 'Descargar PDF | Asignación Forma 14',
+                        'module' => 5,
                         'priority'=> 1]);
-        Permission::create(['name' => '',
-                        'description' => 'Principal',
-                        'module' => 1,
+        Permission::create(['name' => 'asignar.pdf_estampillas',
+                        'description' => 'Descargar PDF | Estampillas',
+                        'module' => 5,
                         'priority'=> 1]);
-        Permission::create(['name' => '',
-                        'description' => 'Principal',
-                        'module' => 1,
+
+
+        ////ASIGNACIONES A TAQUILLA
+        Permission::create(['name' => 'timbres_asignados',
+                        'description' => 'Ver Timbres Asignados (Taquilla)',
+                        'module' => 5,
                         'priority'=> 1]);
-        Permission::create(['name' => '',
-                        'description' => 'Principal',
-                        'module' => 1,
+        Permission::create(['name' => 'timbres_asignados.modal_forma14',
+                        'description' => 'Modal Timbres Asignados (TFE-14)',
+                        'module' => 5,
+                        'priority'=> 2]);
+        Permission::create(['name' => 'timbres_asignados.recibido_forma14',
+                        'description' => 'Aceptar Timbres Asignados (TFE-14)',
+                        'module' => 5,
                         'priority'=> 1]);
-        Permission::create(['name' => '',
-                        'description' => 'Principal',
-                        'module' => 1,
+        Permission::create(['name' => 'timbres_asignados.modal_estampillas',
+                        'description' => 'Modal Timbres Asignados (Estampillas)',
+                        'module' => 5,
+                        'priority'=> 2]);
+        Permission::create(['name' => 'timbres_asignados.recibido_estampillas',
+                        'description' => 'Aceptar Timbres Asignados (TFE-14)',
+                        'module' => 5,
                         'priority'=> 1]);
-        Permission::create(['name' => '',
-                        'description' => 'Principal',
-                        'module' => 1,
+
+
+        ///// HISTORIAL ASIGNACIONES
+        Permission::create(['name' => 'historial_asignaciones',
+                        'description' => 'Ver Historial de Asignaciones',
+                        'module' => 5,
                         'priority'=> 1]);
-        Permission::create(['name' => '',
-                        'description' => 'Principal',
-                        'module' => 1,
+
+
+        //// APERTURAR TAQUILLAS
+        Permission::create(['name' => 'apertura',
+                        'description' => 'Ver Apertura de Taquillas',
+                        'module' => 6,
                         'priority'=> 1]);
-        Permission::create(['name' => '',
-                        'description' => 'Principal',
-                        'module' => 1,
+        Permission::create(['name' => 'apertura.modal_apertura',
+                        'description' => 'Modal Apertura',
+                        'module' => 6,
+                        'priority'=> 2]);
+        Permission::create(['name' => 'apertura.apertura_taquillas',
+                        'description' => 'Aperturar Taquillas',
+                        'module' => 6,
                         'priority'=> 1]);
-        Permission::create(['name' => '',
-                        'description' => 'Principal',
-                        'module' => 1,
+        Permission::create(['name' => 'apertura.search_fecha',
+                        'description' => 'Buscar Aperturas de Taquillas',
+                        'module' => 6,
                         'priority'=> 1]);
-                        Permission::create(['name' => '',
-                        'description' => 'Principal',
-                        'module' => 1,
+
+        /////INVENTARIO DE TAQUILLAS
+        Permission::create(['name' => 'inventario_taquillas',
+                        'description' => 'Ver Inventario de Taquillas',
+                        'module' => 6,
                         'priority'=> 1]);
-        Permission::create(['name' => '',
-                        'description' => 'Principal',
-                        'module' => 1,
+        Permission::create(['name' => 'inventario_taquillas.detalle',
+                        'description' => 'Detalles',
+                        'module' => 6,
+                        'priority'=> 2]);
+
+
+        ////// SEDES / TAQUILLAS
+        Permission::create(['name' => 'sede_taquilla',
+                        'description' => 'Ver Sedes y Taquillas',
+                        'module' => 7,
                         'priority'=> 1]);
-        Permission::create(['name' => '',
-                        'description' => 'Principal',
-                        'module' => 1,
+        Permission::create(['name' => 'sede_taquilla.new_sede',
+                        'description' => 'Crear Sede',
+                        'module' => 7,
                         'priority'=> 1]);
-        Permission::create(['name' => '',
-                        'description' => 'Principal',
-                        'module' => 1,
+        Permission::create(['name' => 'sede_taquilla.new_taquillero',
+                        'description' => 'Crear Taquillero',
+                        'module' => 7,
                         'priority'=> 1]);
-        Permission::create(['name' => '',
-                        'description' => 'Principal',
-                        'module' => 1,
+        Permission::create(['name' => 'sede_taquilla.modal_new_taquilla',
+                        'description' => 'Modal nueva Taquilla',
+                        'module' => 7,
+                        'priority'=> 2]);
+        Permission::create(['name' => 'sede_taquilla.new_taquilla',
+                        'description' => 'Crear Taquilla',
+                        'module' => 7,
                         'priority'=> 1]);
-                        Permission::create(['name' => '',
-                        'description' => 'Principal',
-                        'module' => 1,
+        Permission::create(['name' => 'sede_taquilla.update_clave',
+                        'description' => 'Actualizar Clave de Taquilla',
+                        'module' => 7,
                         'priority'=> 1]);
-        Permission::create(['name' => '',
-                        'description' => 'Principal',
-                        'module' => 1,
+        Permission::create(['name' => 'sede_taquilla.habilitar_taquilla',
+                        'description' => 'Habilitar/Deshabilitar Taquillas',
+                        'module' => 7,
                         'priority'=> 1]);
-        Permission::create(['name' => '',
-                        'description' => 'Principal',
-                        'module' => 1,
+        Permission::create(['name' => 'sede_taquilla.habilitar_taquillero',
+                        'description' => 'Habilitar/Deshabilitar Taquilleras',
+                        'module' => 7,
                         'priority'=> 1]);
-        Permission::create(['name' => '',
-                        'description' => 'Principal',
-                        'module' => 1,
+
+
+        ///////AJUSTES
+        Permission::create(['name' => 'ajustes',
+                        'description' => 'Ver Ajustes',
+                        'module' => 8,
                         'priority'=> 1]);
-        Permission::create(['name' => '',
-                        'description' => 'Principal',
-                        'module' => 1,
+        Permission::create(['name' => 'ajustes.modal_editar',
+                        'description' => 'Modal editar',
+                        'module' => 8,
+                        'priority'=> 2]);
+        Permission::create(['name' => 'ajustes.update',
+                        'description' => 'Actualizar datos',
+                        'module' => 8,
                         'priority'=> 1]);
-                        Permission::create(['name' => '',
-                        'description' => 'Principal',
-                        'module' => 1,
+
+        ///// USUARIOS
+        Permission::create(['name' => 'usuarios',
+                        'description' => 'Ver Usuarios',
+                        'module' => 8,
                         'priority'=> 1]);
-        Permission::create(['name' => '',
-                        'description' => 'Principal',
-                        'module' => 1,
+        Permission::create(['name' => 'usuarios.store',
+                        'description' => 'Registrar Usuarios',
+                        'module' => 8,
                         'priority'=> 1]);
-        Permission::create(['name' => '',
-                        'description' => 'Principal',
-                        'module' => 1,
+        Permission::create(['name' => 'usuarios.modal_edit',
+                        'description' => 'Modal editar',
+                        'module' => 8,
+                        'priority'=> 2]);
+        Permission::create(['name' => 'usuarios.editar',
+                        'description' => 'Editar Usuario',
+                        'module' => 8,
                         'priority'=> 1]);
-        Permission::create(['name' => '',
-                        'description' => 'Principal',
-                        'module' => 1,
+
+
+        //// BITACORA
+        Permission::create(['name' => 'bitacora',
+                        'description' => 'Ver Bitácoras',
+                        'module' => 8,
                         'priority'=> 1]);
-        Permission::create(['name' => '',
-                        'description' => 'Principal',
-                        'module' => 1,
+
+
+        ////NUEVA CONTRASEÑA
+        Permission::create(['name' => 'new_pass',
+                        'description' => 'Ver Mi Cuenta',
+                        'module' => 9,
                         'priority'=> 1]);
-                        Permission::create(['name' => '',
-                        'description' => 'Principal',
-                        'module' => 1,
+        Permission::create(['name' => 'new_pass.update',
+                        'description' => 'Actualizar Contraseña',
+                        'module' => 9,
                         'priority'=> 1]);
-        Permission::create(['name' => '',
-                        'description' => 'Principal',
-                        'module' => 1,
+
+
+        //// VENTA 
+        Permission::create(['name' => 'venta',
+                        'description' => 'Realizar Venta de Timbres',
+                        'module' => 10,
                         'priority'=> 1]);
-        Permission::create(['name' => '',
-                        'description' => 'Principal',
-                        'module' => 1,
-                        'priority'=> 1]);
-        Permission::create(['name' => '',
-                        'description' => 'Principal',
-                        'module' => 1,
-                        'priority'=> 1]);
-        Permission::create(['name' => '',
-                        'description' => 'Principal',
-                        'module' => 1,
-                        'priority'=> 1]);
-                        Permission::create(['name' => '',
-                        'description' => 'Principal',
-                        'module' => 1,
-                        'priority'=> 1]);
-        Permission::create(['name' => '',
-                        'description' => 'Principal',
-                        'module' => 1,
-                        'priority'=> 1]);
-        Permission::create(['name' => '',
-                        'description' => 'Principal',
-                        'module' => 1,
-                        'priority'=> 1]);
-        Permission::create(['name' => '',
-                        'description' => 'Principal',
-                        'module' => 1,
-                        'priority'=> 1]);
-        Permission::create(['name' => '',
-                        'description' => 'Principal',
-                        'module' => 1,
-                        'priority'=> 1]);
-                        Permission::create(['name' => '',
-                        'description' => 'Principal',
-                        'module' => 1,
-                        'priority'=> 1]);
-        Permission::create(['name' => '',
-                        'description' => 'Principal',
-                        'module' => 1,
-                        'priority'=> 1]);
-        Permission::create(['name' => '',
-                        'description' => 'Principal',
-                        'module' => 1,
-                        'priority'=> 1]);
-        Permission::create(['name' => '',
-                        'description' => 'Principal',
-                        'module' => 1,
-                        'priority'=> 1]);
-        Permission::create(['name' => '',
-                        'description' => 'Principal',
-                        'module' => 1,
-                        'priority'=> 1]);
+       
+
 
       
 
