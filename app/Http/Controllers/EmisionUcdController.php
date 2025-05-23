@@ -292,6 +292,17 @@ class EmisionUcdController extends Controller
                             </tr>';
                 }
 
+                ////VERIFICAR PERMISO = 
+                $con_rol = DB::table('model_has_roles')->select('role_id')->where('model_id','=',$user)->first();
+                $rol = $con_rol->role_id;
+
+                $descarga = '';
+                $con_permission = DB::table('role_has_permissions')->where('role_id','=',$rol)->where('permission_id','=',47)->first();
+                if ($con_permission) {
+                    // esta permitido
+                    $descarga = '<a href="'.route("emision_ucd.pdf_emision", ["asignacion" => $id_asignacion]).'" class="btn btn-dark btn-sm"  style="font-size:12.7px">PDF</a>';
+                } 
+
                 $html = '<div class="modal-header p-2 pt-3 d-flex justify-content-center">
                             <div class="text-center">
                                 <i class="bx bxs-collection fs-2 text-muted me-2"></i>
@@ -319,7 +330,7 @@ class EmisionUcdController extends Controller
 
                             <div class="d-flex justify-content-center mt-4 mb-3">
                                 <a href="'.route("emision_ucd").'" class="btn btn-secondary btn-sm me-2">Cancelar</a>
-                                <a href="'.route("emision_ucd.pdf_emision", ["asignacion" => $id_asignacion]).'" class="btn btn-dark btn-sm"  style="font-size:12.7px">PDF</a>
+                                '.$descarga.'
                             </div>
                         </div>';
 

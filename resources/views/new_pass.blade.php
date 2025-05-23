@@ -37,11 +37,11 @@
                         <p class="text-end text-secondary fw-bold">
                             Ultima actualización: <span class="text-success">{{$update}}</span>
                         </p>
-                        
+                        @can('new_pass.update')
                            <div class="d-flex justify-content-end">
                                 <buttom class="btn btn-sm btn-secondary" data-bs-toggle="modal" data-bs-target="#modal_update_pass">Actualizar</buttom>
                             </div> 
-                        
+                        @endcan
                     </div>
                 </div>             
 
@@ -65,7 +65,7 @@
     
     
 <!--****************** MODALES **************************-->
-
+@can('new_pass.update')
     <!-- ********* ACTUALIZAR CONTRASEÑA ******** -->
     <div class="modal fade" id="modal_update_pass" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
         <div class="modal-dialog">
@@ -121,7 +121,7 @@
             </div>  <!-- cierra modal-content -->
         </div>  <!-- cierra modal-dialog -->
     </div>
-
+@endcan
     
 
 <!--************************************************-->

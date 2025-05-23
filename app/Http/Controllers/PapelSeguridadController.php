@@ -223,7 +223,16 @@ class PapelSeguridadController extends Controller
                             <td>'.$letra_papel.'-'.$formato_hasta.'</td>
                         </tr>';
                 
-                
+                ////VERIFICAR PERMISO = DESCARGAR PDF
+                $con_rol = DB::table('model_has_roles')->select('role_id')->where('model_id','=',$user)->first();
+                $rol = $con_rol->role_id;
+
+                $descarga = '';
+                $con_permission = DB::table('role_has_permissions')->where('role_id','=',$rol)->where('permission_id','=',37)->first();
+                if ($con_permission) {
+                    // esta permitido
+                    $descarga = '<a href="'.route("papel.pdf_tfes", ["emision" => $id_emision]).'" class="btn btn-dark btn-sm me-2"  style="font-size:12.7px">Imprimir</a>';
+                } 
                 
 
                 $html = '<div class="modal-header p-2 pt-3 d-flex justify-content-center">
@@ -248,7 +257,7 @@ class PapelSeguridadController extends Controller
                             </div>
 
                             <div class="d-flex justify-content-center mb-3">
-                                <a href="'.route("papel.pdf_tfes", ["emision" => $id_emision]).'" class="btn btn-dark btn-sm me-2"  style="font-size:12.7px">Imprimir</a>
+                                '.$descarga.'
                                 <a href="'.route("emision_papel").'" class="btn btn-secondary btn-sm">Cancelar</a>
                                 
                             </div>
@@ -573,7 +582,16 @@ class PapelSeguridadController extends Controller
                             <td>'.$letra_papel.'-'.$formato_hasta.'</td>
                         </tr>';
                 
-                
+                ////VERIFICAR PERMISO = DESCARGAR PDF
+                $con_rol = DB::table('model_has_roles')->select('role_id')->where('model_id','=',$user)->first();
+                $rol = $con_rol->role_id;
+
+                $descarga = '';
+                $con_permission = DB::table('role_has_permissions')->where('role_id','=',$rol)->where('permission_id','=',38)->first();
+                if ($con_permission) {
+                    // esta permitido
+                    $descarga = '<a href="'.route("papel.pdf_estampillas", ["emision" => $id_emision]).'" class="btn btn-dark btn-sm me-2"  style="font-size:12.7px">Imprimir</a>';
+                }
                 
 
                 $html = '<div class="modal-header p-2 pt-3 d-flex justify-content-center">
@@ -598,7 +616,7 @@ class PapelSeguridadController extends Controller
                             </div>
 
                             <div class="d-flex justify-content-center mb-3">
-                                <a href="'.route("papel.pdf_estampillas", ["emision" => $id_emision]).'" class="btn btn-dark btn-sm me-2"  style="font-size:12.7px">Imprimir</a>
+                                '.$descarga.'
                                 <a href="'.route("emision_papel").'" class="btn btn-secondary btn-sm">Cancelar</a>
                                 
                             </div>

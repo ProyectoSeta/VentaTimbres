@@ -6,10 +6,8 @@
     
     <script src="{{ asset('jss/bundle.js') }}" defer></script>
     <link href="{{asset('css/datatable.min.css') }}" rel="stylesheet">
-    <!-- <script src="{{asset('vendor/sweetalert.js') }}"></script>  -->
     <script src="{{ asset('jss/jquery-3.5.1.js') }}" ></script>
 
-    <!-- <img src="{{asset('assets/bf-1.svg')}}" class="w-100" alt="..."> -->
 @stop
 
 @section('content')
@@ -46,12 +44,14 @@
         <div class="tab-content" id="pills-tabContent">
             <!-- *********************   FORMA 14   ************************ -->
             <div class="tab-pane fade show active" id="pills-f14" role="tabpanel" aria-labelledby="pills-f14-tab" tabindex="0">
-                <div class="d-flex justify-content-center">
-                    <button type="button" class="btn bg-navy rounded-pill px-3 btn-sm fw-bold d-flex align-items-center" id="btn_emitir_papel_f14" data-bs-toggle="modal" data-bs-target="#modal_emitir_papel_f14">
-                        <i class='bx bx-plus fw-bold fs-6 pe-2'></i>
-                        <span>Emitir</span>
-                    </button>
-                </div>
+                @can('papel.emitir_f14')
+                    <div class="d-flex justify-content-center">
+                        <button type="button" class="btn bg-navy rounded-pill px-3 btn-sm fw-bold d-flex align-items-center" id="btn_emitir_papel_f14" data-bs-toggle="modal" data-bs-target="#modal_emitir_papel_f14">
+                            <i class='bx bx-plus fw-bold fs-6 pe-2'></i>
+                            <span>Emitir</span>
+                        </button>
+                    </div>
+                @endcan
 
                 <div class="table-responsive" style="font-size:12.7px">
                     <table id="papel_f14_emitidos" class="table text-center border-light-subtle" style="font-size:12.7px">
@@ -63,8 +63,12 @@
                             <th>Hasta</th>
                             <th>Detalle</th>  <!-- fecha entrega, emitidos en ucd, user -->
                             <th>Estado</th> 
-                            <th>Eliminar</th> 
-                            <th>Recibido</th>
+                            @can('papel.delete_f14')
+                                <th>Eliminar</th> 
+                            @endcan
+                            @can('papel.enviar_inv_f14')
+                                <th>Recibido</th>
+                            @endcan
                         </thead>
                         <tbody id="" class="border-light-subtle"> 
                             @foreach ($query_tfes as $q1)
@@ -80,22 +84,27 @@
                                     <td>
                                         <span class="badge text-bg-primary p-2 py-1 d-flex justify-content-center align-items-center" style="font-size: 12px;"><i class='bx bx-history fs-6 me-2'></i>En proceso</span>
                                     </td>
-                                    <td>
-                                        @if ($q1->ultimo == true)
-                                            <span class="badge delete_lote_tfes" style="background-color: #ed0000;" role="button" lote="{{$q1->id_lote_papel}}">
-                                                <i class="bx bx-trash-alt fs-6"></i>
-                                            </span> 
-                                        @else
-                                            <span class="badge" style="background-color: #ed00008c;">
-                                                <i class="bx bx-trash-alt fs-6"></i>
-                                            </span> 
-                                        @endif
-                                    </td>
-                                    <td>
-                                        <button class="btn btn-sm btn-primary enviar_inventario_tfes d-inline-flex align-items-center ms-2"  lote="{{$q1->id_lote_papel}}"  title="Enviar a Inventario" type="button">
-                                            <i class='bx bxs-chevron-right'></i>
-                                        </button>
-                                    </td>
+                                    @can('papel.delete_f14')
+                                        <td>
+                                            @if ($q1->ultimo == true)
+                                                <span class="badge delete_lote_tfes" style="background-color: #ed0000;" role="button" lote="{{$q1->id_lote_papel}}">
+                                                    <i class="bx bx-trash-alt fs-6"></i>
+                                                </span> 
+                                            @else
+                                                <span class="badge" style="background-color: #ed00008c;">
+                                                    <i class="bx bx-trash-alt fs-6"></i>
+                                                </span> 
+                                            @endif
+                                        </td>
+                                    @endcan
+                                    @can('papel.enviar_inv_f14')
+                                        <td>
+                                            <button class="btn btn-sm btn-primary enviar_inventario_tfes d-inline-flex align-items-center ms-2"  lote="{{$q1->id_lote_papel}}"  title="Enviar a Inventario" type="button">
+                                                <i class='bx bxs-chevron-right'></i>
+                                            </button>
+                                        </td>
+                                    @endcan
+                                    
                                 </tr>
                             @endforeach           
                         </tbody> 
@@ -105,12 +114,15 @@
             
             <!-- *********************   ESTAMPILLAS   ************************ -->
             <div class="tab-pane fade" id="pills-estampillas" role="tabpanel" aria-labelledby="pills-estampillas-tab" tabindex="0">
-                <div class="d-flex justify-content-center">    
-                    <button type="button" class="btn bg-navy rounded-pill px-3 btn-sm fw-bold d-flex align-items-center" id="btn_emitir_papel_estampillas" data-bs-toggle="modal" data-bs-target="#modal_emitir_papel_estampillas">
-                        <i class='bx bx-plus fw-bold fs-6 pe-2'></i>
-                        <span>Emitir</span>
-                    </button>
-                </div>
+                @can('papel.emitir_estampillas')
+                    <div class="d-flex justify-content-center">    
+                        <button type="button" class="btn bg-navy rounded-pill px-3 btn-sm fw-bold d-flex align-items-center" id="btn_emitir_papel_estampillas" data-bs-toggle="modal" data-bs-target="#modal_emitir_papel_estampillas">
+                            <i class='bx bx-plus fw-bold fs-6 pe-2'></i>
+                            <span>Emitir</span>
+                        </button>
+                    </div>
+                @endcan
+                
 
                 <div class="table-responsive" style="font-size:12.7px">
                     <table id="papel_estampillas_emitidos" class="table text-center border-light-subtle" style="font-size:12.7px">
@@ -122,8 +134,12 @@
                             <th>Hasta</th>
                             <th>Detalle</th>  <!-- fecha entrega, emitidos en ucd, user -->
                             <th>Estado</th> 
-                            <th>Eliminar</th> 
-                            <th>Recibido</th>
+                            @can('papel.delete_estampillas')
+                                <th>Eliminar</th> 
+                            @endcan
+                            @can('papel.enviar_inv_estampillas')
+                                <th>Recibido</th>
+                            @endcan
                         </thead>
                         <tbody id="" class="border-light-subtle"> 
                             @foreach ($query_estampillas as $q2)
@@ -139,22 +155,27 @@
                                     <td>
                                         <span class="badge text-bg-primary p-2 py-1 d-flex justify-content-center align-items-center" style="font-size: 12px;"><i class='bx bx-history fs-6 me-2'></i>En proceso</span>
                                     </td>
-                                    <td>
-                                        @if ($q2->ultimo == true)
-                                            <span class="badge delete_lote_estampillas" style="background-color: #ed0000;" role="button" lote="{{$q2->id_lote_papel}}">
-                                                <i class="bx bx-trash-alt fs-6"></i>
-                                            </span> 
-                                        @else
-                                            <span class="badge" style="background-color: #ed00008c;">
-                                                <i class="bx bx-trash-alt fs-6"></i>
-                                            </span> 
-                                        @endif
-                                    </td>
-                                    <td>
-                                        <button class="btn btn-sm btn-primary enviar_inventario_estampillas d-inline-flex align-items-center ms-2"  lote="{{$q2->id_lote_papel}}"  title="Enviar a Inventario" type="button">
-                                            <i class='bx bxs-chevron-right'></i>
-                                        </button>
-                                    </td>
+                                    @can('papel.delete_estampillas')
+                                        <td>
+                                            @if ($q2->ultimo == true)
+                                                <span class="badge delete_lote_estampillas" style="background-color: #ed0000;" role="button" lote="{{$q2->id_lote_papel}}">
+                                                    <i class="bx bx-trash-alt fs-6"></i>
+                                                </span> 
+                                            @else
+                                                <span class="badge" style="background-color: #ed00008c;">
+                                                    <i class="bx bx-trash-alt fs-6"></i>
+                                                </span> 
+                                            @endif
+                                        </td> 
+                                    @endcan
+                                    @can('papel.enviar_inv_estampillas')
+                                        <td>
+                                            <button class="btn btn-sm btn-primary enviar_inventario_estampillas d-inline-flex align-items-center ms-2"  lote="{{$q2->id_lote_papel}}"  title="Enviar a Inventario" type="button">
+                                                <i class='bx bxs-chevron-right'></i>
+                                            </button>
+                                        </td>
+                                    @endcan
+                                    
                                 </tr>
                             @endforeach              
                         </tbody> 

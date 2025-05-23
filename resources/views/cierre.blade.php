@@ -18,11 +18,13 @@
             </div>
             
             @if ($condicion == 'true')
-                <div class="mb-3">
-                    <button type="button" id="btn_realizar_cierre" class="btn bg-navy rounded-pill px-3 btn-sm fw-bold d-flex align-items-center">
-                        <span>Realizar cierre</span>
-                    </button>
-                </div>
+                @can('cierre.registro_cierre')
+                    <div class="mb-3">
+                        <button type="button" id="btn_realizar_cierre" class="btn bg-navy rounded-pill px-3 btn-sm fw-bold d-flex align-items-center">
+                            <span>Realizar cierre</span>
+                        </button>
+                    </div>
+                @endcan
             @else
                 <div class="text-center">
                     <div class="text-muted fst-italic mb-2">Cierre Realizado.</div>
@@ -48,7 +50,9 @@
                                 <th>Hora Apertura</th>
                                 <th>Apertura Taquillero</th>
                                 <th>Cierre Taquilla</th>
-                                <th>Arqueo</th>
+                                @can('cierre.arqueo')
+                                    <th>Arqueo</th>
+                                @endcan
                             </tr> 
                         </thead>
                         <tbody>
@@ -74,13 +78,16 @@
                                             <span class="badge bg-secondary-subtle border border-secondary-subtle text-secondary-emphasis rounded-pill" style="font-size:12.7px">{{$apertura->cierre_taquilla}}</span> 
                                         @endif
                                     </td>
-                                    <td>
-                                        @if ($apertura->cierre_taquilla == null)
-                                            <span class="fst-italic fw-bold text-muted">Sin cierrar.</span>
-                                        @else
-                                            <a href="{{ route('cierre.arqueo', ['id' => $apertura->id_taquilla]) }}">Ver</a>
-                                        @endif
-                                    </td>
+                                    @can('cierre.arqueo')
+                                        <td>
+                                            @if ($apertura->cierre_taquilla == null)
+                                                <span class="fst-italic fw-bold text-muted">Sin cierrar.</span>
+                                            @else
+                                                <a href="{{ route('cierre.arqueo', ['id' => $apertura->id_taquilla]) }}">Ver</a>
+                                            @endif
+                                        </td>
+                                    @endcan
+                                    
                                 </tr>
                             @endforeach
                         </tbody>

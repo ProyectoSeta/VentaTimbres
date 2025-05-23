@@ -27,7 +27,9 @@
                         <th>Nombre</th>
                         <th>Descripción</th>
                         <th>Valor</th>
-                        <th>Opción</th>
+                        @can('ajustes.update')
+                            <th>Opción</th> 
+                        @endcan
                         <th>Ultima actualización</th>
                     </tr> 
                 </thead>
@@ -54,15 +56,18 @@
                                     @endif
                                 @endif
                             </td>
-                            <td>
-                                @if ($a14->correlativo == 3 && $a14->valor != NULL)
-                                    <span class="text-secondary fst-italic">No editable.</span>
-                                @else
-                                    <span class="badge editar" style="background-color: #169131;" i="{{$a14->correlativo}}" var="ajustes" role="button" data-bs-toggle="modal" data-bs-target="#modal_editar_valor">
-                                        <i class="bx bx-pencil fs-6"></i>
-                                    </span>
-                                @endif
-                            </td>
+                            @can('ajustes.update')
+                                <td>
+                                    @if ($a14->correlativo == 3 && $a14->valor != NULL)
+                                        <span class="text-secondary fst-italic">No editable.</span>
+                                    @else
+                                        <span class="badge editar" style="background-color: #169131;" i="{{$a14->correlativo}}" var="ajustes" role="button" data-bs-toggle="modal" data-bs-target="#modal_editar_valor">
+                                            <i class="bx bx-pencil fs-6"></i>
+                                        </span>
+                                    @endif
+                                </td> 
+                            @endcan
+                            
                             <td>
                                 <span class="text-muted">{{date("d-m-Y | h:i A",strtotime($a14->updated_at))}}</span>
                             </td>
@@ -82,7 +87,9 @@
                         <th>Nombre</th>
                         <th>Descripción</th>
                         <th>Valor</th>
-                        <th>Opción</th>
+                        @can('ajustes.update')
+                            <th>Opción</th> 
+                        @endcan
                         <th>Ultima actualización</th>
                     </tr> 
                 </thead>
@@ -96,11 +103,14 @@
                             <td><span class="text-navy fw-semibold">{{$av->nombre}}</span></td>
                             <td>{{$av->descripcion}}</td>
                             <td> <span class="fw-semibold">{{$av->valor}} {{$av->nombre_clf}}.</span></td>
-                            <td>
-                                <span class="badge editar" style="background-color: #169131;" i="{{$av->correlativo}}" var="ajustes" role="button" data-bs-toggle="modal" data-bs-target="#modal_editar_valor">
-                                    <i class="bx bx-pencil fs-6"></i>
-                                </span>
-                            </td>
+                            @can('ajustes.update')
+                                <td>
+                                    <span class="badge editar" style="background-color: #169131;" i="{{$av->correlativo}}" var="ajustes" role="button" data-bs-toggle="modal" data-bs-target="#modal_editar_valor">
+                                        <i class="bx bx-pencil fs-6"></i>
+                                    </span>
+                                </td>
+                            @endcan
+                            
                             <td>
                                 <span class="text-muted">{{date("d-m-Y | h:i A",strtotime($av->updated_at))}}</span>
                             </td>
@@ -121,7 +131,9 @@
                         <th>Nombre</th>
                         <th>Descripción</th>
                         <th>Valor</th>
-                        <th>Opción</th>
+                        @can('ajustes.update')
+                            <th>Opción</th> 
+                        @endcan
                         <th>Ultima actualización</th>
                     </tr> 
                 </thead>
@@ -135,11 +147,13 @@
                             <td><span class="text-navy fw-semibold">{{$est->nombre}}</span></td>
                             <td>{{$est->descripcion}}</td>
                             <td> <span class="fw-semibold">{{$est->valor}} {{$est->nombre_clf}}.</span></td>
-                            <td>
-                                <span class="badge editar" style="background-color: #169131;" i="{{$est->correlativo}}" var="ajustes" role="button" data-bs-toggle="modal" data-bs-target="#modal_editar_valor">
-                                    <i class="bx bx-pencil fs-6"></i>
-                                </span>
-                            </td>
+                            @can('ajustes.update')
+                                <td>
+                                    <span class="badge editar" style="background-color: #169131;" i="{{$est->correlativo}}" var="ajustes" role="button" data-bs-toggle="modal" data-bs-target="#modal_editar_valor">
+                                        <i class="bx bx-pencil fs-6"></i>
+                                    </span>
+                                </td>
+                            @endcan
                             <td>
                                 <span class="text-muted">{{date("d-m-Y | h:i A",strtotime($est->updated_at))}}</span>
                             </td>
@@ -160,7 +174,9 @@
                         <th>Nombre</th>
                         <th>Valor</th>
                         <th>Moneda</th>
-                        <th>Opción</th>
+                        @can('ajustes.update')
+                            <th>Opción</th> 
+                        @endcan
                         <th>Ultima actualización</th>
                     </tr> 
                 </thead>
@@ -173,11 +189,13 @@
                         <td><span class="text-navy fw-semibold">Precio U.C.D</span></td>
                         <td>{{$ucd->valor}}</td>
                         <td> <span class="fw-semibold">{{$ucd->moneda}}</span></td>
-                        <td>
-                            <span class="badge editar" style="background-color: #169131;" i="{{$ucd->id}}" var="ucd" role="button" data-bs-toggle="modal" data-bs-target="#modal_editar_valor">
-                                <i class="bx bx-pencil fs-6"></i>
-                            </span>
-                        </td>
+                        @can('ajustes.update')
+                            <td>
+                                <span class="badge editar" style="background-color: #169131;" i="{{$ucd->id}}" var="ucd" role="button" data-bs-toggle="modal" data-bs-target="#modal_editar_valor">
+                                    <i class="bx bx-pencil fs-6"></i>
+                                </span>
+                            </td>
+                        @endcan
                         <td>
                             <span class="text-muted">{{date("d-m-Y | h:i A",strtotime($ucd->fecha))}}</span>
                         </td>

@@ -310,181 +310,176 @@ return [
             'topnav_right' => false,
         ],
         //CONSULTA
-        ['header' => 'Consulta'],
+        [   'header' => 'Consulta',
+            'can' => ['consulta'],
+        ],
         [
             'text'        => 'Timbre Fiscal',
             'route'         => 'consulta',
+            'can' => ['consulta'],
             'icon'       => 'fas fa-angle-right pe-2',   
         ],
         //CIERRE
-        ['header' => 'Cierre'],
+        [   'header' => 'Cierre',
+            'can' => ['cierre','historial_cierre','reporte_anual'],
+        ],
         [
             'text'        => 'Diario',
             'route'         => 'cierre',
+            'can' => ['cierre'],
             'icon'       => 'fas fa-angle-right pe-2', 
         ],
         [
             'text'        => 'Historial',
             'route'         => 'historial_cierre',
+            'can' => ['historial_cierre'],
             'icon'       => 'fas fa-angle-right pe-2',  
         ],
         [
             'text'        => 'Anual',
             'route'         => 'reporte_anual',
+            'can' => ['reporte_anual'],
             'icon'       => 'fas fa-angle-right pe-2',  
         ],
         //PAPEL DE SEGURIDAD
-        ['header' => 'Papel de Seguridad'],
+        [   'header' => 'Papel de Seguridad',
+            'can' => ['emision_papel','inventario_papel','inventario_ut'],
+        ],
+            
         [
             'text'        => 'Emisión',
             'route'         => 'emision_papel',
+            'can' => ['emision_papel'],
             'icon'       => 'fas fa-angle-right pe-2',   
         ],
         [
             'text'        => 'Inventario',
+            'can' => ['inventario_papel','inventario_ut'],
             'icon'       => 'fas fa-angle-right pe-2', 
             'submenu' => [
                             [
                                 'text' => 'Papel de Seguridad',
                                 'route'  => 'inventario_papel',
+                                'can' => ['inventario_papel'],
                             ], 
                             [
                                 'text' => 'Estampillas U.T.',
                                 'route'  => 'inventario_ut',
+                                'can' => ['inventario_ut'],
                             ],
                         ],
         ],
         //ESTAMPILLAS
-        ['header' => 'Estampillas'],
+        [   'header' => 'Estampillas',
+            'can' => ['emision_ucd'],
+        ],
         [
             'text'        => 'Asignación UCD | Inventario',
             'route'         => 'emision_ucd',
+            'can' => ['emision_ucd'],
             'icon'       => 'fas fa-angle-right pe-2',   
         ],
         //ASIGNACIONES
-        ['header' => 'Asignaciones'],
+        [   'header' => 'Asignaciones',
+            'can' => ['asignar','timbres_asignados','historial_asignaciones'],
+        ],
         [
             'text'        => 'Asignar Timbres',
             'route'         => 'asignar',
+            'can' => ['asignar'],
             'icon'       => 'fas fa-angle-right pe-2', 
         ],
         [
             'text'        => 'Timbres asignados',
             'route'         => 'timbres_asignados',
+            'can' => ['timbres_asignados'],
             'icon'       => 'fas fa-angle-right pe-2',  
         ],
         [
             'text'        => 'Historial',
             'route'         => 'historial_asignaciones',
+            'can' => ['historial_asignaciones'],
             'icon'       => 'fas fa-angle-right pe-2',  
         ],
         //TAQUILLAS        
-        ['header' => 'Taquillas'],
+        [   'header' => 'Taquillas',
+            'can' => ['apertura','inventario_taquillas'],
+        ],
         [
             'text'        => 'Aperturar',
             'route'         => 'apertura',
+            'can' => ['apertura'],
             'icon'       => 'fas fa-angle-right pe-2',  
         ],
         [
             'text'        => 'Inventario',
             'route'         => 'inventario_taquillas',
+            'can' => ['inventario_taquillas'],
             'icon'       => 'fas fa-angle-right pe-2',  
         ],
         //SEDES-TAQUILLAS
-        ['header' => 'Sedes | Taquillas '],
+        [   'header' => 'Sedes | Taquillas ',
+            'can' => ['sede_taquilla'],
+        ],
         [
             'text'        => 'Agregar y/o Modificar',
             'route'         => 'sede_taquilla',
+            'can' => ['sede_taquilla'],
             'icon'       => 'fas fa-angle-right pe-2',  
         ],
         //CONFIGURACIONES
-        ['header' => 'Configuraciones'],
+        [   'header' => 'Configuraciones',
+            'can' => ['ajustes','usuarios','roles','rol_usuario','bitacora'],
+        ],
         [
             'text'        => 'Ajustes',
             'route'         => 'ajustes',
+            'can' => ['ajustes'],
             'icon'       => 'fas fa-angle-right pe-2',  
         ],
         [
             'text' => 'Usuarios',
             'url'  => '/usuarios',
+            'can' => ['usuarios'],
             'icon'       => 'fas fa-angle-right pe-2',
+        ],
+        [
+            'text' => 'Permisos',
+            'can' => ['roles','rol_usuario'],
+            'icon'       => 'fas fa-angle-right pe-2', 
+            'submenu' => [
+                [
+                    'text' => 'Roles',
+                    'icon' => 'fas fa-angle-right ps-3 pe-2', 
+                    'route'  => 'roles',
+                    'can' => ['roles'],
+                ],
+                [
+                    'text' => 'Usuarios',
+                    'icon' => 'fas fa-angle-right ps-3 pe-2', 
+                    'route'  => 'rol_usuario',
+                    'can' => ['rol_usuario'],
+                ],
+            ],
         ],
         [
             'text' => 'Bitácoras',
             'url'  => '/bitacora',
+            'can' => ['bitacora'],
             'icon'       => 'fas fa-angle-right pe-2',
         ],
         // MI CUENTA
         [   'header' => 'Mi Cuenta',
+            'can' => ['new_pass'],
         ],         
         [
             'text' => 'Nueva Contraseña',
             'url'  => '/new_pass',
+            'can' => ['new_pass'],
             'icon'       => 'fas fa-angle-right pe-2',
         ],
 
 
-
-
-
-
-
-
-
-
-
-
-
-        // ['header' => 'Administración'],
-        // [
-        //     'text' => 'UCD',
-        //     'url'  => '/ucd',
-        //     'icon'       => 'fas fa-angle-right pe-2',
-        // ],
-        // [
-        //     'text' => 'Datos',
-        //     'url'  => '/config',
-        //     'icon'       => 'fas fa-angle-right pe-2',
-        // ],
-
-        // [
-        //     'text'    => 'multilevel',
-        //     'icon'    => 'fas fa-fw fa-share',
-        //     'submenu' => [
-        //         [
-        //             'text' => 'level_one',
-        //             'url'  => '#',
-        //         ],
-        //         [
-        //             'text'    => 'level_one',
-        //             'url'     => '#',
-        //             'submenu' => [
-        //                 [
-        //                     'text' => 'level_two',
-        //                     'url'  => '#',
-        //                 ],
-        //                 [
-        //                     'text'    => 'level_two',
-        //                     'url'     => '#',
-        //                     'submenu' => [
-        //                         [
-        //                             'text' => 'level_three',
-        //                             'url'  => '#',
-        //                         ],
-        //                         [
-        //                             'text' => 'level_three',
-        //                             'url'  => '#',
-        //                         ],
-        //                     ],
-        //                 ],
-        //             ],
-        //         ],
-        //         [
-        //             'text' => 'level_one',
-        //             'url'  => '#',
-        //         ],
-        //     ],
-        // ],
 
     ],
 

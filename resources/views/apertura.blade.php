@@ -15,12 +15,16 @@
         <div class="row d-flex align-items-center mb-5">
             <div class="col-md-6 text-navy fs-3 titulo fw-bold">Hoy | <span class="fs-4" style="color:#004cbd">{{$hoy_view}}</span></div>
 
-            <div class="col-md-6 d-flex justify-content-end">
-                <button type="button" class="btn bg-navy rounded-pill px-3 btn-sm fw-bold d-flex align-items-center" id="apertura_taquillas" data-bs-toggle="modal" data-bs-target="#modal_apertura_taquillas">
-                    <i class='bx bx-plus fw-bold fs-6 pe-2'></i>
-                    <span>Aperturar</span>
-                </button>
-            </div>
+            @can('apertura.apertura_taquillas')
+                <div class="col-md-6 d-flex justify-content-end">
+                    <button type="button" class="btn bg-navy rounded-pill px-3 btn-sm fw-bold d-flex align-items-center" id="apertura_taquillas" data-bs-toggle="modal" data-bs-target="#modal_apertura_taquillas">
+                        <i class='bx bx-plus fw-bold fs-6 pe-2'></i>
+                        <span>Aperturar</span>
+                    </button>
+                </div>
+            @endcan
+
+            
         </div>
 
 
@@ -68,18 +72,21 @@
             </table>
         </div>
 
-        <div class="d-flex justify-content-between mt-5 mb-2">
-            <p class="text-navy fw-bold fs-4 titulo">Taquillas aperturadas | <span class="text-muted">Buscar por fecha</span></p>
+        @can('apertura.search_fecha')
+            <div class="d-flex justify-content-between mt-5 mb-2">
+                <p class="text-navy fw-bold fs-4 titulo">Taquillas aperturadas | <span class="text-muted">Buscar por fecha</span></p>
 
-            <div class="d-flex align-items-center" >
-                <input type="date" class="form-control me-2" style="font-size:13px" id="fecha_search_apertura">  
-                <button type="button" class="btn btn-secondary pb-1" id="btn_search_apertura"><i class='bx bx-search fs-6 m-0'></i></button>
+                <div class="d-flex align-items-center" >
+                    <input type="date" class="form-control me-2" style="font-size:13px" id="fecha_search_apertura">  
+                    <button type="button" class="btn btn-secondary pb-1" id="btn_search_apertura"><i class='bx bx-search fs-6 m-0'></i></button>
+                </div>
             </div>
-        </div>
 
-        <div id="content_table_search">
-           
-        </div>
+            <div id="content_table_search">
+            
+            </div>
+        @endcan
+        
     </div>
     
 

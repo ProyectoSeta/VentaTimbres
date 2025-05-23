@@ -12,14 +12,14 @@
     <div class="container rounded-4 p-3" style="background-color:#ffff;">
         <div class="d-flex justify-content-between align-items-center mb-3">
             <h3 class="mb-3 text-navy fw-bold titulo">Usuarios <span class="text-secondary fs-4">| Sistema de ventas</span></h3>
-            {{-- @can('usuarios.store') --}}
+            @can('usuarios.store')
                 <div class="mb-3">
                     <button type="button" class="btn bg-navy rounded-pill px-3 btn-sm fw-bold d-flex align-items-center" id="new_user" data-bs-toggle="modal" data-bs-target="#modal_new_user"> 
                         <i class='bx bx-plus fw-bold fs-6 pe-2'></i>
                         <span>Nuevo Usuario</span>
                     </button>
                 </div> 
-            {{-- @endcan --}}
+            @endcan
             
         </div>
 
@@ -35,9 +35,9 @@
                             <th scope="col">Cargo</th>
                             <th scope="col">Creado</th>
                             <th scope="col">Última actualización</th>
-                            {{-- @if(auth()->user()->can('usuarios.editar') || auth()->user()->can('usuarios.destroy')) --}}
+                            @can('usuarios.editar')
                                 <th scope="col">Opciones</th>
-                            {{-- @endif --}}
+                            @endcan
                         </tr>
                 </thead>
                 <tbody>
@@ -50,16 +50,13 @@
                             <td><span class="text-muted fst-italic">{{ $admin->cargo }}</span></td>
                             <td class="text-secondary fst-italic">{{ date("d-m-Y h:i A",strtotime($admin->created_at)) }}</td>
                             <td class="text-secondary fst-italic">{{ date("d-m-Y h:i A",strtotime($admin->updated_at)) }}</td>
-
-                            {{-- @if(auth()->user()->can('usuarios.editar') || auth()->user()->can('usuarios.destroy')) --}}
+                            @can('usuarios.editar')
                                 <td>
-                                    {{-- @can('usuarios.editar') --}}
-                                        <span class="badge edit_user" style="background-color: #169131;" role="button" data-bs-toggle="modal" data-bs-target="#modal_edit_user" id_user="{{ $admin->id}}">
-                                            <i class="bx bx-pencil fs-6"></i>
-                                        </span> 
-                                    {{-- @endcan --}}
+                                    <span class="badge edit_user" style="background-color: #169131;" role="button" data-bs-toggle="modal" data-bs-target="#modal_edit_user" id_user="{{ $admin->id}}">
+                                        <i class="bx bx-pencil fs-6"></i>
+                                    </span> 
                                 </td>
-                            {{-- @endif --}}
+                            @endcan
                         </tr>
                     @endforeach
                 </tbody>

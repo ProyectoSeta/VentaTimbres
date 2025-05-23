@@ -29,8 +29,28 @@ class UserSeeder extends Seeder
 
         // CREAR EL ROL
         $roleAdmin = Role::create(['name' => 'Admin Master']);
+
         // ASIGNAR EL ROL AL USUARIO
         $adminUser->assignRole($roleAdmin);
+
+        // BUSCAR TODOS LOS PERMISOS REGISTRADOS
+        $permissionsAdmin = Permission::query()->where('name','!=','venta')
+                                                ->where('name','!=','home.apertura_taquilla')
+                                                ->where('name','!=','home.cierre_taquilla')
+                                                ->where('name','!=','home.modal_clave')
+                                                ->where('name','!=','timbres_asignados')
+                                                ->pluck('name');
+
+        // ASIGNAR LOS PERMISOS AL ROL
+        $roleAdmin->syncPermissions($permissionsAdmin);
+
+
+
+
+
+
+
+
 
 
         /////////SUJETOS TAQUILLEROS PRUEBA 

@@ -210,6 +210,22 @@ Route::post('/usuarios/editar', [App\Http\Controllers\UsuariosController::class,
 Route::get('/bitacora', [App\Http\Controllers\BitacoraController::class, 'index'])->middleware('can:bitacora')->name('bitacora');
 
 
+// ROLES
+Route::get('/roles', [App\Http\Controllers\RolesController::class, 'index'])->middleware('can:roles')->name('roles');
+Route::post('/roles/modal_new', [App\Http\Controllers\RolesController::class, 'modal_new'])->name('roles.modal_new');
+Route::post('/roles/store', [App\Http\Controllers\RolesController::class, 'store'])->name('roles.store');
+Route::post('/roles/ver', [App\Http\Controllers\RolesController::class, 'ver'])->name('roles.ver');
+Route::post('/roles/modal_editar', [App\Http\Controllers\RolesController::class, 'modal_editar'])->name('roles.modal_editar');
+Route::post('/roles/update', [App\Http\Controllers\RolesController::class, 'update'])->name('roles.update');
+
+// ROLES DE USUARIOS
+Route::get('/rol_usuario', [App\Http\Controllers\UserRolesController::class, 'index'])->middleware('can:rol_usuario')->name('rol_usuario');
+Route::post('/rol_usuario/modal_edit', [App\Http\Controllers\UserRolesController::class, 'modal_edit'])->name('rol_usuario.modal_edit');
+Route::post('/rol_usuario/roles', [App\Http\Controllers\UserRolesController::class, 'roles'])->name('rol_usuario.roles');
+Route::post('/rol_usuario/update', [App\Http\Controllers\UserRolesController::class, 'update'])->name('rol_usuario.update');
+
+
+
 
 //////////////////NUEVA CONTRASEÑA
 Route::get('/new_pass', [App\Http\Controllers\NewPassController::class, 'index'])->middleware('can:new_pass')->name('new_pass');
@@ -246,6 +262,24 @@ Route::post('/venta/agregar', [App\Http\Controllers\VentaController::class, 'agr
 Route::post('/venta/quitar', [App\Http\Controllers\VentaController::class, 'quitar'])->name('venta.quitar');
 
 Route::post('/venta/venta', [App\Http\Controllers\VentaController::class, 'venta'])->name('venta.venta');
+
+
+
+
+///////////////////// ARQUEO
+Route::get('/arqueo', [App\Http\Controllers\ArqueoTaquillaController::class, 'index'])->middleware('can:arqueo')->name('arqueo');
+Route::post('/arqueo/contribuyente', [App\Http\Controllers\ArqueoTaquillaController::class, 'contribuyente'])->name('arqueo.contribuyente');
+Route::post('/arqueo/timbres', [App\Http\Controllers\ArqueoTaquillaController::class, 'timbres'])->name('arqueo.timbres');
+Route::post('/arqueo/detalle_venta', [App\Http\Controllers\ArqueoTaquillaController::class, 'detalle_venta'])->name('arqueo.detalle_venta');
+Route::post('/arqueo/detalle_forma', [App\Http\Controllers\ArqueoTaquillaController::class, 'detalle_forma'])->name('arqueo.detalle_forma');
+Route::post('/arqueo/cierre_punto', [App\Http\Controllers\ArqueoTaquillaController::class, 'cierre_punto'])->name('arqueo.cierre_punto');
+Route::get('/pdf_cierre_taquilla/{id?}/', [App\Http\Controllers\ArqueoTaquillaController::class, 'pdf_cierre_taquilla'])->middleware('can:pdf_cierre_taquilla')->name('pdf_cierre_taquilla');
+
+
+
+
+
+
 
 
 
@@ -287,14 +321,6 @@ Route::post('/venta/venta', [App\Http\Controllers\VentaController::class, 'venta
 
 
 
-///////////////////// ARQUEO
-Route::get('/arqueo', [App\Http\Controllers\ArqueoTaquillaController::class, 'index'])->name('arqueo');
-Route::post('/arqueo/contribuyente', [App\Http\Controllers\ArqueoTaquillaController::class, 'contribuyente'])->name('arqueo.contribuyente');
-Route::post('/arqueo/timbres', [App\Http\Controllers\ArqueoTaquillaController::class, 'timbres'])->name('arqueo.timbres');
-Route::post('/arqueo/detalle_venta', [App\Http\Controllers\ArqueoTaquillaController::class, 'detalle_venta'])->name('arqueo.detalle_venta');
-Route::post('/arqueo/detalle_forma', [App\Http\Controllers\ArqueoTaquillaController::class, 'detalle_forma'])->name('arqueo.detalle_forma');
-Route::post('/arqueo/cierre_punto', [App\Http\Controllers\ArqueoTaquillaController::class, 'cierre_punto'])->name('arqueo.cierre_punto');
-Route::get('/pdf_cierre_taquilla/{id?}/', [App\Http\Controllers\ArqueoTaquillaController::class, 'pdf_cierre_taquilla'])->name('pdf_cierre_taquilla');
 
 
 

@@ -30,28 +30,36 @@
                                 <p class="text-muted titulo fs-5">Disculpe, el usuario Coordinador no ha aperturado esta Taquilla todavia. Ante cualquier duda, 
                                     comuniquese con su Supervisor.</p>
                             @elseif ($apertura_admin == true && $apertura_taquillero == false)
-                                <button type="button" class="btn btn-s btn-primary py-1" data-bs-toggle="modal" data-bs-target="#modal_apertura_taquilla">Aperturar Taquilla</button>
+                                @can('home.apertura_taquilla')
+                                    <button type="button" class="btn btn-s btn-primary py-1" data-bs-toggle="modal" data-bs-target="#modal_apertura_taquilla">Aperturar Taquilla</button>
+                                @endcan
                             @elseif ($apertura_taquillero == true)
                                 <button type="button" class="btn btn-s btn-dark py-1" id="btn_historial_boveda" data-bs-toggle="offcanvas" data-bs-target="#historial_boveda" aria-controls="historial_boveda">Historial Bv.</button>
                                 <button type="button" class="btn btn-s btn-dark py-1" id="btn_boveda" data-bs-toggle="modal" data-bs-target="#modal_ingresar_boveda">Bóveda</button>
                                 <a href="{{ route('venta') }}" class="btn btn-s btn-success py-1">Vender (F2)</a>
-                                <button type="button" class="btn btn-s btn-secondary  py-1" data-bs-toggle="modal" data-bs-target="#modal_cerrar_taquilla">Cierre</button>
+                                @can('home.cierre_taquilla')
+                                    <button type="button" class="btn btn-s btn-secondary  py-1" data-bs-toggle="modal" data-bs-target="#modal_cerrar_taquilla">Cierre</button>
+                                @endcan
+                                
 
                                 
                             @endif               
                         </div>
                         @if ($apertura_taquillero == true)
-                            <div class="mt-3">
-                                <div class="">
-                                    <a href="#" class="" id="btn_falla_impresion">¿Falla en la Impresión?</a>
-                                </div>   
+                            @can('home.modal_clave')
+                                <div class="mt-3">
+                                    <div class="">
+                                        <a href="#" class="" id="btn_falla_impresion">¿Falla en la Impresión?</a>
+                                    </div>   
 
-                                <div class="mt-2 d-none" id="opctions_falla_impresion">
-                                    <button type="button" id="btn_papel_bueno" papel="1" class="btn btn-sm btn-outline-secondary btn_modal_papel me-3" data-bs-toggle="modal" data-bs-target="#modal_clave_taquilla">Papel Bueno</button>
-                                    <button type="button" id="btn_papel_danado" papel="0" class="btn btn-sm btn-outline-secondary btn_modal_papel" data-bs-toggle="modal" data-bs-target="#modal_clave_taquilla">Papel Dañado</button>
+                                    <div class="mt-2 d-none" id="opctions_falla_impresion">
+                                        <button type="button" id="btn_papel_bueno" papel="1" class="btn btn-sm btn-outline-secondary btn_modal_papel me-3" data-bs-toggle="modal" data-bs-target="#modal_clave_taquilla">Papel Bueno</button>
+                                        <button type="button" id="btn_papel_danado" papel="0" class="btn btn-sm btn-outline-secondary btn_modal_papel" data-bs-toggle="modal" data-bs-target="#modal_clave_taquilla">Papel Dañado</button>
+                                    </div>
+                                    
                                 </div>
-                                
-                            </div>
+                            @endcan
+                            
                         @endif
                                 
                         

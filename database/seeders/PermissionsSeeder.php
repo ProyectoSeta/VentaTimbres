@@ -95,7 +95,7 @@ class PermissionsSeeder extends Seeder
                         'module' => 2,
                         'priority'=> 1]);
         Permission::create(['name' => 'cierre.arqueo',
-                        'description' => 'Ver Cierre de Taquillas del día',
+                        'description' => 'Ver Arqueo del día | Taquillas ',
                         'module' => 2,
                         'priority'=> 1]);
 
@@ -436,9 +436,80 @@ class PermissionsSeeder extends Seeder
                         'priority'=> 1]);
        
 
+        //// ARQUEO
+        Permission::create(['name' => 'arqueo',
+                        'description' => 'Ver Arqueo de Taquilla',
+                        'module' => 10,
+                        'priority'=> 1]);
+        Permission::create(['name' => 'arqueo.contribuyente',
+                        'description' => 'Datos Contribuyentes',
+                        'module' => 10,
+                        'priority'=> 2]);
+        Permission::create(['name' => 'arqueo.timbres',
+                        'description' => 'Ver Timbres emitidos en la Venta',
+                        'module' => 10,
+                        'priority'=> 1]);
+        Permission::create(['name' => 'arqueo.detalle_venta',
+                        'description' => 'Ver Detalle de la Venta',
+                        'module' => 10,
+                        'priority'=> 1]);
+        Permission::create(['name' => 'arqueo.detalle_forma',
+                        'description' => 'Ver Detalle de la Forma (Timbre Fiscal)',
+                        'module' => 10,
+                        'priority'=> 1]);
+        Permission::create(['name' => 'arqueo.cierre_punto',
+                        'description' => 'Ver Cierre de Punto',
+                        'module' => 10,
+                        'priority'=> 1]);
+        Permission::create(['name' => 'pdf_cierre_taquilla',
+                        'description' => 'Descargar PDF | Arqueo de Taquilla',
+                        'module' => 10,
+                        'priority'=> 1]);
 
       
-
+       // ROLES
+        Permission::create(['name' => 'roles',
+                                'description' => 'Ver Roles',
+                                'module' => 8,
+                                'priority'=> 1]);
+        Permission::create(['name' => 'roles.modal_new',
+                                'description' => 'Modal Nuevo Rol',
+                                'module' => 8,
+                                'priority'=> 2]);
+        Permission::create(['name' => 'roles.store',
+                                'description' => 'Crear Rol',
+                                'module' => 8,
+                                'priority'=> 1]);
+        Permission::create(['name' => 'roles.ver',
+                                'description' => 'Ver Permisos del Rol',
+                                'module' => 8,
+                                'priority'=> 1]);
+        Permission::create(['name' => 'roles.modal_editar',
+                                'description' => 'Modal Editar Rol',
+                                'module' => 8,
+                                'priority'=> 2]);
+        Permission::create(['name' => 'roles.update',
+                                'description' => 'Editar Rol',
+                                'module' => 8,
+                                'priority'=> 1]);
+        
+        // ROLES DE USUARIOS
+        Permission::create(['name' => 'rol_usuario',
+                                'description' => 'Ver Roles de Usuario',
+                                'module' => 8,
+                                'priority'=> 1]);
+        Permission::create(['name' => 'rol_usuario.modal_edit',
+                                'description' => 'Editar Rol de Usuario',
+                                'module' => 8,
+                                'priority'=> 2]);
+        Permission::create(['name' => 'rol_usuario.roles',
+                                'description' => 'Consulta Roles',
+                                'module' => 8,
+                                'priority'=> 2]);
+        Permission::create(['name' => 'rol_usuario.update',
+                                'description' => 'Editar Rol de Usuario',
+                                'module' => 8,
+                                'priority'=> 1]); 
 
 
     }

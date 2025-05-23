@@ -61,12 +61,15 @@
 
         <div class="d-flex justify-content-between align-items-center mb-4">
             <h3 class="mb-3 text-navy titulo fw-bold">Asignaciones a Taquillas<span class="text-secondary fs-4"> | En Proceso</span></h3>
-            <div class="mb-3">
-                <button type="button" class="btn bg-navy rounded-pill px-3 btn-sm fw-bold d-flex align-items-center" id="" data-bs-toggle="modal" data-bs-target="#modal_asignar_timbres">
-                    <i class='bx bx-plus fw-bold fs-6 pe-2'></i>
-                    <span>Asignar</span>
-                </button>
-            </div>
+
+            @if(auth()->user()->can('asignar.asignar_forma_14') || auth()->user()->can('asignar.asignar_estampillas'))
+                <div class="mb-3">
+                    <button type="button" class="btn bg-navy rounded-pill px-3 btn-sm fw-bold d-flex align-items-center" id="" data-bs-toggle="modal" data-bs-target="#modal_asignar_timbres">
+                        <i class='bx bx-plus fw-bold fs-6 pe-2'></i>
+                        <span>Asignar</span>
+                    </button>
+                </div>
+            @endif
         </div>
          
         <div class="text-navy fs-3 mb-3 titulo fw-bold">
@@ -80,8 +83,9 @@
                     <th>Ubicación</th>
                     <th>Fecha</th>
                     <th>Detalles</th>
-                    <th>Constancia</th>
-                    <!-- <th>¿Recibido?</th>  -->
+                    @can('asignar.pdf_forma14')
+                        <th>Constancia</th>
+                    @endcan
                 </thead>
                 <tbody id="" class="border-light-subtle"> 
                     @foreach ($asignado_tfe as $tfe)
@@ -97,12 +101,12 @@
                             <td>
                                 <a href="#" class="detalle_asignacion_rollos" vista="asignacion" asignacion="{{$tfe->id_asignacion}}" data-bs-toggle="modal" data-bs-target="#modal_asignado_forma14">Ver</a>
                             </td>
-                            <td>
-                                <a href="{{route('asignar.pdf_forma14', ['asignacion' => $tfe->id_asignacion])}}">Imprimir</a>
-                            </td>
-                            <!-- <td>
-                                <span class="text-secondary fst-italic">Sin recibir</span>
-                            </td> -->
+                            @can('asignar.pdf_forma14')
+                                <td>
+                                    <a href="{{route('asignar.pdf_forma14', ['asignacion' => $tfe->id_asignacion])}}">Imprimir</a>
+                                </td>
+                            @endcan
+                            
                         </tr>
                     @endforeach
                 </tbody> 
@@ -120,7 +124,9 @@
                     <th>Ubicación</th>
                     <th>Fecha</th>
                     <th>Detalles</th>
-                    <th>Constancia</th>
+                    @can('asignar.pdf_estampillas')
+                        <th>Constancia</th>
+                    @endcan
                 </thead>
                 <tbody id="" class="border-light-subtle"> 
                     @foreach ($asignado_estampillas as $estampillas)
@@ -136,9 +142,12 @@
                             <td>
                                 <a href="" class="detalle_asignacion_estampillas" vista="asignacion" asignacion="{{$estampillas->id_asignacion}}" data-bs-toggle="modal" data-bs-target="#modal_asignado_estampillas">Ver</a>
                             </td>
-                            <td>
-                                <a href="{{route('asignar.pdf_estampillas', ['asignacion' => $estampillas->id_asignacion])}}">Imprimir</a>
-                            </td>
+                            @can('asignar.pdf_estampillas')
+                                <td>
+                                    <a href="{{route('asignar.pdf_estampillas', ['asignacion' => $estampillas->id_asignacion])}}">Imprimir</a>
+                                </td>
+                            @endcan
+                            
                         </tr>
                     @endforeach
                 </tbody> 
@@ -174,12 +183,16 @@
                 <div class="modal-body px-5 py-3" style="font-size:13px">
                     <div class="d-flex justify-content-center">
                         <ul class="nav nav-pills mb-3" id="pills-tab" role="tablist">
-                            <li class="nav-item" role="presentation">
-                                <button class="nav-link active" id="pills-14-tab" data-bs-toggle="pill" data-bs-target="#pills-14" type="button" role="tab" aria-controls="pills-14" aria-selected="true">Forma 14</button>
-                            </li>
-                            <li class="nav-item" role="presentation">
-                                <button class="nav-link" id="pills-estampilla-tab" data-bs-toggle="pill" data-bs-target="#pills-estampilla" type="button" role="tab" aria-controls="pills-estampilla" aria-selected="false">Estampillas</button>
-                            </li>
+                            @can('asignar.asignar_forma_14')
+                                <li class="nav-item" role="presentation">
+                                    <button class="nav-link active" id="pills-14-tab" data-bs-toggle="pill" data-bs-target="#pills-14" type="button" role="tab" aria-controls="pills-14" aria-selected="true">Forma 14</button>
+                                </li>
+                            @endcan
+                            @can('asignar.asignar_estampillas')
+                                <li class="nav-item" role="presentation">
+                                    <button class="nav-link" id="pills-estampilla-tab" data-bs-toggle="pill" data-bs-target="#pills-estampilla" type="button" role="tab" aria-controls="pills-estampilla" aria-selected="false">Estampillas</button>
+                                </li>
+                            @endcan
                         </ul>
                     </div>
 

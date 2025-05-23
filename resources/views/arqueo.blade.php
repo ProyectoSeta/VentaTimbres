@@ -29,7 +29,9 @@
                     <div class="col-md-6">
                         <h5 class="fw-bold fs-3">Punto</h5>
                         <h4 class="fw-semibold">@php echo(number_format($arqueo->punto, 2, ',', '.')) @endphp Bs.</h4>
-                        <a href="#" data-bs-toggle="modal" data-bs-target="#modal_cierre_punto" id="cierre_punto" taquilla="{{$id_taquilla}}">Cierre de Punto</a>
+                        @can('arqueo.cierre_punto')
+                            <a href="#" data-bs-toggle="modal" data-bs-target="#modal_cierre_punto" id="cierre_punto" taquilla="{{$id_taquilla}}">Cierre de Punto</a>
+                        @endcan
                     </div>
                     
                     <div class="col-md-6">
@@ -66,7 +68,10 @@
                         <div class="d-flex flex-column">
                             <div class="fs-4 fw-semibold text-secondary">@php echo(number_format($arqueo->recaudado_tfe, 2, ',', '.')) @endphp Bs.</div>  
                             <span class="text-muted">{{$arqueo->cantidad_tfe}} Unidades</span>
-                            <a href="#" class="detalle_forma" data-bs-toggle="modal" data-bs-target="#modal_detalle_formas" forma="3" taquilla="{{$id_taquilla}}">Ver detalles</a>
+                            @can('arqueo.detalle_forma')
+                                <a href="#" class="detalle_forma" data-bs-toggle="modal" data-bs-target="#modal_detalle_formas" forma="3" taquilla="{{$id_taquilla}}">Ver detalles</a>
+                            @endcan
+                            
                         </div>
                     </div>
                 </div>
@@ -78,7 +83,10 @@
                         <div class="d-flex flex-column">
                             <div class="fs-4 fw-semibold text-secondary">@php echo(number_format($arqueo->recaudado_est, 2, ',', '.')) @endphp Bs.</div>  
                             <span class="text-muted">{{$arqueo->cantidad_est}} Unidades</span>
-                            <a href="#" class="detalle_forma" data-bs-toggle="modal" data-bs-target="#modal_detalle_formas" forma="4" taquilla="{{$id_taquilla}}">Ver detalles</a>
+                            @can('arqueo.detalle_forma')
+                                <a href="#" class="detalle_forma" data-bs-toggle="modal" data-bs-target="#modal_detalle_formas" forma="4" taquilla="{{$id_taquilla}}">Ver detalles</a>
+                            @endcan
+                            
                         </div>
                     </div>
                 </div>
@@ -86,12 +94,15 @@
 
 
             <!-- BTN DESCARGAR REPORTE -->
-            <div class="d-flex justify-content-center align-items-center flex-column">
-                <div class="fs-5 fw-semibold titulo text-navy mb-2">Descargar Reporte</div>
-                <a href="{{ route('pdf_cierre_taquilla', ['id' => $arqueo->id] ) }}" class="btn btn-sm btn-secondary d-inline-flex align-items-center"  role="button">
-                    Reporte
-                </a>
-            </div>
+            @can('pdf_cierre_taquilla')
+                <div class="d-flex justify-content-center align-items-center flex-column">
+                    <div class="fs-5 fw-semibold titulo text-navy mb-2">Descargar Reporte</div>
+                    <a href="{{ route('pdf_cierre_taquilla', ['id' => $arqueo->id] ) }}" class="btn btn-sm btn-secondary d-inline-flex align-items-center"  role="button">
+                        Reporte
+                    </a>
+                </div>
+            @endcan
+            
 
             <div class="table-responsive py-3 pt-5 px-4"  style="font-size:12.7px">
                 <table class="table table-sm border-light-subtle text-center" id="table_venta_taquilla"  style="font-size:13px">
@@ -101,8 +112,13 @@
                             <th>Contribuyente</th>
                             <th>Total U.C.D.</th>
                             <th>Total Bs.</th>
-                            <th>Detalle</th>
-                            <th>Timbres</th>
+                            @can('arqueo.detalle_venta')
+                                <th>Detalle</th>
+                            @endcan
+                            @can('arqueo.timbres')
+                                <th>Timbres</th>
+                            @endcan
+                            
                         </tr>
                     </thead>
                     <tbody>
@@ -127,12 +143,18 @@
                                 <td>
                                     <span class="fw-bold text-navy">@php echo(number_format($venta->total_bolivares, 2, ',', '.')) @endphp Bs.</span>
                                 </td>
-                                <td>
-                                    <a role="button" class="detalle_venta" venta="{{$venta->id_venta}}" data-bs-toggle="modal" data-bs-target="#modal_detalle_venta">Ver</a>
-                                </td>
-                                <td>
-                                    <a role="button" class="timbres" venta="{{$venta->id_venta}}" data-bs-toggle="modal" data-bs-target="#modal_timbres">Ver</a>
-                                </td>
+                                @can('arqueo.detalle_venta')
+                                    <td>
+                                        <a role="button" class="detalle_venta" venta="{{$venta->id_venta}}" data-bs-toggle="modal" data-bs-target="#modal_detalle_venta">Ver</a>
+                                    </td>
+                                @endcan
+                                
+                                @can('arqueo.timbres')
+                                    <td>
+                                        <a role="button" class="timbres" venta="{{$venta->id_venta}}" data-bs-toggle="modal" data-bs-target="#modal_timbres">Ver</a>
+                                    </td>
+                                @endcan
+                                
                             </tr>
                         @endforeach
                     </tbody>

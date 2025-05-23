@@ -276,6 +276,18 @@ class AsignarController extends Controller
                     $accion = 'TIMBRES FISCALES ELECTRONICOS FORMA 14 ASIGNADOS A LA TAQ'.$taquilla.', ID ASIGNACIÓN: '.$id_asignacion.'.';
                     $bitacora = DB::table('bitacoras')->insert(['key_user' => $user, 'key_modulo' => 5, 'accion'=> $accion]);
 
+                    /////VERIFICAR PERMISO = DESCARGAR PDF
+                    $con_rol = DB::table('model_has_roles')->select('role_id')->where('model_id','=',$user)->first();
+                    $rol = $con_rol->role_id;
+
+                    $descarga = '';
+                    $con_permission = DB::table('role_has_permissions')->where('role_id','=',$rol)->where('permission_id','=',58)->first();
+                    if ($con_permission) {
+                        // esta permitido
+                        $descarga = '<a href="'.route("asignar.pdf_forma14", ["asignacion" => $id_asignacion]).'" class="btn btn-dark btn-sm"  style="font-size:12.7px">Imprimir Constancia</a>';
+                    }   
+
+
                     $html = '<div class="modal-header p-2 pt-3 d-flex justify-content-center">
                                 <div class="text-center">
                                     <i class="bx bxs-layer-plus fs-2 text-muted me-2"></i>
@@ -307,7 +319,7 @@ class AsignarController extends Controller
 
                                 <div class="d-flex justify-content-center mb-3">
                                     <a href="'.route("asignar").'" class="btn btn-secondary btn-sm me-2">Cancelar</a>
-                                    <a href="'.route("asignar.pdf_forma14", ["asignacion" => $id_asignacion]).'" class="btn btn-dark btn-sm"  style="font-size:12.7px">Imprimir Constancia</a>
+                                    '.$descarga.'
                                 </div>
                             </div>';
                             
@@ -786,6 +798,18 @@ class AsignarController extends Controller
                 $bitacora = DB::table('bitacoras')->insert(['key_user' => $user, 'key_modulo' => 5, 'accion'=> $accion]);
 
 
+                ////VERIFICAR PERMISO = DESCARGAR PDF
+                $con_rol = DB::table('model_has_roles')->select('role_id')->where('model_id','=',$user)->first();
+                $rol = $con_rol->role_id;
+
+                $descarga = '';
+                $con_permission = DB::table('role_has_permissions')->where('role_id','=',$rol)->where('permission_id','=',59)->first();
+                if ($con_permission) {
+                    // esta permitido
+                    $descarga = '<a href="'.route("asignar.pdf_estampillas", ["asignacion" => $id_asignacion]).'" class="btn btn-dark btn-sm"  style="font-size:12.7px">Imprimir Constancia</a>';
+                }  
+
+
                 $html = '<div class="modal-header p-2 pt-3 d-flex justify-content-center">
                             <div class="text-center">
                                 <i class="bx bxs-layer-plus fs-2 text-muted me-2"></i>
@@ -815,7 +839,7 @@ class AsignarController extends Controller
                             
                             <div class="d-flex justify-content-center mb-3">
                                 <a href="'.route("asignar").'" class="btn btn-secondary btn-sm me-2">Cancelar</a>
-                                <a href="'.route("asignar.pdf_estampillas", ["asignacion" => $id_asignacion]).'" class="btn btn-dark btn-sm"  style="font-size:12.7px">Imprimir Constancia</a>
+                                '.$descarga.'
                             </div>
                         </div>';
                 return response()->json(['success' => true, 'html' => $html]);

@@ -59,13 +59,14 @@
             @endforeach
         </div>
 
-
-        <div class="d-flex justify-content-center my-4 mt-5">    
-            <button type="button" class="btn bg-navy rounded-pill px-3 btn-sm fw-bold d-flex align-items-center" id="btn_emitir_ucd_estampillas" data-bs-toggle="modal" data-bs-target="#modal_emitir_ucd_estampillas">
-                <i class='bx bx-plus fw-bold fs-6 pe-2'></i>
-                <span>Emisión Estampillas U.C.D. </span>
-            </button>
-        </div>
+        @can('emision_ucd.emitir_denominacion')
+            <div class="d-flex justify-content-center my-4 mt-5">    
+                <button type="button" class="btn bg-navy rounded-pill px-3 btn-sm fw-bold d-flex align-items-center" id="btn_emitir_ucd_estampillas" data-bs-toggle="modal" data-bs-target="#modal_emitir_ucd_estampillas">
+                    <i class='bx bx-plus fw-bold fs-6 pe-2'></i>
+                    <span>Emisión Estampillas U.C.D. </span>
+                </button>
+            </div>
+        @endcan
 
 
         <div class="text-cente mb-3 mt-5">
@@ -80,7 +81,9 @@
                     <th>Hora</th>
                     <th>User</th>
                     <th>Detalle</th>  <!-- fecha entrega, emitidos en ucd, user -->
-                    <th>Opción</th>  
+                    @can('emision_ucd.delete')
+                        <th>Opción</th>  
+                    @endcan
                 </thead>
                 <tbody id="" class="border-light-subtle"> 
                     @foreach ($query_asignaciones as $emi)
@@ -97,17 +100,20 @@
                             <td>
                                 <a href="#" class="detalle_asignacion_ucd" asignacion="{{$emi->id_asignacion_ucd}}" data-bs-toggle="modal" data-bs-target="#modal_detalle_asignacion_ucd">Ver</a> 
                             </td>
-                            <td>
-                                @if ($emi->ultimo == true)
-                                    <span class="badge delete_asignacion_ucd" style="background-color: #ed0000;" role="button" asignacion="{{$emi->id_asignacion_ucd}}">
-                                        <i class="bx bx-trash-alt fs-6"></i>
-                                    </span> 
-                                @else
-                                    <span class="badge" style="background-color: #ed00008c;">
-                                        <i class="bx bx-trash-alt fs-6"></i>
-                                    </span> 
-                                @endif
-                            </td>
+                            @can('emision_ucd.delete')
+                                <td>
+                                    @if ($emi->ultimo == true)
+                                        <span class="badge delete_asignacion_ucd" style="background-color: #ed0000;" role="button" asignacion="{{$emi->id_asignacion_ucd}}">
+                                            <i class="bx bx-trash-alt fs-6"></i>
+                                        </span> 
+                                    @else
+                                        <span class="badge" style="background-color: #ed00008c;">
+                                            <i class="bx bx-trash-alt fs-6"></i>
+                                        </span> 
+                                    @endif
+                                </td> 
+                            @endcan
+                            
                         </tr>
                     @endforeach
                 </tbody> 

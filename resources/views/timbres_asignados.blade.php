@@ -30,7 +30,10 @@
                             <th>#</th>
                             <th>Fecha</th>
                             <th>Detalle</th>
-                            <th>¿Recibido?</th> 
+                            @can('timbres_asignados.recibido_forma14')
+                                <th>¿Recibido?</th> 
+                            @endcan
+                            
                         </thead>
                         <tbody id="" class="border-light-subtle"> 
                             @foreach ($rollos as $rollo)
@@ -42,11 +45,14 @@
                                     <td>
                                         <a href="" class="detalle_asignacion_rollos" vista="taquillero" asignacion="{{$rollo->id_asignacion}}" data-bs-toggle="modal" data-bs-target="#modal_asignado_forma14">Ver</a>
                                     </td>
-                                    <td>
-                                        <button class="btn btn-sm btn-success d-inline-flex align-items-center recibido_forma14" asignacion="{{$rollo->id_asignacion}}" type="button" data-bs-toggle="modal" data-bs-target="#modal_recibido_forma14">
-                                            <i class="bx bx-check"></i>
-                                        </button>
-                                    </td>
+                                    @can('timbres_asignados.recibido_forma14')
+                                        <td>
+                                            <button class="btn btn-sm btn-success d-inline-flex align-items-center recibido_forma14" asignacion="{{$rollo->id_asignacion}}" type="button" data-bs-toggle="modal" data-bs-target="#modal_recibido_forma14">
+                                                <i class="bx bx-check"></i>
+                                            </button>
+                                        </td>
+                                    @endcan
+                                    
                                 </tr>
                             @endforeach
                         </tbody> 
@@ -62,7 +68,9 @@
                             <th>#</th>
                             <th>Fecha</th>
                             <th>Detalle</th>
-                            <th>¿Recibido?</th> 
+                            @can('timbres_asignados.recibido_estampillas')
+                                <th>¿Recibido?</th> 
+                            @endcan 
                         </thead>
                         <tbody id="" class="border-light-subtle"> 
                             @foreach ($estampillas as $estampilla)
@@ -74,11 +82,14 @@
                                     <td>
                                         <a href="" class="detalle_asignacion_estampillas" vista="taquillero" asignacion="{{$estampilla->id_asignacion}}" data-bs-toggle="modal" data-bs-target="#modal_asignado_estampillas">Ver</a>
                                     </td>
-                                    <td>
-                                        <button class="btn btn-sm btn-success d-inline-flex align-items-center recibido_estampillas" asignacion="{{$estampilla->id_asignacion}}" type="button" data-bs-toggle="modal" data-bs-target="#modal_recibido_estampillas">
-                                            <i class="bx bx-check"></i>
-                                        </button>
-                                    </td>
+                                    @can('timbres_asignados.recibido_estampillas')
+                                        <td>
+                                            <button class="btn btn-sm btn-success d-inline-flex align-items-center recibido_estampillas" asignacion="{{$estampilla->id_asignacion}}" type="button" data-bs-toggle="modal" data-bs-target="#modal_recibido_estampillas">
+                                                <i class="bx bx-check"></i>
+                                            </button>
+                                        </td>
+                                    @endcan 
+                                    
                                 </tr>
                             @endforeach
                         </tbody> 

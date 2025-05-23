@@ -8,78 +8,72 @@
 
 @section('content')
     
-    <div class="container rounded-4 p-3" style="background-color:#ffff;">
-        <div class="row g-4 g-xl-5 mt-1">
+    <div class="container rounded-4 p-3 " style="background-color:#ffff;" >
+        <div class="row g-4 g-xl-5 mt-1 row-cols-sm-6 row-cols-lg-4 d-flex justify-content-center bg_arqueo" style="background-image: url({{asset('assets/fondo2.png')}});">
 			<!-- NUEVA SEDE -->
-			<div class="col-sm-6 col-lg-4 mb-4">
-				<div class="card text-center rounded-4 p-4 pb-0 position-relative car_trasit shadow-none card-icon-transition" role="button" data-bs-toggle="modal" data-bs-target="#modal_nueva_sede">
-                    <!--  -->
-                    <div class="position-absolute top-0 start-50 translate-middle">
-                        <span class="badge bg-primary rounded-circle p-3">
-                            <i class='bx bx-map fs-1'></i>
-                        </span>
-                    </div>
+            @can('sede_taquilla.new_sede')
+                <div class=" mb-4">
+                    <div class="card text-center rounded-4 p-4 pb-0 position-relative car_trasit shadow-none card-icon-transition" role="button" data-bs-toggle="modal" data-bs-target="#modal_nueva_sede">
+                    
+                        <div class="position-absolute top-0 start-50 translate-middle">
+                            <span class="badge bg-primary rounded-circle p-3">
+                                <i class='bx bx-map fs-1'></i>
+                            </span>
+                        </div>
 
-					<!-- Card body -->
-					<div class="card-footer border-0 bg-transparent pt-4 pb-2">
-						<h6 class="mb-3 titulo fw-bold text-navy fs-4">Nueva Sede</h6>
-                        <p class="text-muted">Haz clic y crea una nueva sede de la institución.</p>
-						<!-- <a href="#" class="btn btn-sm btn-secondary">Crear</a> -->
-					</div>
-				</div>
-                <!-- <div class="text-center">
-                    <button type="button" class="btn btn-secondary btn-sm" id="btn_ver_sedes">Ver Sedes</button>
-                </div> -->
-			</div>
+                        
+                        <div class="card-footer border-0 bg-transparent pt-4 pb-2">
+                            <h6 class="mb-3 titulo fw-bold text-navy fs-4">Nueva Sede</h6>
+                            <p class="text-muted">Haz clic y crea una nueva sede de la institución.</p>
+                        </div>
+                    </div>
+                </div>
+            @endcan
 
 
            
 
-              <!-- NUEVO TAQUILLERO -->
-              <div class="col-sm-6 col-lg-4 mb-4">
-				<div class="card text-center rounded-4 p-4 pb-0 position-relative car_trasit shadow-none" role="button" data-bs-toggle="modal" data-bs-target="#modal_nuevo_taquillero">
-                    <!--  -->
-                    <div class="position-absolute top-0 start-50 translate-middle">
-                        <span class="badge bg-info rounded-circle p-3">
-                            <i class='bx bx-user-circle fs-1'></i>
-                        </span>
-                    </div>
+            <!-- NUEVO TAQUILLERO -->
+            @can('sede_taquilla.new_taquillero')
+                <div class=" mb-4">
+                    <div class="card text-center rounded-4 p-4 pb-0 position-relative car_trasit shadow-none" role="button" data-bs-toggle="modal" data-bs-target="#modal_nuevo_taquillero">
+                        <!--  -->
+                        <div class="position-absolute top-0 start-50 translate-middle">
+                            <span class="badge bg-info rounded-circle p-3">
+                                <i class='bx bx-user-circle fs-1'></i>
+                            </span>
+                        </div>
 
-					<!-- Card body -->
-					<div class="card-footer border-0 bg-transparent pt-4 pb-2">
-						<h6 class="mb-3 titulo fw-bold text-navy fs-4">Nuevo Taquillero</h6>
-                        <p class="text-muted">Haz clic y crea un nuevo taquillero de la institución.</p>
-						<!-- <a href="#" class="btn btn-sm btn-secondary">Crear</a> -->
-					</div>
-				</div>
-                <!-- <div class="text-center">
-                    <button type="button" class="btn btn-secondary btn-sm">Ver Taquilleros</button>
-                </div> -->
-			</div>
+                        <!-- Card body -->
+                        <div class="card-footer border-0 bg-transparent pt-4 pb-2">
+                            <h6 class="mb-3 titulo fw-bold text-navy fs-4">Nuevo Taquillero</h6>
+                            <p class="text-muted">Haz clic y crea un nuevo taquillero de la institución.</p>
+                        </div>
+                    </div>
+                </div>
+            @endcan
 	
 
-         <!-- NUEVA TAQUILLA -->
-            <div class="col-sm-6 col-lg-4 mb-4" id="new_taquilla">
-				<div class="card text-center rounded-4 p-4 pb-0 position-relative car_trasit shadow-none" role="button" data-bs-toggle="modal" data-bs-target="#modal_nueva_taquilla">
-                    <!--  -->
-                    <div class="position-absolute top-0 start-50 translate-middle">
-                        <span class="badge bg-warning rounded-circle p-3">
-                            <i class='bx bxs-carousel fs-1 text-white'></i>
-                        </span>
-                    </div>
+            <!-- NUEVA TAQUILLA -->
+            @can('sede_taquilla.new_taquilla')
+                <div class=" mb-4" id="new_taquilla">
+                    <div class="card text-center rounded-4 p-4 pb-0 position-relative car_trasit shadow-none" role="button" data-bs-toggle="modal" data-bs-target="#modal_nueva_taquilla">
+                        <!--  -->
+                        <div class="position-absolute top-0 start-50 translate-middle">
+                            <span class="badge bg-warning rounded-circle p-3">
+                                <i class='bx bxs-carousel fs-1 text-white'></i>
+                            </span>
+                        </div>
 
-					<!-- Card body -->
-					<div class="card-footer border-0 bg-transparent pt-4 pb-2">
-						<h6 class="mb-3 titulo fw-bold text-navy fs-4">Nueva Taquilla</h6>
-                        <p class="text-muted">Haz clic y crea una nueva taquilla de la institución.</p>
-						<!-- <a href="#" class="btn btn-sm btn-secondary">Crear</a> -->
-					</div>
-				</div>
-                <!-- <div class="text-center">
-                    <button type="button" class="btn btn-secondary btn-sm">Ver Taquillas</button>
-                </div> -->
-			</div>
-	</div>
+                        <!-- Card body -->
+                        <div class="card-footer border-0 bg-transparent pt-4 pb-2">
+                            <h6 class="mb-3 titulo fw-bold text-navy fs-4">Nueva Taquilla</h6>
+                            <p class="text-muted">Haz clic y crea una nueva taquilla de la institución.</p>
+                        </div>
+                    </div>
+                </div>
+            @endcan
+	    </div>
 
         <div id="content_ver_registros" class=" mt-5">
             <div class="row">
@@ -92,8 +86,12 @@
                                 <th>#</th>
                                 <th>Ubicacion</th>
                                 <th>Taquillero</th>
-                                <th>Clave</th>
-                                <th>Desabilitar/Habilitar</th> 
+                                @can('sede_taquilla.update_clave')
+                                    <th>Clave</th>
+                                @endcan
+                                @can('sede_taquilla.habilitar_taquilla')
+                                    <th>Desabilitar/Habilitar</th> 
+                                @endcan
                             </thead>
                             <tbody class="border-light-subtle"> 
                                 @foreach ($taquillas as $taquilla)
@@ -101,21 +99,26 @@
                                         <td class="text-secondary">{{$taquilla->id_taquilla}}</td>
                                         <td class="text-mutedfw-bold">{{$taquilla->sede}}</td>
                                         <td class="text-navy fw-bold">{{$taquilla->nombre}}</td>
-                                        <td>
-                                            <a href="#" class="update_clave" data-bs-toggle="modal" data-bs-target="#modal_update_clave" taquilla="{{$taquilla->id_taquilla}}">Actualizar</a>
-                                        </td>
-                                        <td>
-                                            @if ($taquilla->estado == 16)
-                                                <div class="form-check form-switch">
-                                                    <input class="form-check-input fs-6 check_habilitar_taquilla" type="checkbox" role="switch" id="taquilla_check_{{$taquilla->id_taquilla}}" taquilla="{{$taquilla->id_taquilla}}" checked title="Habilitada">
-                                                </div> 
-                                            @else
-                                                <div class="form-check form-switch">
-                                                    <input class="form-check-input fs-6 check_habilitar_taquilla" type="checkbox" role="switch" id="taquilla_check_{{$taquilla->id_taquilla}}" taquilla="{{$taquilla->id_taquilla}}" title="Deshabilitada">
-                                                </div>
-                                            @endif
-                                            
-                                        </td>
+                                        @can('sede_taquilla.update_clave')
+                                            <td>
+                                                <a href="#" class="update_clave" data-bs-toggle="modal" data-bs-target="#modal_update_clave" taquilla="{{$taquilla->id_taquilla}}">Actualizar</a>
+                                            </td>
+                                        @endcan
+                                        @can('sede_taquilla.habilitar_taquilla')
+                                            <td>
+                                                @if ($taquilla->estado == 16)
+                                                    <div class="form-check form-switch">
+                                                        <input class="form-check-input fs-6 check_habilitar_taquilla" type="checkbox" role="switch" id="taquilla_check_{{$taquilla->id_taquilla}}" taquilla="{{$taquilla->id_taquilla}}" checked title="Habilitada">
+                                                    </div> 
+                                                @else
+                                                    <div class="form-check form-switch">
+                                                        <input class="form-check-input fs-6 check_habilitar_taquilla" type="checkbox" role="switch" id="taquilla_check_{{$taquilla->id_taquilla}}" taquilla="{{$taquilla->id_taquilla}}" title="Deshabilitada">
+                                                    </div>
+                                                @endif
+                                                
+                                            </td>
+                                        @endcan
+                                        
                                     </tr>
                                 @endforeach
                             </tbody> 
@@ -130,7 +133,9 @@
                             <thead>
                                 <th>#</th>
                                 <th>Nombre</th>
-                                <th>Desabilitar/Habilitar</th> 
+                                @can('sede_taquilla.habilitar_taquillero')
+                                    <th>Desabilitar/Habilitar</th> 
+                                @endcan
                             </thead>
                             <tbody class="border-light-subtle"> 
                                 @foreach ($taquilleros as $taquillero)
@@ -139,20 +144,20 @@
                                             <img src="{{asset('assets/user2.png')}}" alt="" width="30px">
                                         </td>
                                         <td class="text-navy fw-bold">{{$taquillero->nombre}}</td>
-                                        <td>
-                                            @if ($taquillero->estado == 16)
-                                                <div class="form-check form-switch">
-                                                    <input class="form-check-input fs-6 check_habilitar_taquillero" type="checkbox" role="switch" id="taquillero_check_{{$taquillero->id_funcionario}}" funcionario="{{$taquillero->id_funcionario}}" checked title="Habilitado">
-                                                </div> 
-                                            @else
-                                                <div class="form-check form-switch">
-                                                    <input class="form-check-input fs-6 check_habilitar_taquillero" type="checkbox" role="switch" id="taquillero_check_{{$taquillero->id_funcionario}}" funcionario="{{$taquillero->id_funcionario}}" title="Deshabilitado">
-                                                </div>
-                                            @endif
-                                            <!-- <div class="form-check form-switch">
-                                                <input class="form-check-input fs-6" type="checkbox" role="switch" id="taquillero_{{$taquillero->id_funcionario}}" funcionario="{{$taquillero->id_funcionario}}" checked title="Taquillero activo">
-                                            </div> -->
-                                        </td>
+                                        @can('sede_taquilla.habilitar_taquillero')
+                                            <td>
+                                                @if ($taquillero->estado == 16)
+                                                    <div class="form-check form-switch">
+                                                        <input class="form-check-input fs-6 check_habilitar_taquillero" type="checkbox" role="switch" id="taquillero_check_{{$taquillero->id_funcionario}}" funcionario="{{$taquillero->id_funcionario}}" checked title="Habilitado">
+                                                    </div> 
+                                                @else
+                                                    <div class="form-check form-switch">
+                                                        <input class="form-check-input fs-6 check_habilitar_taquillero" type="checkbox" role="switch" id="taquillero_check_{{$taquillero->id_funcionario}}" funcionario="{{$taquillero->id_funcionario}}" title="Deshabilitado">
+                                                    </div>
+                                                @endif
+                                            </td>
+                                        @endcan
+                                        
                                     </tr> 
                                 @endforeach
                             </tbody> 
