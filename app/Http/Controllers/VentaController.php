@@ -4,6 +4,8 @@ namespace App\Http\Controllers;
 use SimpleSoftwareIO\QrCode\Facades\QrCode;
 use Illuminate\Http\Request;
 use DB;
+use Barryvdh\DomPDF\Facade\Pdf;
+
 class VentaController extends Controller
 {
     public function __construct()
@@ -335,7 +337,7 @@ class VentaController extends Controller
             }
 
             ////SI HAY FOLIOS
-            if ($tramite == 1) {
+            if ($tramite == 1 || $tramite == 2) {
                 $c1 = DB::table('tramites')->select('natural')->where('tramite','=', 'Folio')->first();
                 $total_ucd = $total_ucd + ($c1->natural * $folios);
             }
@@ -516,6 +518,9 @@ class VentaController extends Controller
 
         ////SI HAY FOLIOS
         if ($tramite == 1) {
+            $c1 = DB::table('tramites')->select('natural')->where('tramite','=', 'Folio')->first();
+            $total_ucd = $total_ucd + ($c1->natural * $folios);
+        }elseif ($tramite == 2) {
             $c1 = DB::table('tramites')->select('natural')->where('tramite','=', 'Folio')->first();
             $total_ucd = $total_ucd + ($c1->natural * $folios);
         }
@@ -712,7 +717,7 @@ class VentaController extends Controller
                         $anexo = '<span class="text-muted fst-italic">No aplica</span>';
 
                         //////SI ES PROTOCOLIZACIÓN Y TIENE FOLIOS ADICIONALES
-                        if($tramite['tramite'] == 1){
+                        if($tramite['tramite'] == 1 || $tramite['tramite'] == 2){
                             $folios = $request->post('folios');
                             if ($folios != 0 || $folios != '' || $folios != null) {
                                 $q1 = DB::table('tramites')->select('natural')->where('tramite','=', 'Folio')->first();
@@ -952,7 +957,7 @@ class VentaController extends Controller
                 $total_ucd = $total_ucd + $ucd_tramite;
 
                 //////SI ES PROTOCOLIZACIÓN Y TIENE FOLIOS ADICIONALES
-                if($tramite['tramite'] == 1){
+                if($tramite['tramite'] == 1 || $tramite['tramite'] == 2){
                     $folios = $tramite['nro_folios'];
                     if ($folios != 0 || $folios != '' || $folios != null) {
                         $q1 = DB::table('tramites')->select('natural')->where('tramite','=', 'Folio')->first();
@@ -1033,9 +1038,10 @@ class VentaController extends Controller
                 case 7:
                     // UCD
                     $folios = false;
-                    if ($tramite == 1) {
+                    if ($tramite == 1 || $tramite == 2) {
                         $folios = true;
                     }
+
                     if ($condicion_sujeto == 10 || $condicion_sujeto == 11) {
                         //////juridico (firma personal - empresa)
                         return response()->json(['success' => true, 'valor' => $query->juridico, 'alicuota' => $query->alicuota, 'folios' => $folios]);
@@ -1124,7 +1130,7 @@ class VentaController extends Controller
                         $total_ucd = $total_ucd + $ucd_tramite;
 
                         //////SI ES PROTOCOLIZACIÓN Y TIENE FOLIOS ADICIONALES
-                        if($tramite['tramite'] == 1){
+                        if($tramite['tramite'] == 1 || $tramite['tramite'] == 2){
                             $folios = $tramite['nro_folios'];
                             if ($folios != 0 || $folios != '' || $folios != null) {
                                 $q1 = DB::table('tramites')->select('natural')->where('tramite','=', 'Folio')->first();
@@ -1175,9 +1181,11 @@ class VentaController extends Controller
                 }
             }
         }
+
+        
         
         $total_bolivares = $total_bolivares + ($total_ucd * $valor_ucd);
-        
+        $diferencia = 0;
         ////formato 2 decimales
         if ($debito > $total_bolivares) {
             $vuelto = $debito - $total_bolivares;
@@ -1186,16 +1194,19 @@ class VentaController extends Controller
         }
 
 
+        
+
+        $submit = false;
+
+        if ($debito == $total_bolivares) {
+            $submit = true;
+        }elseif ($debito > $total_bolivares) {
+            $submit = true;
+        }
+        
         $deb = number_format($debito, 2, ',', '.');
         $dif = number_format($diferencia, 2, ',', '.');
         $v = number_format($vuelto, 2, ',', '.');
-
-        $submit = '';
-        if ($debito >= $total_bolivares) {
-            $submit = true;
-        }else{
-            $submit = false;
-        }
 
         return response()->json(['success' => true, 'debito' => $deb, 'diferencia' => $dif, 'vuelto' => $v, 'submit' => $submit]);
          
@@ -1407,6 +1418,7 @@ class VentaController extends Controller
         // return response('4545');
         $tramites = $request->post('tramite');
         $row_timbres = '';
+        $timbres_imprimir_tfe = [];
         ///////////////////////////////////// USER Y TAQUILLA
             $user = auth()->id();
             $query = DB::table('users')->select('key_sujeto')->where('id','=',$user)->first();
@@ -1443,16 +1455,20 @@ class VentaController extends Controller
                         $identidad_condicion = $contribuyente['identidad_condicion'];
                         $identidad_nro = $contribuyente['identidad_nro'];
 
-                        $q1 = DB::table('contribuyentes')->select('id_contribuyente')
+                        $q1 = DB::table('contribuyentes')->select('id_contribuyente','nombre_razon')
                                                             ->where('condicion_sujeto','=', $condicion_sujeto)
                                                             ->where('identidad_condicion','=', $identidad_condicion)
                                                             ->where('identidad_nro','=', $identidad_nro)
                                                             ->first();
                         if ($q1) {
                             $id_contribuyente = $q1->id_contribuyente;
+
                         }else{
                             return response()->json(['success' => false, 'nota'=> 'Disculpe, el contribuyente no se encuentra registrado.']);
                         }
+
+                        $cedula_contribuyente = $identidad_condicion.''.$identidad_nro;
+                        $nombre_contribuyente = $q1->nombre_razon;
                     
 
 
@@ -1531,6 +1547,8 @@ class VentaController extends Controller
                                     $key_deno = '';
     
                                     $alicuota = '';
+
+                                    
     
                                     //////// IDENTIFICACION DE FORMA
                                     $c_forma = DB::table('formas')->select('identificador')->where('forma','=','Forma14')->first();
@@ -1554,7 +1572,7 @@ class VentaController extends Controller
     
                                             /////////////////////////FOLIOS
                                             $folios = $tramite['nro_folios'];
-                                            if ($key_tramite == 1) {
+                                            if ($key_tramite == 1 || $key_tramite == 2) {
                                                 if ($folios != '' || $folios != 0) {
                                                     $qf = DB::table('tramites')->select('natural')->where('tramite','=', 'Folio')->first();
     
@@ -1577,7 +1595,7 @@ class VentaController extends Controller
                                             
     
                                             $total_ucd = $total_ucd + $ucd_tramite;
-                                            if ($key_tramite == 1) {
+                                            if ($key_tramite == 1 || $key_tramite == 2) {
                                                 if ($folios != '' || $folios != 0){
                                                     $i2 = DB::table('detalle_ventas')->insert(['key_venta' => $id_venta, 
                                                                                 'key_tramite' => $key_tramite, 
@@ -1586,6 +1604,16 @@ class VentaController extends Controller
                                                                                 'metros' => null,
                                                                                 'capital' => null,
                                                                                 'folios' => $folios,
+                                                                                'ucd' => $ucd_tramite,
+                                                                                'bs' => null]);
+                                                }else{
+                                                    $i2 = DB::table('detalle_ventas')->insert(['key_venta' => $id_venta, 
+                                                                                'key_tramite' => $key_tramite, 
+                                                                                'forma' => $tramite['forma'],
+                                                                                'cantidad' => 1,
+                                                                                'metros' => null,
+                                                                                'capital' => null,
+                                                                                'folios' => null,
                                                                                 'ucd' => $ucd_tramite,
                                                                                 'bs' => null]);
                                                 }
@@ -1660,7 +1688,8 @@ class VentaController extends Controller
                                                 $serial = $identificador_ucd.''.$identificador_forma.''.$formato_nro;
     
                                                 // QR
-                                                $url = 'https://tfe14.tributosaragua.com.ve/?id='.$nro_timbre.'?lp='.$key_lote; 
+                                                $nro_timbre_qr = base64_encode(serialize($nro_timbre)); 
+                                                $url = 'http://200.109.64.138/qr/?id='.$nro_timbre_qr; 
                                                 QrCode::format('png')->size(180)->eye('circle')->generate($url, public_path('assets/qrForma14/qrcode_TFE'.$nro_timbre.'.png'));
     
     
@@ -1723,6 +1752,26 @@ class VentaController extends Controller
                                                 $delete_venta = DB::table('ventas')->where('id_venta', '=', $id_venta)->delete();
                                                 return response()->json(['success' => false]);
                                             }
+
+
+
+
+                                            ////// INGRESAR DETALLE PARA IMPRESION
+                                            $bs_tramite_imp = $ucd_tramite * $valor_ucd;
+                                            $array = array(
+                                                'serial' => $serial,
+                                                'qr' => 'assets/qrForma14/qrcode_TFE'.$nro_timbre.'.png',
+                                                'ci' => $cedula_contribuyente,
+                                                'nombre' => $nombre_contribuyente,
+                                                'ente' => $consulta_tramite->ente,
+                                                'bs' => number_format($bs_tramite_imp, 2, ',', '.'),
+                                                'ucd' => $ucd_tramite,
+                                                'capital' => false,
+                                                'fecha' => date("d-m-Y",strtotime($hoy))
+                                            );
+
+                                            $a = (object) $array;
+                                            array_push($timbres_imprimir_tfe,$a);
     
                                             break;
     
@@ -1810,7 +1859,8 @@ class VentaController extends Controller
                                                 $serial = $identificador_ali.''.$identificador_forma.''.$formato_nro;
     
                                                 // QR
-                                                $url = 'https://tfe14.tributosaragua.com.ve/?id='.$nro_timbre.'?lp='.$key_lote; 
+                                                $nro_timbre_qr = base64_encode(serialize($nro_timbre)); 
+                                                $url = 'http://200.109.64.138/?id='.$nro_timbre_qr; 
                                                 QrCode::format('png')->size(180)->eye('circle')->generate($url, public_path('assets/qrForma14/qrcode_TFE'.$nro_timbre.'.png'));
     
     
@@ -1876,6 +1926,25 @@ class VentaController extends Controller
                                                 $delete_venta = DB::table('ventas')->where('id_venta', '=', $id_venta)->delete();
                                                 return response()->json(['success' => false]);
                                             }
+
+
+
+                                            ////// INGRESAR DETALLE PARA IMPRESION
+                                            $array = array(
+                                                'serial' => $serial,
+                                                'qr' => 'assets/qrForma14/qrcode_TFE'.$nro_timbre.'.png',
+                                                'ci' => $cedula_contribuyente,
+                                                'nombre' => $nombre_contribuyente,
+                                                'ente' => $consulta_tramite->ente,
+                                                'bs' => $formato_total_bs_capital,
+                                                'ucd' => '',
+                                                'capital' => true,
+                                                'fecha' => date("d-m-Y",strtotime($hoy))
+                                            );
+
+                                            $a = (object) $array;
+                                            array_push($timbres_imprimir_tfe,$a);
+
      
                                             break;
                                         
@@ -1975,7 +2044,8 @@ class VentaController extends Controller
                                                 $serial = $identificador_ucd.''.$identificador_forma.''.$formato_nro;
     
                                                 // QR
-                                                $url = 'https://tfe14.tributosaragua.com.ve/?id='.$nro_timbre.'?lp='.$key_lote; 
+                                                $nro_timbre_qr = base64_encode(serialize($nro_timbre)); 
+                                                $url = 'http://200.109.64.138/?id='.$nro_timbre_qr; 
                                                 QrCode::format('png')->size(180)->eye('circle')->generate($url, public_path('assets/qrForma14/qrcode_TFE'.$nro_timbre.'.png'));
     
     
@@ -2038,6 +2108,28 @@ class VentaController extends Controller
                                                 $delete_venta = DB::table('ventas')->where('id_venta', '=', $id_venta)->delete();
                                                 return response()->json(['success' => false]);
                                             }
+
+
+
+                                            ////// INGRESAR DETALLE PARA IMPRESION
+                                            $bs_tramite_imp = $ucd_tramite * $valor_ucd;
+                                            $array = array(
+                                                'serial' => $serial,
+                                                'qr' => 'assets/qrForma14/qrcode_TFE'.$nro_timbre.'.png',
+                                                'ci' => $cedula_contribuyente,
+                                                'nombre' => $nombre_contribuyente,
+                                                'ente' => $consulta_tramite->ente,
+                                                'bs' => number_format($bs_tramite_imp, 2, ',', '.'),
+                                                'ucd' => $ucd_tramite,
+                                                'capital' => false,
+                                                'fecha' => date("d-m-Y",strtotime($hoy))
+                                            );
+
+                                            $a = (object) $array;
+                                            array_push($timbres_imprimir_tfe,$a);
+
+
+
     
                                             break;
                                                 
@@ -2077,7 +2169,7 @@ class VentaController extends Controller
     
                                     /////////////////////////FOLIOS
                                     $folios =  $tramite['nro_folios'];
-                                    if ($key_tramite == 1) {
+                                    if ($key_tramite == 1 || $key_tramite == 2) {
                                         if ($folios != '' || $folios != 0) {
                                             $qf = DB::table('tramites')->select('natural')->where('tramite','=', 'Folio')->first();
     
@@ -2086,7 +2178,7 @@ class VentaController extends Controller
                                     }
     
                                     $total_ucd = $total_ucd + $ucd_tramite;
-                                    if ($key_tramite == 1) {
+                                    if ($key_tramite == 1 || $key_tramite == 2) {
                                         if ($folios != '' || $folios != 0) {
                                             $i2 = DB::table('detalle_ventas')->insert(['key_venta' => $id_venta, 
                                                                                 'key_tramite' => $key_tramite, 
@@ -2351,7 +2443,7 @@ class VentaController extends Controller
                                                 <tr>
                                                     <th>Forma</th>
                                                     <th>Cant.</th>
-                                                    <th>UCD</th>
+                                                    <th>UCD|UT</th>
                                                 </tr>
                                                 '.$tr_detalle_timbres.'
                                             </table>
@@ -2380,6 +2472,17 @@ class VentaController extends Controller
                                         </div>'; 
 
                     ///////////////////////////////////// HTML
+                        
+
+
+                        if ($exist_tfe == true){
+                            ////cifrar array de timbres tfe
+                            $t = base64_encode(serialize($timbres_imprimir_tfe));
+                            $btn_html = '<a href="'.route("timbre", ['t' =>$t]).'" class="btn btn-success btn-sm me-3">Imprimir Timbres</a>';
+                        }else{
+                            $btn_html = '<a href="'.route("venta").'" class="btn btn-secondary btn-sm me-3">Cerrar Venta</a>';
+                        }
+                        
                         $html = '<div class="modal-header">
                                 <h1 class="modal-title fs-5 fw-bold text-navy">Venta realizada | <span class="text-muted">Timbres</span></h1>
                             </div>
@@ -2398,9 +2501,12 @@ class VentaController extends Controller
                                 </div>  <!--  cierra div.row   -->
 
                                 <div class="d-flex justify-content-center mt-3 mb-3">
-                                    <a href="'.route("venta").'" class="btn btn-secondary btn-sm me-3">Cancelar</a>
+                                    '.$btn_html.'
                                 </div>
                             </div>';
+
+                        
+                       
 
                         return response()->json(['success' => true, 'html' => $html]);
 
@@ -2486,8 +2592,9 @@ class VentaController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(string $id)
-    {
-        //
-    }
+    // public function timbre()
+    // {
+    //     return PDF::loadView('pdf/timbre')->stream('timbre.pdf');
+        
+    // }
 }

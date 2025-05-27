@@ -120,52 +120,12 @@
         });
     </script>
 
-<script type="text/javascript">
-    $(document).ready(function () {
-        /////////////   MODAL EXENCION TAQUILLA
-        // $(document).on('click','.asignado_taquilla', function(e) {
-        //     e.preventDefault();
-        //     var exencion =  $(this).attr('exencion');
-
+    <script type="text/javascript">
+        $(document).ready(function () {
+            /////////////   MODAL EXENCION TAQUILLA
+            // window.print();
             
-        //     $.ajax({
-        //         headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') },
-        //         type: 'POST',
-        //         url: '{{route("asignado.modal") }}',
-        //         data: {exencion:exencion},
-        //         success: function(response) {
-        //             // console.log(response);
-        //             $('#content_asignado_exencion').html(response);
-                    
-        //         },
-        //         error: function() {
-        //         }
-        //     });
-        // });
-          
-    });
-
-
-    
-    
-
-    
-
-
-   
-
-
-    
-
-
-    
-
-
-    
-
-
-    
-    
+        });
 
     </script>
 

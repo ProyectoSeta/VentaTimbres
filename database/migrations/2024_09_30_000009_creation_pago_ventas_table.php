@@ -21,7 +21,7 @@ return new class extends Migration
             $table->foreign('metodo')->references('id_tipo')->on('tipos')->onDelete('cascade');
 
             $table->integer('comprobante')->nullable(); 
-            $table->decimal('monto');
+            $table->decimal('monto',20, 2);
 
             $table->datetime('fecha');
 

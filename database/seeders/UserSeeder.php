@@ -39,6 +39,7 @@ class UserSeeder extends Seeder
                                                 ->where('name','!=','home.cierre_taquilla')
                                                 ->where('name','!=','home.modal_clave')
                                                 ->where('name','!=','timbres_asignados')
+                                                ->where('name','!=','timbre')
                                                 ->pluck('name');
 
         // ASIGNAR LOS PERMISOS AL ROL

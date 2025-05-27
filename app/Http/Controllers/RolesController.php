@@ -191,7 +191,7 @@ class RolesController extends Controller
 
             if ($module_title == true) {
                 $c1 = DB::table('modulos')->select('modulo')->where('id_modulo','=',$modulo)->first();
-                $nombre_modulo = '<div class="text-navy fw-semibold titulo fs-5"><span class="text-muted">Modulo </span>'.$c1->modulo.'</div>';
+                $nombre_modulo = '<div class="text-navy fw-semibold titulo fs-5"><span class="text-muted">Módulo </span>'.$c1->modulo.'</div>';
                 if ($c != 1) {
                     $cols .= '</div>';
                 }
@@ -298,7 +298,7 @@ class RolesController extends Controller
 
             if ($module_title == true) {
                 $c1 = DB::table('modulos')->select('modulo')->where('id_modulo','=',$modulo)->first();
-                $nombre_modulo = '<div class="text-navy fw-semibold titulo fs-5"><span class="text-muted">Modulo </span>'.$c1->modulo.'</div>';
+                $nombre_modulo = '<div class="text-navy fw-semibold titulo fs-5"><span class="text-muted">Módulo </span>'.$c1->modulo.'</div>';
                 if ($c != 1) {
                     $cols .= '</div>';
                 }

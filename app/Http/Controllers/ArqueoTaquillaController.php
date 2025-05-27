@@ -244,7 +244,8 @@ class ArqueoTaquillaController extends Controller
         $tr_tramites = '';
 
         $venta = DB::table('ventas')->join('contribuyentes', 'ventas.key_contribuyente', '=','contribuyentes.id_contribuyente')
-                                    ->select('ventas.*','contribuyentes.identidad_condicion','contribuyentes.identidad_nro','contribuyentes.nombre_razon','contribuyentes.condicion_sujeto')
+                                    ->join('ucds', 'ventas.key_ucd', '=','ucds.id')
+                                    ->select('ventas.*','ucds.valor','ucds.moneda','contribuyentes.identidad_condicion','contribuyentes.identidad_nro','contribuyentes.nombre_razon','contribuyentes.condicion_sujeto')
                                     ->where('ventas.id_venta','=',$id_venta)->first();
         if ($venta) {
             $c1 = DB::table('tipos')->select('nombre_tipo')->where('id_tipo','=',$venta->condicion_sujeto)->first();
@@ -264,6 +265,10 @@ class ArqueoTaquillaController extends Controller
                                 <tr>
                                     <th>Hora</th>
                                     <td>'.date("h:i A",strtotime($venta->hora)).'</td>
+                                </tr>
+                                <tr>
+                                    <th class="text-muted">Precio UCD (Del día)</th>
+                                    <td class="text-muted">'.$venta->valor.' Bs. ('.$venta->moneda.')</td>
                                 </tr>
                                 <tr>
                                     <th>Total UCD</th>

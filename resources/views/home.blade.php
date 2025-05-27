@@ -95,6 +95,41 @@
                 @else
                     <h1 class="display-5 text-navy fw-bold">TRIBUTAR PARA SERVIR</h1>
                     <h3 class="fw-normal text-muted mb-3 titulo">Sistema de Venta | Timbres Fiscales</h3>
+
+
+
+                    
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
                 @endif
 
                 
@@ -361,9 +396,12 @@
     <script src="{{ asset('jss/jquery-3.5.1.js') }}" ></script>
     <script src="{{ asset('jss/toastr.js') }}" integrity="sha512-VEd+nq25CkR676O+pLBnDW09R7VQX9Mdiij052gVCp5yVH3jGtH70Ho/UUv4mJDsEdTvqRCFZg0NKGiojGnUCw==" ></script>
 
-    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    
 
     <script type="text/javascript">
+
+
+
         $(document).ready(function () {
             $.ajax({
                 headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') },

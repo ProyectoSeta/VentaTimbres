@@ -641,95 +641,13 @@
                 type: 'POST',
                 url: '{{route("venta.update_inv_taquilla") }}',
                 success: function(response) {
-                    console.log(response);
+                    // console.log(response);
                 },
                 error: function() {
                 }
             });
 
-            ///////////////////////////////////////AGREGAR CAMPOS A OTRO(S) TRAMITES
-                //     var maxFieldTramite = 3; //Input fields increment limitation
-                //     var c = 1; //Initial field counter is 1
-
-                //     $(document).on('click', '.add_button_tramite', function(e){ //Once add button is clicked
-                //         if(c < maxFieldTramite){ //Check maximum number of input fields
-                //             c++; //Increment field counter
-                //             $('.tramites').append('<div class="d-flex justify-content-center ">'+
-                //                                 '<div class="row w-100 mt-2">'+
-                //                                     '<div class="col-sm-3">'+
-                //                                         '<select class="form-select form-select-sm ente" nro="'+c+'" id="ente_'+c+'">'+
-                //                                             '@foreach ($entes as $ente)'+
-                //                                                 '<option value="{{$ente->id_ente}}">{{$ente->ente}}</option>'+
-                //                                             '@endforeach'+
-                                                            
-                //                                         '</select>'+
-                //                                     '</div>'+
-                //                                     '<div class="col-sm-4">'+
-                //                                         '<select class="form-select form-select-sm tramite" name="tramite['+c+'][tramite]" nro="'+c+'" id="tramite_'+c+'" required>'+
-                //                                             '<option value="">Seleccione el tramite </option>'+
-                //                                                 '@foreach ($tramites as $tramite)'+
-                //                                                     '<option value="{{$tramite->id_tramite}}">{{$tramite->tramite}}</option>'+
-                //                                                 '@endforeach'+
-                //                                         '</select>'+
-                //                                     '</div>'+
-                //                                     '<div class="col-sm-2" id="div_ucd_'+c+'">'+
-                //                                         '<input type="text" class="form-control form-control-sm ucd_tramite" id="ucd_tramite_'+c+'" nro="'+c+'" disabled>'+
-                //                                     '</div>'+
-                //                                     '<div class="col-sm-2">'+
-                //                                         '<select class="form-select form-select-sm forma" nro="'+c+'" name="tramite['+c+'][forma]" id="forma_'+c+'" required>'+
-                //                                             '<option value="">Seleccione</option>'+
-                //                                         '</select>'+
-                //                                         '<input type="hidden" name="tramite[1][detalle]" id="detalle_'+c+'">'+
-                //                                         // '<p class="text-end my-0 text-muted" id="cant_timbre_'+c+'"></p>'+
-                //                                     '</div>'+
-                //                                     '<div class="col-sm-1">'+
-                //                                         '<a  href="javascript:void(0);" class="btn remove_button_tramite" nro="'+c+'">'+
-                //                                             '<i class="bx bx-x fs-4"></i>'+
-                //                                         '</a>'+
-                //                                     '</div>'+
-                //                                 '</div>'+
-                //                             '</div>'); // Add field html
-                //         }
-                //     });
-
-                //     $(document).on('click', '.remove_button_tramite', function(e){ 
-                //         var nro =  $(this).attr('nro');
-                //         var ente =  $('#ente_'+nro).val();
-                //         var detalle =  $('#detalle_'+nro).val();
-
-                //         if (ente == 4) {
-                //             var u = 0;
-                //             $(".ente").each(function(e){
-                //                 var value = $(this).val();
-                //                 if (value == 4) {
-                //                     u++;
-                //                 }
-                //             });
-
-                //             if (u == 1) {
-                //                 $('#content_tamaño').addClass('d-none');
-                //             }
-                //         }
-
-                //         //////ACTUALIZAR INV TAQUILLA
-                //         $.ajax({
-                //             headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') },
-                //             type: 'POST',
-                //             url: '{{route("venta.delete_tramite") }}',
-                //             data: {detalle:detalle},
-                //             success: function(response) {
-                //                 console.log(response);
-                //             },
-                //             error: function() {
-                //             }
-                //         });
-
-                //         e.preventDefault();
-                //         $(this).parent('div').parent('div').remove(); //Remove field html
-                //         c--; //Decrement field counter
-                //         calcular();
-                //     });
-            ///////////////////////////////////////////////////////////////////
+            
 
 
             ///////////////////////////////////////AGREGAR CAMPOS A OTRO(S) PAGO
@@ -782,7 +700,7 @@
                             type: 'POST',
                             url: '{{route("venta.add_estampilla") }}',
                             success: function(response) {
-                                console.log(response);
+                                // console.log(response);
                                 $('#content_detalle_est').append('<div class="d-flex justify-content-center pb-1">'+
                                         '<div class="row">'+
                                             '<div class="col-5">'+
@@ -830,7 +748,7 @@
                     url: '{{route("venta.quitar") }}',
                     data: {ucd:ucd,bs:bs,tramite:tramite},
                     success: function(response) {
-                        console.log(response);
+                        // console.log(response);
                         if (response.success) {
                             ///TOTALES
                             $('#ucd').html(response.ucd); 
@@ -859,14 +777,24 @@
 
                 $('#identidad_condicion option').remove();
 
-                if (value == "9" || value == "10") {
+                if (value == "9") {
+                    ///NATURAL
                     $('#identidad_condicion').append('<option>Seleccione</option>'+
                                                     '<option value="V">V</option>'+
+                                                    '<option value="E">E</option>'+
+                                                    '<option value="P">P</option>');
+                }else if(value == "10"){
+                    ///FIRMA PERSONAL
+                     $('#identidad_condicion').append('<option>Seleccione</option>'+
+                                                    '<option value="V">V</option>'+
                                                     '<option value="E">E</option>');
-                }else{
+                }
+                else{
+                    ///ENTE O JURIDICO
                     $('#identidad_condicion').append('<option>Seleccione</option>'+
                                                     '<option value="J">J</option>'+
-                                                    '<option value="G">G</option>');
+                                                    '<option value="G">G</option>'+
+                                                    '<option value="C">C</option>');
                 }
 
             });
@@ -884,7 +812,7 @@
                     url: '{{route("venta.search") }}',
                     data: {value:value,condicion:condicion,condicion_sujeto:condicion_sujeto},
                     success: function(response) {
-                        console.log(response);               
+                        // console.log(response);               
                         if (response.success) {
                             $('#btns_add_contribuyente').addClass('d-none');
                             $('#nombre').val(response.nombre);
@@ -1042,13 +970,6 @@
 
 
 
-            //////////////////////////// TRAMITE: PROTOCOLIZACIÓN
-                // $(document).on('change','.tramite', function(e) {
-                //     var value = $(this).val();
-                //     if (value == 1 || value == 2) {
-                //         $('#content_folios').removeClass('d-none');
-                //     }
-                // });
 
             $(document).on('keyup','#folios', function(e) {
                 var value = $(this).val();
@@ -1061,7 +982,7 @@
                     url: '{{route("venta.folios") }}',
                     data: {value:value},
                     success: function(response) {
-                        console.log(response);
+                        // console.log(response);
                         $('#ucd_folios').html(response+' UCD');
                         // calcular();
                     },
@@ -1097,7 +1018,7 @@
                         url: '{{route("venta.alicuota") }}',
                         data: {tramite:value,condicion_sujeto:condicion_sujeto,metros:metros,capital:capital},
                         success: function(response) {
-                            console.log(response);
+                            // console.log(response);
                             if (response.success) {
                                 
                                 switch(response.alicuota) {
@@ -1205,11 +1126,6 @@
 
 
 
-            // //////////////////////////// MONTO TOTAL
-            // $(document).on('change','.tramite', function(e) {
-            //     calcular();
-            // });
-
 
             //////////////////////////// VALOR DEL TRAMITE SEGUN EL METRADO Y EL PORCENTAJE
             // METRADO
@@ -1276,7 +1192,7 @@
                     url: '{{route("venta.debitado") }}',
                     data: {value:value,tramites:tramites,otro_debito:otro_debito},
                     success: function(response) {
-                        console.log(response);
+                        // console.log(response);
                         $('#debitado').html(response.debito);
                         $('#diferencia').html(response.diferencia);
                         $('#vuelto').html(response.vuelto);
@@ -1312,106 +1228,11 @@
            
 
 
-            //////////////////ESTAMPILLA 10UCD Y DISPONIBILIDAD DE TIMBRE
-                // $(document).on('change','.forma', function(e) {
-                //     var value = $(this).val();
-                //     var nro =  $(this).attr('nro');
-
-                //     var ucd =  $('#ucd_tramite_'+nro).val();
-                //     var array = [];
-                
-                //     if (value == 4  && ucd == 10) {
-                //         $('#cant_timbre_'+nro).html('2 Und.');
-                //         var cant = 2;
-                //     }else{
-                //         $('#cant_timbre_'+nro).html('1 Und.');
-                //         var cant = 1;
-                //     }
-
-                //     $('.ucd_tramite').each(function(e){
-                //         var ucd_each = $(this).val();
-                //         var nro_each = $(this).attr('nro');
-                //         var forma_each =  $('#forma_'+nro_each).val();
-
-                //         if (ucd_each == ucd && nro_each != nro && forma_each == value) {
-                //             if (forma_each == 4  && ucd_each == 10) {
-                //                 cant = cant + 2;  
-                //             }else{
-                //                 cant++;
-                //             }
-                //         }
-                //     });
-
-
-                //     var objeto = {
-                //         ucd: ucd,
-                //         forma: value,
-                //         cantidad: cant
-                //     };
-                //     array.push(objeto);
-                                
-
-                //     $.ajax({
-                //         headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') },
-                //         type: 'POST',
-                //         url: '{{route("venta.disponibilidad") }}',
-                //         data: {array:array},
-                //         success: function(response) {
-                //             // console.log(response);
-                //             if (response.success) {
-                                
-                //             }else{
-                //                 alert(response.nota);
-                //                 forma(nro,ucd)
-                //             }
-                            
-                //         },
-                //         error: function() {
-                //         }
-                //     });
-
-                // });
+            
         });
 
 
-        // ////////////////// CALCULAR TOTAL
-            // function calcular(){
-            //     var tramites = [];
-            //     $('.tramite').each(function(){
-            //         var t = $(this).val();
-            //         tramites.push(t);
-            //     });
-
-            //     var metros = $('#metros').val();
-            //     var folios = $('#folios').val();
-            //     var capital = $('#capital').val();
-            //     var condicion_sujeto =  $('#condicion_sujeto').val();
-
-            //     $.ajax({
-            //         headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') },
-            //         type: 'POST',
-            //         url: '{{route("venta.total") }}',
-            //         data: {tramites:tramites,metros:metros,condicion_sujeto:condicion_sujeto,capital:capital,folios:folios},
-            //         success: function(response) {
-            //             console.log(response);
-            //             $('#ucd').html(response.ucd);
-            //             $('#bolivares').html(response.bolivares);
-            //             $('#diferencia').html(response.bolivares);
-
-            //             $('.debitado').val('');
-            //             $('.comprobante').val('');
-
-            //             $('#debitado').html('0.00');
-            //             $('#vuelto').html('0.00');
-                        
-            //         },
-            //         error: function() {
-            //         }
-            //     });
-
-            //     // console.log(tramites);
-            // }
-        //
+       
 
         ///////////////// ADD CAMPO FORMA 
         function forma(nro,ucd) {
@@ -1520,10 +1341,14 @@
                 async: true,
                 data: formData,
                 success: function(response){
-                    console.log(response);
+                    // console.log(response);
                     if (response.success) {
                         $('#modal_venta_realizada').modal('show');
                         $('#content_venta_realizada').html(response.html);
+
+                        // 
+
+                        
                     }else{
                         if (response.nota) {
                             alert(response.nota);
@@ -1553,7 +1378,7 @@
                 async: true,
                 data: formData,
                 success: function(response){
-                    console.log(response);
+                    // console.log(response);
                     if (response.success) {
                         $('#modal_detalle_estampillas').modal('hide');
                         $('#detalle_est').val(response.detalle);
@@ -1588,7 +1413,7 @@
                 async: true,
                 data: formData,
                 success: function(response){
-                    console.log(response);
+                    // console.log(response);
                     if (response.success) {
                         /////ADD TR
                         $('#tamites_table').append(response.tr);

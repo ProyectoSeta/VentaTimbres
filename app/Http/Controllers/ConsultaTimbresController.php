@@ -56,6 +56,7 @@ class ConsultaTimbresController extends Controller
                 }
 
                 //////CONDICION
+                $div_condicion = '';
                 if ($con1->condicion == 29) {
                     /// ANULADO
                     $formato_sustituto = substr(str_repeat(0, $length).$con1->sustituto, - $length);

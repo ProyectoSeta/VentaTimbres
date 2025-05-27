@@ -52,7 +52,8 @@ class RolesHasPermissionsSeeder extends Seeder
                                         'apertura','apertura.apertura_taquillas','apertura.search_fecha', /// completo
                                         'inventario_taquillas',
                                         'sede_taquilla','sede_taquilla.new_sede','sede_taquilla.new_taquillero','sede_taquilla.new_taquilla','sede_taquilla.update_clave','sede_taquilla.habilitar_taquilla','sede_taquilla.habilitar_taquillero', /// completo
-                                        'new_pass','new_pass.update');
+                                        'new_pass','new_pass.update',
+                                        'proveedores','proveedores.store');
 
 
 
@@ -114,7 +115,8 @@ class RolesHasPermissionsSeeder extends Seeder
                                     'venta',
                                     'arqueo','arqueo.timbres','arqueo.detalle_venta','arqueo.detalle_forma','arqueo.cierre_punto','pdf_cierre_taquilla',
                                     'timbres_asignados','timbres_asignados.recibido_forma14','timbres_asignados.recibido_estampillas',
-                                    'new_pass','new_pass.update'
+                                    'new_pass','new_pass.update',
+                                    'timbre'
                                     );
           
     }

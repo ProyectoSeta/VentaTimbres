@@ -162,7 +162,7 @@ class PermissionsSeeder extends Seeder
                         'module' => 3,
                         'priority'=> 1]);
         Permission::create(['name' => 'papel.enviar_inv_f14',
-                        'description' => 'Enviar Lote de Papel a Inventario (TFFE-14)',
+                        'description' => 'Enviar Lote de Papel a Inventario (TFE-14)',
                         'module' => 3,
                         'priority'=> 1]);
         Permission::create(['name' => 'papel.enviar_inv_estampillas',
@@ -302,7 +302,7 @@ class PermissionsSeeder extends Seeder
                         'module' => 5,
                         'priority'=> 2]);
         Permission::create(['name' => 'timbres_asignados.recibido_estampillas',
-                        'description' => 'Aceptar Timbres Asignados (TFE-14)',
+                        'description' => 'Aceptar Timbres Asignados (Estampillas)',
                         'module' => 5,
                         'priority'=> 1]);
 
@@ -509,6 +509,23 @@ class PermissionsSeeder extends Seeder
         Permission::create(['name' => 'rol_usuario.update',
                                 'description' => 'Editar Rol de Usuario',
                                 'module' => 8,
+                                'priority'=> 1]); 
+
+
+        /////VENTA
+        Permission::create(['name' => 'timbre',
+                                'description' => 'Imprimir Timbre Fiscal',
+                                'module' => 10,
+                                'priority'=> 1]); 
+
+        /////PAPEL SEGURIDAD: PROVEEDORES
+        Permission::create(['name' => 'proveedores',
+                                'description' => 'Ver Proveedores',
+                                'module' => 3,
+                                'priority'=> 1]); 
+        Permission::create(['name' => 'proveedores.store',
+                                'description' => 'Registrar nuevos Proveedores',
+                                'module' => 3,
                                 'priority'=> 1]); 
 
 

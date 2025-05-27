@@ -5,15 +5,7 @@ use DB;
 use SimpleSoftwareIO\QrCode\Facades\QrCode;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash; 
-
-
-use Mike42\Escpos\PrintConnectors\FilePrintConnector;
-// use Mike42\Escpos\PrintConnectors\WindowsPrintConnector;
-// use Mike42\Escpos\Printer;
-
-use Mike42\Escpos\Printer;
-use Mike42\Escpos\EscposImage;
-use Mike42\Escpos\PrintConnectors\WindowsPrintConnector;
+use Barryvdh\DomPDF\Facade\Pdf;
 
 class HomeController extends Controller
 {
@@ -108,56 +100,7 @@ class HomeController extends Controller
 
     
 
-    public function timbre(){
-
-        // try {
-        // // Enter the share name for your USB printer here
-
-
-        // $connector = null;
-        //     $connector = new WindowsPrintConnector("EPSON_TM_U220_Receipt");
-        //     /* Print a "Hello world" receipt" */
-        //     $printer = new Printer($connector);
-        //     $printer -> text("Hello World\n");
-        //     $printer -> cut();
-
-        //     /* Close printer */
-        //     $printer -> close();
-        // } catch (Exception $e) {
-        //     echo "Couldn't print to this printer: " . $e -> getMessage() . "\n";
-        // }
-
-
-        // $impresora = 'USB001';COMPOSER
-        // $nombreImpresora = "EPSON TM-U220 Receipt";
-        // $connector = new WindowsPrintConnector($nombreImpresora);
-        // $impresora = new Printer($connector);
-        // $impresora->setJustification(Printer::JUSTIFY_CENTER);
-        // $impresora->setTextSize(2, 2);
-        // $impresora->text("Imprimiendo\n");
-        // $impresora->text("ticket\n");
-        // $impresora->text("desde\n");
-        // $impresora->text("Laravel\n");
-        // $impresora->setTextSize(1, 1);
-        // $impresora->text("https://parzibyte.me");
-        // $impresora->feed(5);
-        // $impresora->close();
-
-
-        if (($handle = @fopen("COM2","w")) === FALSE) {
-            die('No se puede imprimir, verifique la conexion con el terminal');
-        }
--
-        fwrite($handle,chr(27). chr(64)); /// reinicio?
-        fwrite($handle,chr(27). chr(100). chr(0));
-        fwrite($handle,chr(27). chr(33). chr(8));
-        fwrite($handle,"HOLA MUNDO");
-        fclose($handle);
-        $salida = shell_exec('lpr COM2');
-
-
-
-    }
+   
 
 
     public function apertura_taquilla(Request $request){
@@ -1029,6 +972,7 @@ class HomeController extends Controller
     public function imprimir(Request $request){
         $papel = unserialize(base64_decode($request->post('papel')));
         $timbre =unserialize(base64_decode($request->post('timbre'))); 
+        $timbre_imprimir_tfe = [];
 
         $length = 6;
         $user = auth()->id();
@@ -1038,7 +982,7 @@ class HomeController extends Controller
 
             $upd1 = DB::table('detalle_venta_tfes')->where('nro_timbre','=',$timbre)->update(['condicion' => 30]); //vuelto a imprimir
             if ($upd1) {
-                $con1 = DB::table('detalle_venta_tfes')->select('key_venta','serial')->where('nro_timbre','=',$timbre)->first();
+                $con1 = DB::table('detalle_venta_tfes')->select('key_venta','serial','qr','bolivares')->where('nro_timbre','=',$timbre)->first();
                 if ($con1) {
                     $con2 = DB::table('detalle_ventas')->join('tramites', 'detalle_ventas.key_tramite', '=','tramites.id_tramite')
                                             ->select('detalle_ventas.ucd','detalle_ventas.bs','tramites.tramite','tramites.key_ente')
@@ -1054,6 +998,8 @@ class HomeController extends Controller
                         }else{
                             $monto = $con2->ucd.' U.C.D.';
                         }
+
+
                     }else{ 
                         $update = DB::table('detalle_venta_tfes')->where('nro_timbre','=',$timbre)->update(['condicion' => 7]);
                         return response()->json(['success' => false]); 
@@ -1064,6 +1010,28 @@ class HomeController extends Controller
                 }
 
                 $con_ente = DB::table('entes')->select('ente')->where('id_ente','=',$con2->key_ente)->first();
+
+                // if ($) {
+                //     # code...
+                // }else{
+
+                // }
+
+                ////// INGRESAR DETALLE PARA IMPRESION
+                $array = array(
+                    'serial' => $con1->serial,
+                    'qr' => $con1->qr,
+                    'ci' => $con3->identidad_condicion.''.$con3->identidad_nro,
+                    'nombre' => $con3->nombre_razon,
+                    'ente' => $con_ente->ente,
+                    'bs' => number_format($bs_tramite_imp, 2, ',', '.'),
+                    'ucd' => $ucd_tramite,
+                    'capital' => false,
+                    'fecha' => date("d-m-Y",strtotime($hoy))
+                );
+
+                $a = (object) $array;
+                array_push($timbre_imprimir_tfe,$a);
 
                 $html = '<div class="modal-header">
                             <h1 class="modal-title fs-5 fw-bold text-navy">Timbre Re-Impreso<span class="text-muted"></span></h1>
@@ -1106,7 +1074,7 @@ class HomeController extends Controller
                                 </div>
                             </div>  <!--  cierra div.row   -->
                             <div class="d-flex justify-content-center mt-3 mb-3">
-                                <a href="'.route("home").'" class="btn btn-secondary btn-sm me-2">Cerrar</a>
+                                <a href="'.route("timbre", ['t' =>$t]).'" class="btn btn-success btn-sm me-3">Imprimir Timbres</a>
                             </div>
                         </div>';
 

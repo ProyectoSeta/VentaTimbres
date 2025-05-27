@@ -7,7 +7,7 @@
     <!-- CSRF Token -->
     <meta name="csrf-token" content="{{ csrf_token() }}">
 
-    <title>{{ config('app.name', 'MNM') }}</title>
+    <title>Venta Timbres | SETA</title>
     <link rel="icon" href="{{ asset('assets/favicon.svg') }}" />
 
     <!-- Fonts -->

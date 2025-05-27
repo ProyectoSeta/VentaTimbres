@@ -369,6 +369,12 @@ return [
                             ],
                         ],
         ],
+        [
+            'text'        => 'Proveedores',
+            'route'         => 'proveedores',
+            'can' => ['proveedores'],
+            'icon'       => 'fas fa-angle-right pe-2',   
+        ],
         //ESTAMPILLAS
         [   'header' => 'Estampillas',
             'can' => ['emision_ucd'],

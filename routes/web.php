@@ -278,10 +278,19 @@ Route::get('/pdf_cierre_taquilla/{id?}/', [App\Http\Controllers\ArqueoTaquillaCo
 
 
 
+   
+
+/////IMPRIMIR TIMBRE
+Route::get('/timbre/{t?}/', [App\Http\Controllers\TimbresController::class, 'index'])->middleware('can:timbre')->name('timbre');
+
+/////PROVEEDORES
+Route::get('/proveedores', [App\Http\Controllers\ProveedoresController::class, 'index'])->middleware('can:proveedores')->name('proveedores');
+Route::post('/proveedores/store', [App\Http\Controllers\ProveedoresController::class, 'store'])->name('proveedores.store');
 
 
 
-
+/////VISTA QR AFUERA
+Route::get('/qr/{id?}/', [App\Http\Controllers\QrController::class, 'index'])->name('qr');
 
 
 

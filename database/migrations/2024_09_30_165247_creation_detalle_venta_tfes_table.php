@@ -26,7 +26,7 @@ return new class extends Migration
             $table->integer('key_denominacion')->unsigned()->nullable();
             $table->foreign('key_denominacion')->references('id')->on('ucd_denominacions')->onDelete('cascade');
 
-            $table->float('bolivares')->nullable();
+            $table->float('bolivares',20, 2)->nullable();
 
             $table->integer('nro_timbre')->unique(); ////correlativo de papel
 
