@@ -4,8 +4,8 @@
     <title>PDF Template</title>
     <style>
         *{
-            font-family: "Reddit Sans", sans-serif;
-            font-size:12px
+            font-family: "helvetica", serif;
+            font-size:11px;
             
         }
         @page {
@@ -80,72 +80,77 @@
         @foreach ($timbres as $timbre)
             @for ($i = 1; $i < 3; $i++)
             <div class="container saltopagina">
-                <div class="text-center" style="margin-bottom: 9px; margin-top: 25%; font-size:10px;">
+                <div class="text-center" style="margin-bottom: 9px; margin-top: 25%;">
                     TIMBRE FISCAL ELECTRONICO<br/>
                     PLANILLAS DE PAGO<br/>
                     FORMA 14 - TFE<br/>
                     PARA ABONAR A LA CUENTA DE:<br/>
                     GOBIERNO BOLIVARIANO DEL ESTADO ARAGUA
+                    <br/>..............................................................................
                 </div>
 
-                <div class="text-center" style="margin-bottom: 9px;">
-                    <span class="text-danger fw-bold">*** CADUCA A LOS SIETE (7) DÍAS ***</span>
-                </div>
 
-                <div class="text-start" style="margin-bottom: 9px;">
-                    <div class="d-flex flex-column my-2">
-                        <span>SERIAL: </span>
-                        <span class="fw-bold fs-5">{{$timbre->serial}}</span>
-                    </div>
-                    <div class="d-flex flex-column my-2">
-                        <span>CI/RIF: </span>
-                        <span class="fw-bold fs-5">{{$timbre->ci}}</span>
-                    </div>
-                    <div class="d-flex flex-column my-2">
-                        <span>NOMBRE/RAZÓN: </span>
-                        <span class="fw-bold fs-5">{{$timbre->nombre}}</span>
-                    </div>
-                    <div class="d-flex flex-column my-2">
-                        <span>FECHA DE EMISIÓN: </span>
-                        <span class="fw-bold fs-5">{{$timbre->fecha}}</span>
-                    </div>
-                    <div class="d-flex flex-column my-2">
-                        <span>ENTE</span>
-                        <span class="fw-bold fs-5">{{$timbre->ente}}</span>
-                    </div>
-                    <div class="d-flex flex-column my-2">
-                        <span>MONTO EN BS.: </span>
-                        <span class="fw-bold fs-5">{{$timbre->bs}}</span>
-                    </div>
-                    @if ($timbre->capital == false)
-                        <div class="d-flex flex-column my-2">
-                            <span>UCD: </span>
-                            <span class="fw-bold fs-5">{{$timbre->ucd}}</span>
-                        </div>
-                    @endif
-                    
-                </div>
+                <!-- SERIAL IMG -->
 
                 <div class="text-center">
-                    <img src="{{asset($timbre->qr)}}" alt="" style="width: 60%; margin-top: 9px; margin-bottom: 9px;">
-                    <!-- <img src="../public/assets/qrcode_TFE1.png" alt="" style="width: 70%; margin-top: 9px; margin-bottom: 9px;"> -->
+                    <img src="{{asset('assets/qrForma14/barcode.png')}}" alt="" style="width: 220px; margin-top: 9px; margin-bottom: 9px;">
                 </div>
+                
+
+                <div class="text-start" style="margin-bottom: 9px;">
+                    <div class="my-2" style="font-size:1px;">
+                        <span class="fw-bold">{{$timbre->serial}} </span><span>CI/RIF: </span><span class="fw-bold fs-5">{{$timbre->ci}}</span>                     
+                    </div>
+                    <div class="my-2">
+                        <span>FECHA DE EMISIÓN: </span> <span class="fw-bold fs-5">{{$timbre->fecha}}</span>
+                    </div>
+                    <div class="my-2">
+                        <span>*** CADUCA A LOS QUINCE (15) DÍAS ***</span>
+                    </div>
+                    <div class="my-2">
+                        <span>MONTO EN BOLIVARES: Bs. </span> <span class="fs-5">{{$timbre->bs}}</span>
+                    </div>
+                    <div class="my-2">
+                        <span>CANTIDAD DE U.C.D.: </span> <span class="fs-5">{{$timbre->ucd}}</span>
+                    </div>
+                    <div class="my-2">
+                        <span>ENTE: </span> <span class="fs-5">{{$timbre->ente}}</span>
+                    </div>
+
+
+
+                    <div class="fw-bold">
+                        <div class="my-2">
+                            SETA {{$timbre->fecha}}
+                        </div>
+                        <div class="my-2">
+                            Monto: {{$timbre->bs}}
+                        </div>
+                        <div class="my-2">
+                            Planilla: {{$timbre->serial}}
+                        </div>
+                        <div class="my-2" style="font-size:12px;">
+                            <br>BENIF: <br>GOBIERNO BOLIVARIANO DEL ESTADO ARAGUA
+                        </div>
+                    </div>
+                
+                </div>
+
+                
 
                 @if ($i == 1)
                     <!-- ORIGINAL -->
                     <div class="text-center" style="margin-bottom: 9px;">
-                        <span class="text-danger fw-bold">--------- ORIGINAL ----------</span>
+                        <span class="">Original - Z0</span><br/>----------------------------------------
                     </div>
                 @else
                     <!-- COPIA -->
                     <div class="text-center" style="margin-bottom: 9px;">
-                        <span class="text-danger fw-bold">--------- COPIA ----------</span>
+                        <span class="">Copia - Z0</span><br/>----------------------------------------
                     </div>
                 @endif
 
-                <div class="text-center" style="font-size:10px;">
-                    SERVICIO TRIBUTARIO DEL ESTADO ARAGUA (SETA)<br/>
-                </div>
+                
             </div>    
             @endfor
         @endforeach

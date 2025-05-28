@@ -27,6 +27,7 @@ class FuncionarioSeeder extends Seeder
             'ci_condicion' => 'V',
             'ci_nro' => '0000001',
             'cargo' => 'Taquillero',
+            'key' => '1125',
             'estado' => 16
         ]);
 
@@ -35,6 +36,7 @@ class FuncionarioSeeder extends Seeder
             'ci_condicion' => 'V',
             'ci_nro' => '0000002',
             'cargo' => 'Taquillero',
+            'key' => '1245',
             'estado' => 16
         ]);
 
@@ -43,6 +45,7 @@ class FuncionarioSeeder extends Seeder
             'ci_condicion' => 'V',
             'ci_nro' => '0000003',
             'cargo' => 'Taquillero',
+            'key' => '3354',
             'estado' => 16
         ]);
 

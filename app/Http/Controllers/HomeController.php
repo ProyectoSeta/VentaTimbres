@@ -859,7 +859,7 @@ class HomeController extends Controller
 
                             <div class="d-flex justify-content-center mt-3 mb-3">
                                 <button type="button" class="btn btn-secondary btn-sm me-2" data-bs-dismiss="modal">Cancelar</button>
-                                <button type="submit" class="btn btn-success btn-sm">Imprimir</button>
+                                <button type="submit" class="btn btn-success btn-sm">Aceptar</button>
                             </div>
 
                         </form>
@@ -956,7 +956,7 @@ class HomeController extends Controller
 
                             <div class="d-flex justify-content-center mt-3 mb-3">
                                 <button type="button" class="btn btn-secondary btn-sm me-2" data-bs-dismiss="modal">Cancelar</button>
-                                <button type="submit" class="btn btn-success btn-sm">Imprimir</button>
+                                <button type="submit" class="btn btn-success btn-sm">Aceptar</button>
                             </div>
 
                         </form>
@@ -988,7 +988,7 @@ class HomeController extends Controller
                                             ->select('detalle_ventas.ucd','detalle_ventas.bs','tramites.tramite','tramites.key_ente')
                                             ->where('detalle_ventas.key_venta','=',$con1->key_venta)->first();
                     $con3 =  DB::table('ventas')->join('contribuyentes', 'ventas.key_contribuyente', '=','contribuyentes.id_contribuyente')
-                                            ->select('contribuyentes.nombre_razon','contribuyentes.identidad_condicion','contribuyentes.identidad_nro')
+                                            ->select('ventas.key_ucd','ventas.fecha','contribuyentes.nombre_razon','contribuyentes.identidad_condicion','contribuyentes.identidad_nro')
                                             ->where('ventas.id_venta','=',$con1->key_venta)->first();
                     if ($con2 && $con3) {
                         $formato_nro = substr(str_repeat(0, $length).$timbre, - $length);
@@ -1010,12 +1010,17 @@ class HomeController extends Controller
                 }
 
                 $con_ente = DB::table('entes')->select('ente')->where('id_ente','=',$con2->key_ente)->first();
+                $con_ucd = DB::table('ucds')->select('valor')->where('id','=',$con3->key_ucd)->first();
 
-                // if ($) {
-                //     # code...
-                // }else{
-
-                // }
+                if ($con1->bolivares == null) {
+                    $bs =  $con2->ucd * $con_ucd->valor;
+                    $capital = false;
+                    $ucd = $con2->ucd;
+                }else{
+                    $bs = number_format($con1->bolivares, 2, ',', '.');
+                    $capital = true;
+                    $ucd = '';
+                }
 
                 ////// INGRESAR DETALLE PARA IMPRESION
                 $array = array(
@@ -1024,14 +1029,18 @@ class HomeController extends Controller
                     'ci' => $con3->identidad_condicion.''.$con3->identidad_nro,
                     'nombre' => $con3->nombre_razon,
                     'ente' => $con_ente->ente,
-                    'bs' => number_format($bs_tramite_imp, 2, ',', '.'),
-                    'ucd' => $ucd_tramite,
-                    'capital' => false,
-                    'fecha' => date("d-m-Y",strtotime($hoy))
+                    'bs' => $bs,
+                    'ucd' => $ucd,
+                    'capital' => $capital,
+                    'fecha' => date("d-m-Y",strtotime($con3->fecha))
                 );
 
                 $a = (object) $array;
                 array_push($timbre_imprimir_tfe,$a);
+
+
+                ////cifrar array de timbres tfe
+                $t = base64_encode(serialize($timbre_imprimir_tfe));
 
                 $html = '<div class="modal-header">
                             <h1 class="modal-title fs-5 fw-bold text-navy">Timbre Re-Impreso<span class="text-muted"></span></h1>
@@ -1074,7 +1083,8 @@ class HomeController extends Controller
                                 </div>
                             </div>  <!--  cierra div.row   -->
                             <div class="d-flex justify-content-center mt-3 mb-3">
-                                <a href="'.route("timbre", ['t' =>$t]).'" class="btn btn-success btn-sm me-3">Imprimir Timbres</a>
+                                <a href="'.route("home").'" class="btn btn-secondary btn-sm me-3">Salir</a>
+                                <a href="'.route("timbre", ['t' =>$t]).'" target="_blank" class="btn btn-success btn-sm me-3 btn_imprimir_tfe">Imprimir Timbre</a>
                             </div>
                         </div>';
 
@@ -1191,6 +1201,44 @@ class HomeController extends Controller
                     if ($insert) {
                         $upd2 = DB::table('detalle_venta_tfes')->where('nro_timbre','=',$timbre)->update(['sustituto' => $next_nro_timbre]); //timbre sustituto del anulado
                         if ($upd2) {
+                            $con_contri = DB::table('ventas')->join('contribuyentes', 'ventas.key_contribuyente', '=','contribuyentes.id_contribuyente')
+                                                            ->select('ventas.key_ucd','ventas.fecha','contribuyentes.identidad_condicion','contribuyentes.identidad_nro','contribuyentes.nombre_razon')
+                                                            ->where('ventas.id_venta','=',$con4->key_venta)->first();
+                            $con_ucd = DB::table('ucds')->select('valor')->where('id','=',$con_contri->key_ucd)->first();
+                            
+
+                            if ($bs == null) {
+                                $bs_t =  $con2->ucd * $con_ucd->valor;
+                                $capital = false;
+                                $ucd_t = $con2->ucd;
+                            }else{
+                                $bs_t = $monto;
+                                $capital = true;
+                                $ucd_t = '';
+                            }
+
+                            ////// INGRESAR DETALLE PARA IMPRESION
+                            $array = array(
+                                'serial' => $serial,
+                                'qr' => 'assets/qrForma14/qrcode_TFE'.$next_nro_timbre.'.png',
+                                'ci' => $con_contri->identidad_condicion.''.$con_contri->identidad_nro,
+                                'nombre' => $con_contri->nombre_razon,
+                                'ente' => $con_ente->ente,
+                                'bs' => $bs_t,
+                                'ucd' => $ucd_t,
+                                'capital' => $capital,
+                                'fecha' => date("d-m-Y",strtotime($con_contri->fecha))
+                            );
+
+                            $a = (object) $array;
+                            array_push($timbre_imprimir_tfe,$a);
+
+
+                            ////cifrar array de timbres tfe
+                            $t = base64_encode(serialize($timbre_imprimir_tfe));
+
+
+
                                 $html = '<div class="modal-header">
                                         <h1 class="modal-title fs-5 fw-bold text-navy">Timbre Re-Impreso<span class="text-muted"></span></h1>
                                     </div>
@@ -1232,7 +1280,8 @@ class HomeController extends Controller
                                             </div>
                                         </div>  <!--  cierra div.row   -->
                                         <div class="d-flex justify-content-center mt-3 mb-3">
-                                            <a href="'.route("home").'"  class="btn btn-secondary btn-sm me-2">Cerrar</a>
+                                            <a href="'.route("home").'" class="btn btn-secondary btn-sm me-3">Salir</a>
+                                            <a href="'.route("timbre", ['t' =>$t]).'" target="_blank" class="btn btn-success btn-sm me-3 btn_imprimir_tfe">Imprimir Timbre</a>
                                         </div>
                                     </div>';
 

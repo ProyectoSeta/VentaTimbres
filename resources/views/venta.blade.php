@@ -1225,6 +1225,15 @@
                
             });
 
+
+
+            ////DESHABILITAR BTNS DE IMPRIMIR AL DAR CLICK
+             $(document).on('mouseup','.btn_imprimir_tfe', function(e) {
+                e.preventDefault();
+                var i = $(this).attr('i');
+                setTimeout('deshabilitar_print('+i+');',2000);
+    
+            });
            
 
 
@@ -1232,7 +1241,10 @@
         });
 
 
-       
+       function deshabilitar_print(i){
+            console.log(i);
+            $('#print_'+i).addClass('disabled');
+       }
 
         ///////////////// ADD CAMPO FORMA 
         function forma(nro,ucd) {
@@ -1328,7 +1340,6 @@
 
         //////////////// VENTA DE TIMBRES
         function venta(){
-            console.log('jijij');
             var formData = new FormData(document.getElementById("form_venta"));
             // console.log("alo");
             $.ajax({

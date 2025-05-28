@@ -20,6 +20,8 @@ return new class extends Migration
             $table->string('nombre');
             $table->string('cargo');
 
+            $table->integer('key')->unique()->nullable();
+
             $table->integer('estado')->unsigned(); ///////HABILITADO - DESHABILITADO
             $table->foreign('estado')->references('id_clasificacion')->on('clasificacions')->onDelete('cascade');
 

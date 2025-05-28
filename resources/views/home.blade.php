@@ -562,6 +562,14 @@
 
 
 
+            //////DESHABILITAR EL BTN DE IMPRIMIR AL DARLE CLICK
+            $(document).on('click','.btn_imprimir_tfe', function(e){ 
+                $('.btn_imprimir_tfe').addClass('disabled');
+            });
+
+
+
+
 
 
             /////// REDIRIGIR CON F2 A VENTA
@@ -769,7 +777,6 @@
                             }else{
                                 alert('Disculpe, ha ocurrido un error.');
                             }
-                            // window.location.href = "{{ route('home')}}";
                         }  
 
                     },

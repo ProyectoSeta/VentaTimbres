@@ -5,6 +5,9 @@ use SimpleSoftwareIO\QrCode\Facades\QrCode;
 use Illuminate\Http\Request;
 use DB;
 use Barryvdh\DomPDF\Facade\Pdf;
+use Milon\Barcode\Facades\Barcode;
+use \Milon\Barcode\DNS1D;
+use Illuminate\Support\Facades\Storage;
 
 class VentaController extends Controller
 {
@@ -1418,7 +1421,7 @@ class VentaController extends Controller
         // return response('4545');
         $tramites = $request->post('tramite');
         $row_timbres = '';
-        $timbres_imprimir_tfe = [];
+        $length2 = 10;
         ///////////////////////////////////// USER Y TAQUILLA
             $user = auth()->id();
             $query = DB::table('users')->select('key_sujeto')->where('id','=',$user)->first();
@@ -1681,16 +1684,29 @@ class VentaController extends Controller
                                                     }
                                                 }
     
-                                                // SERIAL
+                                                
                                                 $length = 6;
                                                 $formato_nro = substr(str_repeat(0, $length).$nro_timbre, - $length);
+
+                                               
+                                                // SERIAL
+                                                $prev_serial = substr($identidad_nro.$nro_timbre, - $length2);
+                                                $ult = $prev_serial % 10;
+                                                $serial = $prev_serial.'-'.$identificador_forma.''.$ult;
     
-                                                $serial = $identificador_ucd.''.$identificador_forma.''.$formato_nro;
-    
-                                                // QR
-                                                $nro_timbre_qr = base64_encode(serialize($nro_timbre)); 
-                                                $url = 'http://200.109.64.138/qr/?id='.$nro_timbre_qr; 
-                                                QrCode::format('png')->size(180)->eye('circle')->generate($url, public_path('assets/qrForma14/qrcode_TFE'.$nro_timbre.'.png'));
+                                                // // QR
+                                                // $nro_timbre_qr = base64_encode(serialize($nro_timbre)); 
+                                                // $url = 'http://200.109.64.138/qr/?id='.$nro_timbre_qr; 
+                                                // QrCode::format('png')->size(180)->eye('circle')->generate($url, public_path('assets/qrForma14/qrcode_TFE'.$nro_timbre.'.png'));
+
+
+                                                // /CODIGO DE BARRA
+                                                $d = new DNS1D();
+                                                $barcode = $d->getBarcodePNG($serial, 'C39',2,40);
+                                                file_put_contents(public_path('assets/qrForma14/barcode.png'), base64_decode($barcode));
+
+
+                                               
     
     
                                                 // insert detalle_venta_estampilla
@@ -1702,11 +1718,34 @@ class VentaController extends Controller
                                                                                                 'nro_timbre' => $nro_timbre,
                                                                                                 'key_inventario_tfe' => $key_inventario,
                                                                                                 'serial' => $serial,
-                                                                                                'qr' => 'assets/qrForma14/qrcode_TFE'.$nro_timbre.'.png',
+                                                                                                'qr' => 'assets/qrForma14/barcode_TFE'.$nro_timbre.'.png',
                                                                                                 'condicion' => 7]); 
                                                 if ($i3){
                                                     $cant_tfe = $cant_tfe + 1;
                                                     $cant_ucd_tfe = $cant_ucd_tfe + $ucd_tramite;
+
+                                                    $timbres_imprimir_tfe = [];
+
+                                                    ////cifrado para impresion
+                                                    ////// INGRESAR DETALLE PARA IMPRESION
+                                                    $bs_tramite_imp = $ucd_tramite * $valor_ucd;
+                                                    $array = array(
+                                                        'serial' => $serial,
+                                                        'qr' => 'assets/qrForma14/qrcode_TFE'.$nro_timbre.'.png',
+                                                        'ci' => $cedula_contribuyente,
+                                                        'nombre' => $nombre_contribuyente,
+                                                        'ente' => $consulta_tramite->ente,
+                                                        'bs' => number_format($bs_tramite_imp, 2, ',', '.'),
+                                                        'ucd' => $ucd_tramite,
+                                                        'capital' => false,
+                                                        'fecha' => date("d-m-Y",strtotime($hoy))
+                                                    );
+
+                                                    $a = (object) $array;
+                                                    array_push($timbres_imprimir_tfe,$a);
+
+                                                    $t = base64_encode(serialize($timbres_imprimir_tfe));
+                                                    
     
                                                     $row_timbres .= '<div class="border mb-4 rounded-3">
                                                                         <div class="d-flex justify-content-between px-3 py-2 align-items-center">
@@ -1736,6 +1775,9 @@ class VentaController extends Controller
                                                                             <div class="text-center">
                                                                                 <img src="'.asset('assets/qrForma14/qrcode_TFE'.$nro_timbre.'.png').'" class="img-fluid" alt="" width="110px">
                                                                             </div>
+                                                                            <div class="text-center">
+                                                                                <a href="'.route("timbre", ['t' =>$t]).'" target="_blank" class="btn btn-success btn-sm me-3 btn_imprimir_tfe" i="'.$nro_timbre.'" id="print_'.$nro_timbre.'">Imprimir</a>
+                                                                            </div>
                                                                         </div>
                                                                     </div>';
                                                     /////////ACTUALIZAR NRO TIMBRES VENDIDOS (DETALLE_ASIGNACION_TIMBRES)
@@ -1756,22 +1798,7 @@ class VentaController extends Controller
 
 
 
-                                            ////// INGRESAR DETALLE PARA IMPRESION
-                                            $bs_tramite_imp = $ucd_tramite * $valor_ucd;
-                                            $array = array(
-                                                'serial' => $serial,
-                                                'qr' => 'assets/qrForma14/qrcode_TFE'.$nro_timbre.'.png',
-                                                'ci' => $cedula_contribuyente,
-                                                'nombre' => $nombre_contribuyente,
-                                                'ente' => $consulta_tramite->ente,
-                                                'bs' => number_format($bs_tramite_imp, 2, ',', '.'),
-                                                'ucd' => $ucd_tramite,
-                                                'capital' => false,
-                                                'fecha' => date("d-m-Y",strtotime($hoy))
-                                            );
-
-                                            $a = (object) $array;
-                                            array_push($timbres_imprimir_tfe,$a);
+                                            
     
                                             break;
     
@@ -1880,6 +1907,27 @@ class VentaController extends Controller
                                                     $cant_ucd_tfe = $cant_ucd_tfe;
 
                                                     $formato_total_bs_capital =  number_format($total_bs_capital, 2, ',', '.');
+
+                                                    $timbres_imprimir_tfe = [];
+                                                    ////cifrado para impresion
+                                                    ////// INGRESAR DETALLE PARA IMPRESION
+                                                    $array = array(
+                                                        'serial' => $serial,
+                                                        'qr' => 'assets/qrForma14/qrcode_TFE'.$nro_timbre.'.png',
+                                                        'ci' => $cedula_contribuyente,
+                                                        'nombre' => $nombre_contribuyente,
+                                                        'ente' => $consulta_tramite->ente,
+                                                        'bs' => $formato_total_bs_capital,
+                                                        'ucd' => '',
+                                                        'capital' => true,
+                                                        'fecha' => date("d-m-Y",strtotime($hoy))
+                                                    );
+
+                                                    $a = (object) $array;
+                                                    array_push($timbres_imprimir_tfe,$a);
+
+                                                    $t = base64_encode(serialize($timbres_imprimir_tfe));
+
     
                                                     $row_timbres .= '<div class="border mb-4 rounded-3">
                                                                         <div class="d-flex justify-content-between px-3 py-2 align-items-center">
@@ -1909,6 +1957,9 @@ class VentaController extends Controller
                                                                             <div class="text-center">
                                                                                 <img src="'.asset('assets/qrForma14/qrcode_TFE'.$nro_timbre.'.png').'" class="img-fluid" alt="" width="110px">
                                                                             </div>
+                                                                            <div class="text-center">
+                                                                                <a href="'.route("timbre", ['t' =>$t]).'" target="_blank" class="btn btn-success btn-sm me-3 btn_imprimir_tfe" i="'.$nro_timbre.'" id="print_'.$nro_timbre.'">Imprimir</a>
+                                                                            </div>
                                                                         </div>
                                                                     </div>';
                                                     /////////ACTUALIZAR NRO TIMBRES VENDIDOS (DETALLE_ASIGNACION_TIMBRES)
@@ -1926,25 +1977,6 @@ class VentaController extends Controller
                                                 $delete_venta = DB::table('ventas')->where('id_venta', '=', $id_venta)->delete();
                                                 return response()->json(['success' => false]);
                                             }
-
-
-
-                                            ////// INGRESAR DETALLE PARA IMPRESION
-                                            $array = array(
-                                                'serial' => $serial,
-                                                'qr' => 'assets/qrForma14/qrcode_TFE'.$nro_timbre.'.png',
-                                                'ci' => $cedula_contribuyente,
-                                                'nombre' => $nombre_contribuyente,
-                                                'ente' => $consulta_tramite->ente,
-                                                'bs' => $formato_total_bs_capital,
-                                                'ucd' => '',
-                                                'capital' => true,
-                                                'fecha' => date("d-m-Y",strtotime($hoy))
-                                            );
-
-                                            $a = (object) $array;
-                                            array_push($timbres_imprimir_tfe,$a);
-
      
                                             break;
                                         
@@ -2063,6 +2095,30 @@ class VentaController extends Controller
                                                 if ($i3){
                                                     $cant_tfe = $cant_tfe + 1;
                                                     $cant_ucd_tfe = $cant_ucd_tfe + $ucd_tramite;
+
+                                                    $timbres_imprimir_tfe = [];
+
+                                                    ////cifrado para impresion
+                                                    ////// INGRESAR DETALLE PARA IMPRESION
+                                                    $bs_tramite_imp = $ucd_tramite * $valor_ucd;
+                                                    $array = array(
+                                                        'serial' => $serial,
+                                                        'qr' => 'assets/qrForma14/qrcode_TFE'.$nro_timbre.'.png',
+                                                        'ci' => $cedula_contribuyente,
+                                                        'nombre' => $nombre_contribuyente,
+                                                        'ente' => $consulta_tramite->ente,
+                                                        'bs' => number_format($bs_tramite_imp, 2, ',', '.'),
+                                                        'ucd' => $ucd_tramite,
+                                                        'capital' => false,
+                                                        'fecha' => date("d-m-Y",strtotime($hoy))
+                                                    );
+
+                                                    $a = (object) $array;
+                                                    array_push($timbres_imprimir_tfe,$a);
+
+                                                    $t = base64_encode(serialize($timbres_imprimir_tfe));
+
+
     
                                                     $row_timbres .= '<div class="border mb-4 rounded-3">
                                                                         <div class="d-flex justify-content-between px-3 py-2 align-items-center">
@@ -2091,6 +2147,9 @@ class VentaController extends Controller
                                                                             <!-- QR -->
                                                                             <div class="text-center">
                                                                                 <img src="'.asset('assets/qrForma14/qrcode_TFE'.$nro_timbre.'.png').'" class="img-fluid" alt="" width="110px">
+                                                                            </div>
+                                                                            <div class="text-center">
+                                                                                <a href="'.route("timbre", ['t' =>$t]).'" target="_blank" class="btn btn-success btn-sm me-3 btn_imprimir_tfe" i="'.$nro_timbre.'" id="print_'.$nro_timbre.'">Imprimir</a>
                                                                             </div>
                                                                         </div>
                                                                     </div>';
@@ -2475,13 +2534,7 @@ class VentaController extends Controller
                         
 
 
-                        if ($exist_tfe == true){
-                            ////cifrar array de timbres tfe
-                            $t = base64_encode(serialize($timbres_imprimir_tfe));
-                            $btn_html = '<a href="'.route("timbre", ['t' =>$t]).'" class="btn btn-success btn-sm me-3">Imprimir Timbres</a>';
-                        }else{
-                            $btn_html = '<a href="'.route("venta").'" class="btn btn-secondary btn-sm me-3">Cerrar Venta</a>';
-                        }
+                        
                         
                         $html = '<div class="modal-header">
                                 <h1 class="modal-title fs-5 fw-bold text-navy">Venta realizada | <span class="text-muted">Timbres</span></h1>
@@ -2501,7 +2554,7 @@ class VentaController extends Controller
                                 </div>  <!--  cierra div.row   -->
 
                                 <div class="d-flex justify-content-center mt-3 mb-3">
-                                    '.$btn_html.'
+                                    <a href="'.route("venta").'" class="btn btn-secondary btn-sm me-3">Cerrar Venta</a>
                                 </div>
                             </div>';
 
