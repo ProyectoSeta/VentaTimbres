@@ -310,13 +310,18 @@ return [
             'topnav_right' => false,
         ],
         //CONSULTA
-        [   'header' => 'Consulta',
+        [   'header' => 'Timbres Fiscales',
             'can' => ['consulta'],
         ],
         [
-            'text'        => 'Timbre Fiscal',
+            'text'        => 'Consulta',
             'route'         => 'consulta',
             'can' => ['consulta'],
+            'icon'       => 'fas fa-angle-right pe-2',   
+        ],
+        [
+            'text'        => 'Anulación',
+            'route'         => 'anular',
             'icon'       => 'fas fa-angle-right pe-2',   
         ],
         //CIERRE

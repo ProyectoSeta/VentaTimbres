@@ -293,6 +293,11 @@ Route::post('/proveedores/store', [App\Http\Controllers\ProveedoresController::c
 Route::get('/qr/{id?}/', [App\Http\Controllers\QrController::class, 'index'])->name('qr');
 
 
+////ANULACION DE TIMBRE
+Route::get('/anular', [App\Http\Controllers\AnulacionController::class, 'index'])->name('anular');
+Route::post('/anular/search_tfe', [App\Http\Controllers\AnulacionController::class, 'search_tfe'])->name('anular.search_tfe');
+Route::post('/anular/anular', [App\Http\Controllers\AnulacionController::class, 'anular'])->name('anular.anular');
+
 
 ///////////////////// EMISIÓN ROLLOS FORMA 14
 // Route::get('/emision_rollos', [App\Http\Controllers\RollosController::class, 'index'])->name('emision_rollos');

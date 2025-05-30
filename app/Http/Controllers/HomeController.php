@@ -6,6 +6,7 @@ use SimpleSoftwareIO\QrCode\Facades\QrCode;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash; 
 use Barryvdh\DomPDF\Facade\Pdf;
+use \Milon\Barcode\DNS1D;
 
 class HomeController extends Controller
 {
@@ -665,24 +666,27 @@ class HomeController extends Controller
                                     ->where('detalle_ventas.key_venta','=',$con1->id_venta)->get();
 
                         foreach ($con2 as $key) {
-                            $con3 = DB::table('detalle_venta_tfes')->select('nro_timbre')->where('key_venta','=',$con1->id_venta)->where('key_detalle_venta','=',$key->correlativo)->where('condicion','=',7)->where('sustituto','=',NULL)->first();
+                            $con3 = DB::table('detalle_venta_tfes')->select('nro_timbre','condicion')->where('key_venta','=',$con1->id_venta)->where('key_detalle_venta','=',$key->correlativo)->where('condicion','=',7)->where('sustituto','=',NULL)->first();
                             if ($con3) {
-                                $formato_nro = substr(str_repeat(0, $length).$con3->nro_timbre, - $length);
-                                if ($key->ucd == null) {
-                                    $monto = $key->bs.' Bs.';
-                                }else{
-                                    $monto = $key->ucd.' U.C.D.';
-                                }
+                                $verificar = DB::table('detalle_venta_tfes')->selectRaw("count(*) as total")->where('sustituto','=',$con3->nro_timbre)->first();
+                                if ($verificar->total == 0) {
+                                    $formato_nro = substr(str_repeat(0, $length).$con3->nro_timbre, - $length);
+                                    if ($key->ucd == null) {
+                                        $monto = $key->bs.' Bs.';
+                                    }else{
+                                        $monto = $key->ucd.' U.C.D.';
+                                    }
 
-                                $timbre =  base64_encode(serialize($con3->nro_timbre));
-                                $tr .= '<tr>
-                                            <td><span class="text-danger fs-6 fw-bold titulo">A-'.$formato_nro.'</span></td>
-                                            <td><span class="text-muted">'.$key->tramite.'</span></td>
-                                            <td><span class="fw-semibold">'.$monto.'</span></td>
-                                            <td>
-                                                <button type="button" class="btn btn-secondary btn-sm py-0 imprimir_timbre" style="font-size:12.7px" venta="" timbre="'.$timbre.'" papel="'.$papel.'">Imprimir</button>
-                                            </td>
-                                        </tr>';
+                                    $timbre =  base64_encode(serialize($con3->nro_timbre));
+                                    $tr .= '<tr>
+                                                <td><span class="text-danger fs-6 fw-bold titulo">A-'.$formato_nro.'</span></td>
+                                                <td><span class="text-muted">'.$key->tramite.'</span></td>
+                                                <td><span class="fw-semibold">'.$monto.'</span></td>
+                                                <td>
+                                                    <button type="button" class="btn btn-secondary btn-sm py-0 imprimir_timbre" style="font-size:12.7px" venta="" timbre="'.$timbre.'" papel="'.$papel.'">Imprimir</button>
+                                                </td>
+                                            </tr>';
+                                }                                
                             }  
                         }
 
@@ -776,13 +780,13 @@ class HomeController extends Controller
             return response()->json(['success' => false]);
         }
 
-    
+      
         //// DATOS GENERALES DE LA VENTA
-        $con1 = DB::table('detalle_venta_tfes')->select('key_venta','nro_timbre')->where('nro_timbre','=',$timbre)->first();
+        $con1 = DB::table('detalle_venta_tfes')->select('key_detalle_venta','key_venta','nro_timbre')->where('nro_timbre','=',$timbre)->first();
         if ($con1) {
             $con2 = DB::table('detalle_ventas')->join('tramites', 'detalle_ventas.key_tramite', '=','tramites.id_tramite')
                                     ->select('detalle_ventas.ucd','detalle_ventas.bs','tramites.tramite')
-                                    ->where('detalle_ventas.key_venta','=',$con1->key_venta)->first();
+                                    ->where('detalle_ventas.correlativo','=',$con1->key_detalle_venta)->first();
             $con3 =  DB::table('ventas')->join('contribuyentes', 'ventas.key_contribuyente', '=','contribuyentes.id_contribuyente')
                                     ->select('contribuyentes.nombre_razon','contribuyentes.identidad_condicion','contribuyentes.identidad_nro')
                                     ->where('ventas.id_venta','=',$con1->key_venta)->first();
@@ -871,13 +875,21 @@ class HomeController extends Controller
             //// PAPEL DAÑADO | IMPRIMIR EN OTRO NRO TIMBRE
 
             /// BUSCAR EL CORRELATIVO DEL PROXIMO TIMBRE
-            $con4 = DB::table('detalle_venta_tfes')->select('key_inventario_tfe')->where('nro_timbre','=',$timbre)->first();
-            if ($con4) {
-                $detalle_last_id = $con4->key_inventario_tfe;
+            $con4 = DB::table('detalle_venta_tfes')->select('key_inventario_tfe','nro_timbre')
+                                                ->where('key_taquilla','=',$id_taquilla)
+                                                ->orderBy('correlativo', 'desc')->first();
 
-                $con5 = DB::table('inventario_tfes')->select('hasta')->where('correlativo','=',$detalle_last_id)->first();
-                if ($detalle_last_id < $con5->hasta) {
-                    $next_nro_timbre = $timbre + 1;
+
+
+            // $con4 = DB::table('detalle_venta_tfes')->select('key_inventario_tfe')->where('nro_timbre','=',$timbre)->first();
+            if ($con4) {
+                $key_inventario_tfe = $con4->key_inventario_tfe;
+
+                $next_nro_timbre = $con4->nro_timbre + 1;
+
+                $con5 = DB::table('inventario_tfes')->select('hasta')->where('correlativo','=',$key_inventario_tfe)->first();
+                if ($next_nro_timbre < $con5->hasta) {
+                    $next_nro_timbre =  $con4->nro_timbre + 1;
                 }else{
                     //lego al limite del lote asignado
                     $con6 = DB::table('inventario_tfes')->select('desde')->where('key_taquilla','=',$id_taquilla)->where('condicion','=',4)->first();
@@ -975,10 +987,18 @@ class HomeController extends Controller
         $timbre_imprimir_tfe = [];
 
         $length = 6;
+        $length2 = 10;
         $user = auth()->id();
 
         if ($papel == 1) {
             /// PAPEL BUENO
+            $query = DB::table('users')->select('key_sujeto')->where('id','=',$user)->first();
+            $con_fun = DB::table('funcionarios')->select('key')->where('id_funcionario','=',$query->key_sujeto)->first();
+            if ($con_fun) {
+                $key_taquillero = $con_fun->key;
+            }else{
+                return response()->json(['success' => false]);
+            }
 
             $upd1 = DB::table('detalle_venta_tfes')->where('nro_timbre','=',$timbre)->update(['condicion' => 30]); //vuelto a imprimir
             if ($upd1) {
@@ -1014,24 +1034,22 @@ class HomeController extends Controller
 
                 if ($con1->bolivares == null) {
                     $bs =  $con2->ucd * $con_ucd->valor;
-                    $capital = false;
                     $ucd = $con2->ucd;
                 }else{
-                    $bs = number_format($con1->bolivares, 2, ',', '.');
-                    $capital = true;
-                    $ucd = '';
+                    $bs = $con1->bolivares;
+                    $ucd = $con1->bolivares / $con_ucd->valor;
                 }
 
                 ////// INGRESAR DETALLE PARA IMPRESION
                 $array = array(
                     'serial' => $con1->serial,
-                    'qr' => $con1->qr,
+                    'barra' => $con1->qr,
                     'ci' => $con3->identidad_condicion.''.$con3->identidad_nro,
                     'nombre' => $con3->nombre_razon,
                     'ente' => $con_ente->ente,
-                    'bs' => $bs,
-                    'ucd' => $ucd,
-                    'capital' => $capital,
+                    'bs' => number_format($bs, 2, ',', '.'),
+                    'ucd' => number_format($ucd, 2, ',', '.'),
+                    'key' => $key_taquillero,
                     'fecha' => date("d-m-Y",strtotime($con3->fecha))
                 );
 
@@ -1073,10 +1091,6 @@ class HomeController extends Controller
                                             <div class="">
                                                 <div class="text-center titulo fw-bold fs-3">'.$monto.'</div>
                                             </div>
-                                            <!-- QR -->
-                                            <div class="text-center">
-                                                <img src="'.asset('assets/qrForma14/qrcode_TFE'.$timbre.'.png').'" class="img-fluid" alt="" width="110px">
-                                            </div>
                                         </div>
                                     </div>
                                     
@@ -1108,8 +1122,10 @@ class HomeController extends Controller
             $user = auth()->id();
             $query = DB::table('users')->select('key_sujeto')->where('id','=',$user)->first();
             $q2 = DB::table('taquillas')->select('id_taquilla')->where('key_funcionario','=',$query->key_sujeto)->first();
-            if ($q2) {
+            $con_fun = DB::table('funcionarios')->select('key')->where('id_funcionario','=',$query->key_sujeto)->first();
+            if ($q2 && $con_fun) {
                 $id_taquilla = $q2->id_taquilla;
+                $key_taquillero = $con_fun->key;
             }else{
                 return response()->json(['success' => false]);
             }
@@ -1159,6 +1175,10 @@ class HomeController extends Controller
             if ($con_ente && $con2) {
                 $upd1 = DB::table('detalle_venta_tfes')->where('nro_timbre','=',$timbre)->update(['condicion' => 29]); //anulado
                 if ($upd1) {
+                    $con_contri = DB::table('ventas')->join('contribuyentes', 'ventas.key_contribuyente', '=','contribuyentes.id_contribuyente')
+                                                            ->select('ventas.key_ucd','ventas.fecha','contribuyentes.identidad_condicion','contribuyentes.identidad_nro','contribuyentes.nombre_razon')
+                                                            ->where('ventas.id_venta','=',$con4->key_venta)->first();
+
                     //// NUEVO DETALLE VENTA TFES
                     // SERIAL
                     $length = 6;
@@ -1168,16 +1188,23 @@ class HomeController extends Controller
                     $c_forma = DB::table('formas')->select('identificador')->where('forma','=','Forma14')->first();
                     $identificador_forma = $c_forma->identificador;
 
-                    $serial = $con4->identificador.''.$identificador_forma.''.$formato_nro;
+                   // SERIAL
+                    $prev_serial = substr($con_contri->identidad_nro.$next_nro_timbre, - $length2);
+                    $ult = $prev_serial % 10; ///ultimo numero de $prev_serial
+                    $serial = $prev_serial.'-'.$identificador_forma.''.$ult;
 
-                    // QR
-                    $url = 'https://tfe14.tributosaragua.com.ve/?id='.$next_nro_timbre.'?lp='.$key_lote; 
-                    QrCode::format('png')->size(180)->eye('circle')->generate($url, public_path('assets/qrForma14/qrcode_TFE'.$next_nro_timbre.'.png'));
+                
+
+                    // /CODIGO DE BARRA
+                    $d = new DNS1D(); ///llamo a la funcion
+                    $barcode = $d->getBarcodePNG($serial, 'C39',2,40); //se crea
+                    file_put_contents(public_path('assets/Forma14/barcode_TFE'.$next_nro_timbre.'.png'), base64_decode($barcode)); ////se guarda
+
 
 
                     if ($con2->ucd == null) {
                         ///bs
-                        $monto = number_format($con2->bs, 2, ',', '.').' Bs.';
+                        $monto = number_format($con2->bs, 2, ',', '.').' Bs';
                         $bs = $con2->bs;
                     }else{
                         ///ucd
@@ -1195,15 +1222,12 @@ class HomeController extends Controller
                                                                     'nro_timbre' => $next_nro_timbre,
                                                                     'key_inventario_tfe' => $key_inventario,
                                                                     'serial' => $serial,
-                                                                    'qr' => 'assets/qrForma14/qrcode_TFE'.$next_nro_timbre.'.png',
+                                                                    'qr' => 'assets/Forma14/barcode_TFE'.$next_nro_timbre.'.png',
                                                                     'condicion' => 7,
                                                                     'sustituto' => null]); 
                     if ($insert) {
                         $upd2 = DB::table('detalle_venta_tfes')->where('nro_timbre','=',$timbre)->update(['sustituto' => $next_nro_timbre]); //timbre sustituto del anulado
                         if ($upd2) {
-                            $con_contri = DB::table('ventas')->join('contribuyentes', 'ventas.key_contribuyente', '=','contribuyentes.id_contribuyente')
-                                                            ->select('ventas.key_ucd','ventas.fecha','contribuyentes.identidad_condicion','contribuyentes.identidad_nro','contribuyentes.nombre_razon')
-                                                            ->where('ventas.id_venta','=',$con4->key_venta)->first();
                             $con_ucd = DB::table('ucds')->select('valor')->where('id','=',$con_contri->key_ucd)->first();
                             
 
@@ -1213,20 +1237,19 @@ class HomeController extends Controller
                                 $ucd_t = $con2->ucd;
                             }else{
                                 $bs_t = $monto;
-                                $capital = true;
-                                $ucd_t = '';
+                                $ucd_t = $con2->bs / $con_ucd->valor;
                             }
 
                             ////// INGRESAR DETALLE PARA IMPRESION
                             $array = array(
                                 'serial' => $serial,
-                                'qr' => 'assets/qrForma14/qrcode_TFE'.$next_nro_timbre.'.png',
+                                'barra' => 'assets/Forma14/barcode_TFE'.$next_nro_timbre.'.png',
                                 'ci' => $con_contri->identidad_condicion.''.$con_contri->identidad_nro,
                                 'nombre' => $con_contri->nombre_razon,
                                 'ente' => $con_ente->ente,
-                                'bs' => $bs_t,
-                                'ucd' => $ucd_t,
-                                'capital' => $capital,
+                                'bs' => number_format($bs_t, 2, ',', '.'),
+                                'ucd' => number_format($ucd_t, 2, ',', '.'),
+                                'key' => $key_taquillero,
                                 'fecha' => date("d-m-Y",strtotime($con_contri->fecha))
                             );
 
@@ -1268,11 +1291,7 @@ class HomeController extends Controller
                                                         </div>
                                                         <!-- UCD -->
                                                         <div class="">
-                                                            <div class="text-center titulo fw-bold fs-3">'.$monto.'</div>
-                                                        </div>
-                                                        <!-- QR -->
-                                                        <div class="text-center">
-                                                            <img src="'.asset('assets/qrForma14/qrcode_TFE'.$next_nro_timbre.'.png').'" class="img-fluid" alt="" width="110px">
+                                                            <div class="text-center titulo fw-bold fs-3">'.$monto.' Bs.'.'</div>
                                                         </div>
                                                     </div>
                                                 </div>

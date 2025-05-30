@@ -292,7 +292,6 @@ class ArqueoTaquillaController extends Controller
                 }
                 $tr_pago .= '<tr>
                                 <td>'.$key->nombre_tipo.'</td>
-                                <td>'.$href.'</td>
                                 <td>'.number_format($key->monto, 2, ',', '.').'</td>
                             </tr>';
             }
@@ -391,11 +390,10 @@ class ArqueoTaquillaController extends Controller
                         <div class="d-flex flex-column align-items-center mb-4">
                             '.$table_detalles.'
                             <h5 class="fw-bold titulo text-muted text-center">Pago</h5>
-                            <table class="table table-sm w-50" style="font-size:12.7px">
+                            <table class="table text-center table-sm w-50" style="font-size:12.7px">
                                 <thead>
                                     <tr>
                                         <th>Metodo</th>
-                                        <th>Ref.</th>
                                         <th>Monto</th>
                                     </tr>
                                 </thead>
@@ -586,8 +584,7 @@ class ArqueoTaquillaController extends Controller
                 $formato = number_format($key->monto, 2, ',', '.');
                 $tr .= '<tr>
                             <td>'.date("h:i A",strtotime($value->hora)).'</td>
-                            <td>'.$key->comprobante.'</td>
-                            <td>'.$formato.'</td>
+                            <td class="fw-semibold">'.$formato.' Bs.</td>
                         </tr>';
             }
         }
@@ -604,7 +601,6 @@ class ArqueoTaquillaController extends Controller
                             <thead>
                                 <tr>
                                     <th>Hora (Aprox.)</th>
-                                    <th>Referencia</th>
                                     <th>Monto</th>
                                 </tr>
                             </thead>

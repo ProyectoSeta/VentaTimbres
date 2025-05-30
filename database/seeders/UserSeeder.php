@@ -54,42 +54,10 @@ class UserSeeder extends Seeder
 
 
 
-        /////////SUJETOS TAQUILLEROS PRUEBA 
-        $pass1 = '123456';
-        $user1 = User::query()->create([
-            'email' => 'taquillero1@gmail.com',
-            'password' => Hash::make($pass1),
-            'type' => 2,
-            'key_sujeto' => 2, //////funcionario id 2
-        ]);
-        $user1->assignRole('Taquillero');
-
-        $user2 = User::query()->create([
-            'email' => 'taquillero2@gmail.com',
-            'password' => Hash::make($pass1),
-            'type' => 2,
-            'key_sujeto' => 3,/////funcionario id 3
-        ]);
-        $user2->assignRole('Taquillero');
 
 
 
-
-        ////////////SUJETO PRUEBA CONTRIBUYENTE
-        DB::table('contribuyentes')->insert([
-            'condicion_sujeto' => 9,
-            'identidad_condicion' => 'V',
-            'identidad_nro' =>'123456',
-            'nombre_razon' => 'Prueba Uno'
-        ]);
-
-        $pass2 = 'Hola45.';
-        DB::table('users')->insert([
-            'email' => 'prueba_uno@gmail.com',
-            'password' => Hash::make($pass2),
-            'type' => 1,
-            'key_sujeto' => 1,
-        ]);
+        
 
 
         

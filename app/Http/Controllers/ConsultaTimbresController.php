@@ -48,7 +48,7 @@ class ConsultaTimbresController extends Controller
                 $formato_nro = substr(str_repeat(0, $length).$con1->nro_timbre, - $length);
 
                 if ($con2->ucd == null) {
-                    $monto = $con2->bs.' Bs.';
+                    $monto = number_format($con2->bs, 2, ',', '.').' Bs.';
                 }else{
                     $query = DB::table('ucd_denominacions')->join('tipos', 'ucd_denominacions.alicuota', '=','tipos.id_tipo')->select('tipos.nombre_tipo')
                                                             ->where('ucd_denominacions.id','=',$con1->key_denominacion)->first();

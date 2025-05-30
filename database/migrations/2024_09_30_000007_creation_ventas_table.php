@@ -32,8 +32,7 @@ return new class extends Migration
             $table->integer('key_ucd')->unsigned();
             $table->foreign('key_ucd')->references('id')->on('ucds')->onDelete('cascade');
 
-            $table->integer('key_exencion')->unsigned()->nullable();
-            $table->foreign('key_exencion')->references('id_exencion')->on('exenciones')->onDelete('cascade');
+          
            
             
 

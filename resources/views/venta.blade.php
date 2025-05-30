@@ -282,18 +282,14 @@
                                 <div class="d-flex flex-column pago_timbre">
                                     <div class="d-flex justify-content-center" >
                                         <div class="row w-100">
-                                            <div class="col-lg-4">
+                                            <div class="col-lg-5">
                                                 <label class="form-label" for="metodo">Metodo</label><span class="text-danger">*</span>
                                                 <select class="form-select form-select-sm metodo" aria-label="Small select example" i="1" name="pago[1][metodo]" disabled>
                                                     <option value="5">Punto</option>
                                                     <option value="6">Efectivo Bs.</option>
                                                 </select>
                                             </div>
-                                            <div class="col-lg-3">
-                                                <label class="form-label" for="comprobante">Comp.</label><span class="text-danger">*</span>
-                                                <input type="number" class="form-control form-control-sm comprobante" name="pago[1][comprobante]" id="comprobante_1" disabled required>
-                                            </div>
-                                            <div class="col-lg-4">
+                                            <div class="col-lg-6">
                                                 <label class="form-label" for="debitado">Monto</label><span class="text-danger">*</span>
                                                 <input type="number" step="0.01" id="debitado_1" class="form-control form-control-sm debitado" name="pago[1][debitado]" disabled required>
                                             </div>
@@ -659,16 +655,12 @@
                         x++; //Increment field counter
                         $('.pago_timbre').append('<div class="d-flex justify-content-center mt-2" >'+
                             '<div class="row w-100">'+
-                                '<div class="col-sm-4">'+
+                                '<div class="col-sm-5">'+
                                     '<select class="form-select form-select-sm metodo" name="pago[2][metodo]" i="2">'+
                                         '<option value="6">Efectivo Bs.</option>'+
-                                        '<option value="5">Punto</option>'+
                                     '</select>'+
                                 '</div>'+
-                                '<div class="col-sm-3">'+
-                                    '<input type="number" class="form-control form-control-sm comprobante" name="pago[2][comprobante]" id="comprobante_2" disabled>'+
-                                '</div>'+
-                                '<div class="col-sm-4">'+
+                                '<div class="col-sm-6">'+
                                     '<input type="number" step="0.01" id="debitado_2" class="form-control form-control-sm debitado" name="pago[2][debitado]"  required>'+
                                 '</div>'+
                                 '<div class="col-sm-1  pt-1">'+
@@ -678,6 +670,7 @@
                                 '</div>'+
                             '</div>'+
                         '</div>'); // Add field html
+                        $('#debitado_1').val(''); 
                     }
                 });
 
@@ -1211,19 +1204,7 @@
             });
             
 
-            //////////////////////////// DESABILITAR CAMPO NO COMPROBANTE
-            $(document).on('change','.metodo', function(e) {
-                e.preventDefault(); 
-                var value = $(this).val();
-                var i = $(this).attr('i');
-                if (value == '6') {
-                    $('#comprobante_'+i).attr('disabled', true);
-                    $('#comprobante_'+i).val('');
-                }else{
-                    $('#comprobante_'+i).attr('disabled', false);
-                }
-               
-            });
+            
 
 
 
@@ -1240,11 +1221,11 @@
             
         });
 
-
-       function deshabilitar_print(i){
-            console.log(i);
-            $('#print_'+i).addClass('disabled');
-       }
+        ///////FUNCION DESHABILITAR BTN DE IMPRIMIR TIMBRE
+        function deshabilitar_print(i){
+                console.log(i);
+                $('#print_'+i).addClass('disabled');
+        }
 
         ///////////////// ADD CAMPO FORMA 
         function forma(nro,ucd) {
@@ -1432,6 +1413,8 @@
                         ///TOTALES
                         $('#ucd').html(response.ucd); 
                         $('#bolivares').html(response.format_bs); 
+                        $('#debitado_1').val(response.bs); 
+                        $('#btn_submit_venta').attr('disabled', false);
 
                         // UPDATE CAMPOS
                         $('#total_ucd').val(response.ucd);

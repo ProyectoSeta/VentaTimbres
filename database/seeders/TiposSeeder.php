@@ -88,13 +88,7 @@ class TiposSeeder extends Seeder
         ]);
 
 
-        /////TIPOS DE CONTRIBUYENTES PT.2
-        // DB::table('tipos')->insert([
-        //     'nombre_tipo' => 'Comunal',
-        // ]);
-        // DB::table('tipos')->insert([
-        //     'nombre_tipo' => 'Pasaporte',
-        // ]);
+       
 
     }
 }

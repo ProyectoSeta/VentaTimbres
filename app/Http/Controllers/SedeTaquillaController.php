@@ -166,12 +166,63 @@ class SedeTaquillaController extends Controller
                             'estado' => 16]);
                 if ($insert) {
                     $id_taquilla = DB::table('taquillas')->max('id_taquilla');
-                    $user = auth()->id();
-                    /////BITACORA
-                    $accion = 'TAQUILLA CREADA: ID'.$id_taquilla.'';
-                    $bitacora = DB::table('bitacoras')->insert(['key_user' => $user, 'key_modulo' => 7, 'accion'=> $accion]);
+                    $insert_inv_est = DB::table('inv_est_taq_temps')->insert([
+                                            'key_taquilla' => $id_taquilla,
+                                            'one_ucd' => 0,
+                                            'two_ucd' => 0,
+                                            'three_ucd' => 0,
+                                            'five_ucd' => 0,
+                                            'twenty_ut' => 0,
+                                            'fifty_ut' => 0,
+                                            'fecha' => '2025-01-01'
+                                        ]);
+                    if ($insert_inv_est) {
+                        $insert_inv_tfe = DB::table('inv_tfe_taq_temps')->insert([
+                                                'key_taquilla' => $id_taquilla,
+                                                'cantidad' => 0,
+                                                'fecha' => '2025-03-10'
+                                            ]);
+                        if ($insert_inv_tfe) {
+                            $insert_inv_taq = DB::table('inventario_taquillas')->insert([
+                                'key_taquilla' => $id_taquilla,
+                                'cantidad_tfe' => 0,
+                                'cantidad_estampillas' => 0
+                            ]);
 
-                    return response()->json(['success' => true]);
+                            $insert_hist_taq = DB::table('historial_taquillas')->insert([
+                                'key_taquilla' => $id_taquilla,
+                                'key_funcionario' => $taquillero,
+                                'desde' => '2024-10-20'
+                            ]);
+                            $insert_efect_taq = DB::table('efectivo_taquillas_temps')->insert([
+                                'key_taquilla' => $id_taquilla,
+                                'efectivo' => '0'
+                            ]);
+
+                            if ($insert_inv_taq && $insert_hist_taq && $insert_efect_taq) {
+                                
+                                $user = auth()->id();
+                                /////BITACORA
+                                $accion = 'TAQUILLA CREADA: ID'.$id_taquilla.'';
+                                $bitacora = DB::table('bitacoras')->insert(['key_user' => $user, 'key_modulo' => 7, 'accion'=> $accion]);
+
+                                return response()->json(['success' => true]);
+                            }else{
+                                ////delete la taquilla y return false
+                                $delete = DB::table('taquillas')->where('id_taquilla', '=', $id_taquilla)->delete();
+                                return response()->json(['success' => false]);
+                            }
+                            
+                        }else{
+                            ////delete la taquilla y return false
+                            $delete = DB::table('taquillas')->where('id_taquilla', '=', $id_taquilla)->delete();
+                            return response()->json(['success' => false]);
+                        }
+                    }else{
+                        ////delete la taquilla y return false
+                        $delete = DB::table('taquillas')->where('id_taquilla', '=', $id_taquilla)->delete();
+                        return response()->json(['success' => false]);
+                    }
                 }else{
                     return response()->json(['success' => false]);
                 } 
@@ -184,57 +235,65 @@ class SedeTaquillaController extends Controller
 
     public function new_taquillero(Request $request)
     {
-        $validator = Validator::make($request->all(), [
-            'password' => ['required', 'confirmed', Password::min(8)
-            ->letters() // Requerir al menos una letra...
-            ->mixedCase() // Requerir al menos una letra mayúscula y una minúscula...
-            ->numbers() // Requerir al menos un número...
-            ->symbols() // Requerir al menos un símbolo...
-            ->uncompromised()],
-            'email' => 'required|unique:users|email',
-        ]);
+        $key = $request->post('llave');
+        $con_key = DB::table('funcionarios')->selectRaw("count(*) as total")->where('key','=',$key)->where('cargo','=','Taquillero')->first();
+        if ($con_key->total == 0) {
+            $validator = Validator::make($request->all(), [
+                'password' => ['required', 'confirmed', Password::min(8)
+                ->letters() // Requerir al menos una letra...
+                ->mixedCase() // Requerir al menos una letra mayúscula y una minúscula...
+                ->numbers() // Requerir al menos un número...
+                ->symbols() // Requerir al menos un símbolo...
+                ->uncompromised()],
+                'email' => 'required|unique:users|email',
+            ]);
 
-        if ($validator->fails()) {
-            return response()->json(['success' => false, 'error' => $validator->errors()]);
-        }else{
-            $ci_nro = $request->post('ci_nro');
-            $ci_condicion = $request->post('ci_condicion');
-
-            $c1 = DB::table('funcionarios')->where('ci_condicion','=',$ci_condicion)->where('ci_nro','=',$ci_nro)->first();
-            if ($c1) {
-                /////// la cedula se encuentra registrada
-                return response()->json(['success' => false, 'error' => 'La cedula del Taquillero ya se encuentra registrada.']);
+            if ($validator->fails()) {
+                return response()->json(['success' => false, 'error' => $validator->errors()]);
             }else{
-                ////// sin coincidencia
-                $nombre = $request->post('nombre');
-                $insert_func = DB::table('funcionarios')->insert([
-                                            'ci_condicion' => $ci_condicion,
-                                            'ci_nro' => $ci_nro,
-                                            'nombre' => $nombre,
-                                            'cargo' => 'Taquillero', 
-                                            'estado' => 16]);
-    
-                if ($insert_func) {
-                    $id_funcionario = DB::table('funcionarios')->max('id_funcionario');
-                    $usuario = User::create([
-                                'email'=>$request->post('email'),
-                                'password'=>bcrypt($request->post('password')),
-                                'type'=>2,
-                                'key_sujeto'=>$id_funcionario,
-                    ]);
-    
-                    if($usuario->save()){
-                        $user = auth()->id();
-                        /////BITACORA
-                        $accion = 'TAQUILLERO CREADO: ID'.$id_funcionario.'';
-                        $bitacora = DB::table('bitacoras')->insert(['key_user' => $user, 'key_modulo' => 7, 'accion'=> $accion]);
+                $ci_nro = $request->post('ci_nro');
+                $ci_condicion = $request->post('ci_condicion');
 
-                        return response()->json(['success' => true]);
+                $c1 = DB::table('funcionarios')->where('ci_condicion','=',$ci_condicion)->where('ci_nro','=',$ci_nro)->first();
+                if ($c1) {
+                    /////// la cedula se encuentra registrada
+                    return response()->json(['success' => false, 'error' => 'La cedula del Taquillero ya se encuentra registrada.']);
+                }else{
+                    ////// sin coincidencia
+                    $nombre = $request->post('nombre');
+                    $insert_func = DB::table('funcionarios')->insert([
+                                                'ci_condicion' => $ci_condicion,
+                                                'ci_nro' => $ci_nro,
+                                                'nombre' => $nombre,
+                                                'cargo' => 'Taquillero', 
+                                                'key' => $key, 
+                                                'estado' => 16]);
+        
+                    if ($insert_func) {
+                        $id_funcionario = DB::table('funcionarios')->max('id_funcionario');
+                        $usuario = User::create([
+                                    'email'=>$request->post('email'),
+                                    'password'=>bcrypt($request->post('password')),
+                                    'type'=>2,
+                                    'key_sujeto'=>$id_funcionario,
+                        ]);
+        
+                        if($usuario->save()){
+                            $usuario->assignRole('Taquillero');
+                            $user = auth()->id();
+                            /////BITACORA
+                            $accion = 'TAQUILLERO CREADO: ID'.$id_funcionario.'';
+                            $bitacora = DB::table('bitacoras')->insert(['key_user' => $user, 'key_modulo' => 7, 'accion'=> $accion]);
+
+                            return response()->json(['success' => true]);
+                        }
                     }
                 }
-            }
 
-        }  ////cierra else (if ($validator->fails()))
+            }  ////cierra else (if ($validator->fails()))
+        }else{
+            return response()->json(['success' => false, 'error' => 'La LLave debe ser única.']);
+        }
     }
 
 

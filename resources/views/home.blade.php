@@ -403,16 +403,7 @@
 
 
         $(document).ready(function () {
-            $.ajax({
-                headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') },
-                type: 'POST',
-                url: '{{route("home.timbre") }}',
-                success: function(response) {
-                    console.log(response);
-                },
-                error: function() {
-                }
-            });
+            
 
 
 
@@ -528,7 +519,7 @@
                     data: {papel:papel,timbre:timbre},
                     success: function(response) {
                         if (response.success) {
-                            
+                            console.log(response);
                             if (response.papel == 1) {
                                 ///BUEN ESTADO
                                 $('#modal_ultima_venta').modal('hide');
@@ -546,7 +537,7 @@
                             }else{
                                 alert('Disculpe, ha ocurrido un error.');
                             }
-                            window.location.href = "{{ route('home')}}";
+                            // window.location.href = "{{ route('home')}}";
                         }  
                     },
                     error: function() {

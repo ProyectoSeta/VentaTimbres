@@ -9,7 +9,7 @@
 @section('content')
     
     <div class="container rounded-4 p-3 " style="background-color:#ffff;" >
-        <div class="row g-4 g-xl-5 mt-1 row-cols-sm-6 row-cols-lg-4 d-flex justify-content-center bg_arqueo" style="background-image: url({{asset('assets/fondo2.png')}});">
+        <div class="row g-4 g-xl-5 mt-1 row-cols-sm-12 row-cols-lg-4 d-flex justify-content-center bg_arqueo" style="background-image: url({{asset('assets/fondo2.png')}});">
 			<!-- NUEVA SEDE -->
             @can('sede_taquilla.new_sede')
                 <div class=" mb-4">
@@ -133,6 +133,7 @@
                             <thead>
                                 <th>#</th>
                                 <th>Nombre</th>
+                                <th>Llave</th>
                                 @can('sede_taquilla.habilitar_taquillero')
                                     <th>Desabilitar/Habilitar</th> 
                                 @endcan
@@ -144,6 +145,7 @@
                                             <img src="{{asset('assets/user2.png')}}" alt="" width="30px">
                                         </td>
                                         <td class="text-navy fw-bold">{{$taquillero->nombre}}</td>
+                                        <td><span class="fw-semibold fst-italic">{{$taquillero->key}}</span></td>
                                         @can('sede_taquilla.habilitar_taquillero')
                                             <td>
                                                 @if ($taquillero->estado == 16)
@@ -252,9 +254,14 @@
                                 <input type="text" id="nombre" class="form-control form-control-sm" name="nombre" required>
                             </div>
                             <!-- cargo -->
-                            <div class="col-sm-4">
+                            <div class="col-sm-2">
                                 <label for="cargo" class="form-label">Cargo:<span class="text-danger"> *</span></label>
                                 <input type="text" class="form-control form-control-sm" value="Taquillero" disabled>
+                            </div>
+                            <!-- key -->
+                            <div class="col-sm-2">
+                                <label for="llave" class="form-label">Llave:<span class="text-danger"> *</span></label>
+                                <input type="number" min="1" max="9999" class="form-control form-control-sm" name="llave" id="llave">
                             </div>
                         </div>
 
@@ -280,7 +287,8 @@
                         <p class="text-muted text-end"><span style="color:red">*</span> Campos requeridos.</p>
 
                         <div class="text-muted mt-2 mb-3" style="font-size:14px">
-                            <span>La Contraseña debe contener:</span> 
+                            <div class="">*NOTA: La <span class="fw-bold">Llave</span> será un <span class="fw-bold">ID único</span> del Taquillero, de cuatro (4) dígitos.</div>
+                            <span>*La Contraseña debe contener:</span> 
                             <ol>
                                 <li>Mínimo 8 caracteres.</li>
                                 <li>Caracteres alfanuméricos.</li>
@@ -538,7 +546,6 @@
                             url: '{{route("sede_taquilla.habilitar_taquillero") }}',
                             data: {funcionario:funcionario,checked:checked},
                             success: function(response) {
-                                console.log(response);
                                 if (response.success) {
                                     alert('SE HA HABILITADO AL TAQUILLERO EXITOSAMENTE.');
                                     window.location.href = "{{ route('sede_taquilla')}}";
@@ -563,7 +570,6 @@
                             url: '{{route("sede_taquilla.habilitar_taquillero") }}',
                             data: {funcionario:funcionario,checked:checked},
                             success: function(response) {
-                                console.log(response);
                                 if (response.success) {
                                     alert('SE HA DESHABILITADO AL TAQUILLERO EXITOSAMENTE.');
                                     window.location.href = "{{ route('sede_taquilla')}}";
@@ -598,7 +604,6 @@
                     async: true,
                     data: formData,
                     success: function(response){
-                        console.log(response);
                         if (response.success) {
                             alert('REGISTRO DE SEDE EXITOSO.');
                             window.location.href = "{{ route('sede_taquilla')}}";
@@ -624,7 +629,6 @@
                     async: true,
                     data: formData,
                     success: function(response){
-                        console.log(response);
                         if (response.success) {
                             alert('REGISTRO DE TAQUILLA EXITOSO.');
                             window.location.href = "{{ route('sede_taquilla')}}";
