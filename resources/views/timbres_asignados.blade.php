@@ -6,10 +6,8 @@
     
     <script src="{{ asset('jss/bundle.js') }}" defer></script>
     <link href="{{asset('css/datatable.min.css') }}" rel="stylesheet">
-    <!-- <script src="{{asset('vendor/sweetalert.js') }}"></script> -->
     <script src="{{ asset('jss/jquery-3.5.1.js') }}" ></script>
 
-    <!-- <img src="{{asset('assets/bf-1.svg')}}" class="w-100" alt="..."> -->
 @stop
 
 @section('content')
@@ -36,6 +34,9 @@
                             
                         </thead>
                         <tbody id="" class="border-light-subtle"> 
+                            @php
+                                $c = 1;
+                            @endphp
                             @foreach ($rollos as $rollo)
                                 <tr>
                                     <td>{{$rollo->id_asignacion}}</td>
@@ -47,12 +48,18 @@
                                     </td>
                                     @can('timbres_asignados.recibido_forma14')
                                         <td>
-                                            <button class="btn btn-sm btn-success d-inline-flex align-items-center recibido_forma14" asignacion="{{$rollo->id_asignacion}}" type="button" data-bs-toggle="modal" data-bs-target="#modal_recibido_forma14">
-                                                <i class="bx bx-check"></i>
-                                            </button>
+                                            @if ($c == 1)
+                                                <button class="btn btn-sm btn-success d-inline-flex align-items-center recibido_forma14" asignacion="{{$rollo->id_asignacion}}" type="button" data-bs-toggle="modal" data-bs-target="#modal_recibido_forma14">
+                                                    <i class="bx bx-check"></i>
+                                                </button>
+                                            @else
+                                                <button class="btn btn-sm btn-success d-inline-flex align-items-center recibido_forma14" asignacion="{{$rollo->id_asignacion}}" type="button" disabled>
+                                                    <i class="bx bx-check"></i>
+                                                </button>
+                                            @endif
                                         </td>
                                     @endcan
-                                    
+                                    $c++;
                                 </tr>
                             @endforeach
                         </tbody> 
@@ -73,6 +80,9 @@
                             @endcan 
                         </thead>
                         <tbody id="" class="border-light-subtle"> 
+                             @php
+                                $o = 1;
+                            @endphp
                             @foreach ($estampillas as $estampilla)
                                 <tr>
                                     <td>{{$estampilla->id_asignacion}}</td>
@@ -84,12 +94,19 @@
                                     </td>
                                     @can('timbres_asignados.recibido_estampillas')
                                         <td>
-                                            <button class="btn btn-sm btn-success d-inline-flex align-items-center recibido_estampillas" asignacion="{{$estampilla->id_asignacion}}" type="button" data-bs-toggle="modal" data-bs-target="#modal_recibido_estampillas">
-                                                <i class="bx bx-check"></i>
-                                            </button>
+                                            @if ($o == 1)
+                                                <button class="btn btn-sm btn-success d-inline-flex align-items-center recibido_estampillas" asignacion="{{$estampilla->id_asignacion}}" type="button" data-bs-toggle="modal" data-bs-target="#modal_recibido_estampillas">
+                                                    <i class="bx bx-check"></i>
+                                                </button>
+                                            @else
+                                                <button class="btn btn-sm btn-success d-inline-flex align-items-center recibido_estampillas" asignacion="{{$estampilla->id_asignacion}}" type="button" disabled>
+                                                    <i class="bx bx-check"></i>
+                                                </button>
+                                            @endif
+                                            
                                         </td>
                                     @endcan 
-                                    
+                                    $o++;
                                 </tr>
                             @endforeach
                         </tbody> 
