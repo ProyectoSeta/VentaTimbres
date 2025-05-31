@@ -1063,10 +1063,10 @@ class HomeController extends Controller
                     'ci' => $con3->identidad_condicion.''.$con3->identidad_nro,
                     'nombre' => $con3->nombre_razon,
                     'ente' => $con_ente->ente,
-                    'bs' => number_format($bs, 2, ',', '.'),
+                    'bs' => number_format($bs, 2, '.', ' '),
                     'ucd' => number_format($ucd, 2, ',', '.'),
                     'key' => $key_taquillero,
-                    'fecha' => date("d-m-Y",strtotime($con3->fecha))
+                    'fecha' => date("Y-m-d",strtotime($con3->fecha))
                 );
 
                 $a = (object) $array;
@@ -1263,10 +1263,10 @@ class HomeController extends Controller
                                 'ci' => $con_contri->identidad_condicion.''.$con_contri->identidad_nro,
                                 'nombre' => $con_contri->nombre_razon,
                                 'ente' => $con_ente->ente,
-                                'bs' => number_format($bs_t, 2, ',', '.'),
+                                'bs' => number_format($bs_t, 2, '.', ' '),
                                 'ucd' => number_format($ucd_t, 2, ',', '.'),
                                 'key' => $key_taquillero,
-                                'fecha' => date("d-m-Y",strtotime($con_contri->fecha))
+                                'fecha' => date("Y-m-d",strtotime($con_contri->fecha))
                             );
 
                             $a = (object) $array;

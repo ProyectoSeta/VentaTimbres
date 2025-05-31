@@ -1768,10 +1768,10 @@ class VentaController extends Controller
                                                         'ci' => $cedula_contribuyente,
                                                         'nombre' => $nombre_contribuyente,
                                                         'ente' => $consulta_tramite->ente,
-                                                        'bs' => number_format($bs_tramite_imp, 2, ',', '.'),
+                                                        'bs' => number_format($bs_tramite_imp, 2, '.', ' '),
                                                         'ucd' => $ucd_tramite,
                                                         'key' => $key_taquillero,
-                                                        'fecha' => date("d-m-Y",strtotime($hoy))
+                                                        'fecha' => date("Y-m-d",strtotime($hoy))
                                                     );
 
                                                     $a = (object) $array;
@@ -1942,7 +1942,7 @@ class VentaController extends Controller
                                                     $cant_tfe = $cant_tfe + 1;
                                                     $cant_ucd_tfe = $cant_ucd_tfe;
 
-                                                    $formato_total_bs_capital =  number_format($total_bs_capital, 2, ',', '.');
+                                                    $formato_total_bs_capital =  number_format($total_bs_capital, 2, '.', ' ');
                                                     $ucd_timbre_bs = $total_bs_capital / $valor_ucd;
                                                     $formato_ucd_timbre_bs = number_format($ucd_timbre_bs, 2, ',', '.');
 
@@ -1958,7 +1958,7 @@ class VentaController extends Controller
                                                         'bs' => $formato_total_bs_capital,
                                                         'ucd' => $formato_ucd_timbre_bs,
                                                         'key' => $key_taquillero,
-                                                        'fecha' => date("d-m-Y",strtotime($hoy))
+                                                        'fecha' => date("Y-m-d",strtotime($hoy))
                                                     );
 
                                                     $a = (object) $array;
@@ -2147,10 +2147,10 @@ class VentaController extends Controller
                                                         'ci' => $cedula_contribuyente,
                                                         'nombre' => $nombre_contribuyente,
                                                         'ente' => $consulta_tramite->ente,
-                                                        'bs' => number_format($bs_tramite_imp, 2, ',', '.'),
+                                                        'bs' => number_format($bs_tramite_imp, 2, '.', ' '),
                                                         'ucd' => $ucd_tramite,
                                                         'key' => $key_taquillero,
-                                                        'fecha' => date("d-m-Y",strtotime($hoy))
+                                                        'fecha' => date("Y-m-d",strtotime($hoy))
                                                     );
 
                                                     $a = (object) $array;
