@@ -75,7 +75,8 @@ class RolesHasPermissionsSeeder extends Seeder
                                         'apertura','apertura.apertura_taquillas','apertura.search_fecha', /// completo
                                         'inventario_taquillas',
                                         'sede_taquilla','sede_taquilla.new_sede','sede_taquilla.new_taquillero','sede_taquilla.new_taquilla','sede_taquilla.update_clave','sede_taquilla.habilitar_taquilla','sede_taquilla.habilitar_taquillero', /// completo
-                                        'new_pass','new_pass.update');
+                                        'new_pass','new_pass.update',
+                                        'anular');
     
 
         
@@ -111,7 +112,6 @@ class RolesHasPermissionsSeeder extends Seeder
         // TAQUILLERO
         $roleTaq = Role::create(['name' => 'Taquillero']);
         $roleTaq->syncPermissions('home','home.apertura_taquilla','home.cierre_taquilla','home.modal_clave',
-                                    'consulta',
                                     'venta',
                                     'arqueo','arqueo.timbres','arqueo.detalle_venta','arqueo.detalle_forma','arqueo.cierre_punto','pdf_cierre_taquilla',
                                     'timbres_asignados','timbres_asignados.recibido_forma14','timbres_asignados.recibido_estampillas',

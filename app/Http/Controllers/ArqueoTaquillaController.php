@@ -614,6 +614,56 @@ class ArqueoTaquillaController extends Controller
         return response($html);
     }
 
+    public function cierre_cuenta(Request $request)
+    {
+        $id_taquilla = $request->post('taquilla');
+
+        $user = auth()->id();
+        // $query = DB::table('users')->select('key_sujeto')->where('id','=',$user)->first();
+        // $q2 = DB::table('taquillas')->select('id_taquilla')->where('key_funcionario','=',$query->key_sujeto)->first();
+
+        // $id_taquilla = $q2->id_taquilla;
+        $hoy = date('Y-m-d');
+        $tr = '';
+
+        $q1 = DB::table('ventas')->select('id_venta','hora')->where('key_taquilla','=',$id_taquilla)->whereDate('fecha', $hoy)->get();
+        foreach ($q1 as $value) {
+            $con = DB::table('pago_ventas')->where('key_venta','=',$value->id_venta)->where('metodo','=',20)->get();
+            foreach ($con as $key) {
+                $formato = number_format($key->monto, 2, ',', '.');
+                $tr .= '<tr>
+                            <td>'.date("h:i A",strtotime($value->hora)).'</td>
+                            <td class="fw-semibold">'.$formato.' Bs.</td>
+                        </tr>';
+            }
+        }
+
+        $html = '<div class="modal-header p-2 pt-3 d-flex justify-content-center">
+                    <div class="text-center">
+                        <i class="bx bx-error-circle fs-2 text-danger me-2"></i>
+                        <h1 class="modal-title fs-5 fw-bold text-navy">Cierre de Cuenta</h1>
+                        <span class="fs-6 fw-bold text-muted">Transferencias</span>
+                    </div>
+                </div>
+                <div class="modal-body px-4" style="font-size:13px">
+                    <div class="table-responsive py-2"style="font-size:12.7px">
+                        <table class="table table-sm text-center" id="table_cierre_cuenta">
+                            <thead>
+                                <tr>
+                                    <th>Hora (Aprox.)</th>
+                                    <th>Monto</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                '.$tr.'
+                            </tbody>
+                        </table>
+                    </div>
+                </div>';
+
+        return response($html);
+    }
+
 
     public function pdf_cierre_taquilla(Request $request)
     {

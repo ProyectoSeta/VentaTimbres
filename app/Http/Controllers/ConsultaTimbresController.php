@@ -36,34 +36,38 @@ class ConsultaTimbresController extends Controller
 
         $length = 6;
 
-        $con1 = DB::table('detalle_venta_tfes')->select('key_venta','nro_timbre','key_denominacion','key_inventario_tfe','serial','qr','condicion','sustituto')->where('serial','=',$timbre)->first();
+        $con1 = DB::table('detalle_venta_tfes')->select('key_detalle_venta','key_venta','nro_timbre','key_denominacion','bolivares','key_inventario_tfe','serial','qr','condicion','sustituto')->where('serial','=',$timbre)->first();
         if ($con1) {
             $con2 = DB::table('detalle_ventas')->join('tramites', 'detalle_ventas.key_tramite', '=','tramites.id_tramite')
-                                    ->select('detalle_ventas.ucd','detalle_ventas.bs','tramites.tramite')
-                                    ->where('detalle_ventas.key_venta','=',$con1->key_venta)->first();
+                                    ->select('tramites.tramite')->where('detalle_ventas.correlativo','=',$con1->key_detalle_venta)->first();
             $con3 =  DB::table('ventas')->join('contribuyentes', 'ventas.key_contribuyente', '=','contribuyentes.id_contribuyente')
                                     ->select('ventas.fecha','contribuyentes.nombre_razon','contribuyentes.identidad_condicion','contribuyentes.identidad_nro','contribuyentes.condicion_sujeto')
                                     ->where('ventas.id_venta','=',$con1->key_venta)->first();
             if ($con2 && $con3) {
                 $formato_nro = substr(str_repeat(0, $length).$con1->nro_timbre, - $length);
 
-                if ($con2->ucd == null) {
-                    $monto = number_format($con2->bs, 2, ',', '.').' Bs.';
+                if ($con1->bolivares != null) {
+                    $monto = number_format($con1->bolivares, 2, ',', '.').' Bs.';
                 }else{
-                    $query = DB::table('ucd_denominacions')->join('tipos', 'ucd_denominacions.alicuota', '=','tipos.id_tipo')->select('tipos.nombre_tipo')
+                    $query = DB::table('ucd_denominacions')->join('tipos', 'ucd_denominacions.alicuota', '=','tipos.id_tipo')->select('ucd_denominacions.denominacion','tipos.nombre_tipo')
                                                             ->where('ucd_denominacions.id','=',$con1->key_denominacion)->first();
-                    $monto = $con2->ucd.' '.$query->nombre_tipo.'';
+                    $monto = $query->denominacion.' '.$query->nombre_tipo.'';
                 }
 
                 //////CONDICION
                 $div_condicion = '';
                 if ($con1->condicion == 29) {
                     /// ANULADO
-                    $formato_sustituto = substr(str_repeat(0, $length).$con1->sustituto, - $length);
+                    if ($con1->sustituto == null) {
+                        $formato_sustituto = '';
+                    }else{
+                        $formato_sustituto = '<span class="text-muted">Sustituido por: <span class="fw-bold">A-'.substr(str_repeat(0, $length).$con1->sustituto, - $length).'</span></span>';
+                    }
+                    
                     $div_condicion = '<div class="d-flex flex-column my-2">
                                         <span>Observación</span>
-                                        <span class="w-75 badge fs-6 text-bg-danger">TIMBRE ANULADO</span>
-                                        <span class="text-muted">Sustituido por: <span class="fw-bold">A-'.$formato_sustituto.'</span></span>
+                                        <span class=" badge fs-6 text-bg-danger">TIMBRE ANULADO</span>
+                                        '.$formato_sustituto.'
                                     </div>';
                 }elseif ($con1->condicion == 30) {
                     /// RE IMPRESO

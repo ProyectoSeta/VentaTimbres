@@ -30,7 +30,7 @@ return new class extends Migration
             $table->integer('folios')->nullable();
 
             $table->integer('ucd')->nullable();
-            $table->float('bs')->nullable();
+            $table->float('bs',20, 2)->nullable();
         });
     }
 

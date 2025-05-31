@@ -236,7 +236,8 @@
                                         <th>#</th>
                                         <th width="45%">Tramite</th>
                                         <th>Anexo</th>
-                                        <th>UCD | Bs.</th>
+                                        <th>UCD</th>
+                                        <th>Bs.</th>
                                         <th>Forma</th>
                                         <th width="10%"></th>
                                     </tr>
@@ -286,6 +287,7 @@
                                                 <label class="form-label" for="metodo">Metodo</label><span class="text-danger">*</span>
                                                 <select class="form-select form-select-sm metodo" aria-label="Small select example" i="1" name="pago[1][metodo]" disabled>
                                                     <option value="5">Punto</option>
+                                                    <option value="20">Transferencia</option>
                                                     <option value="6">Efectivo Bs.</option>
                                                 </select>
                                             </div>
@@ -657,6 +659,8 @@
                             '<div class="row w-100">'+
                                 '<div class="col-sm-5">'+
                                     '<select class="form-select form-select-sm metodo" name="pago[2][metodo]" i="2">'+
+                                        '<option value="5">Punto</option>'+
+                                        '<option value="20">Transferencia</option>'+
                                         '<option value="6">Efectivo Bs.</option>'+
                                     '</select>'+
                                 '</div>'+

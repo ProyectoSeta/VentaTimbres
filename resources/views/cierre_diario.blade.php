@@ -25,13 +25,19 @@
 
             {{-- DETALLE TOTAL --}}
             <div class="bg_arqueo" style="background-image: url({{asset('assets/fondo2.png')}});">
-                <div class="row d-flex align-items-center text-center">
-                    <div class="col-md-6">
+                <div class="row d-flex align-items-center text-center mb-5">
+                    <div class="col-md-4">
                         <h5 class="fw-bold fs-3">Punto</h5>
                         <h4 class="fw-semibold">@php echo(number_format($arqueo->punto, 2, ',', '.')) @endphp Bs.</h4>
                     </div>
+
+                    <div class="col-md-4">
+                        <h5 class="fw-bold fs-3">Transferencia</h5>
+                        <h4 class="fw-semibold">@php echo(number_format($arqueo->transferencia, 2, ',', '.')) @endphp Bs.</h4>
+                        
+                    </div>
                     
-                    <div class="col-md-6">
+                    <div class="col-md-4">
                         <div class="">
                             <h5 class="fw-bold fs-3">Efectivo</h5>
                             <h4 class="fw-semibold">@php echo(number_format($arqueo->efectivo, 2, ',', '.')) @endphp Bs.</h4>

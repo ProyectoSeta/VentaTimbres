@@ -465,6 +465,7 @@ class HomeController extends Controller
 
     public function cierre_taquilla(Request $request){
         $pass = $request->post('clave_cierre');
+       
 
         if ($pass == '' || $pass == null) {
             return response()->json(['success' => false, 'nota' => 'Ingrese la clave de seguridad.']);
@@ -482,18 +483,20 @@ class HomeController extends Controller
                     //  ARQUEO
                     $recaudado = 0;
                     $punto = 0;
+                    $transferencia = 0;
                     $efectivo = 0;
                     $recaudado_tfe = 0;
                     $recaudado_est = 0;
                     $cantidad_tfe = 0;
-                    $cantidad_est = 0;
+                    $cantidad_est = 0; 
+                    $anulado_bs_tfe = 0;
 
                     $q1 = DB::table('ventas')->select('id_venta','total_bolivares','key_ucd')
                                             ->where('key_taquilla','=',$id_taquilla)
                                             ->whereDate('fecha', $hoy)->get();
                     if ($q1) {
                         foreach ($q1 as $key) {
-                            $recaudado = $recaudado + $key->total_bolivares;
+                           
 
                             // CONSULTA UCD
                             $c1 = DB::table('ucds')->select('valor')->where('id','=',$key->key_ucd)->first();
@@ -505,9 +508,16 @@ class HomeController extends Controller
                                 if ($pago->metodo == 5) {
                                     //PUNTO
                                     $punto = $punto + $pago->monto;
+                                }elseif ($pago->metodo == 20) {
+                                    //TRANSFERENCIA
+                                    $transferencia = $transferencia + $pago->monto;
                                 }else{
                                     //EFECTIVO
                                     $efectivo = $efectivo + $pago->monto;
+                                }
+
+                                if ($pago->anulado != NULL) {
+                                    $anulado_bs_tfe = $anulado_bs_tfe + $pago->anulado;
                                 }
                             }
                             
@@ -541,11 +551,17 @@ class HomeController extends Controller
                         // sin ventas
                     }
 
+
+                    ////le resto a lo recaudado por tfe lo anulado en bs
+                    $recaudado_tfe = $recaudado_tfe - $anulado_bs_tfe;
+                    $recaudado = $recaudado_tfe + $recaudado_est;
+
                     $hora = date('H:i:s');
                     $insert = DB::table('cierre_taquillas')->insert(['key_taquilla' => $id_taquilla,
                                                                     'recaudado' => $recaudado,
                                                                     'punto' => $punto,
                                                                     'efectivo' => $efectivo,
+                                                                    'transferencia' => $transferencia,
                                                                     'recaudado_tfe' => $recaudado_tfe,
                                                                     'recaudado_est' => $recaudado_est,
                                                                     'cantidad_tfe' => $cantidad_tfe,

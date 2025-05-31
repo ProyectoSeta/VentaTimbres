@@ -24,7 +24,7 @@ return new class extends Migration
             $table->foreign('key_contribuyente')->references('id_contribuyente')->on('contribuyentes')->onDelete('cascade');
 
             $table->integer('total_ucd')->nullable();
-            $table->float('total_bolivares')->nullable();
+            $table->float('total_bolivares',20, 2)->nullable();
 
             $table->date('fecha');
             $table->time('hora');

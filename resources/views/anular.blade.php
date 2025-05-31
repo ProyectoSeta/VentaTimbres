@@ -14,7 +14,7 @@
         <div class="d-flex flex-column align-items-center justify-content-center" style="font-size:13px">
            <!-- FORM SEARCH TFE14 -->
             <form id="form_search_tfe" method="post" onsubmit="event.preventDefault(); searchTFE()">
-                <label for="timbre" class="form-label"><span class="text-danger">*</span> Ingresa el correlativo de papel del Timbre a Anular.</label>
+                <label for="timbre" class="form-label"><span class="text-danger">*</span> Ingresa el CORRELATIVO DE PAPEL del Timbre a Anular.</label>
                 <div class="d-flex mb-0 pb-0">
                     <input type="text" id="timbre" class="form-control" name="timbre" required>
                     <button type="submit" class="btn btn-primary mb-3 ms-3"> <i class=" bx bx-search-alt"></i> </button>

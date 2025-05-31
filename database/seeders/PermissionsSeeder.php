@@ -527,7 +527,11 @@ class PermissionsSeeder extends Seeder
                                 'description' => 'Registrar nuevos Proveedores',
                                 'module' => 3,
                                 'priority'=> 1]); 
-
+        /// CONSULTA PT.2
+        Permission::create(['name' => 'anular',
+                        'description' => 'Anular Timbres',
+                        'module' => 1,
+                        'priority'=> 1]);
 
     }
 }

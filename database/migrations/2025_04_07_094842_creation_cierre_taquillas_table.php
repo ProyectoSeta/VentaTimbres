@@ -18,12 +18,13 @@ return new class extends Migration
             $table->integer('key_taquilla')->unsigned();
             $table->foreign('key_taquilla')->references('id_taquilla')->on('taquillas')->onDelete('cascade');
 
-            $table->float('recaudado');
-            $table->float('punto');
-            $table->float('efectivo');
+           $table->decimal('recaudado',20,2);
+            $table->decimal('punto',20,2);
+            $table->decimal('efectivo',20,2);
+            $table->decimal('transferencia',20,2);
 
-            $table->float('recaudado_tfe');
-            $table->float('recaudado_est');
+            $table->decimal('recaudado_tfe',20,2);
+            $table->decimal('recaudado_est',20,2);
             
             $table->integer('cantidad_tfe');
             $table->integer('cantidad_est');

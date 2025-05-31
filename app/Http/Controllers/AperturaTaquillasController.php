@@ -38,6 +38,14 @@ class AperturaTaquillasController extends Controller
             }else{
                 $apertura_taquillero = $q1->apertura_taquillero;
             }
+
+            if ($q1->cierre_taquilla != null) {
+                $cierre = date("h:i A",strtotime($q1->cierre_taquilla));
+            }else{
+                $cierre = $q1->apertura_taquillero;
+            }
+
+
             
 
             $array = array(
@@ -47,7 +55,7 @@ class AperturaTaquillasController extends Controller
                         'taquillero' => $q4->nombre,
                         'hora_apertura' => $hora_apertura,
                         'apertura_taquillero' => $apertura_taquillero,
-                        'cierre_taquilla' => null
+                        'cierre_taquilla' => $cierre
                     );
             $a = (object) $array;
             array_push($aperturas,$a);

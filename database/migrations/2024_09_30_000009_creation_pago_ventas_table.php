@@ -22,6 +22,7 @@ return new class extends Migration
 
             $table->integer('comprobante')->nullable(); 
             $table->decimal('monto',20, 2);
+            $table->decimal('anulado',20, 2)->nullable();
 
             $table->datetime('fecha');
 

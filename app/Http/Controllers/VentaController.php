@@ -52,14 +52,10 @@ class VentaController extends Controller
                                             ->first();
         if($query){
             $id_contribuyente = $query->id_contribuyente;
-            $con = DB::table('ventas')->where('key_contribuyente','=', $id_contribuyente)
-                                    ->where('fecha','=',$hoy)
-                                    ->count();
-            if ($con < 6) {
-                return response()->json(['success' => true, 'nombre' => $query->nombre_razon]);
-            }else{
-                return response()->json(['success' => false, 'nota' => 'Se han excedido las ventas para este contribuyente por el día de hoy.', 'alert' => 'true']);
-            }
+           
+
+
+            return response()->json(['success' => true, 'nombre' => $query->nombre_razon]);
         }else{
             return response()->json(['success' => false, 'alert' => 'false']);
         }
@@ -670,8 +666,36 @@ class VentaController extends Controller
 
     public function agregar(Request $request){
         $tramite = $request->post('tramite');
-        // $alicuota = $request->post('alicuota');
-        // return response($alicuota);
+        $hoy = date('Y-m-d');
+
+
+        $condicion_sujeto = $request->post('condicion_sujeto');
+        $identidad_condicion = $request->post('identidad_condicion');
+        $identidad_nro = $request->post('identidad_nro');
+
+        $contri = DB::table('contribuyentes')->select('id_contribuyente')->where('identidad_condicion','=', $identidad_condicion)->where('identidad_nro','=', $identidad_nro)->first();
+        $id_contribuyente = $contri->id_contribuyente;
+        //////////////////////   CONFIRMAR LIMITE DE VENTA
+        $no_timbres = 0;
+        $con = DB::table('ventas')->select('id_venta')->where('key_contribuyente','=', $id_contribuyente)
+                                ->whereDate('fecha',$hoy)
+                                ->get();
+        foreach ($con as $key) {
+            $con2 = DB::table('detalle_ventas')->select('correlativo','forma')->where('key_venta','=', $key->id_venta)->get();
+            foreach ($con2 as $value) {
+                if ($value->forma == 3) {
+                    //forma 14
+                    $con3 = DB::table('detalle_venta_tfes')->selectRaw("count(*) as total")->where('key_detalle_venta','=', $value->correlativo)->where('condicion','=', 7)->first();
+                    $con4 = DB::table('detalle_venta_tfes')->selectRaw("count(*) as total")->where('key_detalle_venta','=', $value->correlativo)->where('condicion','=', 30)->first();
+                    $no_timbres = $no_timbres + ($con3->total + $con4->total);
+                }
+
+                if ($no_timbres >= 5 && $tramite['forma'] == 3) {
+                    return response()->json(['success' => false, 'nota' => 'Se han excedido la venta de Timbres Fiscales FORMA 14 para este contribuyente por el día de hoy.', 'alert' => 'true']);
+                }
+            }
+        }
+        /////////////////////// 
 
         if ($tramite['forma'] == 'Seleccione' || $tramite['forma'] == '') {
             return response()->json(['success' => false, 'nota' => 'Debe seleccionar la Forma.']);
@@ -680,9 +704,7 @@ class VentaController extends Controller
             $bs = $request->post('total_bs');
             $nro = $request->post('nro');
 
-            $condicion_sujeto = $request->post('condicion_sujeto');
-            $identidad_condicion = $request->post('identidad_condicion');
-            $identidad_nro = $request->post('identidad_nro');
+            
 
             $contribuyente = ([
                 'condicion_sujeto' => $condicion_sujeto,
@@ -730,7 +752,11 @@ class VentaController extends Controller
                                 '<span class="text-muted fst-italic">Sin Folios anexos</span>';
                             }
                         }
-                        $ali_tramite = '<span class="">'.$total_ucd.' UCD</span>';
+
+                        $bs_tramite_t = $total_ucd * $valor_ucd;
+
+                        $ucd_tramite = '<span class="fw-bold">'.$total_ucd.' UCD</span>';
+                        $bs_tramite = '<span class="">'.$bs_tramite_t.' Bs.</span>';
 
                         break;
                     case 8:
@@ -749,7 +775,13 @@ class VentaController extends Controller
                         $bolivares_tramite_format = number_format($total_bolivares, 2, ',', '.');
                         $capital_format = number_format($capital, 2, ',', '.');
 
-                        $ali_tramite = '<span class="">'.$bolivares_tramite_format.' Bs.</span>';
+                
+                        $ucd_tramite_t = $total_bolivares / $valor_ucd;
+
+                        $ucd_tramite = '<span class="">'.$ucd_tramite_t.' UCD</span>';
+                        $bs_tramite = '<span class="fw-bold">'.$bolivares_tramite_format.' Bs.</span>';
+
+
                         $anexo = '<span class="text-muted fst-italic">Capital: '.$capital_format.' Bs.</span>';
 
                         break;
@@ -778,7 +810,11 @@ class VentaController extends Controller
                         } 
                         $total_ucd = $total_ucd + $ucd_tramite;
 
-                        $ali_tramite = '<span class="">'.$total_ucd.' UCD</span>';
+                        $bs_tramite_t = $total_ucd * $valor_ucd;
+
+                        $ucd_tramite = '<span class="fw-bold">'.$total_ucd.' UCD</span>';
+                        $bs_tramite = '<span class="">'.$bs_tramite_t.' Bs.</span>';
+
                         $anexo = '<span class="text-muted fst-italic">'.$metros.' mt2.</span>';
                         break;
                             
@@ -835,7 +871,10 @@ class VentaController extends Controller
                             '.$anexo.'
                         </td>
                         <td>
-                            '.$ali_tramite.'
+                            '.$ucd_tramite.'
+                        </td>
+                        <td>
+                            '.$bs_tramite.'
                         </td>
                         <td>
                             <div class="d-flex flex-column">
@@ -2417,7 +2456,7 @@ class VentaController extends Controller
 
                         foreach ($pagos as $pago) {
                             if ($pago['metodo'] == 5) {
-                                /////////////PUNTO
+                                /////////////PUNTO 
                                 $i3 =DB::table('pago_ventas')->insert(['key_venta' => $id_venta, 
                                                                         'metodo' => 5, 
                                                                         'comprobante' => null,
@@ -2427,7 +2466,19 @@ class VentaController extends Controller
                                                             <th>Punto</th>
                                                             <td class="table-warning">'.$formato_debito_punto.'</td>
                                                         </tr>';
-                            }else{
+                            }elseif ($pago['metodo'] == 20) {
+                                /////////////TRANSFERENCIA
+                                $i3 =DB::table('pago_ventas')->insert(['key_venta' => $id_venta, 
+                                                                        'metodo' => 20, 
+                                                                        'comprobante' => null,
+                                                                        'monto' => $pago['debitado']]); 
+                                $formato_debito_punto =  number_format($pago['debitado'], 2, ',', '.');
+                                $tr_detalle_debito .= '<tr>
+                                                            <th>Transferencia</th>
+                                                            <td class="table-warning">'.$formato_debito_punto.'</td>
+                                                        </tr>';
+                            }
+                            else{
                                 ///////////EFECTIVO
                                 $i3 =DB::table('pago_ventas')->insert(['key_venta' => $id_venta, 
                                                                         'metodo' => 6, 

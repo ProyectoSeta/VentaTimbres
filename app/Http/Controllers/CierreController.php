@@ -113,10 +113,13 @@ class CierreController extends Controller
         $recaudado = 0;
         $punto = 0;
         $efectivo = 0;
+        $transferencia = 0;
         $recaudado_tfe = 0;
         $recaudado_est = 0;
         $cantidad_tfe = 0;
         $cantidad_est = 0;
+
+        $anulado_bs_tfe = 0;
 
         foreach ($taquillas as $taquilla) {
             $id_taquilla = $taquilla;
@@ -126,7 +129,7 @@ class CierreController extends Controller
                                     ->whereDate('fecha', $hoy)->get();
             if ($q1) {
                 foreach ($q1 as $key) {
-                    $recaudado = $recaudado + $key->total_bolivares;
+                    
 
                     // CONSULTA UCD
                     $c1 = DB::table('ucds')->select('valor')->where('id','=',$key->key_ucd)->first();
@@ -138,9 +141,16 @@ class CierreController extends Controller
                         if ($pago->metodo == 5) {
                             //PUNTO
                             $punto = $punto + $pago->monto;
+                        }elseif ($pago->metodo == 20) {
+                            //TRANSFERENCIA
+                            $transferencia = $transferencia + $pago->monto;
                         }else{
                             //EFECTIVO
                             $efectivo = $efectivo + $pago->monto;
+                        }
+
+                        if ($pago->anulado != null) {
+                            $anulado_bs_tfe = $anulado_bs_tfe + $pago->anulado;
                         }
                     }
                     
@@ -176,11 +186,15 @@ class CierreController extends Controller
         } //cierra foreach taquillas
 
 
+        ////le resto a lo recaudado por tfe lo anulado en bs
+        $recaudado_tfe = $recaudado_tfe - $anulado_bs_tfe;
+        $recaudado = $recaudado_tfe + $recaudado_est;
 
         $insert = DB::table('cierre_diarios')->insert(['fecha' => $hoy,
                                                         'recaudado' => $recaudado,
                                                         'punto' => $punto,
                                                         'efectivo' => $efectivo,
+                                                        'transferencia' => $transferencia,
                                                         'recaudado_tfe' => $recaudado_tfe,
                                                         'recaudado_est' => $recaudado_est,
                                                         'cantidad_tfe' => $cantidad_tfe,

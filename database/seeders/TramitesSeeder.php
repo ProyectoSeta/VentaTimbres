@@ -465,5 +465,53 @@ class TramitesSeeder extends Seeder
             'porcentaje' => null,
         ]);
 
+
+
+
+        DB::table('tramites')->insert([
+            'tramite' => 'Para Constitución de una Empresa | Persona Natural',
+            'key_ente' => 1,
+            'alicuota' => 7,
+            'natural' => '10',
+            'juridico' => '10',
+            'small' => null,
+            'medium' => null,
+            'large' => null,
+            'porcentaje' => null,
+        ]);
+        DB::table('tramites')->insert([
+            'tramite' => 'Para Constitución de una Empresa | Jurídico',
+            'key_ente' => 1,
+            'alicuota' => 7,
+            'natural' => '15',
+            'juridico' => '15',
+            'small' => null,
+            'medium' => null,
+            'large' => null,
+            'porcentaje' => null,
+        ]);
+        DB::table('tramites')->insert([
+            'tramite' => 'Registro | Persona Natural',
+            'key_ente' => 1,
+            'alicuota' => 7,
+            'natural' => '5',
+            'juridico' => '5',
+            'small' => null,
+            'medium' => null,
+            'large' => null,
+            'porcentaje' => null,
+        ]);
+        DB::table('tramites')->insert([
+            'tramite' => 'Registro | Jurídico',
+            'key_ente' => 1,
+            'alicuota' => 7,
+            'natural' => '10',
+            'juridico' => '10',
+            'small' => null,
+            'medium' => null,
+            'large' => null,
+            'porcentaje' => null,
+        ]);
+
     }
 }

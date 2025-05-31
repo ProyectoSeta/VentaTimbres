@@ -273,6 +273,7 @@ Route::post('/arqueo/timbres', [App\Http\Controllers\ArqueoTaquillaController::c
 Route::post('/arqueo/detalle_venta', [App\Http\Controllers\ArqueoTaquillaController::class, 'detalle_venta'])->name('arqueo.detalle_venta');
 Route::post('/arqueo/detalle_forma', [App\Http\Controllers\ArqueoTaquillaController::class, 'detalle_forma'])->name('arqueo.detalle_forma');
 Route::post('/arqueo/cierre_punto', [App\Http\Controllers\ArqueoTaquillaController::class, 'cierre_punto'])->name('arqueo.cierre_punto');
+Route::post('/arqueo/cierre_cuenta', [App\Http\Controllers\ArqueoTaquillaController::class, 'cierre_cuenta'])->name('arqueo.cierre_cuenta');
 Route::get('/pdf_cierre_taquilla/{id?}/', [App\Http\Controllers\ArqueoTaquillaController::class, 'pdf_cierre_taquilla'])->middleware('can:pdf_cierre_taquilla')->name('pdf_cierre_taquilla');
 
 
@@ -294,7 +295,7 @@ Route::get('/qr/{id?}/', [App\Http\Controllers\QrController::class, 'index'])->n
 
 
 ////ANULACION DE TIMBRE
-Route::get('/anular', [App\Http\Controllers\AnulacionController::class, 'index'])->name('anular');
+Route::get('/anular', [App\Http\Controllers\AnulacionController::class, 'index'])->middleware('can:anular')->name('anular');
 Route::post('/anular/search_tfe', [App\Http\Controllers\AnulacionController::class, 'search_tfe'])->name('anular.search_tfe');
 Route::post('/anular/anular', [App\Http\Controllers\AnulacionController::class, 'anular'])->name('anular.anular');
 

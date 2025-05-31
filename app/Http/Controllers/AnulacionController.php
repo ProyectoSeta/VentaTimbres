@@ -30,25 +30,24 @@ class AnulacionController extends Controller
 
         $length = 6;
 
-        $con1 = DB::table('detalle_venta_tfes')->select('key_venta','nro_timbre','key_denominacion','key_inventario_tfe','serial','qr','condicion','sustituto')->where('nro_timbre','=',$timbre)->first();
+        $con1 = DB::table('detalle_venta_tfes')->select('key_detalle_venta','key_venta','nro_timbre','key_denominacion','bolivares','key_inventario_tfe','serial','qr','condicion','sustituto')->where('nro_timbre','=',$timbre)->first();
         if ($con1) {
             if ($con1->condicion == 7 || $con1->condicion == 30) {
                 ///vendido o reimpreso
                 $con2 = DB::table('detalle_ventas')->join('tramites', 'detalle_ventas.key_tramite', '=','tramites.id_tramite')
-                                        ->select('detalle_ventas.ucd','detalle_ventas.bs','tramites.tramite')
-                                        ->where('detalle_ventas.key_venta','=',$con1->key_venta)->first();
+                                        ->select('tramites.tramite')->where('detalle_ventas.correlativo','=',$con1->key_detalle_venta)->first();
                 $con3 =  DB::table('ventas')->join('contribuyentes', 'ventas.key_contribuyente', '=','contribuyentes.id_contribuyente')
                                         ->select('ventas.fecha','contribuyentes.nombre_razon','contribuyentes.identidad_condicion','contribuyentes.identidad_nro','contribuyentes.condicion_sujeto')
                                         ->where('ventas.id_venta','=',$con1->key_venta)->first();
                 if ($con2 && $con3) {
                     $formato_nro = substr(str_repeat(0, $length).$con1->nro_timbre, - $length);
 
-                    if ($con2->ucd == null) {
-                        $monto = number_format($con2->bs, 2, ',', '.').' Bs.';
+                    if ($con1->bolivares != null) {
+                        $monto = number_format($con1->bolivares, 2, ',', '.').' Bs.';
                     }else{
-                        $query = DB::table('ucd_denominacions')->join('tipos', 'ucd_denominacions.alicuota', '=','tipos.id_tipo')->select('tipos.nombre_tipo')
+                        $query = DB::table('ucd_denominacions')->join('tipos', 'ucd_denominacions.alicuota', '=','tipos.id_tipo')->select('ucd_denominacions.denominacion','tipos.nombre_tipo')
                                                                 ->where('ucd_denominacions.id','=',$con1->key_denominacion)->first();
-                        $monto = $con2->ucd.' '.$query->nombre_tipo.'';
+                        $monto = $query->denominacion.' '.$query->nombre_tipo.'';
                     }
 
                 
@@ -162,20 +161,52 @@ class AnulacionController extends Controller
         $timbre = $request->post('timbre');
         
 
-        $con1 = DB::table('detalle_venta_tfes')->select('condicion')->where('nro_timbre','=',$timbre)->first();
+        $con1 = DB::table('detalle_venta_tfes')->select('correlativo','key_venta','key_detalle_venta','condicion')->where('nro_timbre','=',$timbre)->first();
         if ($con1){
             if ($con1->condicion == 7 || $con1->condicion == 30) {
-                $update = DB::table('detalle_venta_tfes')->where('nro_timbre','=',$timbre)->update(['condicion' => 29]); 
-                if ($update) {
-                    /////BITACORA
-                    $user = auth()->id();
-                    $accion = 'ANULACIÓN DE TIMBRE '.$timbre.'.';
-                    $bitacora = DB::table('bitacoras')->insert(['key_user' => $user, 'key_modulo' => 1, 'accion'=> $accion]);
+                
 
-                    return response()->json(['success' => true]);
+                $con3 = DB::table('ventas')->select('key_ucd')->where('id_venta','=',$con1->key_venta)->first();
+                $con4 = DB::table('detalle_venta_tfes')->select('key_denominacion','bolivares')->where('correlativo','=',$con1->correlativo)->first();
+
+                if ($con3 && $con4) {
+                    if ($con4->bolivares == null) {
+                        $con_ucd = DB::table('ucds')->select('valor')->where('id','=',$con3->key_ucd)->first();
+                        ///ucd
+                        $con_deno = DB::table('ucd_denominacions')->select('denominacion')->where('id','=',$con4->key_denominacion)->first();
+                        $anulado_bs = $con_deno->denominacion * $con_ucd->valor;
+                    }else{
+                        ///bs
+                        $anulado_bs = $con4->bolivares;
+                    }
+
+                    $con_pago = DB::table('pago_ventas')->select('monto','anulado')->where('key_venta','=',$con1->key_venta)->first();
+                    // return response($con_pago->anulado);
+                    if ($con_pago->anulado == NULL) {
+                        $monto_new = $con_pago->monto - $anulado_bs;
+                    }else{
+                        $monto_new = $con_pago->monto - $anulado_bs;
+                        ////se han anulado timbres de esta venta 
+                        $anulado_bs = $anulado_bs + $con_pago->anulado;
+                    }
+
+                    
+                    $update_pago = DB::table('pago_ventas')->where('key_venta','=',$con1->key_venta)->update(['monto' => $monto_new, 'anulado' => $anulado_bs]); 
+                    $update = DB::table('detalle_venta_tfes')->where('nro_timbre','=',$timbre)->update(['condicion' => 29]); 
+                    if ($update && $update_pago) {
+                        /////BITACORA
+                        $user = auth()->id();
+                        $accion = 'ANULACIÓN DE TIMBRE '.$timbre.'.';
+                        $bitacora = DB::table('bitacoras')->insert(['key_user' => $user, 'key_modulo' => 1, 'accion'=> $accion]);
+
+                        return response()->json(['success' => true]);
+                    }else{
+                        return response()->json(['success' => false]);
+            
+                    }
+
                 }else{
-                    return response()->json(['success' => false]);
-        
+                    ///return false
                 }
 
             }elseif ($con1->condicion == 29) {

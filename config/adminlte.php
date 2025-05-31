@@ -322,6 +322,7 @@ return [
         [
             'text'        => 'Anulación',
             'route'         => 'anular',
+            'can' => ['anular'],
             'icon'       => 'fas fa-angle-right pe-2',   
         ],
         //CIERRE

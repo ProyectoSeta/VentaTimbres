@@ -88,6 +88,13 @@ class TiposSeeder extends Seeder
         ]);
 
 
+
+         //////////METODOS DE PAGO PT.2
+        DB::table('tipos')->insert([
+            'nombre_tipo' => 'Transferencia',
+        ]);
+
+
        
 
     }

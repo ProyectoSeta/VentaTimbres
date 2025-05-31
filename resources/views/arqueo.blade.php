@@ -25,16 +25,24 @@
 
             {{-- DETALLE TOTAL --}}
             <div class="bg_arqueo" style="background-image: url({{asset('assets/fondo2.png')}});">
-                <div class="row d-flex align-items-center text-center">
-                    <div class="col-md-6">
+                <div class="row d-flex align-items-center text-center mb-5">
+                    <div class="col-md-4">
                         <h5 class="fw-bold fs-3">Punto</h5>
                         <h4 class="fw-semibold">@php echo(number_format($arqueo->punto, 2, ',', '.')) @endphp Bs.</h4>
                         @can('arqueo.cierre_punto')
                             <a href="#" data-bs-toggle="modal" data-bs-target="#modal_cierre_punto" id="cierre_punto" taquilla="{{$id_taquilla}}">Cierre de Punto</a>
                         @endcan
                     </div>
+
+                    <div class="col-md-4">
+                        <h5 class="fw-bold fs-3">Transferencia</h5>
+                        <h4 class="fw-semibold">@php echo(number_format($arqueo->transferencia, 2, ',', '.')) @endphp Bs.</h4>
+                        @can('arqueo.cierre_punto')
+                            <a href="#" data-bs-toggle="modal" data-bs-target="#modal_cierre_cuenta" id="cierre_cuenta" taquilla="{{$id_taquilla}}">Cierre de Cuenta</a>
+                        @endcan
+                    </div>
                     
-                    <div class="col-md-6">
+                    <div class="col-md-4">
                         <div class="">
                             <h5 class="fw-bold fs-3">Efectivo</h5>
                             <h4 class="fw-semibold">@php echo(number_format($arqueo->efectivo, 2, ',', '.')) @endphp Bs.</h4>
@@ -222,6 +230,15 @@
             </div>  <!-- cierra modal-content -->
         </div>  <!-- cierra modal-dialog -->
     </div>
+
+    <!-- CIERRE CUENTA (TRANSFERENCIAS) -->
+    <div class="modal fade" id="modal_cierre_cuenta" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content" id="content_cierre_cuenta">
+                                
+            </div>  <!-- cierra modal-content -->
+        </div>  <!-- cierra modal-dialog -->
+    </div>
 {{-- **************************************************************************************************--}}
 
 
@@ -386,6 +403,43 @@
                         console.log(response);
                         $('#content_cierre_punto').html(response);
                         $('#table_cierre_punto').DataTable(
+                            {
+                                // "order": [[ 0, "desc" ]],
+                                "language": {
+                                    "lengthMenu": " Mostrar  _MENU_  Registros por página",
+                                    "zeroRecords": "No se encontraron registros",
+                                    "info": "Mostrando página _PAGE_ de _PAGES_",
+                                    "infoEmpty": "No se encuentran Registros",
+                                    "infoFiltered": "(filtered from _MAX_ total records)",
+                                    'search':"Buscar",
+                                    'paginate':{
+                                        'next':'Siguiente',
+                                        'previous':'Anterior'
+                                    }
+                                }
+                            }
+                        );
+                    },
+                    error: function() {
+                    }
+                });
+            });
+
+
+            /////////////////////// CIERRE CUENTA
+            $(document).on('click','#cierre_cuenta', function(e) {
+                e.preventDefault();
+                var taquilla = $(this).attr('taquilla');
+
+                $.ajax({
+                    headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') },
+                    type: 'POST',
+                    url: '{{route("arqueo.cierre_cuenta") }}',
+                    data: {taquilla:taquilla},
+                    success: function(response) {
+                        console.log(response);
+                        $('#content_cierre_cuenta').html(response);
+                        $('#table_cierre_cuenta').DataTable(
                             {
                                 // "order": [[ 0, "desc" ]],
                                 "language": {
