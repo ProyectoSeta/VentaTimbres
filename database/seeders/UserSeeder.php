@@ -50,8 +50,70 @@ class UserSeeder extends Seeder
 
 
 
+        $pass_taq = 'Taq11237.';
+        //USUARIOS TAQUILLEROS
+        ///TAQ1
+        $taq_1 = User::query()->create([
+            'email' => 'sptaquilla@gmail.com',
+            'password' => Hash::make($pass_taq),
+            'type' => 2,
+            'key_sujeto' => 2, 
+        ]);
+        $taq_1->assignRole('Taquillero');
 
+        ///TAQ2
+        $taq_2 = User::query()->create([
+            'email' => 'attaquilla@gmail.com',
+            'password' => Hash::make($pass_taq),
+            'type' => 2,
+            'key_sujeto' => 3, 
+        ]);
+        $taq_2->assignRole('Taquillero');
 
+        ///TAQ3
+        $taq_3 = User::query()->create([
+            'email' => 'dltaquilla@gmail.com',
+            'password' => Hash::make($pass_taq),
+            'type' => 2,
+            'key_sujeto' => 4, 
+        ]);
+        $taq_3->assignRole('Taquillero');
+
+        ///TAQ4
+        $taq_4 = User::query()->create([
+            'email' => 'rmtaquilla@gmail.com',
+            'password' => Hash::make($pass_taq),
+            'type' => 2,
+            'key_sujeto' => 5, 
+        ]);
+        $taq_4->assignRole('Taquillero');
+
+        ///TAQ5
+        $taq_5 = User::query()->create([
+            'email' => 'wrtaquilla@gmail.com',
+            'password' => Hash::make($pass_taq),
+            'type' => 2,
+            'key_sujeto' => 6, 
+        ]);
+        $taq_5->assignRole('Taquillero');
+
+        ///TAQ6
+        $taq_6 = User::query()->create([
+            'email' => 'crtaquilla@gmail.com',
+            'password' => Hash::make($pass_taq),
+            'type' => 2,
+            'key_sujeto' => 7, 
+        ]);
+        $taq_6->assignRole('Taquillero');
+
+        ///TAQ7
+        $taq_7 = User::query()->create([
+            'email' => 'mgtaquilla@gmail.com',
+            'password' => Hash::make($pass_taq),
+            'type' => 2,
+            'key_sujeto' => 8, 
+        ]);
+        $taq_7->assignRole('Taquillero');
 
 
 

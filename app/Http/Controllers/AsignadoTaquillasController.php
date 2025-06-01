@@ -26,8 +26,8 @@ class AsignadoTaquillasController extends Controller
         $estampillas = DB::table('asignacion_estampillas')->where('key_taquilla','=',$c2->id_taquilla)->where('fecha_recibido','=',null)->get();
         $rollos = DB::table('asignacion_tfes')->where('key_taquilla','=',$c2->id_taquilla)->where('fecha_recibido','=',null)->get();
         
-        
-        return view('timbres_asignados',compact('estampillas','rollos'));
+        $id_taquilla = $c2->id_taquilla;
+        return view('timbres_asignados',compact('estampillas','rollos','id_taquilla'));
     }
 
     /**

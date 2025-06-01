@@ -15,7 +15,7 @@
     <div class="container rounded-4 p-3 px-0" style="background-color:#ffff;">
         <div class="d-flex justify-content-between align-items-center mb-4">
             <h3 class="mb-3 text-navy titulo fw-bold">Asignado a Taquilla <span class="text-secondary fs-4">| Timbres Fiscales</span></h3>
-            <h2 class="text-navy fs-2 titulo fw-bold">Taquilla <sapn class="text-primary fw-bold">ID 001</sapn></h2>
+            <h2 class="text-navy fs-2 titulo fw-bold">Taquilla <sapn class="text-primary fw-bold">ID 00{{$id_taquilla}}</sapn></h2>
         </div>
 
         <div class="row">
@@ -59,7 +59,10 @@
                                             @endif
                                         </td>
                                     @endcan
-                                    $c++;
+                                    @php
+                                     $c++;   
+                                    @endphp
+                                    
                                 </tr>
                             @endforeach
                         </tbody> 
@@ -106,7 +109,9 @@
                                             
                                         </td>
                                     @endcan 
-                                    $o++;
+                                    @php
+                                      $o++;  
+                                    @endphp
                                 </tr>
                             @endforeach
                         </tbody> 
