@@ -82,7 +82,7 @@ class AperturaTaquillasController extends Controller
             $input = '';
             $consulta = DB::table('apertura_taquillas')->select('apertura_admin')
                                                         ->where('key_taquilla','=', $taquilla->id_taquilla)
-                                                        ->where('fecha','=', $hoy)->first();
+                                                        ->whereDate('fecha', $hoy)->first();
             if ($consulta) {
                 ////// hay registro, se aperturo taquilla
                 $input = '<div class="form-check form-switch d-flex align-items-center">

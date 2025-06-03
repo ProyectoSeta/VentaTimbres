@@ -237,8 +237,8 @@
                                         <th width="45%">Tramite</th>
                                         <th>Anexo</th>
                                         <th>UCD</th>
-                                        <th>Bs.</th>
                                         <th>Forma</th>
+                                        <th>Bs.</th>
                                         <th width="10%"></th>
                                     </tr>
                                 </thead>
@@ -310,7 +310,7 @@
 
                     <!-- BUTTONS -->
                     <div class="d-flex justify-content-center mt-3 mb-3">
-                        <button type="submit" class="btn btn-success btn-sm me-3" disabled id="btn_submit_venta">Realizar Venta</button>
+                        <button type="submit" class="btn btn-success btn-sm me-3" disabled id="btn_submit_venta" ciclo="1">Realizar Venta</button>
                         <a class="btn btn-secondary btn-sm" data-bs-toggle="modal" data-bs-target="#modal_venta_realizada" >Cancelar</a>
                     </div>
 
@@ -750,6 +750,7 @@
                             ///TOTALES
                             $('#ucd').html(response.ucd); 
                             $('#bolivares').html(response.format_bs); 
+                            $('#debitado_1').val(response.bs); 
 
                             // UPDATE CAMPOS
                             $('#total_ucd').val(response.ucd);
@@ -1213,12 +1214,17 @@
 
 
             ////DESHABILITAR BTNS DE IMPRIMIR AL DAR CLICK
-             $(document).on('mouseup','.btn_imprimir_tfe', function(e) {
+            $(document).on('mouseup','.btn_imprimir_tfe', function(e) {
                 e.preventDefault();
                 var i = $(this).attr('i');
                 setTimeout('deshabilitar_print('+i+');',2000);
     
             });
+
+            ////DESHABILITAR BTNS DE REALIZAR VENTA
+            // $(document).on('mouseup','#btn_submit_venta', function(e) {
+            //     $('#btn_submit_venta').attr('disabled',true);
+            // });
            
 
 
@@ -1325,39 +1331,48 @@
 
         //////////////// VENTA DE TIMBRES
         function venta(){
-            var formData = new FormData(document.getElementById("form_venta"));
-            // console.log("alo");
-            $.ajax({
-                headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') },
-                url:'{{route("venta.venta") }}',
-                type:'POST',
-                contentType:false,
-                cache:false,
-                processData:false,
-                async: true,
-                data: formData,
-                success: function(response){
-                    // console.log(response);
-                    if (response.success) {
-                        $('#modal_venta_realizada').modal('show');
-                        $('#content_venta_realizada').html(response.html);
+            var ciclo = $('#btn_submit_venta').attr('ciclo');
+            if (ciclo == 1) {
+                var formData = new FormData(document.getElementById("form_venta"));
+                $.ajax({
+                    headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') },
+                    url:'{{route("venta.venta") }}',
+                    type:'POST',
+                    contentType:false,
+                    cache:false,
+                    processData:false,
+                    async: true,
+                    data: formData,
+                    success: function(response){
+                        // console.log(response);
+                        if (response.success) {
+                            $('#modal_venta_realizada').modal('show');
+                            $('#content_venta_realizada').html(response.html);
 
-                        // 
+                            // 
 
-                        
-                    }else{
-                        if (response.nota) {
-                            alert(response.nota);
+                            
                         }else{
-                            alert('Disculpe, ha ocurrido un error');
+                            if (response.nota) {
+                                alert(response.nota);
+                            }else{
+                                alert('Disculpe, ha ocurrido un error');
+                            }
                         }
+                        
+                    },
+                    error: function(error){
+                        
                     }
-                       
-                },
-                error: function(error){
-                    
-                }
-            });
+                });
+            }else{
+                $(document).on('mouseup','#btn_submit_venta', function(e) {
+                    $('#btn_submit_venta').attr('disabled',true);
+                });
+            }
+
+            $('#btn_submit_venta').attr('ciclo',2);
+            
         }
 
 
@@ -1409,7 +1424,7 @@
                 async: true,
                 data: formData,
                 success: function(response){
-                    // console.log(response);
+                    console.log(response);
                     if (response.success) {
                         /////ADD TR
                         $('#tamites_table').append(response.tr);

@@ -300,6 +300,12 @@ Route::post('/anular/search_tfe', [App\Http\Controllers\AnulacionController::cla
 Route::post('/anular/anular', [App\Http\Controllers\AnulacionController::class, 'anular'])->name('anular.anular');
 
 
+////HISTORIAL VENTAS
+Route::get('/historial_ventas', [App\Http\Controllers\HistorialVentasController::class, 'index'])->middleware('can:historial_ventas')->name('historial_ventas');
+Route::post('/historial_ventas/search', [App\Http\Controllers\HistorialVentasController::class, 'search'])->name('historial_ventas.search');
+
+
+
 ///////////////////// EMISIÓN ROLLOS FORMA 14
 // Route::get('/emision_rollos', [App\Http\Controllers\RollosController::class, 'index'])->name('emision_rollos');
 // Route::post('/rollos/modal_emitir', [App\Http\Controllers\RollosController::class, 'modal_emitir'])->name('rollos.modal_emitir');

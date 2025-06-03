@@ -138,12 +138,23 @@ class ArqueoTaquillaController extends Controller
                 $c2 = DB::table('detalle_venta_tfes')->where('key_detalle_venta','=',$key->correlativo)->first();
                 $formato_nro = substr(str_repeat(0, $length).$c2->nro_timbre, - $length);
 
+                if ($c2->condicion == 29) {
+                    $detalle_t = '<span class="badge text-bg-danger fs-6">Anulado</span>';
+                }elseif ($c2->condicion == 30) {
+                    $detalle_t = '<span class="badge text-bg-secondary fs-6">Re-impreso</span>';
+                }else{
+                    $detalle_t = '';
+                }
+
+                
+
+
                 if ($key->capital == null) {
                     $timbres .= '<div class="border mb-4 rounded-3">
                             <div class="d-flex justify-content-between px-3 py-2 align-items-center">
                                 <!-- DATOS -->
                                 <div class="w-50">
-                                    <div class="text-danger fw-bold fs-4" id="">A-'.$formato_nro.'<span class="text-muted ms-2">TFE-14</span></div> 
+                                    <div class="text-danger fw-bold fs-4" id="">A-'.$formato_nro.'<span class="text-muted ms-2">TFE-14</span> '.$detalle_t.'</div> 
                                     <table class="table table-borderless table-sm">
                                         <tr>
                                             <th>Ente:</th>
@@ -167,7 +178,7 @@ class ArqueoTaquillaController extends Controller
                             <div class="d-flex justify-content-between px-3 py-2 align-items-center">
                                 <!-- DATOS -->
                                 <div class="w-50">
-                                    <div class="text-danger fw-bold fs-4" id="">A-'.$formato_nro.'<span class="text-muted ms-2">TFE-14</span></div> 
+                                    <div class="text-danger fw-bold fs-4" id="">A-'.$formato_nro.'<span class="text-muted ms-2">TFE-14</span> </div> 
                                     <table class="table table-borderless table-sm">
                                         <tr>
                                             <th>Ente:</th>
@@ -242,6 +253,7 @@ class ArqueoTaquillaController extends Controller
         $table_detalles = '';
         $tr_pago = '';
         $tr_tramites = '';
+        $length = 6;
 
         $venta = DB::table('ventas')->join('contribuyentes', 'ventas.key_contribuyente', '=','contribuyentes.id_contribuyente')
                                     ->join('ucds', 'ventas.key_ucd', '=','ucds.id')
@@ -305,8 +317,29 @@ class ArqueoTaquillaController extends Controller
                 $i++;
                 if ($value->forma == 3) {
                     /// FORMA 14
-                    $c2 = DB::table('detalle_venta_tfes')->select('serial')->where('key_detalle_venta','=',$value->correlativo)->get();
+                    $c2 = DB::table('detalle_venta_tfes')->select('serial','sustituto','condicion')->where('key_detalle_venta','=',$value->correlativo)->get();
                     foreach ($c2 as $de) {
+                        $formato_sustituto = substr(str_repeat(0, $length).$de->sustituto, - $length);
+
+                        if ($de->condicion == 29) {
+                            $forma = '<div class="d-flex flex-column">
+                                        <span>TFE-14 ('.$de->serial.')</span> 
+                                        <span class="badge text-bg-danger">Anulado</span>
+                                        <span class="text-muted">Sustituto: A-'.$formato_sustituto.'</span>
+                                        
+                                    </div>';
+                        }elseif ($de->condicion == 30) {
+                            $forma = '<div class="d-flex flex-column">
+                                        <span>TFE-14 ('.$de->serial.')</span> 
+                                        <span class="badge text-bg-secondary">re-impreso</span>
+                                        
+                                    </div>';
+                        }else{
+                            $forma = '<div class="d-flex flex-column">
+                                        <span>TFE-14 ('.$de->serial.')</span> 
+                                    </div>';
+                        }
+
                         switch ($value->alicuota) {
                             case 7:
                                 // UCD
@@ -320,7 +353,7 @@ class ArqueoTaquillaController extends Controller
                                                     <td>'.$value->tramite.'</td>
                                                     <td>'.$anexo.'</td>
                                                     <td>'.$value->ucd.' UCD</td>
-                                                    <td>TFE-14 ('.$de->serial.')</td>
+                                                    <td>'.$forma.'</td>
                                                 </tr>';
                                 break;
                             case 8:
@@ -330,7 +363,7 @@ class ArqueoTaquillaController extends Controller
                                                     <td>'.$value->tramite.'</td>
                                                     <td><span class="text-muted fst-italic">Capital: '.number_format($value->capital, 2, ',', '.').' Bs.</span></td>
                                                     <td>'.number_format($value->bs, 2, ',', '.').' Bs.</td>
-                                                    <td>TFE-14 ('.$de->serial.')</td>
+                                                    <td>'.$forma.'</td>
                                                 </tr>';
                                 break;
                             case 13:
@@ -340,7 +373,7 @@ class ArqueoTaquillaController extends Controller
                                                     <td>'.$value->tramite.'</td>
                                                     <td><span class="text-muted fst-italic">'.$value->metros.' mt2.</span></td>
                                                     <td>'.$value->ucd.' UCD</td>
-                                                    <td>TFE-14 ('.$de->serial.')</td>
+                                                    <td>'.$forma.'</td>
                                                 </tr>';
                                 break;
                             default:

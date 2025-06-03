@@ -1,6 +1,6 @@
 @extends('adminlte::page')
 
-@section('title', 'Consulta')
+@section('title', 'Anular Timbre')
 
 
 @section('content')

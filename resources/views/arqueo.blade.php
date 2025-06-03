@@ -116,6 +116,7 @@
                 <table class="table table-sm border-light-subtle text-center" id="table_venta_taquilla"  style="font-size:13px">
                     <thead>
                         <tr>
+                            <th>ID Venta</th>
                             <th>Hora</th>
                             <th>Contribuyente</th>
                             <th>Total U.C.D.</th>
@@ -132,6 +133,7 @@
                     <tbody>
                         @foreach ($ventas as $venta)
                             <tr>
+                                <td class="text-muted">{{$venta->id_venta}}</td>
                                 @php
                                     $hora = date("h:i A",strtotime($venta->hora));
                                 @endphp
@@ -180,7 +182,7 @@
 
 
 {{-- ********************************************* MODALES ***********************************************--}}
-    <!-- INFO CONTRIBUYENTE EXENCIONES -->
+    <!-- INFO CONTRIBUYENTE -->
     <div class="modal fade" id="modal_info_sujeto" tabindex="-1" aria-hidden="true">
         <div class="modal-dialog">
             <div class="modal-content" id="content_info_sujeto">

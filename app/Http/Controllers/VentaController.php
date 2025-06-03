@@ -696,6 +696,8 @@ class VentaController extends Controller
             }
         }
         /////////////////////// 
+        
+
 
         if ($tramite['forma'] == 'Seleccione' || $tramite['forma'] == '') {
             return response()->json(['success' => false, 'nota' => 'Debe seleccionar la Forma.']);
@@ -715,7 +717,9 @@ class VentaController extends Controller
 
             //////////////////////////////////// CALCULAR TOTALES
             $q_ucd =  DB::table('ucds')->select('valor')->orderBy('id', 'desc')->first();
+            $q_ut =  DB::table('configuraciones')->select('valor')->where('nombre','=','Precio U.T.')->first();
             $valor_ucd = $q_ucd->valor;
+            $valor_ut = $q_ut->valor;
             $total_ucd = 0; 
             $total_bolivares = 0;
 
@@ -736,7 +740,9 @@ class VentaController extends Controller
                             ////natural
                             $ucd_tramite = $query->natural;
                         }
+
                         
+
                         $total_ucd = $total_ucd + $ucd_tramite;
                         $anexo = '<span class="text-muted fst-italic">No aplica</span>';
 
@@ -753,9 +759,37 @@ class VentaController extends Controller
                             }
                         }
 
-                        $bs_tramite_t = $total_ucd * $valor_ucd;
+                        
+                        
+                        if ($tramite['forma'] == 4) {
+                            /// ESTAMPILLAS
+                            $de_est = unserialize(base64_decode($tramite['detalle']));
+                            $bs_ut_total = 0;
 
-                        $ucd_tramite = '<span class="fw-bold">'.$total_ucd.' UCD</span>';
+                            foreach ($de_est as $de) {
+                                $cantidad_est = $de['cantidad'];
+                                if ($de['ucd'] == 15) {
+                                    # 20UT
+                                    $bs_est = 20 * $valor_ut;
+                                }elseif ($de['ucd'] == 16) {
+                                    # 50UT
+                                    $bs_est = 50 * $valor_ut;
+                                }
+
+                                $bs_ut_total = $bs_ut_total + ($bs_est * $cantidad_est);
+                                
+                            }
+
+                            $bs_tramite_t = $bs_ut_total;
+                            // return response($bs_tramite_t);
+
+                        }else{
+                            $bs_tramite_t = $total_ucd * $valor_ucd;
+                        }
+
+                        $f_ucd = round($total_ucd, 2);
+
+                        $ucd_tramite = '<span class="fw-bold">'.$f_ucd.' UCD</span>';
                         $bs_tramite = '<span class="">'.$bs_tramite_t.' Bs.</span>';
 
                         break;
@@ -824,7 +858,12 @@ class VentaController extends Controller
             }
         
 
-            $total_bolivares = $total_bolivares + ($total_ucd * $valor_ucd);
+            if ($tramite['forma'] == 4) {
+                $total_bolivares = $total_bolivares + $bs_tramite_t;
+            }else{
+                $total_bolivares = $total_bolivares + ($total_ucd * $valor_ucd);
+            }
+
             $total_bolivares_format = number_format($total_bolivares, 2, ',', '.');
             ///////////////////////////////////
 
@@ -873,15 +912,16 @@ class VentaController extends Controller
                         <td>
                             '.$ucd_tramite.'
                         </td>
-                        <td>
-                            '.$bs_tramite.'
-                        </td>
-                        <td>
+                         <td>
                             <div class="d-flex flex-column">
                                 '.$span.'
                             </div>
                             <input type="hidden" name="tramite['.$nro.']" class="tramite_in" id="tramite_'.$nro.'" value="'.$input.'">
                         </td>
+                        <td>
+                            '.$bs_tramite.'
+                        </td>
+                       
                         <td>
                             <a href="javascript:void(0);" class="btn remove_tramite" nro="'.$nro.'" tramite="'.$tramite['tramite'].'">
                                 <i class="bx bx-x fs-4"></i>
@@ -897,6 +937,9 @@ class VentaController extends Controller
             // return response($ucd);
             $ucd = $ucd + $total_ucd;
             $bs = $bs + $total_bolivares;
+
+            $bs = round($bs, 2);
+
 
             $format_bs_total = number_format($bs, 2, ',', '.');
 
@@ -978,6 +1021,8 @@ class VentaController extends Controller
         //////////////////////////////////// CALCULAR TOTALES
         $q_ucd =  DB::table('ucds')->select('valor')->orderBy('id', 'desc')->first();
         $valor_ucd = $q_ucd->valor;
+        $q_ut =  DB::table('configuraciones')->select('valor')->where('nombre','=','Precio U.T.')->first();
+        $valor_ut = $q_ut->valor;
         $total_ucd = 0; 
         $total_bolivares = 0;
 
@@ -994,8 +1039,31 @@ class VentaController extends Controller
                     ////natural
                     $ucd_tramite = $query->natural;
                 }
+
                 
                 $total_ucd = $total_ucd + $ucd_tramite;
+
+                if ($detalle_est != null) {
+                    /// ESTAMPILLAS
+                    $bs_ut_total = 0;
+                    foreach ($detalle_est as $de) {
+                        $cantidad_est = $de['cantidad'];
+                        if ($de['ucd'] == 15) {
+                            # 20UT
+                            $bs_est = 20 * $valor_ut;
+                        }elseif ($de['ucd'] == 16) {
+                            # 50UT
+                            $bs_est = 50 * $valor_ut;
+                        }
+
+                        $bs_ut_total = $bs_ut_total + ($bs_est * $cantidad_est);
+                        
+                    }
+
+                    $bs_tramite_t = $bs_ut_total;
+                    // return response($bs_tramite_t);
+
+                }
 
                 //////SI ES PROTOCOLIZACIÓN Y TIENE FOLIOS ADICIONALES
                 if($tramite['tramite'] == 1 || $tramite['tramite'] == 2){
@@ -1048,11 +1116,22 @@ class VentaController extends Controller
                 break;        
         }
 
-        $total_bolivares = $total_bolivares + ($total_ucd * $valor_ucd);
+        if ($detalle_est != null){
+            $total_bolivares = $total_bolivares + $bs_tramite_t;
+        }else{
+            $total_bolivares = $total_bolivares + ($total_ucd * $valor_ucd);  
+        }
+        
         
         // RESTAR PRECIO A LOS TOTALES
         $ucd = $ucd - $total_ucd;
         $bs = $bs - $total_bolivares;
+
+        if ($bs < 0.00) {
+            $bs = 0;
+        }
+
+        $bs = round($bs, 2);
         
         
         $total_bolivares_format = number_format($bs, 2, ',', '.');
@@ -1514,10 +1593,12 @@ class VentaController extends Controller
                     
 
 
-                    ///////////////////////////////////// UCD
+                    ///////////////////////////////////// UCD Y UT
                         $q3 =  DB::table('ucds')->select('id','valor')->orderBy('id', 'desc')->first();
                         $id_ucd = $q3->id;
                         $valor_ucd = $q3->valor;
+                        $q_ut =  DB::table('configuraciones')->select('valor')->where('nombre','=','Precio U.T.')->first();
+                        $valor_ut = $q_ut->valor;
 
                     ///////////////////////////////////// VALIDACIÓN  CAMPOS
                         $nro_tfe14 = 0;
@@ -1553,9 +1634,16 @@ class VentaController extends Controller
                     ///////////////////////////////////// INSERT DETALLE Y SUMA TOTAL 
                         $total_ucd = 0;
                         $total_bolivares = 0;
-                    
+
+                        
+                        $bs_ut_est = 0;
+
+
+                        $bolivares_tramites = 0;
+
                         // $array_correlativo_tfe = [];
                         // $array_correlativo_estampillas = [];
+                       
 
                         $cant_tfe = 0;
                         $cant_estampillas = 0;
@@ -1825,7 +1913,7 @@ class VentaController extends Controller
                                             }
 
 
-
+                                            $total_bolivares = $total_bolivares + ($ucd_tramite * $valor_ucd);
 
                                             
     
@@ -2011,6 +2099,11 @@ class VentaController extends Controller
                                                 $delete_venta = DB::table('ventas')->where('id_venta', '=', $id_venta)->delete();
                                                 return response()->json(['success' => false]);
                                             }
+
+
+
+                                            // $bolivares_tramites = $bolivares_tramites + ($ucd_timbre_bs * $valor_ucd);
+
      
                                             break;
                                         
@@ -2203,6 +2296,9 @@ class VentaController extends Controller
                                                 $delete_venta = DB::table('ventas')->where('id_venta', '=', $id_venta)->delete();
                                                 return response()->json(['success' => false]);
                                             }
+
+
+                                            $total_bolivares = $total_bolivares + ($ucd_tramite * $valor_ucd);
     
                                             break;
                                                 
@@ -2223,6 +2319,9 @@ class VentaController extends Controller
     
                                     $ucd_tramite = '';
                                     $key_deno = '';
+
+                                     $bs_est = 0;
+                                    
     
                                     //////// IDENTIFICACION DE FORMA
                                     $c_forma = DB::table('formas')->select('identificador')->where('forma','=','Estampillas')->first();
@@ -2341,7 +2440,7 @@ class VentaController extends Controller
                                                     }else{
                                                         // delete venta
                                                         $delete_venta = DB::table('ventas')->where('id_venta', '=', $id_venta)->delete();
-                                                        return response()->json(['success' => false, 'nota'=> 'No hay timbres disponibles de ']);
+                                                        return response()->json(['success' => false, 'nota'=> 'No hay timbres disponibles de '.$q5->denominacion.'']);
                                                     }
                                                 }
                                                 
@@ -2413,9 +2512,21 @@ class VentaController extends Controller
                                                     return response()->json(['success' => false]);
                                                 }
                                             }
-    
+
+                                           
+
+                                            //// PRECIO EN BOLIVARES UT
+                                            if ($key_deno == 15) {
+                                                # 20UT
+                                                $total_bolivares = $total_bolivares + ((20 * $valor_ut) * $cant_est);
+                                            }elseif ($key_deno == 16) {
+                                                # 50UT
+                                                $total_bolivares = $total_bolivares + ((50 * $valor_ut) * $cant_est);
+                                            }
     
                                         }
+
+                                        
                                     }else{
                                         //// eliminar venta
                                         $delete_venta = DB::table('ventas')->where('id_venta', '=', $id_venta)->delete();
@@ -2445,7 +2556,9 @@ class VentaController extends Controller
 
 
                     ///////////////////////////////////// UPDATE TOTAL UCD / BOLIVARES (TABLE VENTAS)
-                        $total_bolivares = $total_bolivares + ($total_ucd * $valor_ucd);
+                        // $total_bolivares_ucd = $total_ucd * $valor_ucd;
+                       
+                        // $total_bolivares = $total_bolivares + $bolivares_tramites;
                         $update_venta = DB::table('ventas')->where('id_venta','=',$id_venta)->update(['total_ucd' => $total_ucd, 'total_bolivares' => $total_bolivares]);
 
                         $formato_total_bolivares =  number_format($total_bolivares, 2, ',', '.');
@@ -2504,14 +2617,14 @@ class VentaController extends Controller
                             $tr_detalle_timbres .= '<tr>
                                                     <td>TFE-14</td>
                                                     <td>'.$cant_tfe.'</td>
-                                                    <td>'.$cant_ucd_tfe.'</td>
+                                                    <td>'.$cant_ucd_tfe.' UCD</td>
                                                 </tr>';
                         } 
                         if ($exist_estampillas == true) {
                             $tr_detalle_timbres .= '<tr>
                                                     <td>Estampillas</td>
                                                     <td>'.$cant_estampillas.'</td>
-                                                    <td>'.$cant_ucd_estampillas.'</td>
+                                                    <td>'.$cant_ucd_estampillas.' UT</td>
                                                 </tr>';
                         }
 

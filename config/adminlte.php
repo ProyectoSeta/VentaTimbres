@@ -320,6 +320,12 @@ return [
             'icon'       => 'fas fa-angle-right pe-2',   
         ],
         [
+            'text'        => 'Ventas',
+            'route'         => 'historial_ventas',
+            'can' => ['historial_ventas'],
+            'icon'       => 'fas fa-angle-right pe-2',   
+        ],
+        [
             'text'        => 'Anulación',
             'route'         => 'anular',
             'can' => ['anular'],
