@@ -83,7 +83,7 @@
                                             @if ($apertura->cierre_taquilla == null)
                                                 <span class="fst-italic fw-bold text-muted">Sin cierrar.</span>
                                             @else
-                                                <a href="{{ route('cierre.arqueo', ['id' => $apertura->id_taquilla]) }}">Ver</a>
+                                                <a href="{{ route('cierre.arqueo', ['id' => $apertura->id_taquilla, 'fecha' => $hoy]) }}">Ver</a>
                                             @endif
                                         </td>
                                     @endcan

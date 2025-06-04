@@ -53,7 +53,7 @@
                                 <!-- <span class="badge bg-info-subtle border border-info-subtle text-info-emphasis rounded-pill" style="font-size:12.7px">{{$apertura->hora_apertura}}</span> -->
                             </td>
                             <td>
-                                @if ($apertura->apertura_taquillero == null)
+                                @if ($apertura->apertura_taquillero == NULL)
                                     <span class="fst-italic fw-bold text-muted">Taquillero sin Aperturar.</span>
                                 @else
                                     {{$apertura->apertura_taquillero}}

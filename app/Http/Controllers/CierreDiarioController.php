@@ -28,7 +28,7 @@ class CierreDiarioController extends Controller
             //// viene la variable: consulta
             $hoy = $fecha;
 
-            $hoy_view = $dias[date('w',strtotime($fecha))].", ".date('d',strtotime($fecha))." de ".$meses[date('n',strtotime($fecha))-1]. " ".date('Y');
+            $hoy_view = $dias[date('w',strtotime($fecha))].", ".date('d',strtotime($fecha))." de ".$meses[date('n',strtotime($fecha))-1]. " ".date('Y',strtotime($fecha));
         }else{
             /// no viene la variable: vista
             $hoy = date('Y-m-d');

@@ -52,7 +52,7 @@ class HistorialCierresController extends Controller
                 $cierre = '';
                 if ($q1->cierre_taquilla != null) {
                     $cierre = '<span class="badge bg-secondary-subtle border border-secondary-subtle text-secondary-emphasis rounded-pill" style="font-size:12.7px">'.date("h:i A",strtotime($q1->cierre_taquilla)).'</span>';
-                    $arqueo = '<a href="'.route('cierre.arqueo', ['id' => $q1->key_taquilla]).'">Ver</a>';
+                    $arqueo = '<a href="'.route('cierre.arqueo', ['id' => $q1->key_taquilla, 'fecha' => $fecha]).'">Ver</a>';
                     $estado = 0;
                 }else{
                     $cierre = '<span class="fst-italic fw-bold text-muted">Sin cierrar.</span>';

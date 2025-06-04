@@ -30,7 +30,7 @@
                         <h5 class="fw-bold fs-3">Punto</h5>
                         <h4 class="fw-semibold">@php echo(number_format($arqueo->punto, 2, ',', '.')) @endphp Bs.</h4>
                         @can('arqueo.cierre_punto')
-                            <a href="#" data-bs-toggle="modal" data-bs-target="#modal_cierre_punto" id="cierre_punto" taquilla="{{$id_taquilla}}">Cierre de Punto</a>
+                            <a href="#" data-bs-toggle="modal" data-bs-target="#modal_cierre_punto" id="cierre_punto"  fecha="{{$fecha}}" taquilla="{{$id_taquilla}}">Cierre de Punto</a>
                         @endcan
                     </div>
 
@@ -38,7 +38,7 @@
                         <h5 class="fw-bold fs-3">Transferencia</h5>
                         <h4 class="fw-semibold">@php echo(number_format($arqueo->transferencia, 2, ',', '.')) @endphp Bs.</h4>
                         @can('arqueo.cierre_punto')
-                            <a href="#" data-bs-toggle="modal" data-bs-target="#modal_cierre_cuenta" id="cierre_cuenta" taquilla="{{$id_taquilla}}">Cierre de Cuenta</a>
+                            <a href="#" data-bs-toggle="modal" data-bs-target="#modal_cierre_cuenta" id="cierre_cuenta"  fecha="{{$fecha}}" taquilla="{{$id_taquilla}}">Cierre de Cuenta</a>
                         @endcan
                     </div>
                     
@@ -77,7 +77,7 @@
                             <div class="fs-4 fw-semibold text-secondary">@php echo(number_format($arqueo->recaudado_tfe, 2, ',', '.')) @endphp Bs.</div>  
                             <span class="text-muted">{{$arqueo->cantidad_tfe}} Unidades</span>
                             @can('arqueo.detalle_forma')
-                                <a href="#" class="detalle_forma" data-bs-toggle="modal" data-bs-target="#modal_detalle_formas" forma="3" taquilla="{{$id_taquilla}}">Ver detalles</a>
+                                <a href="#" class="detalle_forma" data-bs-toggle="modal" data-bs-target="#modal_detalle_formas" forma="3" fecha="{{$fecha}}" taquilla="{{$id_taquilla}}">Ver detalles</a>
                             @endcan
                             
                         </div>
@@ -92,7 +92,7 @@
                             <div class="fs-4 fw-semibold text-secondary">@php echo(number_format($arqueo->recaudado_est, 2, ',', '.')) @endphp Bs.</div>  
                             <span class="text-muted">{{$arqueo->cantidad_est}} Unidades</span>
                             @can('arqueo.detalle_forma')
-                                <a href="#" class="detalle_forma" data-bs-toggle="modal" data-bs-target="#modal_detalle_formas" forma="4" taquilla="{{$id_taquilla}}">Ver detalles</a>
+                                <a href="#" class="detalle_forma" data-bs-toggle="modal" data-bs-target="#modal_detalle_formas" forma="4" fecha="{{$fecha}}" taquilla="{{$id_taquilla}}">Ver detalles</a>
                             @endcan
                             
                         </div>
@@ -358,13 +358,14 @@
             $(document).on('click','.detalle_forma', function(e) {
                 e.preventDefault();
                 var forma = $(this).attr('forma');
+                var fecha = $(this).attr('fecha');
                 var taquilla = $(this).attr('taquilla');
 
                 $.ajax({
                     headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') },
                     type: 'POST',
                     url: '{{route("arqueo.detalle_forma") }}',
-                    data: {forma:forma,taquilla:taquilla},
+                    data: {forma:forma,fecha:fecha,taquilla:taquilla},
                     success: function(response) {
                         console.log(response);
                         $('#content_detalle_formas').html(response);
@@ -395,12 +396,13 @@
             $(document).on('click','#cierre_punto', function(e) {
                 e.preventDefault();
                 var taquilla = $(this).attr('taquilla');
+                var fecha = $(this).attr('fecha');
 
                 $.ajax({
                     headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') },
                     type: 'POST',
                     url: '{{route("arqueo.cierre_punto") }}',
-                    data: {taquilla:taquilla},
+                    data: {taquilla:taquilla,fecha:fecha},
                     success: function(response) {
                         console.log(response);
                         $('#content_cierre_punto').html(response);
@@ -432,12 +434,13 @@
             $(document).on('click','#cierre_cuenta', function(e) {
                 e.preventDefault();
                 var taquilla = $(this).attr('taquilla');
+                var fecha = $(this).attr('fecha');
 
                 $.ajax({
                     headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') },
                     type: 'POST',
                     url: '{{route("arqueo.cierre_cuenta") }}',
-                    data: {taquilla:taquilla},
+                    data: {taquilla:taquilla,fecha:fecha},
                     success: function(response) {
                         console.log(response);
                         $('#content_cierre_cuenta').html(response);

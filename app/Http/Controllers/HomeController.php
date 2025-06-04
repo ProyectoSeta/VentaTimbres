@@ -500,7 +500,9 @@ class HomeController extends Controller
 
                             // CONSULTA UCD
                             $c1 = DB::table('ucds')->select('valor')->where('id','=',$key->key_ucd)->first();
+                            $con_ut = DB::table('configuraciones')->select('valor')->where('nombre','=','Precio U.T.')->first();
                             $valor_ucd = $c1->valor;
+                            $valor_ut = $con_ut->valor;
     
                             // PUNTO Y EFECTIVO
                             $q2 = DB::table('pago_ventas')->where('key_venta','=',$key->id_venta)->get();
@@ -539,11 +541,16 @@ class HomeController extends Controller
                                     }
                                 }else{
                                     // ESTAMPILLAS
-                                    $q4 = DB::table('detalle_venta_estampillas')->selectRaw("count(*) as total")->where('key_detalle_venta','=',$value->correlativo)->first();
-                                    $cantidad_est = $cantidad_est + $q4->total;
+                                    $con_20 = DB::table('detalle_venta_estampillas')->selectRaw("count(*) as total")->where('key_denominacion','=',15)->where('key_detalle_venta','=',$value->correlativo)->first();
+                                    $con_50 = DB::table('detalle_venta_estampillas')->selectRaw("count(*) as total")->where('key_denominacion','=',16)->where('key_detalle_venta','=',$value->correlativo)->first();
+                                    
+                                    $total_20 = $con_20->total * (20 * $valor_ut);
+                                    $total_50 = $con_50->total * (50 * $valor_ut);
+                                    
+                                    $cantidad_est = $cantidad_est + ($con_20->total + $con_50->total);
 
-                                    $ucd_bs = $value->ucd * $valor_ucd;
-                                    $recaudado_est = $recaudado_est + $ucd_bs;
+                                    // $ucd_bs = $value->ucd * $valor_ucd;
+                                    $recaudado_est = $recaudado_est + ($total_20 + $total_50);
                                 }
                             }
                         } //cierra foreach

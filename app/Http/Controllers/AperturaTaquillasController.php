@@ -42,7 +42,7 @@ class AperturaTaquillasController extends Controller
             if ($q1->cierre_taquilla != null) {
                 $cierre = date("h:i A",strtotime($q1->cierre_taquilla));
             }else{
-                $cierre = $q1->apertura_taquillero;
+                $cierre = NULL;
             }
 
 
