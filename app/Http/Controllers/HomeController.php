@@ -1025,11 +1025,11 @@ class HomeController extends Controller
 
             $upd1 = DB::table('detalle_venta_tfes')->where('nro_timbre','=',$timbre)->update(['condicion' => 30]); //vuelto a imprimir
             if ($upd1) {
-                $con1 = DB::table('detalle_venta_tfes')->select('key_venta','serial','qr','bolivares')->where('nro_timbre','=',$timbre)->first();
+                $con1 = DB::table('detalle_venta_tfes')->select('key_venta','key_detalle_venta','serial','qr','bolivares')->where('nro_timbre','=',$timbre)->first();
                 if ($con1) {
                     $con2 = DB::table('detalle_ventas')->join('tramites', 'detalle_ventas.key_tramite', '=','tramites.id_tramite')
                                             ->select('detalle_ventas.ucd','detalle_ventas.bs','tramites.tramite','tramites.key_ente')
-                                            ->where('detalle_ventas.key_venta','=',$con1->key_venta)->first();
+                                            ->where('detalle_ventas.correlativo','=',$con1->key_detalle_venta)->first();
                     $con3 =  DB::table('ventas')->join('contribuyentes', 'ventas.key_contribuyente', '=','contribuyentes.id_contribuyente')
                                             ->select('ventas.key_ucd','ventas.fecha','contribuyentes.nombre_razon','contribuyentes.identidad_condicion','contribuyentes.identidad_nro')
                                             ->where('ventas.id_venta','=',$con1->key_venta)->first();
@@ -1154,7 +1154,7 @@ class HomeController extends Controller
             }
             //
             $con4 = DB::table('detalle_venta_tfes')->join('ucd_denominacions', 'detalle_venta_tfes.key_denominacion', '=','ucd_denominacions.id')
-                                                    ->select('detalle_venta_tfes.key_venta','detalle_venta_tfes.key_taquilla','detalle_venta_tfes.key_detalle_venta','detalle_venta_tfes.key_denominacion','detalle_venta_tfes.bolivares','ucd_denominacions.identificador')
+                                                    ->select('detalle_venta_tfes.key_venta','detalle_venta_tfes.key_detalle_venta','detalle_venta_tfes.key_taquilla','detalle_venta_tfes.key_detalle_venta','detalle_venta_tfes.key_denominacion','detalle_venta_tfes.bolivares','ucd_denominacions.identificador')
                                                     ->where('detalle_venta_tfes.nro_timbre','=',$timbre)->first();
 
             $c5 = DB::table('detalle_venta_tfes')->select('key_inventario_tfe','nro_timbre')->where('key_taquilla','=',$id_taquilla)->orderBy('correlativo', 'desc')->first();
@@ -1192,7 +1192,7 @@ class HomeController extends Controller
             /////////
             $con2 = DB::table('detalle_ventas')->join('tramites', 'detalle_ventas.key_tramite', '=','tramites.id_tramite')
                                                 ->select('detalle_ventas.ucd','detalle_ventas.bs','tramites.tramite','tramites.key_ente')
-                                                ->where('detalle_ventas.key_venta','=',$con4->key_venta)->first();
+                                                ->where('detalle_ventas.correlativo','=',$con4->key_detalle_venta)->first();
             $con_ente = DB::table('entes')->select('ente')->where('id_ente','=',$con2->key_ente)->first();
 
             if ($con_ente && $con2) {
@@ -1259,7 +1259,7 @@ class HomeController extends Controller
                                 $capital = false;
                                 $ucd_t = $con2->ucd;
                             }else{
-                                $bs_t = $monto;
+                                $bs_t = $bs;
                                 $ucd_t = $con2->bs / $con_ucd->valor;
                             }
 
