@@ -539,20 +539,39 @@ class HomeController extends Controller
                                         $ucd_bs = $value->ucd * $valor_ucd;
                                         $recaudado_tfe = $recaudado_tfe + $ucd_bs;
                                     }
-                                }else{
-                                    // ESTAMPILLAS
-                                    $con_20 = DB::table('detalle_venta_estampillas')->selectRaw("count(*) as total")->where('key_denominacion','=',15)->where('key_detalle_venta','=',$value->correlativo)->first();
-                                    $con_50 = DB::table('detalle_venta_estampillas')->selectRaw("count(*) as total")->where('key_denominacion','=',16)->where('key_detalle_venta','=',$value->correlativo)->first();
-                                    
-                                    $total_20 = $con_20->total * (20 * $valor_ut);
-                                    $total_50 = $con_50->total * (50 * $valor_ut);
-                                    
-                                    $cantidad_est = $cantidad_est + ($con_20->total + $con_50->total);
-
-                                    // $ucd_bs = $value->ucd * $valor_ucd;
-                                    $recaudado_est = $recaudado_est + ($total_20 + $total_50);
                                 }
+                                // else{
+                                //     // ESTAMPILLAS
+                                //     $con_20 = DB::table('detalle_venta_estampillas')->selectRaw("count(*) as total")->where('key_denominacion','=',15)->where('key_detalle_venta','=',$value->correlativo)->first();
+                                //     $con_50 = DB::table('detalle_venta_estampillas')->selectRaw("count(*) as total")->where('key_denominacion','=',16)->where('key_detalle_venta','=',$value->correlativo)->first();
+                                    
+                                //     $total_20 = $con_20->total * (20 * $valor_ut);
+                                //     $total_50 = $con_50->total * (50 * $valor_ut);
+                                    
+                                //     $cantidad_est = $cantidad_est + ($con_20->total + $con_50->total);
+
+                                //     // $ucd_bs = $value->ucd * $valor_ucd;
+                                //     $recaudado_est = $recaudado_est + ($total_20 + $total_50);
+                                // }
                             }
+
+                            /////
+                                $con_est = DB::table('detalle_venta_estampillas')->select("key_denominacion")->where('key_venta','=',$key->id_venta)->get();
+                                foreach ($con_est as $k) {
+                                    if ($k->key_denominacion == 15) {
+                                        # 20UT
+                                        $recaudado_est = $recaudado_est + (20 * $valor_ut);
+                                        $cantidad_est = $cantidad_est + 1;
+                                    }elseif ($k->key_denominacion == 16) {
+                                        # 50UT
+                                        $recaudado_est = $recaudado_est + (50 * $valor_ut);
+                                        $cantidad_est = $cantidad_est + 1;
+                                    }
+
+                                    
+                                }
+                            /////
+                            
                         } //cierra foreach
                     }else{
                         // sin ventas

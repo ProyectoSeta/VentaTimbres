@@ -2352,16 +2352,20 @@ class VentaController extends Controller
                                     $total_ucd = $total_ucd + $ucd_tramite;
                                     if ($key_tramite == 1 || $key_tramite == 2) {
                                         if ($folios != '' || $folios != 0) {
-                                            $i2 = DB::table('detalle_ventas')->insert(['key_venta' => $id_venta, 
+                                            $folios_nro = $folios;
+                                        }else{
+                                            $folios_nro = NULL;
+                                        }
+
+                                        $i2 = DB::table('detalle_ventas')->insert(['key_venta' => $id_venta, 
                                                                                 'key_tramite' => $key_tramite, 
                                                                                 'forma' => $tramite['forma'],
                                                                                 'cantidad' => 1,
                                                                                 'metros' => null,
                                                                                 'capital' => null,
-                                                                                'folios' => $folios,
+                                                                                'folios' => $folios_nro,
                                                                                 'ucd' => $ucd_tramite,
                                                                                 'bs' => null]); 
-                                        }
                                     }else{
                                         $i2 = DB::table('detalle_ventas')->insert(['key_venta' => $id_venta, 
                                                                             'key_tramite' => $key_tramite, 
