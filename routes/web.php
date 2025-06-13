@@ -70,6 +70,8 @@ Route::get('/pdf_cierre_diario/{id?}/', [App\Http\Controllers\CierreDiarioContro
 /////////////////// HISTORIAL CIERRES
 Route::get('/historial_cierre', [App\Http\Controllers\HistorialCierresController::class, 'index'])->middleware('can:historial_cierre')->name('historial_cierre');
 Route::post('/historial_cierre/search', [App\Http\Controllers\HistorialCierresController::class, 'search'])->name('historial_cierre.search');
+Route::post('/historial_cierre/cierre_taquilla', [App\Http\Controllers\HistorialCierresController::class, 'cierre_taquilla'])->name('historial_cierre.cierre_taquilla');
+Route::post('/historial_cierre/cierre_general', [App\Http\Controllers\HistorialCierresController::class, 'cierre_general'])->name('historial_cierre.cierre_general');
 
 ///////////////////// REPORTE ANUAL
 Route::get('/reporte_anual', [App\Http\Controllers\ReporteAnualController::class, 'index'])->middleware('can:reporte_anual')->name('reporte_anual');

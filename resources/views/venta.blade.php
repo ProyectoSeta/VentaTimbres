@@ -682,6 +682,7 @@
                     e.preventDefault();
                     $(this).parent('div').parent('div').remove(); //Remove field html
                     x--; //Decrement field counter
+                    $('#btn_submit_venta').attr('disabled', true);
                 });
             ///////////////////////////////////////////////////////////////////
 

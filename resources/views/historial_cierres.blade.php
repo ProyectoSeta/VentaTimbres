@@ -109,6 +109,43 @@
                 });
             });
 
+
+            /////////////////////////// CONTENT: TABLE SEARCH POR FECHA
+            $(document).on('click','.cierre_taquilla', function(e) {
+                e.preventDefault();
+                var fecha = $(this).attr('fecha');
+                var id = $(this).attr('taquilla');
+
+                $.ajax({
+                    headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') },
+                    type: 'POST',
+                    url: '{{route("historial_cierre.cierre_taquilla") }}',
+                    data: {fecha:fecha,id:id},
+                    success: function(response) {
+                        if (response.success) {
+                            $.ajax({
+                                headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') },
+                                type: 'GET',
+                                url: '{{route("cierre.arqueo") }}',
+                                data: {fecha:fecha,id:id},
+                                success: function(response) {
+                                   
+                                },
+                                error: function() {
+                                }
+                            });
+                        }else{
+                            alert('Disculpe, vualva a intentarlo.');
+                            window.location.href = "{{ route('historial_cierre')}}";
+                        }
+                        
+                    },
+                    error: function() {
+                    }
+                });
+            });
+
+
         });
 
     </script>

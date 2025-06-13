@@ -50,12 +50,16 @@ class HistorialCierresController extends Controller
                 }
     
                 $cierre = '';
+
+                $post_id = $q1->key_taquilla;
+                $post_fecha = $fecha;
+
                 if ($q1->cierre_taquilla != null) {
                     $cierre = '<span class="badge bg-secondary-subtle border border-secondary-subtle text-secondary-emphasis rounded-pill" style="font-size:12.7px">'.date("h:i A",strtotime($q1->cierre_taquilla)).'</span>';
                     $arqueo = '<a href="'.route('cierre.arqueo', ['id' => $q1->key_taquilla, 'fecha' => $fecha]).'">Ver</a>';
                     $estado = 0;
                 }else{
-                    $cierre = '<span class="fst-italic fw-bold text-muted">Sin cierrar.</span>';
+                    $cierre = '<button class="btn btn-secondary btn-sm rounded-3 cierre_taquilla" taquilla="'.$post_id.'" fecha="'.$post_fecha.'" style="font-size:12.7px">Realizar Cierre</button>';
                     $arqueo = '<span class="fst-italic fw-bold text-muted">Sin cierrar.</span>';
                 }
                 
@@ -122,15 +126,136 @@ class HistorialCierresController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function store(Request $request)
+    public function cierre_taquilla(Request $request)
     {
-        //
+        $fecha = $request->post('fecha');
+        $taquilla = $request->post('id');
+
+        ////CIERRE
+        //  ARQUEO
+        $recaudado = 0;
+        $punto = 0;
+        $transferencia = 0;
+        $efectivo = 0;
+        $recaudado_tfe = 0;
+        $recaudado_est = 0;
+        $cantidad_tfe = 0;
+        $cantidad_est = 0; 
+        $anulado_bs_tfe = 0;
+
+        $q1 = DB::table('ventas')->select('id_venta','total_bolivares','key_ucd')
+                                ->where('key_taquilla','=',$taquilla)
+                                ->whereDate('fecha', $fecha)->get();
+        if ($q1) {
+            foreach ($q1 as $key) {
+                
+
+                // CONSULTA UCD
+                $c1 = DB::table('ucds')->select('valor')->where('id','=',$key->key_ucd)->first();
+                $con_ut = DB::table('configuraciones')->select('valor')->where('nombre','=','Precio U.T.')->first();
+                $valor_ucd = $c1->valor;
+                $valor_ut = $con_ut->valor;
+
+                // PUNTO Y EFECTIVO
+                $q2 = DB::table('pago_ventas')->where('key_venta','=',$key->id_venta)->get();
+                foreach ($q2 as $pago) {
+                    if ($pago->metodo == 5) {
+                        //PUNTO
+                        $punto = $punto + $pago->monto;
+                    }elseif ($pago->metodo == 20) {
+                        //TRANSFERENCIA
+                        $transferencia = $transferencia + $pago->monto;
+                    }else{
+                        //EFECTIVO
+                        $efectivo = $efectivo + $pago->monto;
+                    }
+
+                    if ($pago->anulado != NULL) {
+                        $anulado_bs_tfe = $anulado_bs_tfe + $pago->anulado;
+                    }
+                }
+                
+
+                // (RECAUDACION Y CANTIDAD) TFE Y EST
+                $q3 = DB::table('detalle_ventas')->where('key_venta','=',$key->id_venta)->get();
+                foreach ($q3 as $value) {
+                    if ($value->forma == 3) {
+                        // FORMA 14
+                        $cantidad_tfe++;
+
+                        if ($value->capital != NULL) {
+                            // bs
+                            $recaudado_tfe = $recaudado_tfe + $value->bs;
+                        }else{
+                            // ucd
+                            $ucd_bs = $value->ucd * $valor_ucd;
+                            $recaudado_tfe = $recaudado_tfe + $ucd_bs;
+                        }
+                    }
+                }
+
+                /////
+                    $con_est = DB::table('detalle_venta_estampillas')->select("key_denominacion")->where('key_venta','=',$key->id_venta)->get();
+                    foreach ($con_est as $k) {
+                        if ($k->key_denominacion == 15) {
+                            # 20UT
+                            $recaudado_est = $recaudado_est + (20 * $valor_ut);
+                            $cantidad_est = $cantidad_est + 1;
+                        }elseif ($k->key_denominacion == 16) {
+                            # 50UT
+                            $recaudado_est = $recaudado_est + (50 * $valor_ut);
+                            $cantidad_est = $cantidad_est + 1;
+                        }
+
+                        
+                    }
+                /////
+                
+            } //cierra foreach
+        }else{
+            // sin ventas
+        }
+
+
+        ////le resto a lo recaudado por tfe lo anulado en bs
+        $recaudado_tfe = $recaudado_tfe - $anulado_bs_tfe;
+        $recaudado = $recaudado_tfe + $recaudado_est;
+
+        $hora = date('H:i:s');
+        $fecha_bd = $fecha.' 16:00:00';
+        $insert = DB::table('cierre_taquillas')->insert(['fecha' => $fecha_bd,
+                                                        'key_taquilla' => $taquilla,
+                                                        'recaudado' => $recaudado,
+                                                        'punto' => $punto,
+                                                        'efectivo' => $efectivo,
+                                                        'transferencia' => $transferencia,
+                                                        'recaudado_tfe' => $recaudado_tfe,
+                                                        'recaudado_est' => $recaudado_est,
+                                                        'cantidad_tfe' => $cantidad_tfe,
+                                                        'cantidad_est' => $cantidad_est
+                                                    ]); 
+        if ($insert) {
+            $update = DB::table('apertura_taquillas')->where('key_taquilla', '=', $taquilla)
+                                                        ->whereDate('fecha', $fecha)
+                                                        ->update(['cierre_taquilla' => '16:00:00']);
+            $update_temp = DB::table('efectivo_taquillas_temps')->where('key_taquilla','=',$taquilla)->update(['efectivo' => '0']);
+            if ($update) {
+
+                // return redirect()->action([CierreController::class, 'arqueo'], ['id' => $taquilla, 'fecha' => $fecha]);
+
+                return response()->json(['success' => true]);
+            }else{
+                return response()->json(['success' => false]);
+            }
+        }else{
+            return response()->json(['success' => false]);
+        } 
     }
 
     /**
      * Display the specified resource.
      */
-    public function show(string $id)
+    public function cierre_general(Request $request)
     {
         //
     }
