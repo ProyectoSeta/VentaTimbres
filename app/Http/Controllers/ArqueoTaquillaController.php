@@ -313,9 +313,23 @@ class ArqueoTaquillaController extends Controller
                 }else{
                     $href = '<span class="fst-italic text-secondary">No aplica</span>'; ///efectivo
                 }
+
+                if ($key->monto == 0 && $key->anulado != null) {
+                    $content_pago = '<span class="fst-italic text-secondary">Anulado</span>';
+                }else{
+                    $content_pago = number_format($key->monto, 2, ',', '.');
+                }
+
+                if ($key->anulado != null) {
+                    $content_anulado = number_format($key->anulado, 2, ',', '.');
+                }else{
+                    $content_anulado = '<span class="fst-italic text-secondary">N/A</span>';
+                }
+
                 $tr_pago .= '<tr>
                                 <td>'.$key->nombre_tipo.'</td>
-                                <td>'.number_format($key->monto, 2, ',', '.').'</td>
+                                <td>'.$content_pago.'</td>
+                                <td class="text-secondary fst-italic">-'.$content_anulado.'</td>
                             </tr>';
             }
 
@@ -330,13 +344,19 @@ class ArqueoTaquillaController extends Controller
                     /// FORMA 14
                     $c2 = DB::table('detalle_venta_tfes')->select('serial','sustituto','condicion')->where('key_detalle_venta','=',$value->correlativo)->get();
                     foreach ($c2 as $de) {
-                        $formato_sustituto = substr(str_repeat(0, $length).$de->sustituto, - $length);
+                        
 
                         if ($de->condicion == 29) {
+                            if ($de->sustituto == null) {
+                                $content_sustituto = '';
+                            }else{
+                                $formato_sustituto = substr(str_repeat(0, $length).$de->sustituto, - $length);
+                                $content_sustituto = '<span class="text-muted">Sustituto: A-'.$formato_sustituto.'</span>';
+                            }
                             $forma = '<div class="d-flex flex-column">
                                         <span>TFE-14 ('.$de->serial.')</span> 
                                         <span class="badge text-bg-danger">Anulado</span>
-                                        <span class="text-muted">Sustituto: A-'.$formato_sustituto.'</span>
+                                        '.$content_sustituto.'
                                         
                                     </div>';
                         }elseif ($de->condicion == 30) {
@@ -439,6 +459,7 @@ class ArqueoTaquillaController extends Controller
                                     <tr>
                                         <th>Metodo</th>
                                         <th>Monto</th>
+                                        <th>Anulado</th>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -507,10 +528,16 @@ class ArqueoTaquillaController extends Controller
                             $nota = '<span class="text-muted fst-italic">S/N</span>';
                             break;
                         case 29:
-                            $formato_sustituto = substr(str_repeat(0, $length).$key->sustituto, - $length);
+                            if ($key->sustituto == null) {
+                                $content_sustituto = '';
+                            }else{
+                                $formato_sustituto = substr(str_repeat(0, $length).$key->sustituto, - $length);
+                                $content_sustituto = '<span class="text-muted">Sustituto: <span class="text-danger">A-'.$formato_sustituto.'</span> </span>';
+                            }
+                            
                             $nota = '<div class="d-flex flex-column">
                                         <span class="badge text-bg-danger" style="font-size:13px" >Anulado</span>
-                                        <span class="text-muted">Sustituto: <span class="text-danger">A-'.$formato_sustituto.'</span> </span>
+                                        '.$content_sustituto.'
                                     </div>';
                             break;
                         case 30:
@@ -624,10 +651,15 @@ class ArqueoTaquillaController extends Controller
             $con = DB::table('pago_ventas')->where('key_venta','=',$value->id_venta)->where('metodo','=',5)->get();
             foreach ($con as $key) {
                 $formato = number_format($key->monto, 2, ',', '.');
-                $tr .= '<tr>
+                if ($key->monto == 0 && $key->anulado != null) {
+                    # code...
+                }else{
+                   $tr .= '<tr>
                             <td>'.date("h:i A",strtotime($value->hora)).'</td>
                             <td class="fw-semibold">'.$formato.' Bs.</td>
-                        </tr>';
+                        </tr>'; 
+                }
+                
             }
         }
 
@@ -670,10 +702,15 @@ class ArqueoTaquillaController extends Controller
             $con = DB::table('pago_ventas')->where('key_venta','=',$value->id_venta)->where('metodo','=',20)->get();
             foreach ($con as $key) {
                 $formato = number_format($key->monto, 2, ',', '.');
-                $tr .= '<tr>
+                if ($key->monto == 0 && $key->anulado != null) {
+                    # code...
+                }else{
+                   $tr .= '<tr>
                             <td>'.date("h:i A",strtotime($value->hora)).'</td>
                             <td class="fw-semibold">'.$formato.' Bs.</td>
                         </tr>';
+                }
+                
             }
         }
 

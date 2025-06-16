@@ -1539,6 +1539,13 @@ class VentaController extends Controller
         $tramites = $request->post('tramite');
         $row_timbres = '';
         $length2 = 10;
+
+        ////VERIFICAR QUE VIENEN TRAMITES
+        if (empty($tramites)){
+            return response()->json(['success' => false, 'nota'=> 'Disculpe, debe seleccionar un Tramite.']);
+        }
+
+
         ///////////////////////////////////// USER Y TAQUILLA
             $user = auth()->id();
             $query = DB::table('users')->select('key_sujeto')->where('id','=',$user)->first();

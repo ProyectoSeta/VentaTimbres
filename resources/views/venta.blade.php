@@ -1359,6 +1359,8 @@
                             }else{
                                 alert('Disculpe, ha ocurrido un error');
                             }
+
+                            window.location.href = "{{ route('venta')}}";
                         }
                         
                     },

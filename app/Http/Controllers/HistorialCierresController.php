@@ -109,7 +109,7 @@ class HistorialCierresController extends Controller
                             Ver Cierre del día
                         </a>';
             }else{
-                $btn = '<div class="fw-bold text-center fs-4 titulo">Sin Cierre General.</div>';
+                $btn = '<button class="btn btn-secondary btn-sm rounded-3" id="cierre_general" fecha="'.$post_fecha.'" style="font-size:12.7px">Realizar Cierre General</button>';
             }
 
             $html = '<div class="d-flex justify-content-center">
@@ -240,9 +240,6 @@ class HistorialCierresController extends Controller
                                                         ->update(['cierre_taquilla' => '16:00:00']);
             $update_temp = DB::table('efectivo_taquillas_temps')->where('key_taquilla','=',$taquilla)->update(['efectivo' => '0']);
             if ($update) {
-
-                // return redirect()->action([CierreController::class, 'arqueo'], ['id' => $taquilla, 'fecha' => $fecha]);
-
                 return response()->json(['success' => true]);
             }else{
                 return response()->json(['success' => false]);
@@ -257,7 +254,155 @@ class HistorialCierresController extends Controller
      */
     public function cierre_general(Request $request)
     {
-        //
+        $fecha = $request->post('fecha');
+
+        $taquillas = [];
+        $query = DB::table('apertura_taquillas')->select('key_taquilla','cierre_taquilla')->whereDate('fecha', $fecha)->get(); 
+        if (!empty($query)) {
+            foreach ($query as $key) {
+                if ($key->cierre_taquilla == NULL) {
+                    return response()->json(['success' => false, 'nota' => 'Disculpe, la acción no se puede realizar hasta que TODAS las taquillas aperturadas el día de hoy sean cerradas.']); 
+                }
+
+                array_push($taquillas,$key->key_taquilla);
+            }
+            
+            /////////////////// CALCULAR CIERRES 
+            $recaudado = 0;
+            $punto = 0;
+            $efectivo = 0;
+            $transferencia = 0;
+            $recaudado_tfe = 0;
+            $recaudado_est = 0;
+            $cantidad_tfe = 0;
+            $cantidad_est = 0;
+
+            $anulado_bs_tfe = 0;
+
+            foreach ($taquillas as $taquilla) {
+                $id_taquilla = $taquilla;
+
+                $q1 = DB::table('ventas')->select('id_venta','total_bolivares','key_ucd')
+                                        ->where('key_taquilla','=',$id_taquilla)
+                                        ->whereDate('fecha', $fecha)->get();
+                if ($q1) {
+                    foreach ($q1 as $key) {
+                        
+
+                        // CONSULTA UCD
+                        $c1 = DB::table('ucds')->select('valor')->where('id','=',$key->key_ucd)->first();
+                        $con_ut = DB::table('configuraciones')->select('valor')->where('nombre','=','Precio U.T.')->first();
+                        $valor_ucd = $c1->valor;
+                        $valor_ut = $con_ut->valor;
+
+                        // PUNTO Y EFECTIVO
+                        $q2 = DB::table('pago_ventas')->where('key_venta','=',$key->id_venta)->get();
+                        foreach ($q2 as $pago) {
+                            if ($pago->metodo == 5) {
+                                //PUNTO
+                                $punto = $punto + $pago->monto;
+                            }elseif ($pago->metodo == 20) {
+                                //TRANSFERENCIA
+                                $transferencia = $transferencia + $pago->monto;
+                            }else{
+                                //EFECTIVO
+                                $efectivo = $efectivo + $pago->monto;
+                            }
+
+                            if ($pago->anulado != null) {
+                                $anulado_bs_tfe = $anulado_bs_tfe + $pago->anulado;
+                            }
+                        }
+                        
+
+                        // (RECAUDACION Y CANTIDAD) TFE Y EST
+                        $q3 = DB::table('detalle_ventas')->where('key_venta','=',$key->id_venta)->get();
+                        foreach ($q3 as $value) {
+                            if ($value->forma == 3) {
+                                // FORMA 14
+                                $cantidad_tfe++;
+
+                                if ($value->capital != NULL) {
+                                    // bs
+                                    $recaudado_tfe = $recaudado_tfe + $value->bs;
+                                }else{
+                                    // ucd
+                                    $ucd_bs = $value->ucd * $valor_ucd;
+                                    $recaudado_tfe = $recaudado_tfe + $ucd_bs;
+                                }
+                            }
+                            // else{
+                            //     // ESTAMPILLAS
+                            //     $con_20 = DB::table('detalle_venta_estampillas')->selectRaw("count(*) as total")->where('key_denominacion','=',15)->where('key_detalle_venta','=',$value->correlativo)->first();
+                            //     $con_50 = DB::table('detalle_venta_estampillas')->selectRaw("count(*) as total")->where('key_denominacion','=',16)->where('key_detalle_venta','=',$value->correlativo)->first();
+                                
+                            //     $total_20 = $con_20->total * (20 * $valor_ut);
+                            //     $total_50 = $con_50->total * (50 * $valor_ut);
+                                
+                            //     $cantidad_est = $cantidad_est + ($con_20->total + $con_50->total);
+
+                            //     // $ucd_bs = $value->ucd * $valor_ucd;
+                            //     $recaudado_est = $recaudado_est + ($total_20 + $total_50);
+
+                            // }
+                        }
+
+
+                        /////
+                            $con_est = DB::table('detalle_venta_estampillas')->select("key_denominacion")->where('key_venta','=',$key->id_venta)->get();
+                            foreach ($con_est as $k) {
+                                if ($k->key_denominacion == 15) {
+                                    # 20UT
+                                    $recaudado_est = $recaudado_est + (20 * $valor_ut);
+                                    $cantidad_est = $cantidad_est + 1;
+                                }elseif ($k->key_denominacion == 16) {
+                                    # 50UT
+                                    $recaudado_est = $recaudado_est + (50 * $valor_ut);
+                                    $cantidad_est = $cantidad_est + 1;
+                                }
+
+                                
+                            }
+                        /////
+                    } //cierra foreach
+                }else{
+                    // sin ventas
+                }
+            } //cierra foreach taquillas
+
+
+            ////le resto a lo recaudado por tfe lo anulado en bs
+            $recaudado_tfe = $recaudado_tfe - $anulado_bs_tfe;
+            $recaudado = $recaudado_tfe + $recaudado_est;
+
+            $insert = DB::table('cierre_diarios')->insert(['fecha' => $fecha,
+                                                            'recaudado' => $recaudado,
+                                                            'punto' => $punto,
+                                                            'efectivo' => $efectivo,
+                                                            'transferencia' => $transferencia,
+                                                            'recaudado_tfe' => $recaudado_tfe,
+                                                            'recaudado_est' => $recaudado_est,
+                                                            'cantidad_tfe' => $cantidad_tfe,
+                                                            'cantidad_est' => $cantidad_est
+                                                        ]); 
+            if ($insert) {
+                ////BITACORA
+                $user = auth()->id();
+                $accion = 'CIERRE GENERAL ('.$fecha.') REALIZADO, USER ID:'.$user.' ';
+                $bitacora = DB::table('bitacoras')->insert(['key_user' => $user, 'key_modulo' => 2, 'accion'=> $accion]);
+            return response()->json(['success' => true]);
+            }else{
+                return response()->json(['success' => false]);
+            }
+
+
+
+
+        }else{
+            return response()->json(['success' => false, 'nota' => 'Hoy no ha sido aperturada ninguna Taquilla.']);
+        }
+
+
     }
 
     /**

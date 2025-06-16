@@ -110,7 +110,7 @@
             });
 
 
-            /////////////////////////// CONTENT: TABLE SEARCH POR FECHA
+            /////////////////////////// HACER CIERRE TAQUILLA
             $(document).on('click','.cierre_taquilla', function(e) {
                 e.preventDefault();
                 var fecha = $(this).attr('fecha');
@@ -123,21 +123,36 @@
                     data: {fecha:fecha,id:id},
                     success: function(response) {
                         if (response.success) {
-                            $.ajax({
-                                headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') },
-                                type: 'GET',
-                                url: '{{route("cierre.arqueo") }}',
-                                data: {fecha:fecha,id:id},
-                                success: function(response) {
-                                   
-                                },
-                                error: function() {
-                                }
-                            });
+                            alert('CIERRE DE TAQUILLA EXITOSO.');
                         }else{
                             alert('Disculpe, vualva a intentarlo.');
-                            window.location.href = "{{ route('historial_cierre')}}";
                         }
+                        window.location.href = "{{ route('historial_cierre')}}";
+                        
+                    },
+                    error: function() {
+                    }
+                });
+            });
+
+
+            /////////////////////////// HACER CIERRE GENERAL
+            $(document).on('click','#cierre_general', function(e) {
+                e.preventDefault();
+                var fecha = $(this).attr('fecha');
+
+                $.ajax({
+                    headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') },
+                    type: 'POST',
+                    url: '{{route("historial_cierre.cierre_general") }}',
+                    data: {fecha:fecha},
+                    success: function(response) {
+                        if (response.success) {
+                            alert('CIERRE GENERAL EXITOSO.');
+                        }else{
+                            alert('Disculpe, vualva a intentarlo.');
+                        }
+                        window.location.href = "{{ route('historial_cierre')}}";
                         
                     },
                     error: function() {
