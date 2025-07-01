@@ -258,6 +258,7 @@ Route::post('/venta/est_detalle', [App\Http\Controllers\VentaController::class, 
 Route::post('/venta/update_inv_taquilla', [App\Http\Controllers\VentaController::class, 'update_inv_taquilla'])->name('venta.update_inv_taquilla');
 Route::post('/venta/delete_tramite', [App\Http\Controllers\VentaController::class, 'delete_tramite'])->name('venta.delete_tramite');
 Route::post('/venta/add_estampilla', [App\Http\Controllers\VentaController::class, 'add_estampilla'])->name('venta.add_estampilla');
+Route::post('/venta/comprobar_pago', [App\Http\Controllers\VentaController::class, 'comprobar_pago'])->name('venta.comprobar_pago');
 
 
 Route::post('/venta/agregar', [App\Http\Controllers\VentaController::class, 'agregar'])->name('venta.agregar');

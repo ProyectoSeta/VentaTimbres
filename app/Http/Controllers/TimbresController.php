@@ -11,8 +11,8 @@ class TimbresController extends Controller
      */
     public function index(Request $request)
     {
-
-        $timbres = unserialize(base64_decode($request->t));
+        $t_d = str_replace(['_', '-'], ['/', '+'], $request->t);
+        $timbres = unserialize(base64_decode($t_d));
         return view('pdf/timbre', compact('timbres'));
     }
 

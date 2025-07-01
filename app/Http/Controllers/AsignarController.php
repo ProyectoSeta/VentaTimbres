@@ -404,7 +404,7 @@ class AsignarController extends Controller
         if ($query->fecha_recibido == NULL) {
             $fecha_recibido = '<span class="text-secondary">Sin Recibir</span>';
         }else{
-            $fecha_recibido = date("d-m-Y h:i A",strtotime($query->fecha_recibido));
+            $fecha_recibido = date("d-m-Y",strtotime($query->fecha_recibido));
         }
 
         $q3 = DB::table('taquillas')
@@ -991,7 +991,7 @@ class AsignarController extends Controller
         if ($q3->fecha_recibido == NULL) {
             $fecha_recibido = '<span class="text-secondary">Sin Recibir</span>';
         }else{
-            $fecha_recibido = date("d-m-Y h:i A",strtotime($q3->fecha_recibido));
+            $fecha_recibido = date("d-m-Y",strtotime($q3->fecha_recibido));
         }
 
         $q4 = DB::table('taquillas')

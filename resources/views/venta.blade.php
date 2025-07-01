@@ -135,9 +135,9 @@
                                         </select>
                                     </div>
                                     <div class="col-sm-2" id="div_ucd_1">
-                                        <label class="form-label" for="ucd_tramite">U.C.D.</label><span class="text-danger">*</span>
+                                        <label class="form-label" for="ucd_tramite"  id="label_ucd_tramite">U.C.D.</label><span class="text-danger">*</span>
                                         <input type="text" class="form-control form-control-sm ucd_tramite" id="ucd_tramite_1" nro="1" disabled required>
-                                        <span class="text-end text-muted d-none" id="html_folios">+ <span class="fw-bold text-navy" id="ucd_folios">3 UCD</span> (Folios)</span>
+                                        <span class="text-end text-muted d-none" id="html_folios">+ <span class="fw-bold text-navy" id="ucd_folios"> UCD</span> (Folios)</span>
                                     </div>
                                     <div class="col-sm-2">
                                         <label class="form-label" for="forma">Forma</label><span class="text-danger">*</span>
@@ -230,7 +230,7 @@
                     <div class="row"  style="font-size:13px">
                         <div class="col-sm-8">
                             <input type="hidden" name="contribuyente" id="contribuyente">
-                            <table class="table text-center"  style="font-size:13px">
+                            <table class="table text-center" id="table_detalle_venta" style="font-size:13px">
                                 <thead>
                                     <tr class="table-dark">
                                         <th>#</th>
@@ -284,7 +284,7 @@
                                     <div class="d-flex justify-content-center" >
                                         <div class="row w-100">
                                             <div class="col-lg-5">
-                                                <label class="form-label" for="metodo">Metodo</label><span class="text-danger">*</span>
+                                                <label class="form-label" for="metodo">Método</label><span class="text-danger">*</span>
                                                 <select class="form-select form-select-sm metodo" aria-label="Small select example" i="1" name="pago[1][metodo]" disabled>
                                                     <option value="5">Punto</option>
                                                     <option value="20">Transferencia</option>
@@ -338,155 +338,8 @@
     
     
 <!-- ***************************************************   MODALES   ***************************************************** -->
-    <div class="modal fade" id="modal_papel_dañado" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-        <div class="modal-dialog">
-            <div class="modal-content" id="content_ver_solicitud">
-                <div class="modal-header p-2 pt-3 d-flex justify-content-center">
-                    <div class="text-center">
-                    <i class='bx bx-error-circle fs-2 text-danger me-2'></i>
-                        <h1 class="modal-title fs-5 fw-bold text-navy">Papel Dañado</h1>
-                    </div>
-                </div>
-                <div class="modal-body px-4" style="font-size:13px">
-                    <div class="my-2">
-                        <label class="form-label" for="">Motivo: </label><span class="text-danger">*</span>
-                        <input type="" id="" class="form-control form-control-sm" name=""  required>
-                    </div>
-                    <p class="text-muted text-end"><span style="color:red">*</span> Campos requeridos.</p>
-                    
-                    <table class="table my-4">
-                        <tr>
-                            <th>Correlativo Dañado:</th>
-                            <td><span class="text-danger fw-bold">A-8001002</span></td>
-                        </tr>
-                        <tr>
-                            <th>Correlativo Nuevo:</th>
-                            <td><span class="text-danger fw-bold">A-8001003</span></td>
-                        </tr>
-                    </table>
-
-                    
-                    <div class="d-flex justify-content-center mt-3 mb-3">
-                        <button type="button" class="btn btn-secondary btn-sm me-3" id="" >Cancelar</button>
-                        <button type="submit" class="btn btn-success btn-sm" id="" >Aceptar</button>
-                    </div> 
-                </div>
-            </div>  <!-- cierra modal-content -->
-        </div>  <!-- cierra modal-dialog -->
-    </div>
-
-    <div class="modal fade" id="modal_timbre_impreso" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-        <div class="modal-dialog ">
-            <div class="modal-content" id="content_timbre_impreso">
-                <div class="modal-header">
-                    <!-- <i class='bx bx-error-circle fs-2  me-2'></i> -->
-                    <h1 class="modal-title fs-5 fw-bold text-navy">Timbre Fiscal | <span class="text-muted">Emitido</span></h1>
-                </div>
-                <div class="modal-body px-4 py-3" style="font-size:13px">
-                    <div class="">
-                        <div class="row d-flex align-items-center">
-                            <div class="col-lg-12">
-                                <div class="d-flex justify-content-between align-items-center my-3">
-                                    <div class="w-25 d-flex justify-content-center">
-                                        <img src="{{asset('assets/aragua.png')}}" class="img-fluid" alt="" width="90px">
-                                    </div>
-                                    <div class="text-center w-50 px-3">
-                                        <span class="fw-bold">TIMBRE FISCAL ELECTRÓNICO</span><br>
-                                        <span class="fw-bold">FORMA 14-TFE</span><br>
-                                        <span>PARA ABONAR A LAS CUENTAS DEL GOBIERNO BOLIVARIANO DE VENEZUELA</span>
-                                    </div>
-                                    <div class="w-25">
-                                        <img src="{{asset('assets/logo_seta.png')}}" class="img-fluid" alt="" width="120px">
-                                    </div>
-                                </div>
-                                
-                                <div class="text-danger fw-bold fs-4 text-end" id="">A-8001002</div>
-                                
-                                <!-- <div class="text-center mb-3 fw-bold titulo">
-                                    <div class="my-0 py-0 TEXT">Venta Timbre Fiscal</div>
-                                    <div class="my-0 py-0 text-navy fs-5">FORMA 14-TFE</div>
-                                </div> -->
-
-                                <div class="fw-bold px-3">
-                                    <p class="mb-0">
-                                        <span>FECHA DE EMISIÓN: </span>
-                                        <span class="text-muted">13/03/2024</span>
-                                    </p>
-                                    <p class="mb-0">
-                                        <span>CÉDULA DE IDENTIDAD: </span>
-                                        <span class="text-muted">V123456</span>
-                                    </p>
-                                    <p class="mb-0">
-                                        <span>NOMBRE O RAZÓN SOCIAL: </span>
-                                        <span class="text-muted">PRUEBA UNO</span>
-                                    </p>
-                                    <p class="mb-0">
-                                        <span>TAQUILLA: </span>
-                                        <span class="text-muted">004</span>
-                                    </p>
-                                    <p class="mb-0">
-                                        <span>ENTE: </span>
-                                        <span class="text-muted">Registro</span>
-                                    </p>
-                                    <p class="mb-0">
-                                        <span>TRÁMITE: </span>
-                                        <span class="text-muted">Registro de Título Universitario</span>
-                                    </p>
-                                    <p class="mb-0">
-                                        <span>CANTIDAD DE UCD: </span>
-                                        <span class="text-muted">2</span>
-                                    </p>
-                                    <p class="mb-0">
-                                        <span>MONTO A PAGAR: </span>
-                                        <span class="text-muted">Bs. 81,92</span>
-                                    </p>
-                                </div>
-
-                
-                                
-                                <div class="d-flex justify-content-end flex-column text-center mb-2 mt-4">
-                                    <div>
-                                        <img src="{{asset('assets/qrcode_G1.png')}}" class="img-fluid" alt="" width="120px">
-                                        <div class="d-flex justify-content-end flex-column text-center">
-                                            <p class="text-secondary fw-bold mt-2 mb-0 ">VALIDO HASTA</p>
-                                            <p class="text-secondary">23/03/2024</p>
-                                        </div>
-                                       
-                                    </div>
-                                </div>
-                                
-            
-                                <div class="fs-6 text-secondary text-center titulo ">
-                                    <p class="">GOBIERNO BOLIVARIANO DEL ESTADO ARAGUA</p>
-                                </div>
-                                
-                                    
-                                </div>
-                            </div>
-
-                            <!--  -->
-
-                            <!-- <div class="col-lg-4">
-                                <div class="d-flex justify-content-center">
-                                    <img src="{{asset('assets/timbre.png')}}" class="img-fluid mt-3" alt="" width="180px">
-                                </div>
-
-                                <div class="text-end mt-3">
-                                    <a href="#" data-bs-toggle="modal" data-bs-target="#modal_papel_dañado">¿Papel dañado?</a>
-                                </div>
-                            </div> -->
-                        </div>
-
-                        <!-- cerrar modal -->
-                        <!-- <div class="d-flex justify-content-center my-3">
-                            <button type="button" class="btn btn-secondary btn-sm" data-bs-dismiss="modal">Listo</button>
-                        </div> -->
-                    </div>
-                    
-                </div>
-            </div>  <!-- cierra modal-content -->
-        </div>  <!-- cierra modal-dialog -->
-    </div>
+    
+    
 
     <div class="modal fade" id="modal_venta_realizada" tabindex="-1" data-bs-backdrop="static" data-bs-keyboard="false" aria-labelledby="exampleModalLabel" aria-hidden="true">
         <div class="modal-dialog modal-xl">
@@ -503,111 +356,6 @@
             </div>  <!-- cierra modal-content -->
         </div>  <!-- cierra modal-dialog -->
     </div>
-    
-
-    
-
-    <!-- <div class="modal fade" id="modal_timbre_impreso" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-        <div class="modal-dialog ">
-            <div class="modal-content" id="content_timbre_impreso">
-                <div class="modal-header">
-                    
-                    <h1 class="modal-title fs-5 fw-bold text-navy">Timbre Fiscal</h1>
-                </div>
-                <div class="modal-body px-5 py-3" style="font-size:13px">
-                    <div class="">
-                        <div class="row d-flex align-items-center">
-                            <div class="col-lg-12">
-                                <div class="d-flex justify-content-between align-items-center my-3">
-                                    <div>
-                                        <img src="{{asset('assets/logo_seta.png')}}" class="img-fluid" alt="" width="120px">
-                                    </div>
-                                    <div>
-                                        <span class="text-danger fw-bold fs-4 text-end" id="">A-8001002</span>
-                                    </div>
-                                </div>
-
-                                <div class="text-center mb-3 fw-bold titulo">
-                                    <div class="my-0 py-0 TEXT">Venta Timbre Fiscal</div>
-                                    <div class="my-0 py-0 text-navy fs-5">FORMA 14-TFE</div>
-                                </div>
-
-                                
-                                <div style="font-size:14px">
-                                    <div class="row">
-                                        <div class="col-6">
-                                            <p class="fw-bold my-0 py-0">
-                                                <span class="text-navy">Contribuyente:</span>
-                                                <span class="text-muted">Marina Rodríguez</span>
-                                            </p>
-                                            <p class="fw-bold my-0 py-0">
-                                                <span class="text-navy">C.I/R.I.F:</span>
-                                                <span class="text-muted">V8456201</span>
-                                            </p>
-                                        </div>
-                                        <div class="col-6 text-end">
-                                            <p class="fw-bold my-0 py-0">
-                                                <span class="text-navy">Emisión:</span>
-                                                <span class="text-muted">2024-05-10</span>
-                                            </p>
-                                            <p class="fw-bold my-0 py-0">
-                                                <span class="text-navy">No. Planilla:</span>
-                                                <span class="text-muted">999904520</span>
-                                            </p>
-                                        </div>
-                                    </div>
-                
-                                    <div class="my-3 fs-5">
-                                        <p class="text-muted fw-bold">
-                                            Monto Bs.: 80.7
-                                        </p>
-                                    </div>
-                
-                                    <div class="">
-                                        <div class="row">
-                                            <div class="col-6 d-flex justify-content-center align-items-center text-center">
-                                                <p class="fs-1 titulo">2 UCD</p>
-                                            </div>
-                                            <div class="col-6 d-flex justify-content-center flex-column text-center">
-                                                <div>
-                                                    <img src="{{asset('assets/qrcode_G1.png')}}" class="img-fluid" alt="" width="120px">
-                                                    <p class="text-secondary fw-bold mt-2">Serial: 8001cd3a8f41</p>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                
-                                    <div class="fs-6 text-secondary text-center titulo ">
-                                        <p class="">GOBIERNO BOLIVARIANO DEL ESTADO ARAGUA</p>
-                                    </div>
-                                
-                                    
-                                </div>
-                            </div>
-
-                            
-
-                            <div class="col-lg-4">
-                                <div class="d-flex justify-content-center">
-                                    <img src="{{asset('assets/timbre.png')}}" class="img-fluid mt-3" alt="" width="180px">
-                                </div>
-
-                                <div class="text-end mt-3">
-                                    <a href="#" data-bs-toggle="modal" data-bs-target="#modal_papel_dañado">¿Papel dañado?</a>
-                                </div>
-                            </div> 
-                        </div>
-
-                        
-                        <div class="d-flex justify-content-center my-3">
-                            <button type="button" class="btn btn-secondary btn-sm" data-bs-dismiss="modal">Listo</button>
-                        </div>
-                    </div>
-                    
-                </div>
-            </div>  
-        </div>  
-    </div> -->
 <!-- *********************************************************************************************************************** -->
 
 @stop
@@ -655,7 +403,8 @@
                 $(document).on('click', '.add_button', function(e){ //Once add button is clicked
                     if(x < maxFieldPago){ //Check maximum number of input fields
                         x++; //Increment field counter
-                        $('.pago_timbre').append('<div class="d-flex justify-content-center mt-2" >'+
+                        $('.pago_timbre').append(
+                            '<div class="d-flex justify-content-center mt-2" >'+
                             '<div class="row w-100">'+
                                 '<div class="col-sm-5">'+
                                     '<select class="form-select form-select-sm metodo" name="pago[2][metodo]" i="2">'+
@@ -681,6 +430,7 @@
                 $(document).on('click', '.remove_button', function(e){ //Once remove button is clicked
                     e.preventDefault();
                     $(this).parent('div').parent('div').remove(); //Remove field html
+                    $('#div_cuenta_2').remove();
                     x--; //Decrement field counter
                     $('#btn_submit_venta').attr('disabled', true);
                 });
@@ -775,6 +525,10 @@
                 var value = $(this).val(); 
 
                 $('#identidad_condicion option').remove();
+                $('#identidad_nro').val('');
+                $('#nombre').val('');
+
+                limpiarDetalleVenta();
 
                 if (value == "9") {
                     ///NATURAL
@@ -1036,6 +790,7 @@
                                             $('#content_folios').addClass('d-none');
                                             $('#content_tamaño').addClass('d-none');
                                             $('#html_folios').addClass('d-none');
+                                            $('#label_ucd_tramite').html('U.C.D.');
                                         }
                                         
                                         break;
@@ -1058,6 +813,7 @@
                                         $('#content_folios').addClass('d-none');
                                         $('#content_capital').addClass('d-none');
                                         $('#html_folios').addClass('d-none');
+                                        $('#label_ucd_tramite').html('U.C.D.');
                                         
                                         break;
                                     default:
@@ -1222,10 +978,7 @@
     
             });
 
-            ////DESHABILITAR BTNS DE REALIZAR VENTA
-            // $(document).on('mouseup','#btn_submit_venta', function(e) {
-            //     $('#btn_submit_venta').attr('disabled',true);
-            // });
+            
            
 
 
@@ -1272,17 +1025,18 @@
                                 /// UCD
                                 $('#ucd_tramite_'+nro).val(response.valor);
                                 forma(nro,response.valor);
+                                $('#label_ucd_tramite').html('U.C.D.');
                                 // calcular();
                                 
                                 break;
                             case 8:
                                 /// PORCENTAJE
                                 if (response.valor_format == undefined) {
-                                    $('#div_ucd_'+nro).html('<label class="form-label" for="ucd_tramite">Bs.</label><span class="text-danger">*</span>'+
+                                    $('#div_ucd_'+nro).html('<label class="form-label" for="ucd_tramite" id="label_ucd_tramite">Bs.</label><span class="text-danger">*</span>'+
                                         '<input type="text" class="form-control form-control-sm ucd_tramite" id="ucd_tramite_'+nro+'" nro="'+nro+'" value="0" disabled required>');
                                     $('#pct_monto').html('0 Bs.');
                                 }else{
-                                   $('#div_ucd_'+nro).html('<label class="form-label" for="ucd_tramite">Bs.</label><span class="text-danger">*</span>'+
+                                   $('#div_ucd_'+nro).html('<label class="form-label" for="ucd_tramite" id="label_ucd_tramite">Bs.</label><span class="text-danger">*</span>'+
                                         '<input type="text" class="form-control form-control-sm ucd_tramite" id="ucd_tramite_'+nro+'" nro="'+nro+'" value="'+response.valor_format+'" disabled required>');
                                     $('#pct_monto').html(response.valor_format+' Bs.');
                                 }
@@ -1310,6 +1064,8 @@
                                 }
 
                                 $('#ucd_tramite_'+nro).val(response.valor);
+                                
+                                $('#label_ucd_tramite').html('U.C.D.');
                                 forma(nro,response.valor);
                                 // calcular();
                                 
@@ -1330,8 +1086,65 @@
         }
 
 
+
         //////////////// VENTA DE TIMBRES
         function venta(){
+            var comprobacion;
+
+            //////MONTOS DE LOS DEBITOS
+            var debito1 = $('#debitado_1').val();
+            var debito2 = $('#debitado_2').val();
+            
+
+            /////TRAIGO LOS TRAMITES DEL DETALLE
+            var tramites = [];
+            $('.tramite_in').each(function(){
+                var t = $(this).val();
+                tramites.push(t);
+            });
+
+
+            ////////COMPRUEBO EL PAGO
+            $.ajax({
+                headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') },
+                type: 'POST',
+                url: '{{route("venta.comprobar_pago") }}',
+                data: {debito1:debito1,tramites:tramites,debito2:debito2},
+                success: function(response) {
+                    console.log(response);
+                    switch (response.case) {
+                        case 1:
+                            ////el debito es menor al monto total
+                            alert(response.nota);
+                            break;
+                        case 2:
+                            ////el debito es mayor al monto total. ¿es correcto?
+                            if (confirm(response.nota)){
+                                ventaTimbres();
+                            }
+                            break;
+                        case 3:
+                            ///el debito es igual al monto total
+                            ventaTimbres();
+                            break;
+                    
+                        default:
+                            break;
+                    }
+                    
+                },
+                error: function() {
+                }
+            });
+            /////CIERRA COMPROBACION DE PAGO
+
+            console.log(comprobacion);
+
+          
+        }  ///cierra fuction venta()
+
+
+        function ventaTimbres(){
             var ciclo = $('#btn_submit_venta').attr('ciclo');
             if (ciclo == 1) {
                 var formData = new FormData(document.getElementById("form_venta"));
@@ -1375,9 +1188,11 @@
             }
 
             $('#btn_submit_venta').attr('ciclo',2);
-            
         }
 
+
+
+        
 
 
         function detalleEst(){
@@ -1474,6 +1289,42 @@
                     
                 }
             });
+        }
+
+        function limpiarDetalleVenta(){
+            ///TOTALES
+            $('#ucd').html('0'); 
+            $('#bolivares').html('0'); 
+            $('#debitado_1').val(''); 
+            $('#btn_submit_venta').attr('disabled', false);
+
+            // UPDATE CAMPOS
+            $('#total_ucd').val('');
+            $('#total_bs').val('');
+            $('#nro').val('');
+            $('#contribuyente').val('');
+
+            //////LIMPIAR 
+            $('#ente_1').html('@foreach ($entes as $ente)'+
+                                    '<option value="{{$ente->id_ente}}">{{$ente->ente}}</option>'+
+                                '@endforeach');
+            $('#tramite_1').html('<option value="">Seleccione el tramite </option>'+
+                                    '@foreach ($tramites as $tramite)'+
+                                        '<option value="{{$tramite->id_tramite}}">{{$tramite->tramite}}</option>'+
+                                    '@endforeach');
+            $('#ucd_tramite_1').val('0');
+            $('#forma_1').html('<option value="">Seleccione</option>');    
+            $('#detalle_est').val('');        
+            
+            // OCULTAR ANEXOS
+            $('#content_capital').addClass('d-none');
+            $('#content_folios').addClass('d-none');
+            $('#content_tamaño').addClass('d-none');
+            $('#html_folios').addClass('d-none');
+
+
+            $("#tamites_table tr").remove();
+
         }
 
     </script>

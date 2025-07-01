@@ -6,6 +6,14 @@
     
     <script src="{{ asset('jss/bundle.js') }}" defer></script>
     <link href="{{asset('css/datatable.min.css') }}" rel="stylesheet">
+
+    <link type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.5.2/css/bootstrap.css" rel="stylesheet">
+    <link type="text/css" href="https://cdn.datatables.net/2.3.2/css/dataTables.bootstrap4.css" rel="stylesheet">
+    <link type="text/css" href="https://cdn.datatables.net/buttons/3.2.3/css/buttons.bootstrap4.css" rel="stylesheet">
+
+
+
+
     <script src="{{ asset('jss/jquery-3.5.1.js') }}" ></script>
 @stop
 
@@ -236,19 +244,29 @@
     <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
+    
+    <script src="https://cdn.datatables.net/buttons/3.2.3/js/dataTables.buttons.js" type="text/javascript"></script>
+    <script src="https://cdn.datatables.net/buttons/3.2.3/js/buttons.bootstrap4.js" type="text/javascript"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js" type="text/javascript"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.2.7/pdfmake.min.js" type="text/javascript"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.2.7/vfs_fonts.js" type="text/javascript"></script>
+
+    
+    <!-- <script src="" type="text/javascript"></script>
+    <script src="" type="text/javascript"></script> -->
+   
+
 @stop
 
 @section('js')
     
     <script src="{{ asset('jss/jquery-3.5.1.js') }}" ></script>
     <script src="{{ asset('jss/datatable.min.js') }}" defer ></script>
-    <!-- <script src="{{ asset('jss/datatable.bootstrap.js') }}" ></script>
-    <script src="{{ asset('jss/toastr.js') }}" integrity="sha512-VEd+nq25CkR676O+pLBnDW09R7VQX9Mdiij052gVCp5yVH3jGtH70Ho/UUv4mJDsEdTvqRCFZg0NKGiojGnUCw==" ></script> -->
-   
+
     <script type="text/javascript">
         $(document).ready(function () {
             $('#table_ajustes_tfe').DataTable(
-                {
+                {   
                     "language": {
                         "lengthMenu": " Mostrar  _MENU_  Registros por página",
                         "zeroRecords": "No se encontraron registros",
@@ -260,7 +278,8 @@
                             'next':'Siguiente',
                             'previous':'Anterior'
                         }
-                    }
+                    },
+                    buttons: ['copy', 'excel', 'pdf'],
                 }
             );
             $('#table_ajustes_venta').DataTable(
