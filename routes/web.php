@@ -309,6 +309,12 @@ Route::post('/historial_ventas/search', [App\Http\Controllers\HistorialVentasCon
 
 
 
+
+///////////////////// ARQUEO
+Route::get('/arqueo_temporal', [App\Http\Controllers\ArqueoTemporalController::class, 'index'])->name('arqueo_temporal');
+
+
+
 ///////////////////// EMISIÓN ROLLOS FORMA 14
 // Route::get('/emision_rollos', [App\Http\Controllers\RollosController::class, 'index'])->name('emision_rollos');
 // Route::post('/rollos/modal_emitir', [App\Http\Controllers\RollosController::class, 'modal_emitir'])->name('rollos.modal_emitir');

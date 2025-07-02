@@ -26,9 +26,8 @@ class VentaController extends Controller
         $ucd_hoy = number_format($ucd, 2, ',', '.');
         $moneda = $q1->moneda;
 
-        $cuentas =  DB::table('cuentas_recaudadoras')->get();
 
-        return view('venta', compact('entes','tramites','ucd_hoy','ucd','moneda','cuentas'));
+        return view('venta', compact('entes','tramites','ucd_hoy','ucd','moneda'));
     }
 
     /**
@@ -802,10 +801,15 @@ class VentaController extends Controller
                         if (!empty($capital)) {
                             // hay capital
                             $bs_tramite = ($capital * $query->porcentaje) / 100;
+
+                            if ($bs_tramite < 1) {
+                                return response()->json(['success' => false, 'nota' => 'Por favor, verifique el Capital ingresado.']);
+                            }
                             
                         }else{
                             // no hay capital
                             $bs_tramite = 0;
+                            return response()->json(['success' => false, 'nota' => 'Por favor, verifique el Capital ingresado.']);
                         } 
 
                         $total_bolivares = $total_bolivares + $bs_tramite;
@@ -1236,6 +1240,9 @@ class VentaController extends Controller
 
         $ucd =  DB::table('ucds')->select('valor')->orderBy('id', 'desc')->first();
         $valor_ucd = $ucd->valor;
+
+        $q_ut =  DB::table('configuraciones')->select('valor')->where('nombre','=','Precio U.T.')->first();
+        $valor_ut = $q_ut->valor;
         
         foreach ($tramites as $t) {
             if ($t != '') { 
@@ -1246,21 +1253,44 @@ class VentaController extends Controller
                 switch ($query->alicuota) {
                     case 7:
                         // UCD
-                        if ($condicion_sujeto == 10 || $condicion_sujeto == 11) {
-                            //////juridico (firma personal - empresa)
-                            $ucd_tramite = $query->juridico;
-                        }else{
-                            ////natural
-                            $ucd_tramite = $query->natural;
-                        }
-                        $total_ucd = $total_ucd + $ucd_tramite;
+                        if ($tramite['forma'] == 4) {
+                            /// ESTAMPILLAS
+                            $de_est = unserialize(base64_decode($tramite['detalle_est']));
+                            $bs_ut_total = 0;
 
-                        //////SI ES PROTOCOLIZACIÓN Y TIENE FOLIOS ADICIONALES
-                        if($tramite['tramite'] == 1 || $tramite['tramite'] == 2){
-                            $folios = $tramite['nro_folios'];
-                            if ($folios != 0 || $folios != '' || $folios != null) {
-                                $q1 = DB::table('tramites')->select('natural')->where('tramite','=', 'Folio')->first();
-                                $total_ucd = $total_ucd + ($folios * $q1->natural);
+                            foreach ($de_est as $de) {
+                                $cantidad_est = $de['cantidad'];
+                                if ($de['ucd'] == 15) {
+                                    # 20UT
+                                    $bs_est = 20 * $valor_ut;
+                                }elseif ($de['ucd'] == 16) {
+                                    # 50UT
+                                    $bs_est = 50 * $valor_ut;
+                                }
+
+                                $bs_ut_total = $bs_ut_total + ($bs_est * $cantidad_est);
+                                
+                            }
+
+                            $total_bolivares = $total_bolivares+ $bs_ut_total;
+
+                        }else{
+                            if ($condicion_sujeto == 10 || $condicion_sujeto == 11) {
+                                //////juridico (firma personal - empresa)
+                                $ucd_tramite = $query->juridico;
+                            }else{
+                                ////natural
+                                $ucd_tramite = $query->natural;
+                            }
+                            $total_ucd = $total_ucd + $ucd_tramite;
+
+                            //////SI ES PROTOCOLIZACIÓN Y TIENE FOLIOS ADICIONALES
+                            if($tramite['tramite'] == 1 || $tramite['tramite'] == 2){
+                                $folios = $tramite['nro_folios'];
+                                if ($folios != 0 || $folios != '' || $folios != null) {
+                                    $q1 = DB::table('tramites')->select('natural')->where('tramite','=', 'Folio')->first();
+                                    $total_ucd = $total_ucd + ($folios * $q1->natural);
+                                }
                             }
                         }
 
@@ -1341,6 +1371,7 @@ class VentaController extends Controller
 
     public function comprobar_pago(Request $request){
         $tramites = $request->post('tramites');
+       
         $debito1 = $request->post('debito1');
         $debito2 = $request->post('debito2');
 
@@ -1352,33 +1383,68 @@ class VentaController extends Controller
 
         $ucd =  DB::table('ucds')->select('valor')->orderBy('id', 'desc')->first();
         $valor_ucd = $ucd->valor;
+
+        $q_ut =  DB::table('configuraciones')->select('valor')->where('nombre','=','Precio U.T.')->first();
+        $valor_ut = $q_ut->valor;
         
         foreach ($tramites as $t) {
             if ($t != '') { 
                 $tramite = unserialize(base64_decode($t));
-                $condicion_sujeto = $tramite['condicion_sujeto'];
+                $condicion_sujeto = $tramite['condicion_sujeto']; 
 
                 $query = DB::table('tramites')->where('id_tramite','=', $tramite['tramite'])->first();
                 switch ($query->alicuota) {
                     case 7:
                         // UCD
-                        if ($condicion_sujeto == 10 || $condicion_sujeto == 11) {
-                            //////juridico (firma personal - empresa)
-                            $ucd_tramite = $query->juridico;
-                        }else{
-                            ////natural
-                            $ucd_tramite = $query->natural;
-                        }
-                        $total_ucd = $total_ucd + $ucd_tramite;
+                        
+                        if ($tramite['forma'] == 4) {
+                            /// ESTAMPILLAS
+                            $de_est = unserialize(base64_decode($tramite['detalle_est']));
+                            $bs_ut_total = 0;
 
-                        //////SI ES PROTOCOLIZACIÓN Y TIENE FOLIOS ADICIONALES
-                        if($tramite['tramite'] == 1 || $tramite['tramite'] == 2){
-                            $folios = $tramite['nro_folios'];
-                            if ($folios != 0 || $folios != '' || $folios != null) {
-                                $q1 = DB::table('tramites')->select('natural')->where('tramite','=', 'Folio')->first();
-                                $total_ucd = $total_ucd + ($folios * $q1->natural);
+                            foreach ($de_est as $de) {
+                                $cantidad_est = $de['cantidad'];
+                                if ($de['ucd'] == 15) {
+                                    # 20UT
+                                    $bs_est = 20 * $valor_ut;
+                                }elseif ($de['ucd'] == 16) {
+                                    # 50UT
+                                    $bs_est = 50 * $valor_ut;
+                                }
+
+                                $bs_ut_total = $bs_ut_total + ($bs_est * $cantidad_est);
+                                
                             }
+
+                            $total_bolivares = $total_bolivares+ $bs_ut_total;
+                            // return response($bs_tramite_t);
+
+                        }else{
+                            //// FORMA 14 
+                            if ($condicion_sujeto == 10 || $condicion_sujeto == 11) {
+                                //////juridico (firma personal - empresa)
+                                $ucd_tramite = $query->juridico;
+                            }else{
+                                ////natural
+                                $ucd_tramite = $query->natural;
+                            }
+                            $total_ucd = $total_ucd + $ucd_tramite;
+
+                            //////SI ES PROTOCOLIZACIÓN Y TIENE FOLIOS ADICIONALES
+                            if($tramite['tramite'] == 1 || $tramite['tramite'] == 2){
+                                $folios = $tramite['nro_folios'];
+                                if ($folios != 0 || $folios != '' || $folios != null) {
+                                    $q1 = DB::table('tramites')->select('natural')->where('tramite','=', 'Folio')->first();
+                                    $total_ucd = $total_ucd + ($folios * $q1->natural);
+                                }
+                            }
+
                         }
+
+
+
+
+
 
                         break;
                     case 8:

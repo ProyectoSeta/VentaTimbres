@@ -890,15 +890,21 @@
                 var metros =  $('#metros').val();
                 var capital =  $('#capital').val();
 
-                $(".tramite").each(function(e){
-                    var tramite = $(this).val();
-                    var nro = $(this).attr('nro');
+                if(metros == 0 || metros == ''){
+                    alert('Debe ingresar el Tamaño de la empresa.');
+                }else{
+                    $(".tramite").each(function(e){
+                        var tramite = $(this).val();
+                        var nro = $(this).attr('nro');
 
-                    var varios_metrado = 0;
+                        var varios_metrado = 0;
 
-                    cal_misc(tramite,condicion_sujeto, metros,capital,nro,varios_metrado);
-                    
-                });
+                        cal_misc(tramite,condicion_sujeto, metros,capital,nro,varios_metrado);
+                        
+                    });
+                }
+
+                
             });
 
 
@@ -909,14 +915,19 @@
                 var metros =  $('#metros').val();
                 var capital =  $('#capital').val();
 
-                $(".tramite").each(function(e){
-                    var tramite = $(this).val();
-                    var nro = $(this).attr('nro');
+                if(capital == 0 || capital == ''){
+                    alert('Debe ingresar el Capital.');
+                }else{
+                    $(".tramite").each(function(e){
+                        var tramite = $(this).val();
+                        var nro = $(this).attr('nro');
 
-                    cal_misc(tramite,condicion_sujeto, metros,capital,nro);
-                    
-                    
-                });
+                        cal_misc(tramite,condicion_sujeto, metros,capital,nro);
+                        
+                        
+                    });
+                }
+
             });
 
 

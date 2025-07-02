@@ -52,6 +52,10 @@
                                         <a href="#" class="" id="btn_falla_impresion">¿Falla en la Impresión?</a>
                                     </div>   
 
+                                    <div class="">
+                                        <a href="{{ route('arqueo_temporal') }}" class="">Arqueo (Temporal)</a>
+                                    </div>  
+
                                     <div class="mt-2 d-none" id="opctions_falla_impresion">
                                         <button type="button" id="btn_papel_bueno" papel="1" class="btn btn-sm btn-outline-secondary btn_modal_papel me-3" data-bs-toggle="modal" data-bs-target="#modal_clave_taquilla">Papel Bueno</button>
                                         <button type="button" id="btn_papel_danado" papel="0" class="btn btn-sm btn-outline-secondary btn_modal_papel" data-bs-toggle="modal" data-bs-target="#modal_clave_taquilla">Papel Dañado</button>
@@ -404,12 +408,6 @@
 
         $(document).ready(function () {
             
-
-
-
-
-
-
             /////////////////////// SIN FONDO
             $(document).on('click', '#sin_fondo', function(e){ 
                 if($("#sin_fondo").is(':checked')) {
@@ -557,9 +555,6 @@
             $(document).on('click','.btn_imprimir_tfe', function(e){ 
                 $('.btn_imprimir_tfe').addClass('disabled');
             });
-
-
-
 
 
 
