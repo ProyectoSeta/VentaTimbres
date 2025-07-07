@@ -1492,12 +1492,19 @@ class VentaController extends Controller
 
         //TOTAL EN BOLIVARES
         $total_bolivares = $total_bolivares + ($total_ucd * $valor_ucd);
+
+       
+
+        $for_debito = number_format((float)$debito_total, 2); // 1000.51
+        $for_total = number_format((float)$total_bolivares, 2); // 1000.51
+ 
+
         
-        if ($debito_total < $total_bolivares) {
+        if ($for_debito < $for_total) {
             return response()->json(['case' => 1, 'nota' => 'El debito ingesado es menor al total de la venta. Por favor, verifique.']);
-        }elseif ($debito_total > $total_bolivares) {
+        }elseif ($for_debito > $for_total) {
             return response()->json(['case' => 2, 'nota' => 'El debito ingesado es mayor al total de la venta. ¿El monto es el correcto?']);
-        }elseif ($debito_total == $total_bolivares) {
+        }elseif ($for_debito == $for_total) {
             return response()->json(['case' => 3]);
         }
         
