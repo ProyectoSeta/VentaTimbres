@@ -403,11 +403,17 @@
     
 
     <script type="text/javascript">
-
-
-
         $(document).ready(function () {
-            
+            /////ACTUALIZAR UCD
+            $.ajax({
+                headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') },
+                type: 'POST',
+                url: '{{route("home.ucd") }}',
+                success: function(response) {},
+                error: function() {
+                }
+            });
+
             /////////////////////// SIN FONDO
             $(document).on('click', '#sin_fondo', function(e){ 
                 if($("#sin_fondo").is(':checked')) {
@@ -442,18 +448,17 @@
                 type: 'POST',
                 url: '{{route("home.alert_boveda") }}',
                 success: function(response) {
-                    console.log(response);
-                    if (response) {
-                        // Swal.fire({
-                        //     icon: "warning",
-                        //     iconColor: "#004cbd",
-                        //     title: "Parece que has superado el Límite de Efectivo en Taquilla.",
-                        //     // text: 'Dirigete a la ventana principal e ingresa el monto total o parcial del efectivo actual en Bóveda.',
-                        //     confirmButtonColor: "#004cbd",
-                        // });
-                    }else{
-                        alert('Disculpe, ha ocurrido un error.');                        
-                    }
+                    // if (response) {
+                    //     // Swal.fire({
+                    //     //     icon: "warning",
+                    //     //     iconColor: "#004cbd",
+                    //     //     title: "Parece que has superado el Límite de Efectivo en Taquilla.",
+                    //     //     // text: 'Dirigete a la ventana principal e ingresa el monto total o parcial del efectivo actual en Bóveda.',
+                    //     //     confirmButtonColor: "#004cbd",
+                    //     // });
+                    // }else{
+                    //     alert('Disculpe, ha ocurrido un error.');                        
+                    // }
                 },
                 error: function() {
                 }

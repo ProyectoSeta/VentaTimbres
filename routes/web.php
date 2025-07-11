@@ -45,7 +45,8 @@ Route::post('/home/clave', [App\Http\Controllers\HomeController::class, 'clave']
 Route::post('/home/modal_imprimir', [App\Http\Controllers\HomeController::class, 'modal_imprimir'])->name('home.modal_imprimir');
 Route::post('/home/imprimir', [App\Http\Controllers\HomeController::class, 'imprimir'])->name('home.imprimir');
 
-
+////UCD
+Route::post('/home/ucd', [App\Http\Controllers\HomeController::class, 'ucd'])->name('home.ucd');
 
 
 
@@ -312,34 +313,6 @@ Route::post('/historial_ventas/search', [App\Http\Controllers\HistorialVentasCon
 
 ///////////////////// ARQUEO
 Route::get('/arqueo_temporal', [App\Http\Controllers\ArqueoTemporalController::class, 'index'])->name('arqueo_temporal');
-
-
-
-///////////////////// EMISIÓN ROLLOS FORMA 14
-// Route::get('/emision_rollos', [App\Http\Controllers\RollosController::class, 'index'])->name('emision_rollos');
-// Route::post('/rollos/modal_emitir', [App\Http\Controllers\RollosController::class, 'modal_emitir'])->name('rollos.modal_emitir');
-// Route::post('/rollos/emitir', [App\Http\Controllers\RollosController::class, 'emitir'])->name('rollos.emitir');
-// Route::post('/rollos/modal_enviar', [App\Http\Controllers\RollosController::class, 'modal_enviar'])->name('rollos.modal_enviar');
-// Route::post('/rollos/detalles', [App\Http\Controllers\RollosController::class, 'detalles'])->name('rollos.detalles');
-// Route::post('/rollos/enviar_inventario', [App\Http\Controllers\RollosController::class, 'enviar_inventario'])->name('rollos.enviar_inventario');
-// Route::post('/rollos/delete', [App\Http\Controllers\RollosController::class, 'delete'])->name('rollos.delete');
-// /////////PDF: ROLLOS A EMITIR
-// Route::get('/rollos/pdf', [App\Http\Controllers\RollosController::class, 'pdf'])->name('rollos.pdf');
-
-
-
-// //////////////////EMISIÓN ESTAMPILLAS
-// Route::get('/emision_estampillas', [App\Http\Controllers\EstampillasController::class, 'index'])->name('emision_estampillas');
-// Route::post('/emision_estampillas/denominacions', [App\Http\Controllers\EstampillasController::class, 'denominacions'])->name('emision_estampillas.denominacions');
-// Route::post('/emision_estampillas/modal_emitir', [App\Http\Controllers\EstampillasController::class, 'modal_emitir'])->name('emision_estampillas.modal_emitir');
-// Route::post('/emision_estampillas/emitir_estampillas', [App\Http\Controllers\EstampillasController::class, 'emitir_estampillas'])->name('emision_estampillas.emitir_estampillas');
-// Route::post('/emision_estampillas/detalles', [App\Http\Controllers\EstampillasController::class, 'detalles'])->name('emision_estampillas.detalles');
-// Route::post('/emision_estampillas/modal_enviar', [App\Http\Controllers\EstampillasController::class, 'modal_enviar'])->name('emision_estampillas.modal_enviar');
-// Route::post('/emision_estampillas/enviar_inventario', [App\Http\Controllers\EstampillasController::class, 'enviar_inventario'])->name('emision_estampillas.enviar_inventario');
-// Route::post('/emision_estampillas/delete', [App\Http\Controllers\EstampillasController::class, 'delete'])->name('emision_estampillas.delete');
-// /////////PDF: TIRAS A EMITIR 
-// Route::get('/emision_estampillas/pdf', [App\Http\Controllers\EstampillasController::class, 'pdf'])->name('emision_estampillas.pdf');
-
 
 
 

@@ -1928,6 +1928,16 @@ class VentaController extends Controller
         
                                         //////// VALOR UCD TRAMITE  
                                         $cons = DB::table('tramites')->select('tramite','alicuota')->where('id_tramite','=', $key_tramite)->first();
+
+                                        ///tramite
+                                        $long_tramite = strlen($cons->tramite);
+                                        if ($long_tramite > 42) {
+                                            $long_cadena = 42;
+                                            $cadena_tramite = substr($cons->tramite, 0, $long_cadena).'...';
+                                        }else{
+                                            $cadena_tramite = $cons->tramite;
+                                        }
+
                                         switch ($cons->alicuota) {
                                             case 7:
                                                 // UCD
@@ -2071,6 +2081,11 @@ class VentaController extends Controller
                                                     file_put_contents(public_path('assets/Forma14/barcode_TFE'.$nro_timbre.'.png'), base64_decode($barcode)); ////se guarda
 
 
+                                                    ////CODIGO DE VALIDACIÓN
+                                                    $serial_clean = str_replace("-", "", $serial);
+                                                    $cod_validacion = $this->modulo11($serial_clean);
+                                                        
+
                                                     // // QR
                                                     // $nro_timbre_qr = base64_encode(serialize($nro_timbre)); 
                                                     // $url_timbre_qr = str_replace(['/', '+'],['_', '-'], $nro_timbre_qr);
@@ -2096,6 +2111,7 @@ class VentaController extends Controller
 
                                                         $timbres_imprimir_tfe = [];
 
+
                                                         ////cifrado para impresion
                                                         ////// INGRESAR DETALLE PARA IMPRESION
                                                         $bs_tramite_imp = $ucd_tramite * $valor_ucd;
@@ -2105,11 +2121,12 @@ class VentaController extends Controller
                                                             'ci' => $cedula_contribuyente,
                                                             'nombre' => $nombre_contribuyente,
                                                             'ente' => $consulta_tramite->ente,
-                                                            'tramite' => $cons->tramite,
+                                                            'tramite' => $cadena_tramite,
                                                             'bs' => number_format($bs_tramite_imp, 2, '.', ' '),
                                                             'ucd' => $ucd_tramite,
                                                             'key' => $key_taquillero,
-                                                            'fecha' => date("Y-m-d",strtotime($hoy))
+                                                            'fecha' => date("Y-m-d",strtotime($hoy)),
+                                                            'cod_validacion' => $serial_clean.''.$cod_validacion,
                                                         );
 
                                                         $a = (object) $array;
@@ -2961,6 +2978,30 @@ class VentaController extends Controller
      * Update the specified resource in storage.
      */
     
+
+    private function modulo11($numero) {
+        $factores = [2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13];
+        $suma = 0;
+        $numeroLength = strlen($numero);
+        $factorIndex = 0;
+
+        for ($i = $numeroLength - 1; $i >= 0; $i--) {
+            $digito = (int)$numero[$i];
+            $suma += $digito * $factores[$factorIndex];
+            $factorIndex = ($factorIndex + 1) % count($factores);
+        }
+
+        $resto = $suma % 11;
+        $dv = 11 - $resto;
+
+        if ($dv === 11) {
+            return 0;
+        }elseif($dv === 10) {
+            return 1;
+        }else{
+            return $dv;
+        }
+    }
 
 
 

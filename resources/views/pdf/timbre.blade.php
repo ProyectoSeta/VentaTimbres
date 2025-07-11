@@ -76,6 +76,11 @@
              font-size:11.2px;
         }
 
+        .my-4{
+            /* margin-top: 5px; */
+            margin-bottom: 9px;
+        }
+
 
 
     </style>
@@ -87,53 +92,60 @@
             @for ($i = 1; $i < 3; $i++)
             <div class="container saltopagina">
                 <div class="text-center" style="margin-bottom: 9px; margin-top: 100px;">
+                    <div class="my-4 fw-bold">
+                        GOBIERNO BOLIVARIANO DEL ESTADO ARAGUA<br/>
+                    </div> 
+
                     TIMBRE FISCAL ELECTRONICO<br/>
                     PLANILLAS DE PAGO<br/>
-                    FORMA 14 - TFE<br/>
-                    PARA ABONAR A LA CUENTA DE:<br/>
-                    GOBIERNO BOLIVARIANO DEL ESTADO ARAGUA
+                    FORMA 14 - TFE
+                    
                     <br/>...................................................................
                 </div>
 
 
                 <!-- SERIAL IMG -->
-
+                <div class="my-2" style="font-size:12.5px;">
+                    <span>PLANILLA: </span><span class="fw-bold fs-5">{{$timbre->serial}}</span>                     
+                </div>
                 <div class="text-center">
                     <img src="{{asset($timbre->barra)}}" alt="" style="width: 220px; margin-top: 9px; margin-bottom: 9px;">
                 </div>
                 
 
                 <div class="text-start" style="margin-bottom: 9px;">
-                    <div class="my-2" style="font-size:12.5px;">
-                        <span class="fw-bold">{{$timbre->serial}}</span> <span>CI/RIF: </span><span class="fw-bold fs-5">{{$timbre->ci}}</span>                     
-                    </div>
                     <div class="my-2">
                         <span>FECHA DE EMISIÓN: </span> <span class="fw-bold fs-5">{{$timbre->fecha}}</span>
                     </div>
                     <div class="my-2">
                         <span style="font-size:10.6px">*** CADUCA A LOS QUINCE (15) DÍAS ***</span>
                     </div>
+                    <div class="my-2" style="font-size:12.5px;">
+                        <span>CI/RIF: </span><span class="fw-bold fs-5">{{$timbre->ci}}</span>                     
+                    </div>
                     <div class="my-2">
-                        <span>MONTO EN BOLIVARES: Bs. </span> <span class="fs-5">{{$timbre->bs}}</span>
+                        <span>ENTE: </span> <span class="fs-5" style="text-transform: uppercase;">{{$timbre->ente}}</span>
+                    </div>
+                    <div class="my-2">
+                        <span>TRAMITE: </span> <span class="fs-5" style="text-transform: uppercase;">{{$timbre->tramite}}</span>
                     </div>
                     <div class="my-2">
                         <span>CANTIDAD DE U.C.D.: </span> <span class="fs-5">{{$timbre->ucd}}</span>
                     </div>
                     <div class="my-2">
-                        <span>ENTE: </span> <span class="fs-5" style="text-transform: uppercase;">{{$timbre->ente}}</span>
+                        <span>MONTO EN BOLIVARES: Bs. </span> <span class="fs-5">{{$timbre->bs}}</span>
                     </div>
+                    
+                    
 
 
 
                     <div class="fw-bold" style="font-size:12.5px">
                         <div class="my-2">
-                            SETA {{$timbre->fecha}}
+                            CV: {{$timbre->cod_validacion}}
                         </div>
                         <div class="my-2">
-                            Monto: {{$timbre->bs}}
-                        </div>
-                        <div class="my-2">
-                            Planilla: {{$timbre->serial}}
+                            SETA G-20008920-2
                         </div>
                         <div class="my-2">
                             BENIF: <br>GOBIERNO BOLIVARIANO DEL ESTADO ARAGUA
@@ -147,12 +159,12 @@
                 @if ($i == 1)
                     <!-- ORIGINAL -->
                     <div class="text-center" style="margin-bottom: 9px;">
-                        <span class="">Original - Z0{{$timbre->key}}</span><br/>----------------------------------------
+                        <span class="">ORIGINAL - Z0{{$timbre->key}}</span><br/>----------------------------------------
                     </div>
                 @else
                     <!-- COPIA -->
                     <div class="text-center" style="margin-bottom: 9px;">
-                        <span class="">Copia - Z0{{$timbre->key}}</span><br/>----------------------------------------
+                        <span class="">COPIA - Z0{{$timbre->key}}</span><br/>----------------------------------------
                     </div>
                 @endif
 

@@ -95,13 +95,154 @@ class HomeController extends Controller
 
         }
         
+    }
 
 
+
+
+
+    public function ucd(){
+        $curl = curl_init(); //inicio curl
+        //Paso opciones de parametros a curl
+        curl_setopt_array($curl, array(
+            CURLOPT_URL => 'https://www.bcv.org.ve/', //la url donde atacar
+            CURLOPT_RETURNTRANSFER => true, //que devuelva en cadena
+            CURLOPT_SSL_VERIFYPEER => false //evito que google verifique el certificado par (de lo contrario casca)
+        ));
+        $ArrayPage = curl_exec($curl); //ejecuto y guardo el array fuera del curl
+        
+        curl_close($curl); //cierro el curl ya no lo necesito
+        preg_match_all('#<div[^>]*>(.*?)</div>#s', $ArrayPage, $NewArray); //le guardo al nuevo array todos los div segun la expresion regular
+        foreach ($NewArray as $key => $array) { //inicio el bucle al nuevo array
+            foreach ($array as $key => $valor) {
+                //echo "'$key' => '$valor'<br>";
+                if ($key == 35) $EUR = $valor; //Euro
+                if ($key == 37) $CNY = $valor; //Yuan 
+                if ($key == 39) $TRY = $valor; //TRY			
+                if ($key == 41) $RUB = $valor; //Rubio			
+                if ($key == 43) $USD = $valor; //Dolar			
+                if ($key == 44) $fecha = $valor; //que se detenga en esta condicional
+            }
+        }
+
+        preg_match('#<span[^>]*>(.*?)</span>#s', $fecha, $fecha_valor); //armo otro array segun la expresion regular y obtengo la fecha valor
+        //EUR
+        preg_match('#<strong[^>]*>(.*?)</strong>#s', $EUR, $bcv); //armo otro array segun la expresion regular y obtengo valor del bcv
+        $bcv = explode(',', trim($bcv[1])); //otro nuevo array para dividir al bcv
+        $bcv =  $bcv[0] . '.' . substr($bcv[1], 0, 2);  //finalmente con las partes armo el string bcv con solo dos decimales	
+        //CNY
+        preg_match('#<strong[^>]*>(.*?)</strong>#s', $CNY, $bcv1); //armo otro array segun la expresion regular y obtengo valor del bcv
+        $bcv1 = explode(',', trim($bcv1[1])); //otro nuevo array para dividir al bcv
+        $bcv1 =  $bcv1[0] . '.' . substr($bcv1[1], 0, 2); //finalmente con las partes armo el string bcv con solo dos decimales	
+        //TRY
+        preg_match('#<strong[^>]*>(.*?)</strong>#s', $TRY, $bcv2); //armo otro array segun la expresion regular y obtengo valor del bcv
+        $bcv2 = explode(',', trim($bcv2[1])); //otro nuevo array para dividir al bcv
+        $bcv2 =  $bcv2[0] . '.' . substr($bcv2[1], 0, 2); //finalmente con las partes armo el string bcv con solo dos decimales		
+        //RUB
+        preg_match('#<strong[^>]*>(.*?)</strong>#s', $RUB, $bcv3); //armo otro array segun la expresion regular y obtengo valor del bcv
+        $bcv3 = explode(',', trim($bcv3[1])); //otro nuevo array para dividir al bcv
+        $bcv3 =  $bcv2[0] . '.' . substr($bcv3[1], 0, 2); //finalmente con las partes armo el string bcv con solo dos decimales
+        //USD
+        preg_match('#<strong[^>]*>(.*?)</strong>#s', $USD, $bcv4); //armo otro array segun la expresion regular y obtengo valor del bcv
+        $bcv4 = explode(',', trim($bcv4[1])); //otro nuevo array para dividir al bcv
+        $bcv4 =  $bcv4[0] . '.' . substr($bcv4[1], 0, 2); //finalmente con las partes armo el string bcv con solo dos decimales
+        
+        //Determinar Tipo de Cambio de Moneda de Mayor Valor
+        $mmv = ($bcv>$bcv1) ? $bcv : $bcv1; 
+        $mmv = ($mmv>$bcv2) ? $mmv : $bcv2;
+        $mmv = ($mmv>$bcv3) ? $mmv : $bcv3;
+        $mmv = ($mmv>$bcv4) ? $mmv : $bcv4;
+        //Fin Determinar Tipo de Cambio de Moneda de Mayor Valor
+
+
+        //// determinar modena 
+        switch ($mmv) {
+            case $bcv:
+                $moneda = 'EUR';
+                break;
+            case $bcv1:
+                $moneda = 'CNY';
+                break;
+            case $bcv2:
+                $moneda = 'TRY';
+                break;
+            case $bcv3:
+                $moneda = 'RUB';
+                break;
+            case $bcv4:
+                $moneda = 'USD';
+                break;
+        }
+
+        
+        //Convertir formato de fecha
+        $cfecha = explode(' ',$fecha_valor[1]);
+        switch($cfecha[2]) {
+        case 'Enero':
+            $cfecha[2] = '01';
+            break;	  
+        case 'Febrero':
+            $cfecha[2] = '02';
+            break;
+        case 'Marzo':
+            $cfecha[2] = '03';
+            break;
+        case 'Abril':
+            $cfecha[2] = '04';
+            break;
+        case 'Mayo':
+            $cfecha[2] = '05';
+            break;
+        case 'Junio':
+            $cfecha[2] = '06';
+            break;
+        case 'Julio':
+            $cfecha[2] = '07';
+            break;   
+        case 'Agosto':
+            $cfecha[2] = '08';
+            break;
+        case 'Septiembre':
+            $cfecha[2] = '09';
+            break;
+        case 'Octubre':
+            $cfecha[2] = '10';
+            break;
+        case 'Noviembre':
+            $cfecha[2] = '11';
+            break;
+        case 'Diciembre':
+            $cfecha[2] = '12';
+            break;		
+        }
+        $nfecha = $cfecha[4]."-".$cfecha[2]."-".$cfecha[1];
+
+
+        //////////DETERMINAR SI SE HACE EL REGISTRO
+        $fecha_ins = $nfecha.' '.date('h:i:s');
+        $user = auth()->id();
+        $accion = 'VALOR DEL UCD ACTUALIZADO.';
+        $c1 = DB::table('ucds')->selectRaw("count(*) as total")->first();
+        if ($c1->total == 0) {
+            // primer registro de la tabla
+            ///// INGRESAR PRECIO DE LA UCD
+            $insert = DB::table('ucds')->insert(['valor' => $mmv, 'moneda' => $moneda, 'fecha' => $fecha_ins]); 
+            $bitacora = DB::table('bitacoras')->insert(['key_user' => $user, 'key_modulo' => 8, 'accion'=> $accion]);
+        }else{
+            // consultar ultimo registro
+            $c2 =  DB::table('ucds')->select('fecha')->orderBy('id', 'desc')->first();
+            if ($nfecha > $c2->fecha) {
+                ///// INGRESAR PRECIO DE LA UCD
+                $insert = DB::table('ucds')->insert(['valor' => $mmv, 'moneda' => $moneda, 'fecha' => $fecha_ins]); 
+                $bitacora = DB::table('bitacoras')->insert(['key_user' => $user, 'key_modulo' => 8, 'accion'=> $accion]);
+            }
+
+        }
     }
 
     
 
-   
+    
 
 
     public function apertura_taquilla(Request $request){
