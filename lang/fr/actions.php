@@ -94,7 +94,7 @@ return [
     'sign_in'         => 'Se connecter',
     'solve'           => 'Résoudre',
     'start'           => 'Commencer',
-    'stop'            => 'Arrêt',
+    'stop'            => 'Arrêter',
     'submit'          => 'Soumettre',
     'subscribe'       => 'S\'abonner',
     'switch'          => 'Changer',

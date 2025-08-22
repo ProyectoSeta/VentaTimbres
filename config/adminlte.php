@@ -309,6 +309,21 @@ return [
             'text'         => 'search',
             'topnav_right' => false,
         ],
+
+
+
+        //RECAUDACION
+        [   'header' => 'Recaudación',
+        ],
+        [
+            'text'        => 'Reportes',
+            'route'         => 'recaudacion',
+            'icon'       => 'fas fa-angle-right pe-2',   
+        ],
+
+
+
+
         //CONSULTA
         [   'header' => 'Timbres Fiscales',
             'can' => ['consulta'],

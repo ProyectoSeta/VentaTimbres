@@ -7,10 +7,10 @@
             <div class="row d-flex justify-content-center">
                 <div class="col-lg-6">
                     <div class="d-flex flex-column">
-                        <div class="">
-                            <img src="{{asset('assets/gobierno.png')}}" alt="" width="140px">
-                            <img src="{{asset('assets/aragua.png')}}" alt="" width="65px">
-                            <img src="{{asset('assets/logo_seta.png')}}" alt="" class="mt-3 ms-2" width="120px">
+                        <div class=" d-flex align-items-end">
+                            <img src="{{asset('assets/gobierno.png')}}" class="mx-1" alt="" width="140px">
+                            <img src="{{asset('assets/aragua.png')}}" class="mx-1" alt="" width="78px">
+                            <img src="{{asset('assets/logo_seta.png')}}" class="mx-1" alt="" class="mt-3 ms-2" width="120px">
                         </div>
 
                         <div class="my-5">

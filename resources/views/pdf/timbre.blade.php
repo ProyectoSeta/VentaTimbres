@@ -94,6 +94,8 @@
                 <div class="text-center" style="margin-bottom: 9px; margin-top: 100px;">
                     <div class="my-4 fw-bold">
                         GOBIERNO BOLIVARIANO DEL ESTADO ARAGUA<br/>
+                        SETA G-20008920-2<br/>
+                        
                     </div> 
 
                     TIMBRE FISCAL ELECTRONICO<br/>
@@ -108,9 +110,7 @@
                 <div class="my-2" style="font-size:12.5px;">
                     <span>PLANILLA: </span><span class="fw-bold fs-5">{{$timbre->serial}}</span>                     
                 </div>
-                <div class="text-center">
-                    <img src="{{asset($timbre->barra)}}" alt="" style="width: 220px; margin-top: 9px; margin-bottom: 9px;">
-                </div>
+                
                 
 
                 <div class="text-start" style="margin-bottom: 9px;">
@@ -137,7 +137,7 @@
                     </div>
                     
                     
-
+                    <br/>
 
 
                     <div class="fw-bold" style="font-size:12.5px">
@@ -145,10 +145,9 @@
                             CV: {{$timbre->cod_validacion}}
                         </div>
                         <div class="my-2">
-                            SETA G-20008920-2
-                        </div>
-                        <div class="my-2">
-                            BENIF: <br>GOBIERNO BOLIVARIANO DEL ESTADO ARAGUA
+                            <div class="text-center">
+                                <img src="{{asset($timbre->barra)}}" alt="" style="width: 220px; margin-top: 9px; margin-bottom: 9px;">
+                            </div>
                         </div>
                     </div>
                 

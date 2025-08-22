@@ -316,6 +316,9 @@ Route::get('/arqueo_temporal', [App\Http\Controllers\ArqueoTemporalController::c
 
 
 
+////RECAUDACION
+Route::get('/recaudacion', [App\Http\Controllers\RecaudacionController::class, 'index'])->name('recaudacion');
+Route::post('/recaudacion/consulta', [App\Http\Controllers\RecaudacionController::class, 'consulta'])->name('recaudacion.consulta');
 
 
 

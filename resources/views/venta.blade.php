@@ -675,12 +675,15 @@
 
 
                         }else{
-                            if (response.nota) {
-                                alert(response.nota);
+                            if (response.type == 422) {
+                                var errors = response.errors;
+                                $.each(errors, function(key, value) {
+                                    alert(value[0]);
+                                });
                             }else{
-                                alert('Disculpe, ha ocurrido un error al registar a el contribuyente.');
+                                alert(response.nota);
                             }
-                            ////alert
+                        
                         }   
                     },
                     error: function() {

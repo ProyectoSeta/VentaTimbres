@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use DB;
 use Barryvdh\DomPDF\Facade\Pdf;
 use \Milon\Barcode\DNS1D;
+use Illuminate\Support\Facades\Validator;
 
 class VentaController extends Controller
 {
@@ -72,14 +73,26 @@ class VentaController extends Controller
         $nombre = $request->post('nombre');
 
         if (empty($nro) || empty($nombre)) {
-            return response()->json(['success' => false, 'nota' => 'Por favor, complete los campos C.I/R.I.F y Nombre/Razon Social.']);
+            return response()->json(['success' => false, 'nota' => 'Por favor, complete todos los campos requeridos.']);
         }elseif(empty($condicion_sujeto)){
-            return response()->json(['success' => false, 'nota' => 'Por favor, seleccione la condición del contribuyente.']);
+            return response()->json(['success' => false, 'nota' => 'Por favor, complete todos los campos requeridos.']);
         }else{
-            $campos_nro = strlen($nro);
-            if ($campos_nro < 6) {
-                return response()->json(['success' => false, 'nota' => 'Por favor, introduzca un C.I/R.I.F válido.']);
+            /////// VALIDAR SI EL NUMERO DE CARACTERES ES EL INDICADO SEGUN LA CONDICION 
+            if ($condicion_sujeto == 9) {
+                $validator = Validator::make($request->all(), ['nro' => 'min:6|max:8']);
+                 
             }else{
+                $validator = Validator::make($request->all(), ['nro' => 'size:9']);
+            }
+
+            if ($validator->fails()) {
+                return response()->json(['success' => false, 'errors' => $validator->errors(), 'type' => 422]);
+            }
+
+
+            /////////VERIFICAR QUE EL NUMERO NO ESTE REGISTRADO
+            $query = DB::table('contribuyentes')->selectRaw("count(*) as total")->where('identidad_nro','=', $nro)->first();
+            if ($query->total == 0) {
                 $contribuyente = DB::table('contribuyentes')->insert([
                                             'condicion_sujeto' => $condicion_sujeto,
                                             'identidad_condicion' => $condicion,
@@ -88,9 +101,12 @@ class VentaController extends Controller
                 if ($contribuyente) {
                     return response()->json(['success' => true]);
                 }else{
-                    return response()->json(['success' => false]);
+                    return response()->json(['success' => false, 'nota' => 'Disculpe, ha ocurrido un error al registar a el contribuyente.']);
                 }
+            }else{
+                return response()->json(['success' => false, 'nota' => 'Disculpe, ya existe un contribuyente registrado con ese número de identificación.']);
             }
+            
         }
        
     }
@@ -2284,6 +2300,11 @@ class VentaController extends Controller
                                                     file_put_contents(public_path('assets/Forma14/barcode_TFE'.$nro_timbre.'.png'), base64_decode($barcode)); ////se guarda
 
 
+                                                    ////CODIGO DE VALIDACIÓN
+                                                    $serial_clean = str_replace("-", "", $serial);
+                                                    $cod_validacion = $this->modulo11($serial_clean);
+
+
                                                     // // QR
                                                     // $nro_timbre_qr = base64_encode(serialize($nro_timbre)); 
                                                     // $url_timbre_qr = str_replace(['/', '+'],['_', '-'], $nro_timbre_qr);
@@ -2319,11 +2340,12 @@ class VentaController extends Controller
                                                             'ci' => $cedula_contribuyente,
                                                             'nombre' => $nombre_contribuyente,
                                                             'ente' => $consulta_tramite->ente,
-                                                            'tramite' => $cons->tramite,
+                                                            'tramite' => $cadena_tramite,
                                                             'bs' => $formato_total_bs_capital,
                                                             'ucd' => $formato_ucd_timbre_bs,
                                                             'key' => $key_taquillero,
-                                                            'fecha' => date("Y-m-d",strtotime($hoy))
+                                                            'fecha' => date("Y-m-d",strtotime($hoy)),
+                                                            'cod_validacion' => $serial_clean.''.$cod_validacion,
                                                         );
 
                                                         $a = (object) $array;
@@ -2493,6 +2515,12 @@ class VentaController extends Controller
                                                     file_put_contents(public_path('assets/Forma14/barcode_TFE'.$nro_timbre.'.png'), base64_decode($barcode)); ////se guarda
 
 
+                                                    
+                                                    ////CODIGO DE VALIDACIÓN
+                                                    $serial_clean = str_replace("-", "", $serial);
+                                                    $cod_validacion = $this->modulo11($serial_clean);
+
+
                                                     // // QR
                                                     // $nro_timbre_qr = base64_encode(serialize($nro_timbre)); 
                                                     // $url_timbre_qr = str_replace(['/', '+'],['_', '-'], $nro_timbre_qr);
@@ -2527,11 +2555,12 @@ class VentaController extends Controller
                                                             'ci' => $cedula_contribuyente,
                                                             'nombre' => $nombre_contribuyente,
                                                             'ente' => $consulta_tramite->ente,
-                                                            'tramite' => $cons->tramite,
+                                                            'tramite' => $cadena_tramite,
                                                             'bs' => number_format($bs_tramite_imp, 2, '.', ' '),
                                                             'ucd' => $ucd_tramite,
                                                             'key' => $key_taquillero,
-                                                            'fecha' => date("Y-m-d",strtotime($hoy))
+                                                            'fecha' => date("Y-m-d",strtotime($hoy)),
+                                                            'cod_validacion' => $serial_clean.''.$cod_validacion,
                                                         );
 
                                                         $a = (object) $array;
